@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6c52d94a6c09467b88ada00d30ea95df" Name="Diagram1">
+        <EntityTypeShape EntityType="OJewelryDBModel.ACL" Width="1.5" PointX="3" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.Buyer" Width="1.5" PointX="5.75" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.Client" Width="1.5" PointX="3" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.Collection" Width="1.5" PointX="3" PointY="13" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.Company" Width="1.5" PointX="0.75" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.Component" Width="1.5" PointX="6" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.ComponentType" Width="1.5" PointX="3.75" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.JewelryType" Width="1.5" PointX="3" PointY="21.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.Memo" Width="1.5" PointX="7.5" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.Presenter" Width="1.5" PointX="5.25" PointY="22" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.SalesLedger" Width="1.5" PointX="8" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.Style" Width="1.5" PointX="5.25" PointY="15.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="OJewelryDBModel.Vendor" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="OJewelryDBModel.FK_ACL_ToCompanies" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_SalesLedger_ToBuyers" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Clients_ToCompanies" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Collections_ToCompanies" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Style_ToCollections" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Components_ToCompanies" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_JewelryTypes_ToCompanies" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Components_ToComponentTypes" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Components_ToVendors" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Style_ToComponents" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Style_TOJewelryDBTypes" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Memo_ToPresenters" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Memo_ToStyles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

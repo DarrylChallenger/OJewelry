@@ -53,6 +53,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -196,8 +198,62 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ACL.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Buyer.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Client.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Collection.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Company.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Component.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ComponentType.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\JewelryType.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Memo.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OJewelryModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OJewelryModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OJewelryModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OJewelryModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OJewelryModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Presenter.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SalesLedger.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Style.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Vendor.cs">
+      <DependentUpon>OJewelryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -208,10 +264,27 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Models\OJewelryModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>OJewelryModel.edmx</DependentUpon>
+      <LastGenOutput>OJewelryModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\OJewelryModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>OJewelryModel.edmx</DependentUpon>
+      <LastGenOutput>OJewelryModel.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EntityDeploy Include="Models\OJewelryModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>OJewelryModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\OJewelryModel.edmx.diagram">
+      <DependentUpon>OJewelryModel.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -275,6 +348,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
