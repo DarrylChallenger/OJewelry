@@ -34,7 +34,7 @@ namespace OJewelry.Models
         public Nullable<decimal> RetailRatio { get; set; }
         public Nullable<decimal> RedlineRatio { get; set; }
         public Nullable<int> ComponentId { get; set; }
-        public Nullable<int> Quantity { get; set; }
+        public int Quantity { get; set; }
     
         public virtual Collection Collection { get; set; }
         public virtual Component Component { get; set; }

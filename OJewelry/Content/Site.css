@@ -22,3 +22,11 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.AddStyleBtn {
+    border-style:solid;
+    border-color:grey;
+    border-radius:.5em;
+    background-color:lightgrey;
+    color:white;
+}

@@ -31,6 +31,7 @@
         <AssociationConnector Association="OJewelryDBModel.FK_Style_TOJewelryDBTypes" ManuallyRouted="false" />
         <AssociationConnector Association="OJewelryDBModel.FK_Memo_ToPresenters" ManuallyRouted="false" />
         <AssociationConnector Association="OJewelryDBModel.FK_Memo_ToStyles" ManuallyRouted="false" />
+        <AssociationConnector Association="OJewelryDBModel.FK_Presenters_ToCompanies" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

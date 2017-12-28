@@ -22,6 +22,7 @@ namespace OJewelry.Models
             this.Collections = new HashSet<Collection>();
             this.Components = new HashSet<Component>();
             this.JewelryTypes = new HashSet<JewelryType>();
+            this.Presenters = new HashSet<Presenter>();
         }
     
         public int Id { get; set; }
@@ -37,5 +38,7 @@ namespace OJewelry.Models
         public virtual ICollection<Component> Components { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<JewelryType> JewelryTypes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Presenter> Presenters { get; set; }
     }
 }

@@ -32,24 +32,61 @@ namespace OJewelry.Controllers
         {
             ViewBag.Message = "Client List";
             OJewelryDBEntities dc = new OJewelryDBEntities();
-            var newClient = dc.Clients.Join(dc.Companies, cli => cli.Id, com => com.Id,
+            var aClient = dc.Clients.Join(dc.Companies, cli => cli.CompanyID, com => com.Id,
                 (cli, com) => new
                 {
                     cli.Id,
                     ClientName = cli.Name,
                     ClientPhone = cli.Phone,
                     ClientEmail = cli.Email,
-                    CompanyName = com.Name
+                    CompanyName = com.Name,
+                    CompanyId = com.Id
                 }).ToList().Select(n => new ClientViewModel()
                 { 
                     Id = n.Id,
                     Name = n.ClientName,
                     Phone = n.ClientPhone,
                     Email = n.ClientEmail,
-                    CompanyName = n.CompanyName
+                    CompanyName = n.CompanyName,
+                    CompanyId = n.CompanyId
                  }
                 ).ToList();
-            return View("ClientList", newClient);
+            return View("ClientList", aClient);
         }
+        public ActionResult CollectionListByCompany(int id)
+        {
+            ViewBag.Message = "Collection List for company";
+            OJewelryDBEntities dc = new OJewelryDBEntities();
+            CollectionViewModel m = new CollectionViewModel();
+            Company co = dc.Companies.Find(id);
+            m.CompanyId = co.Id;
+            m.CompanyName = co.Name;
+            m.Collections = new List<CollectionModel>();
+            foreach (Collection coll in  co.Collections)
+            {
+                CollectionModel collM = new CollectionModel()
+                {
+                    Id = coll.Id,
+                    CompanyId = coll.CompanyId,
+                    Name = coll.Name
+                };
+                collM.Styles = new List<StyleModel>();
+                foreach (Style sty in coll.Styles)
+                {
+                    StyleModel styM = new StyleModel()
+                    {
+                        Id = sty.Id,
+                        Name = sty.StyleName,
+                        Num = sty.StyleNum,
+                        Qty = sty.Quantity
+                    };
+                    collM.Styles.Add(styM);
+                }
+                m.Collections.Add(collM);
+            }
+            return View(m);
+        }
+
+
     }
 }

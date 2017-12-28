@@ -1,0 +1,62 @@
+﻿@model OJewelry.Models.CollectionViewModel
+
+@{
+    ViewBag.Title = "CollectiinListByCompany";
+}
+
+<h2>The @Model.CompanyName Collections</h2>
+
+<p>
+    @Html.ActionLink("Create New Collection", "CreateCollectionByCompany", new { id = Model.CompanyId } )
+</p>
+<table class="table">
+    <tr>
+        @* Put style titles here
+        <th>
+            @Html.DisplayNameFor(model => model.collection)
+        </th>
+        *@
+        <th>
+            @Html.DisplayNameFor(model => model.style.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.style.Num)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.style.RetialPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.style.Qty)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.style.Memod)
+        </th>
+
+    </tr>
+    @foreach (OJewelry.Models.CollectionModel item in Model.Collections)
+    {
+
+        <tr>
+            <td><b>@Html.DisplayFor(modelItem => item.Name)</b></td>
+            <td class="AddStyleBtn">Add new Style</td>
+        </tr>
+        foreach (OJewelry.Models.StyleModel sty in item.Styles)
+        {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => sty.Name)</td>
+            <td>@Html.DisplayFor(modelItem => sty.Num)</td>
+            <td>@Html.DisplayFor(modelItem => sty.RetialPrice)</td>
+            <td>@Html.DisplayFor(modelItem => sty.Qty)</td>
+            <td>@Html.DisplayFor(modelItem => sty.Memod)</td> @*Add popup over non-zero memo to show where items are*@
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = sty.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = sty.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = sty.Id }) |
+                @Html.ActionLink("Sell", "Sell", new { id = sty.Id }) |
+                @Html.ActionLink("Memo", "Memo", new { id = sty.Id })
+            </td>
+        </tr>
+        }
+    }
+
+</table>
