@@ -29,5 +29,7 @@ namespace OJewelry.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<OJewelry.Models.ClientViewModel> ClientViewModels { get; set; }
     }
 }

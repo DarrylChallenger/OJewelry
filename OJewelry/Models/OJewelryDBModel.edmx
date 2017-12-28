@@ -46,7 +46,6 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="ClientID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Components">
           <Key>
@@ -418,7 +417,6 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="ClientID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ACLs" Relationship="Self.FK_ACL_ToCompanies" FromRole="Companies" ToRole="ACL" />
           <NavigationProperty Name="Clients" Relationship="Self.FK_Clients_ToCompanies" FromRole="Companies" ToRole="Clients" />
           <NavigationProperty Name="Collections" Relationship="Self.FK_Collections_ToCompanies" FromRole="Companies" ToRole="Collections" />
@@ -810,7 +808,6 @@
               <MappingFragment StoreEntitySet="Companies">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

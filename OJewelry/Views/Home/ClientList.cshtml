@@ -1,0 +1,54 @@
+﻿@model IEnumerable<OJewelry.Models.ClientViewModel>
+
+@{
+    ViewBag.Title = "ClientList";
+}
+
+<h2>ClientList</h2>
+
+<p>
+    @Html.ActionLink("Create New", "ClientCreate")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @* Link to Detail (Html.DisplayFor(modelItem => item.Name))*@
+
+            @Html.ActionLink(item.Name, "ClientDetails", new { id = item.Id })
+
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Phone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "ClientEdit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "ClientDetails", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "ClientDelete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>
