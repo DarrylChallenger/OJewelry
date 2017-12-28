@@ -17,7 +17,8 @@ namespace OJewelry.Models
         [Display(Name="Inventory")]
         public int Qty { get; set; }
         [Display(Name = "Retial Price")]
-        public float RetialPrice { get; set; }
+        public decimal RetialPrice { get; set; }
+        public decimal Cost { get; set; }
     }
 
     public class CollectionModel

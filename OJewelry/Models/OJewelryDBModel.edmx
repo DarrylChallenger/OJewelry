@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="OJewelryDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="OJewelryDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ACL">
           <Key>
             <PropertyRef Name="Id" />
@@ -115,6 +115,14 @@
           <Property Name="Notes" Type="nchar" MaxLength="10" />
           <Property Name="BuyerId" Type="int" />
         </EntityType>
+        <EntityType Name="StyleComponents">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="StyleId" Type="int" Nullable="false" />
+          <Property Name="ComponentId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Styles">
           <Key>
             <PropertyRef Name="Id" />
@@ -132,7 +140,6 @@
           <Property Name="ChainLength" Type="int" />
           <Property Name="RetailRatio" Type="decimal" Precision="8" Scale="5" />
           <Property Name="RedlineRatio" Type="decimal" Precision="8" Scale="5" />
-          <Property Name="ComponentId" Type="int" />
           <Property Name="Quantity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Vendors">
@@ -288,18 +295,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Style_ToComponents">
-          <End Role="Components" Type="Self.Components" Multiplicity="0..1" />
-          <End Role="Styles" Type="Self.Styles" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Components">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Styles">
-              <PropertyRef Name="ComponentId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Style_TOJewelryDBTypes">
           <End Role="JewelryTypes" Type="Self.JewelryTypes" Multiplicity="1" />
           <End Role="Styles" Type="Self.Styles" Multiplicity="*" />
@@ -309,6 +304,30 @@
             </Principal>
             <Dependent Role="Styles">
               <PropertyRef Name="JewelryTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StyleComponents_ToComponents">
+          <End Role="Components" Type="Self.Components" Multiplicity="1" />
+          <End Role="StyleComponents" Type="Self.StyleComponents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Components">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StyleComponents">
+              <PropertyRef Name="ComponentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StyleComponents_ToStyles">
+          <End Role="Styles" Type="Self.Styles" Multiplicity="1" />
+          <End Role="StyleComponents" Type="Self.StyleComponents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Styles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StyleComponents">
+              <PropertyRef Name="StyleId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -324,6 +343,7 @@
           <EntitySet Name="Memo" EntityType="Self.Memo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Presenters" EntityType="Self.Presenters" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SalesLedger" EntityType="Self.SalesLedger" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StyleComponents" EntityType="Self.StyleComponents" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Styles" EntityType="Self.Styles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Vendors" EntityType="Self.Vendors" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_ACL_ToCompanies" Association="Self.FK_ACL_ToCompanies">
@@ -374,16 +394,21 @@
             <End Role="Collections" EntitySet="Collections" />
             <End Role="Styles" EntitySet="Styles" />
           </AssociationSet>
-          <AssociationSet Name="FK_Style_ToComponents" Association="Self.FK_Style_ToComponents">
-            <End Role="Components" EntitySet="Components" />
-            <End Role="Styles" EntitySet="Styles" />
-          </AssociationSet>
           <AssociationSet Name="FK_Style_TOJewelryDBTypes" Association="Self.FK_Style_TOJewelryDBTypes">
             <End Role="JewelryTypes" EntitySet="JewelryTypes" />
             <End Role="Styles" EntitySet="Styles" />
           </AssociationSet>
+          <AssociationSet Name="FK_StyleComponents_ToComponents" Association="Self.FK_StyleComponents_ToComponents">
+            <End Role="Components" EntitySet="Components" />
+            <End Role="StyleComponents" EntitySet="StyleComponents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StyleComponents_ToStyles" Association="Self.FK_StyleComponents_ToStyles">
+            <End Role="Styles" EntitySet="Styles" />
+            <End Role="StyleComponents" EntitySet="StyleComponents" />
+          </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="OJewelryDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -438,7 +463,7 @@
           <NavigationProperty Name="Collections" Relationship="Self.FK_Collections_ToCompanies" FromRole="Companies" ToRole="Collections" />
           <NavigationProperty Name="Components" Relationship="Self.FK_Components_ToCompanies" FromRole="Companies" ToRole="Components" />
           <NavigationProperty Name="JewelryTypes" Relationship="Self.FK_JewelryTypes_ToCompanies" FromRole="Companies" ToRole="JewelryTypes" />
-          <NavigationProperty Name="Presenters" Relationship="OJewelryDBModel.FK_Presenters_ToCompanies" FromRole="Company" ToRole="Presenter" />
+          <NavigationProperty Name="Presenters" Relationship="Self.FK_Presenters_ToCompanies" FromRole="Companies" ToRole="Presenters" />
         </EntityType>
         <EntityType Name="Component">
           <Key>
@@ -462,7 +487,7 @@
           <NavigationProperty Name="Company" Relationship="Self.FK_Components_ToCompanies" FromRole="Components" ToRole="Companies" />
           <NavigationProperty Name="ComponentType" Relationship="Self.FK_Components_ToComponentTypes" FromRole="Components" ToRole="ComponentTypes" />
           <NavigationProperty Name="Vendor" Relationship="Self.FK_Components_ToVendors" FromRole="Components" ToRole="Vendors" />
-          <NavigationProperty Name="Styles" Relationship="Self.FK_Style_ToComponents" FromRole="Components" ToRole="Styles" />
+          <NavigationProperty Name="StyleComponents" Relationship="Self.FK_StyleComponents_ToComponents" FromRole="Components" ToRole="StyleComponents" />
         </EntityType>
         <EntityType Name="ComponentType">
           <Key>
@@ -503,9 +528,9 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Phone" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Memos" Relationship="Self.FK_Memo_ToPresenters" FromRole="Presenters" ToRole="Memo" />
           <Property Name="CompanyId" Type="Int32" />
-          <NavigationProperty Name="Company" Relationship="OJewelryDBModel.FK_Presenters_ToCompanies" FromRole="Presenter" ToRole="Company" />
+          <NavigationProperty Name="Company" Relationship="Self.FK_Presenters_ToCompanies" FromRole="Presenters" ToRole="Companies" />
+          <NavigationProperty Name="Memos" Relationship="Self.FK_Memo_ToPresenters" FromRole="Presenters" ToRole="Memo" />
         </EntityType>
         <EntityType Name="SalesLedger">
           <Key>
@@ -519,6 +544,16 @@
           <Property Name="Notes" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="BuyerId" Type="Int32" />
           <NavigationProperty Name="Buyer" Relationship="Self.FK_SalesLedger_ToBuyers" FromRole="SalesLedger" ToRole="Buyers" />
+        </EntityType>
+        <EntityType Name="StyleComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="StyleId" Type="Int32" Nullable="false" />
+          <Property Name="ComponentId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Component" Relationship="Self.FK_StyleComponents_ToComponents" FromRole="StyleComponents" ToRole="Components" />
+          <NavigationProperty Name="Style" Relationship="Self.FK_StyleComponents_ToStyles" FromRole="StyleComponents" ToRole="Styles" />
         </EntityType>
         <EntityType Name="Style">
           <Key>
@@ -537,12 +572,11 @@
           <Property Name="ChainLength" Type="Int32" />
           <Property Name="RetailRatio" Type="Decimal" Precision="8" Scale="5" />
           <Property Name="RedlineRatio" Type="Decimal" Precision="8" Scale="5" />
-          <Property Name="ComponentId" Type="Int32" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Collection" Relationship="Self.FK_Style_ToCollections" FromRole="Styles" ToRole="Collections" />
-          <NavigationProperty Name="Component" Relationship="Self.FK_Style_ToComponents" FromRole="Styles" ToRole="Components" />
           <NavigationProperty Name="JewelryType" Relationship="Self.FK_Style_TOJewelryDBTypes" FromRole="Styles" ToRole="JewelryTypes" />
           <NavigationProperty Name="Memos" Relationship="Self.FK_Memo_ToStyles" FromRole="Styles" ToRole="Memo" />
+          <NavigationProperty Name="StyleComponents" Relationship="Self.FK_StyleComponents_ToStyles" FromRole="Styles" ToRole="StyleComponents" />
         </EntityType>
         <EntityType Name="Vendor">
           <Key>
@@ -638,6 +672,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Presenters_ToCompanies">
+          <End Role="Companies" Type="Self.Company" Multiplicity="0..1" />
+          <End Role="Presenters" Type="Self.Presenter" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Presenters">
+              <PropertyRef Name="CompanyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Components_ToComponentTypes">
           <End Role="ComponentTypes" Type="Self.ComponentType" Multiplicity="1" />
           <End Role="Components" Type="Self.Component" Multiplicity="*" />
@@ -662,14 +708,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Style_ToComponents">
-          <End Role="Components" Type="Self.Component" Multiplicity="0..1" />
-          <End Role="Styles" Type="Self.Style" Multiplicity="*" />
+        <Association Name="FK_StyleComponents_ToComponents">
+          <End Role="Components" Type="Self.Component" Multiplicity="1" />
+          <End Role="StyleComponents" Type="Self.StyleComponent" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Components">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Styles">
+            <Dependent Role="StyleComponents">
               <PropertyRef Name="ComponentId" />
             </Dependent>
           </ReferentialConstraint>
@@ -710,7 +756,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="OJewelryDBEntities" annotation:LazyLoadingEnabled="true">
+        <Association Name="FK_StyleComponents_ToStyles">
+          <End Role="Styles" Type="Self.Style" Multiplicity="1" />
+          <End Role="StyleComponents" Type="Self.StyleComponent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Styles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="StyleComponents">
+              <PropertyRef Name="StyleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="OJewelryDBEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="ACLs" EntityType="Self.ACL" />
           <EntitySet Name="Buyers" EntityType="Self.Buyer" />
           <EntitySet Name="Clients" EntityType="Self.Client" />
@@ -722,6 +780,7 @@
           <EntitySet Name="Memos" EntityType="Self.Memo" />
           <EntitySet Name="Presenters" EntityType="Self.Presenter" />
           <EntitySet Name="SalesLedgers" EntityType="Self.SalesLedger" />
+          <EntitySet Name="StyleComponents" EntityType="Self.StyleComponent" />
           <EntitySet Name="Styles" EntityType="Self.Style" />
           <EntitySet Name="Vendors" EntityType="Self.Vendor" />
           <AssociationSet Name="FK_ACL_ToCompanies" Association="Self.FK_ACL_ToCompanies">
@@ -752,6 +811,10 @@
             <End Role="Companies" EntitySet="Companies" />
             <End Role="JewelryTypes" EntitySet="JewelryTypes" />
           </AssociationSet>
+          <AssociationSet Name="FK_Presenters_ToCompanies" Association="Self.FK_Presenters_ToCompanies">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="Presenters" EntitySet="Presenters" />
+          </AssociationSet>
           <AssociationSet Name="FK_Components_ToComponentTypes" Association="Self.FK_Components_ToComponentTypes">
             <End Role="ComponentTypes" EntitySet="ComponentTypes" />
             <End Role="Components" EntitySet="Components" />
@@ -760,9 +823,9 @@
             <End Role="Vendors" EntitySet="Vendors" />
             <End Role="Components" EntitySet="Components" />
           </AssociationSet>
-          <AssociationSet Name="FK_Style_ToComponents" Association="Self.FK_Style_ToComponents">
+          <AssociationSet Name="FK_StyleComponents_ToComponents" Association="Self.FK_StyleComponents_ToComponents">
             <End Role="Components" EntitySet="Components" />
-            <End Role="Styles" EntitySet="Styles" />
+            <End Role="StyleComponents" EntitySet="StyleComponents" />
           </AssociationSet>
           <AssociationSet Name="FK_Style_TOJewelryDBTypes" Association="Self.FK_Style_TOJewelryDBTypes">
             <End Role="JewelryTypes" EntitySet="JewelryTypes" />
@@ -776,29 +839,17 @@
             <End Role="Styles" EntitySet="Styles" />
             <End Role="Memo" EntitySet="Memos" />
           </AssociationSet>
-          <AssociationSet Name="FK_Presenters_ToCompanies" Association="OJewelryDBModel.FK_Presenters_ToCompanies">
-            <End Role="Company" EntitySet="Companies" />
-            <End Role="Presenter" EntitySet="Presenters" />
+          <AssociationSet Name="FK_StyleComponents_ToStyles" Association="Self.FK_StyleComponents_ToStyles">
+            <End Role="Styles" EntitySet="Styles" />
+            <End Role="StyleComponents" EntitySet="StyleComponents" />
           </AssociationSet>
         </EntityContainer>
-        <Association Name="FK_Presenters_ToCompanies">
-          <End Type="OJewelryDBModel.Company" Role="Company" Multiplicity="0..1" />
-          <End Type="OJewelryDBModel.Presenter" Role="Presenter" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Company">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Presenter">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="OJewelryDBModelStoreContainer" CdmEntityContainer="OJewelryDBEntities">
+        <EntityContainerMapping StorageEntityContainer="OJewelryDBModelStoreContainer" CdmEntityContainer="OJewelryDBEntities1">
           <EntitySetMapping Name="ACLs">
             <EntityTypeMapping TypeName="OJewelryDBModel.ACL">
               <MappingFragment StoreEntitySet="ACL">
@@ -899,11 +950,11 @@
           <EntitySetMapping Name="Presenters">
             <EntityTypeMapping TypeName="OJewelryDBModel.Presenter">
               <MappingFragment StoreEntitySet="Presenters">
-                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -917,6 +968,15 @@
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
                 <ScalarProperty Name="BuyerId" ColumnName="BuyerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StyleComponents">
+            <EntityTypeMapping TypeName="OJewelryDBModel.StyleComponent">
+              <MappingFragment StoreEntitySet="StyleComponents">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="StyleId" ColumnName="StyleId" />
+                <ScalarProperty Name="ComponentId" ColumnName="ComponentId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -936,7 +996,6 @@
                 <ScalarProperty Name="ChainLength" ColumnName="ChainLength" />
                 <ScalarProperty Name="RetailRatio" ColumnName="RetailRatio" />
                 <ScalarProperty Name="RedlineRatio" ColumnName="RedlineRatio" />
-                <ScalarProperty Name="ComponentId" ColumnName="ComponentId" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
               </MappingFragment>
             </EntityTypeMapping>

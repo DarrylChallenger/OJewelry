@@ -31,7 +31,7 @@ namespace OJewelry.Controllers
         public ActionResult ClientList()
         {
             ViewBag.Message = "Client List";
-            OJewelryDBEntities dc = new OJewelryDBEntities();
+            OJewelryDBEntities1 dc = new OJewelryDBEntities1();
             var aClient = dc.Clients.Join(dc.Companies, cli => cli.CompanyID, com => com.Id,
                 (cli, com) => new
                 {
@@ -56,7 +56,8 @@ namespace OJewelry.Controllers
         public ActionResult CollectionListByCompany(int id)
         {
             ViewBag.Message = "Collection List for company";
-            OJewelryDBEntities dc = new OJewelryDBEntities();
+            
+            OJewelryDBEntities1 dc = new OJewelryDBEntities1();
             CollectionViewModel m = new CollectionViewModel();
             Company co = dc.Companies.Find(id);
             m.CompanyId = co.Id;
@@ -79,6 +80,8 @@ namespace OJewelry.Controllers
                         Name = sty.StyleName,
                         Num = sty.StyleNum,
                         Qty = sty.Quantity
+                        // Cost is the sum of the component prices
+                        //Retail Price is the cost * retail ratio
                     };
                     collM.Styles.Add(styM);
                 }

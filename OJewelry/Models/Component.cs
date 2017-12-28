@@ -17,7 +17,7 @@ namespace OJewelry.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Component()
         {
-            this.Styles = new HashSet<Style>();
+            this.StyleComponents = new HashSet<StyleComponent>();
         }
     
         public int Id { get; set; }
@@ -40,6 +40,6 @@ namespace OJewelry.Models
         public virtual ComponentType ComponentType { get; set; }
         public virtual Vendor Vendor { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Style> Styles { get; set; }
+        public virtual ICollection<StyleComponent> StyleComponents { get; set; }
     }
 }

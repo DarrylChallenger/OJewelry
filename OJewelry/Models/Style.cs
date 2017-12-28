@@ -18,6 +18,7 @@ namespace OJewelry.Models
         public Style()
         {
             this.Memos = new HashSet<Memo>();
+            this.StyleComponents = new HashSet<StyleComponent>();
         }
     
         public int Id { get; set; }
@@ -33,13 +34,13 @@ namespace OJewelry.Models
         public Nullable<int> ChainLength { get; set; }
         public Nullable<decimal> RetailRatio { get; set; }
         public Nullable<decimal> RedlineRatio { get; set; }
-        public Nullable<int> ComponentId { get; set; }
         public int Quantity { get; set; }
     
         public virtual Collection Collection { get; set; }
-        public virtual Component Component { get; set; }
         public virtual JewelryType JewelryType { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Memo> Memos { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StyleComponent> StyleComponents { get; set; }
     }
 }

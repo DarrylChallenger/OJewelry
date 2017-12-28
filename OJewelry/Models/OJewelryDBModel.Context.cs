@@ -13,10 +13,10 @@ namespace OJewelry.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class OJewelryDBEntities : DbContext
+    public partial class OJewelryDBEntities1 : DbContext
     {
-        public OJewelryDBEntities()
-            : base("name=OJewelryDBEntities")
+        public OJewelryDBEntities1()
+            : base("name=OJewelryDBEntities1")
         {
         }
     
@@ -36,6 +36,7 @@ namespace OJewelry.Models
         public virtual DbSet<Memo> Memos { get; set; }
         public virtual DbSet<Presenter> Presenters { get; set; }
         public virtual DbSet<SalesLedger> SalesLedgers { get; set; }
+        public virtual DbSet<StyleComponent> StyleComponents { get; set; }
         public virtual DbSet<Style> Styles { get; set; }
         public virtual DbSet<Vendor> Vendors { get; set; }
     }
