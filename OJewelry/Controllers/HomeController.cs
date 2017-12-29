@@ -31,7 +31,7 @@ namespace OJewelry.Controllers
         public ActionResult ClientList()
         {
             ViewBag.Message = "Client List";
-            OJewelryDBEntities1 dc = new OJewelryDBEntities1();
+            OJewelryDBEntities dc = new OJewelryDBEntities();
             var aClient = dc.Clients.Join(dc.Companies, cli => cli.CompanyID, com => com.Id,
                 (cli, com) => new
                 {
@@ -57,7 +57,8 @@ namespace OJewelry.Controllers
         {
             ViewBag.Message = "Collection List for company";
             
-            OJewelryDBEntities1 dc = new OJewelryDBEntities1();
+            OJewelryDBEntities dc = new OJewelryDBEntities();
+            ApplicationDbContext db = new ApplicationDbContext();
             CollectionViewModel m = new CollectionViewModel();
             Company co = dc.Companies.Find(id);
             m.CompanyId = co.Id;
@@ -79,7 +80,8 @@ namespace OJewelry.Controllers
                         Id = sty.Id,
                         Name = sty.StyleName,
                         Num = sty.StyleNum,
-                        Qty = sty.Quantity
+                        Qty = sty.Quantity,
+                        Memod = sty.Memos.Sum(s => s.Quantity)
                         // Cost is the sum of the component prices
                         //Retail Price is the cost * retail ratio
                     };
@@ -90,6 +92,24 @@ namespace OJewelry.Controllers
             return View(m);
         }
 
-
+        public ActionResult MemoStyle(int Id)
+        {
+            // Move a Style in or out of Memo
+            OJewelryDBEntities dc = new OJewelryDBEntities();
+            Style style = dc.Styles.Find(Id);
+            MemoViewModel m = new MemoViewModel();
+            m.style = new StyleModel()
+            {
+                Id = style.Id,
+                Name = style.StyleName,
+                Num = style.StyleNum,
+                Qty = style.Quantity,
+                Memod = style.Memos.Sum(s => s.Quantity)
+            };
+            m.SendReturnMemoRadio = 1;
+            m.NewExistingPresenterRadio = 1;
+            //m.RetrunQty = 1;
+            return View(m);
+        }
     }
 }

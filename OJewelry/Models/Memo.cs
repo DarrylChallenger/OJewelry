@@ -15,10 +15,10 @@ namespace OJewelry.Models
     public partial class Memo
     {
         public int Id { get; set; }
-        public Nullable<int> PresenterID { get; set; }
+        public int PresenterID { get; set; }
         public Nullable<int> StyleID { get; set; }
         public Nullable<System.DateTime> Date { get; set; }
-        public Nullable<int> Quantity { get; set; }
+        public int Quantity { get; set; }
         public string Notes { get; set; }
     
         public virtual Presenter Presenter { get; set; }

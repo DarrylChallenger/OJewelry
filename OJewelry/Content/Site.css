@@ -23,6 +23,12 @@ textarea {
     max-width: 280px;
 }
 
+.formborder {
+    border-style: solid;
+    border-color: grey;
+    padding-left:2em;
+    padding-bottom:1em;
+}
 .AddStyleBtn {
     border-style:solid;
     border-color:grey;

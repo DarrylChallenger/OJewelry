@@ -25,7 +25,7 @@ namespace OJewelry.Models
         public string StyleNum { get; set; }
         public string StyleName { get; set; }
         public string Desc { get; set; }
-        public int JewelryTypeId { get; set; }
+        public Nullable<int> JewelryTypeId { get; set; }
         public int CollectionId { get; set; }
         public Nullable<System.DateTime> IntroDate { get; set; }
         public byte[] Image { get; set; }

@@ -13,10 +13,10 @@ namespace OJewelry.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class OJewelryDBEntities1 : DbContext
+    public partial class OJewelryDBEntities : DbContext
     {
-        public OJewelryDBEntities1()
-            : base("name=OJewelryDBEntities1")
+        public OJewelryDBEntities()
+            : base("name=OJewelryDBEntities")
         {
         }
     

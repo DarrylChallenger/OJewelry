@@ -29,10 +29,8 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @* Link to Detail (Html.DisplayFor(modelItem => item.Name))*@
-
-            @Html.ActionLink(item.Name, "CollectionListByCompany", new { id = item.CompanyId })
-
+            @* Link to Detail (Html.DisplayFor(modelItem => item.Name)/@Html.ActionLink(item.Name, "CollectionListByCompany", new { id = item.CompanyId }))*@
+            @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Phone)
@@ -41,12 +39,13 @@
             @Html.DisplayFor(modelItem => item.Email)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.CompanyName)
+            @Html.ActionLink(item.CompanyName, "Details", "Companies", new { id = item.CompanyId }, null)
         </td>
         <td>
-            @Html.ActionLink("Edit", "ClientEdit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "ClientDetails", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "ClientDelete", new { id=item.Id })
+            @Html.ActionLink("Collections", "CollectionListByCompany", new { id = item.CompanyId }) |
+            @Html.ActionLink("Edit", "ClientEdit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "ClientDetails", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "ClientDelete", new { id = item.Id })
         </td>
     </tr>
 }

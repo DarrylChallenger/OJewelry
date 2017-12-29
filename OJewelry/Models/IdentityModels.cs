@@ -31,5 +31,9 @@ namespace OJewelry.Models
         }
 
         public System.Data.Entity.DbSet<OJewelry.Models.ClientViewModel> ClientViewModels { get; set; }
+
+        public System.Data.Entity.DbSet<OJewelry.Models.StyleModel> StyleModels { get; set; }
+
+        public System.Data.Entity.DbSet<OJewelry.Models.Company> Companies { get; set; }
     }
 }
