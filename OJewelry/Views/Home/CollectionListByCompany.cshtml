@@ -4,10 +4,10 @@
     ViewBag.Title = "CollectiinListByCompany";
 }
 
-<h2>The @Model.CompanyName Collections</h2>
+<h2 class="red">The @Model.CompanyName Collections</h2>
 
 <p>
-    @Html.ActionLink("Create New Collection", "CreateCollectionByCompany", new { id = Model.CompanyId } )
+    @Html.ActionLink("Create New Collection", "Create", "Collections",new { id = Model.CompanyId }, null )
 </p>
 <table class="table">
     <tr>
@@ -49,9 +49,9 @@
             <td>@Html.DisplayFor(modelItem => sty.Qty)</td>
             <td>@Html.DisplayFor(modelItem => sty.Memod)</td> @*Add popup over non-zero memo to show where items are*@
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = sty.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = sty.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = sty.Id }) |
+                @Html.ActionLink("Edit", "Edit", "Collections", new { id = sty.Id }, null) |
+                @Html.ActionLink("Details", "Details", "Collections", new { id = sty.Id }, null) |
+                @Html.ActionLink("Delete", "Delete", "Collections", new { id = sty.Id }, null) |
                 @Html.ActionLink("Sell", "Sell", new { id = sty.Id }) |
                 @Html.ActionLink("Memo", "MemoStyle", new { id = sty.Id })
             </td>

@@ -1,0 +1,139 @@
+﻿@model OJewelry.Models.MemoViewModel
+
+@{
+    ViewBag.Title = "Memo";
+}
+
+<h2 >Memos for <i>@Model.style.Name</i></h2>
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.style.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.style.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.style.Num)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.style.Num)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.style.Qty)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.style.Qty)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.style.Memod)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.style.Memod)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.style.RetialPrice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.style.RetialPrice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.style.Cost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.style.Cost)
+        </dd>
+
+    </dl>
+</div>
+<div class="row">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Memos)
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.style.Id)
+            @Html.HiddenFor(model => model.numPresentersWithStyle)
+            @Html.HiddenFor(model => model.CompanyId)
+
+            @*
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            *@
+            <div class="form-group row">
+                @Html.RadioButtonFor(m => m.SendReturnMemoRadio, 1) Memo a Style
+                <div class="form-group formborder row">
+                    @Html.RadioButtonFor(m => m.NewExistingPresenterRadio, 1) Select a Presenter
+                    <div class="row">
+                        @Html.LabelFor(m => m.Presenters)
+                        @Html.DropDownListFor(m => m.PresenterId, Model.Presenters)
+                    </div>
+                    @Html.RadioButtonFor(m => m.NewExistingPresenterRadio, 2) New Presenter
+                    <div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.PresenterName, htmlAttributes: new { @class = "col-form-label col-md-1" })
+                            @Html.EditorFor(model => model.PresenterName, new { htmlAttributes = new { @class = "form-control col-md-4" } })
+                        </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.PresenterPhone, htmlAttributes: new { @class = "col-form-label col-md-1" })
+                            @Html.EditorFor(model => model.PresenterPhone, new { htmlAttributes = new { @class = "form-control col-md-1" } })
+                        </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.PresenterEmail, htmlAttributes: new { @class = "col-form-label col-md-1" })
+                            @Html.EditorFor(model => model.PresenterEmail, new { htmlAttributes = new { @class = "form-control col-md-4" } })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.SendQty, htmlAttributes: new { @class = "col-form-label col-md-1" })
+                    @Html.EditorFor(model => model.SendQty, new { htmlAttributes = new { @class = "form-control col-md-1" } })
+                </div>
+                @Html.RadioButtonFor(m => m.SendReturnMemoRadio, 2) Return a Style
+                <div class="form-group formborder">
+                    @for (int i = 0; i < Model.Memos.Count(); i++)
+                    {
+                        <div class="form-group row">
+                            <span class="col-md-3">@Model.Memos[i].PresenterName has @Model.Memos[i].Quantity item(s) memo'd</span>
+                            @Html.LabelFor(model => model.Memos[i].RetrunQty, htmlAttributes: new { @class = "col-form-label col-md-2" })
+                            @Html.EditorFor(model => model.Memos[i].RetrunQty, new { htmlAttributes = new { @class = "form-control col-md-1" } })
+                            @Html.HiddenFor(model => model.Memos[i].Id)
+                            @Html.HiddenFor(model => model.Memos[i].Quantity)
+                        </div>
+                    }
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-1 col-md-11">
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <hr />
+</div>
+
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.style.Id }) |
+    @Html.ActionLink("Style List", "Index", new { CollectionId = ViewBag.CollectionID })
+
+</p>

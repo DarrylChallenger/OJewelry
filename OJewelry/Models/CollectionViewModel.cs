@@ -6,6 +6,7 @@ using System.Web;
 
 namespace OJewelry.Models
 {
+    //CollectionListByCompany
     public class StyleModel
     {
         public int Id { get; set; }
@@ -36,5 +37,20 @@ namespace OJewelry.Models
         public List<CollectionModel> Collections { get; set; }
         public StyleModel style { get; }
         public Collection collection { get; }
+    }
+    // CollectionController Models
+    public class CollectionsViewModel
+    {
+        public int CompanyId { get; set; }
+        public String CompanyName { get; set; }
+        public List<Collection> Collections { get; set; }
+    }
+
+    public class CollectionsDetailsModel
+    {
+        public int CompanyId { get; set; }
+        public String CompanyName { get; set; }
+        public Collection Collection { get; set; }
+        public List<Style> Styles { get; set; }
     }
 }

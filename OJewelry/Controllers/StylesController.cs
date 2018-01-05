@@ -1,106 +1,165 @@
-﻿using OJewelry.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using OJewelry.Models;
 
 namespace OJewelry.Controllers
 {
-    public class HomeController : Controller
+    public class StylesController : Controller
     {
-        public ActionResult Index()
+        private OJewelryDBEntities db = new OJewelryDBEntities();
+
+        // GET: Styles
+        public ActionResult Index(int CollectionId)
         {
-            return View();
+            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).Include(s => s.JewelryType);
+            ViewBag.CollectionName = db.Collections.Find(CollectionId).Name;
+            ViewBag.CollectionId = CollectionId;
+            ViewBag.CompanyId = db.Collections.Find(CollectionId).CompanyId;
+            return View(styles.ToList());
         }
 
-        public ActionResult About()
+        // GET: Styles/Details/5
+        public ActionResult Details(int? id)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
-        public ActionResult ClientList()
-        {
-            ViewBag.Message = "Client List";
-            OJewelryDBEntities dc = new OJewelryDBEntities();
-            var aClient = dc.Clients.Join(dc.Companies, cli => cli.CompanyID, com => com.Id,
-                (cli, com) => new
-                {
-                    cli.Id,
-                    ClientName = cli.Name,
-                    ClientPhone = cli.Phone,
-                    ClientEmail = cli.Email,
-                    CompanyName = com.Name,
-                    CompanyId = com.Id
-                }).ToList().Select(n => new ClientViewModel()
-                { 
-                    Id = n.Id,
-                    Name = n.ClientName,
-                    Phone = n.ClientPhone,
-                    Email = n.ClientEmail,
-                    CompanyName = n.CompanyName,
-                    CompanyId = n.CompanyId
-                 }
-                ).ToList();
-            return View("ClientList", aClient);
-        }
-        public ActionResult CollectionListByCompany(int id)
-        {
-            ViewBag.Message = "Collection List for company";
-            
-            OJewelryDBEntities dc = new OJewelryDBEntities();
-            CollectionViewModel m = new CollectionViewModel();
-            Company co = dc.Companies.Find(id);
-            m.CompanyId = co.Id;
-            m.CompanyName = co.Name;
-            m.Collections = new List<CollectionModel>();
-            foreach (Collection coll in  co.Collections)
+            if (id == null)
             {
-                CollectionModel collM = new CollectionModel()
-                {
-                    Id = coll.Id,
-                    CompanyId = coll.CompanyId,
-                    Name = coll.Name
-                };
-                collM.Styles = new List<StyleModel>();
-                foreach (Style sty in coll.Styles)
-                {
-                    StyleModel styM = new StyleModel()
-                    {
-                        Id = sty.Id,
-                        Name = sty.StyleName,
-                        Num = sty.StyleNum,
-                        Qty = sty.Quantity,
-                        Memod = sty.Memos.Sum(s => s.Quantity)
-                        // Cost is the sum of the component prices
-                        //Retail Price is the cost * retail ratio
-                    };
-                    collM.Styles.Add(styM);
-                }
-                m.Collections.Add(collM);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View(m);
+            Style style = db.Styles.Find(id);
+            if (style == null)
+            {
+                return HttpNotFound();
+            }
+            return View(style);
         }
 
-        public ActionResult MemoStyle(int? Id)
+        public ActionResult Print(int? id)
         {
-            if (Id == 0 || Id == null)
+            if (id == null)
             {
-                return ClientList();
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Style style = db.Styles.Find(id);
+            if (style == null)
+            {
+                return HttpNotFound();
+            }
+            return View(style);
+        }
+
+        // GET: Styles/Create
+        public ActionResult Create(int collectionId)
+        {
+            Collection co = db.Collections.Find(collectionId);
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
+            Style s = new Style()
+            {
+                CollectionId = collectionId,
+            };
+            s.Collection = db.Collections.Find(collectionId);
+            return View(s);
+        }
+
+        // POST: Styles/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Styles.Add(style);
+                db.SaveChanges();
+                return RedirectToAction("Index", new { CollectionID = style.CollectionId });
+            }
+            Collection co = db.Collections.Find(style.CollectionId);
+            ViewBag.CollectionId = new SelectList(db.Collections, "Id", "Name", style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", style.JewelryTypeId);
+            return View(style);
+        }
+
+        // GET: Styles/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Style style = db.Styles.Find(id);
+            if (style == null)
+            {
+                return HttpNotFound();
+            }
+            Collection co = db.Collections.Find(style.CollectionId);
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", style.JewelryTypeId);
+            return View(style);
+        }
+
+        // POST: Styles/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(style).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index", new { CollectionID = style.CollectionId });
+            }
+            Collection co = db.Collections.Find(style.CollectionId);
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", style.JewelryTypeId);
+            return View(style);
+        }
+
+        // GET: Styles/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Style style = db.Styles.Find(id);
+            if (style == null)
+            {
+                return HttpNotFound();
+            }
+            return View(style);
+        }
+
+        // POST: Styles/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Style style = db.Styles.Find(id);
+            int collectionId = style.CollectionId;
+            db.Styles.Remove(style);
+            db.SaveChanges();
+            return RedirectToAction("Index", new { CollectionID = collectionId });
+        }
+
+        public ActionResult Memo(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             // Move a Style in or out of Memo
             OJewelryDBEntities dc = new OJewelryDBEntities();
-            Style style = dc.Styles.Find(Id);
+            Style style = dc.Styles.Find(id);
             MemoViewModel m = new MemoViewModel();
             m.style = new StyleModel()
             {
@@ -115,7 +174,7 @@ namespace OJewelry.Controllers
 
             m.Memos = new List<MemoModel>();
             m.numPresentersWithStyle = 0;
-            foreach(Memo i in dc.Memos)
+            foreach (Memo i in dc.Memos)
             {
                 MemoModel mm = new MemoModel()
                 {
@@ -132,7 +191,7 @@ namespace OJewelry.Controllers
             }
             m.Presenters = new List<SelectListItem>();
             m.CompanyId = style.Collection.CompanyId;
-            foreach (Presenter i in dc.Presenters.Where(w=>w.CompanyId == m.CompanyId))
+            foreach (Presenter i in dc.Presenters.Where(w => w.CompanyId == m.CompanyId))
             {
                 SelectListItem sli = new SelectListItem()
                 {
@@ -142,74 +201,12 @@ namespace OJewelry.Controllers
                 m.Presenters.Add(sli);
             }
             m.PresenterName = "initname";
+            ViewBag.CollectionId = style.CollectionId;
             return View(m);
         }
 
-        /*
         [HttpPost]
-        public ActionResult MemoStyle(FormCollection form)
-        {
-            OJewelryDBEntities dc = new OJewelryDBEntities();
-            if (form["SendReturnMemoRadio"] == "1")
-            {
-                if (form["NewExistingPresenterRadio"] == "2")
-                {
-                    //Memo a new presenter
-                    if (String.IsNullOrEmpty(form["PresenterName"]))
-                    {
-                        ModelState.AddModelError("Presenter Name", "Name is required for new Presenters.");
-                    }
-                    if (String.IsNullOrEmpty(form["PresenterEmail"]) && String.IsNullOrEmpty(form["PresenterPhone"]))
-                    {
-                        ModelState.AddModelError("Presenter Contact Info", "Phone or Email is required for new Presenters.");
-                    }
-                }
-                else
-                {
-                    // Memo an existing presenter - nothing to validate in this case as they just selected a Presenter from the list
-                }
-                int i;
-                if (Int32.TryParse(form["SendQty"], out i) == true)
-                {
-                    if (i == 0)
-                    {
-                        ModelState.AddModelError("Send Quantity", "The send quantity should be the number of items to memeo.");
-                    }
-                    int styleID;
-                    if (Int32.TryParse(form["style.Id"], out styleID))
-                    {
-                        int dbStyleQty = dc.Styles.Find(styleID).Quantity;
-                        if (i > dbStyleQty)
-                        {
-                            ModelState.AddModelError("Send Quantity", "You cannot memo more items than you have in inventory.");
-                        }
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("Serious Error", "Data was corrupted. (HSMSFormStyleId");
-                    }
-                }
-            }
-            else
-            {
-                //Return Items from Presenter
-                //numPresentersWithStyle
-
-            }
-            if (ModelState.IsValid)
-            {
-                // Save changes, go to clientlist
-                return ClientList();
-            }
-            // rebuild model
-            //GetPresenters(dc, m, CompanyId);
-            return View();
-        }
-        */
-
-
-        [HttpPost]
-        public ActionResult MemoStyle(MemoViewModel m)
+        public ActionResult Memo(MemoViewModel m)
         {
             ModelState.Clear();
             OJewelryDBEntities dc = new OJewelryDBEntities();
@@ -253,7 +250,7 @@ namespace OJewelry.Controllers
                 {
                     Quantity = m.SendQty,
                     Date = DateTime.Now,
-                    Notes = note, 
+                    Notes = note,
                     PresenterID = m.PresenterId,
                     StyleID = m.style.Id,
                 };
@@ -271,7 +268,7 @@ namespace OJewelry.Controllers
             {
                 //Return Items from Presenter
                 // iterate thru the memos to take items back. Increase the inventory as appropriate. If all items are returned, delete the memo
-                foreach(MemoModel memo in m.Memos)
+                foreach (MemoModel memo in m.Memos)
                 {
                     if (memo.RetrunQty < 0)
                     {
@@ -287,12 +284,13 @@ namespace OJewelry.Controllers
                         Memo mdb = dc.Memos.Find(memo.Id);
                         if (mdb.Quantity == memo.RetrunQty)
                         {
-                            // remove the row
+                            // remove the row and remove item from collection
                             dc.Memos.Remove(mdb);
-                        } else
+                        }
+                        else
                         {
                             // decrease the amount
-                            mdb.Quantity -= memo.RetrunQty; 
+                            mdb.Quantity -= memo.RetrunQty;
                         }
                         sdb.Quantity += memo.RetrunQty;
                     }
@@ -304,8 +302,11 @@ namespace OJewelry.Controllers
             {
                 // Save changes, go to clientlist
                 dc.SaveChanges();
-                return ClientList();
+                //return ClientList();
+                //return View(m);
             }
+            return Memo(m.style.Id);
+
             // Re-present the page to allow for corrections
             GetPresenters(dc, m, m.CompanyId);
 
@@ -348,9 +349,40 @@ namespace OJewelry.Controllers
                 }
                 m.numPresentersWithStyle++;
             }
+            return View(m.style.Id);
+        }
+
+        public ActionResult Sell(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // Move a Style in or out of Memo
+            OJewelryDBEntities dc = new OJewelryDBEntities();
+            Style style = dc.Styles.Find(id);
+            MemoViewModel m = new MemoViewModel();
+            m.style = new StyleModel()
+            {
+                Id = style.Id,
+                Name = style.StyleName,
+                Num = style.StyleNum,
+                Qty = style.Quantity,
+                Memod = style.Memos.Sum(s => s.Quantity)
+            };
             return View(m);
-        }    
-        
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
         void GetPresenters(OJewelryDBEntities dc, MemoViewModel m, int CompanyId)
         {
             m.Presenters = new List<SelectListItem>();
@@ -364,5 +396,6 @@ namespace OJewelry.Controllers
                 m.Presenters.Add(sli);
             }
         }
+
     }
 }

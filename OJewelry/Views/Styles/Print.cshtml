@@ -1,0 +1,127 @@
+﻿@model OJewelry.Models.Style
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Model.StyleName</h2>
+
+<div>
+    <h4>Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.StyleNum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StyleNum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StyleName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StyleName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Desc)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Desc)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IntroDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IntroDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Image)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Image)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Width)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Width)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Length)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Length)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ChainLength)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ChainLength)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RetailRatio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RetailRatio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RedlineRatio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RedlineRatio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Collection.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Collection.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.JewelryType.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.JewelryType.Name)
+        </dd>
+
+    </dl>
+    <h4><b>Components</b></h4>
+    <p class="red">Under Construction</p>
+    <p></p>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Print", "Print", new { id = Model.Id }) |
+    @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.CollectionId })
+
+</p>

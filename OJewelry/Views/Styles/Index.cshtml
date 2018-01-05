@@ -1,0 +1,79 @@
+﻿@model IEnumerable<OJewelry.Models.Style>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Styles for the <i>@ViewBag.CollectionName</i> collection</h2>
+
+<p>
+    @Html.ActionLink("Create New Style", "Create", new { CollectionId = @ViewBag.CollectionID })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Image)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StyleNum)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StyleName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RetailRatio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RedlineRatio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Desc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.JewelryType.Name)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Image)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StyleNum)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StyleName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RetailRatio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RedlineRatio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Desc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JewelryType.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id }) 
+            </td>
+        </tr>
+    }
+
+</table>
+<p>
+    @Html.ActionLink("Collections", "Index", "Collections", new { CompanyId = ViewBag.CompanyId }, null)
+</p>

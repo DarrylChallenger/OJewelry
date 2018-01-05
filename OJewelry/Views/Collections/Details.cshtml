@@ -1,0 +1,29 @@
+﻿@model OJewelry.Models.CollectionsDetailsModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Model.Collection.Name Collection Details - @Model.CompanyName</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Collection.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Collection.Name)
+        </dd>
+    </dl>
+    <p><b>Style Num - Style Name</b></p>
+    @foreach (OJewelry.Models.Style item in Model.Styles)
+    {
+        <p>@item.StyleNum - @item.StyleName</p>
+    }
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Collection.Id }) |
+    @Html.ActionLink("Back to List", "Index", new { CompanyId = Model.CompanyId })
+</p>

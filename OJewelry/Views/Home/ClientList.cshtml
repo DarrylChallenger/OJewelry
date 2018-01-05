@@ -4,10 +4,10 @@
     ViewBag.Title = "Clients";
 }
 
-<h2>ClientList</h2>
+<h2 class="red">ClientList</h2>
 
 <p>
-    @Html.ActionLink("Create New", "ClientCreate")
+    @Html.ActionLink("Create New", "Create", "Clients")
 </p>
 <table class="table">
     <tr>
@@ -42,10 +42,10 @@
             @Html.ActionLink(item.CompanyName, "Details", "Companies", new { id = item.CompanyId }, null)
         </td>
         <td>
-            @Html.ActionLink("Collections", "CollectionListByCompany", new { id = item.CompanyId }) |
-            @Html.ActionLink("Edit", "ClientEdit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "ClientDetails", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "ClientDelete", new { id = item.Id })
+            @Html.ActionLink("Collections", "CollectionListByCompany", new { id = item.CompanyId }, null) |
+            @Html.ActionLink("Edit", "Edit", "Clients", new { id = item.Id }, null) |
+            @Html.ActionLink("Details", "Details", "Clients", new { id = item.Id }, null) |
+            @Html.ActionLink("Delete", "Delete", "Clients", new { id = item.Id }, null)
         </td>
     </tr>
 }

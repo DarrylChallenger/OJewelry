@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<OJewelry.Models.Company>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Companies";
 }
 
-<h2>Index</h2>
+<h2>Company List for <i>User</i></h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New Company", "Create")
 </p>
 <table class="table">
     <tr>
@@ -23,9 +23,12 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+            @Html.ActionLink("Collections", "Index", "Collections", new { Companyid = item.Id }, null) |
+            @Html.ActionLink("Jewelry Types", "Index", "JewelryTypes", new { Companyid = item.Id }, null)
+
         </td>
     </tr>
 }

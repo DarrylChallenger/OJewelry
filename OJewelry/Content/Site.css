@@ -30,9 +30,12 @@ textarea {
     padding-bottom:1em;
 }
 .AddStyleBtn {
-    border-style:solid;
-    border-color:grey;
-    border-radius:.5em;
-    background-color:lightgrey;
-    color:white;
+    /border-style:solid;
+    /border-color:grey;
+    /border-radius:.5em;
+    /background-color:lightgrey;
+    /color:white;
+}
+.red {
+    color:red;
 }

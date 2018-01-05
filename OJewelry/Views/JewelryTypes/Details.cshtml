@@ -1,0 +1,34 @@
+﻿@model OJewelry.Models.JewelryType
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>The <i>@ViewBag.CompanyName</i> Jewelry Type</h2>
+
+<div>
+    <h4>Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Company.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company.Name)
+        </dd>
+
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Jewelry Types List", "Index", new { CompanyId = Model.CompanyId })
+</div>
