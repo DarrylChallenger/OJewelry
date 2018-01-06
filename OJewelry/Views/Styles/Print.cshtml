@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Details";
+    Layout = "../Shared/_PrintLayout.cshtml";
 }
 
 <div class="ForPrinting">
@@ -10,7 +11,7 @@
             <div class="col-sm-2 bold">Style #</div>
             <div class="col-sm-4">@Model.StyleNum</div>
             <div class="col-sm-offset-2"></div>
-            <div class="col-sm-3"></div>
+            <div class="col-sm-3 StyleReportImage"><img src="~/Images/SquareWithCross.png"/></div>
             <div class="col-sm-1"></div>
         </div>
         <div class="row">
@@ -54,40 +55,41 @@
     <section id="StyleReportPricing">
         <div class="row">
             <div class="col-sm-2 bold">Pricing</div>
-            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-1"></div>
             <div class="col-sm-1 red">MU</div>
-            <div class="col-sm-offset-4"></div>
-            <div class="col-sm-3">Measurements</div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-2 bold">Measurements</div>
+            <div class="col-sm-3"></div>
         </div>
         <div class="row">
             <div class="col-sm-1"></div>
             <div class="col-sm-2">Total Cost</div>
-            <div class="col-sm-1 red"></div>
-            <div class="col-sm-2 ReportCellHighLight">$100</div>
-            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1 ReportCellHighLight">$100</div>
+            <div class="col-sm-2"></div>
             <div class="col-sm-2">L</div>
-            <div class="col-sm-1">@Model.Length</div>
-            <div class="col-sm-offset-1"></div>
+            <div class="col-sm-2">@Model.Length</div>
+            <div class="col-sm-1"></div>
         </div>
         <div class="row">
             <div class="col-sm-1"></div>
             <div class="col-sm-2 ">Target Retail</div>
-            <div class="col-sm-1 red"></div>
-            <div class="col-sm-2 ReportCellHighLight">$200</div>
-            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-1 red">@Model.RetailRatio</div>
+            <div class="col-sm-1 ReportCellHighLight">$200</div>
+            <div class="col-sm-2"></div>
             <div class="col-sm-2">W</div>
-            <div class="col-sm-1">@Model.Width</div>
-            <div class="col-sm-offset-1"></div>
+            <div class="col-sm-2">@Model.Width</div>
+            <div class="col-sm-1"></div>
         </div>
         <div class="row">
             <div class="col-sm-1"></div>
             <div class="col-sm-2">Target Redline</div>
-            <div class="col-sm-1 red"></div>
-            <div class="col-sm-2 ReportCellHighLight">$300</div>
-            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-1 red">@Model.RedlineRatio</div>
+            <div class="col-sm-1 ReportCellHighLight">$300</div>
+            <div class="col-sm-2"></div>
             <div class="col-sm-2">Chain Length</div>
-            <div class="col-sm-1">@Model.ChainLength</div>
-            <div class="col-sm-offset-1"></div>
+            <div class="col-sm-2">@Model.ChainLength</div>
+            <div class="col-sm-1"></div>
         </div>
     </section>
     <section id="StyleReportCost">
@@ -100,119 +102,7 @@
             <div class="col-sm-11"></div>
         </div>
     </section>
-    <hr />
-    <hr />
-    <hr />
-    <hr />
-    <hr />
-    <h4>Details</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.StyleNum)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.StyleNum)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.StyleName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.StyleName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Desc)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Desc)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IntroDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IntroDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Image)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Width)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Width)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Length)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Length)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ChainLength)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ChainLength)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.RetailRatio)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.RetailRatio)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.RedlineRatio)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.RedlineRatio)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Quantity)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Collection.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Collection.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.JewelryType.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.JewelryType.Name)
-        </dd>
-
-    </dl>
     <h4><b>Components</b></h4>
     <p class="red">Under Construction</p>
     <p></p>

@@ -292,6 +292,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\SquareWithCross.png" />
     <Content Include="Models\OJewelryDBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>OJewelryDBModel.edmx</DependentUpon>
@@ -391,6 +392,7 @@
     <Content Include="Views\JewelryTypes\Edit.cshtml" />
     <Content Include="Views\JewelryTypes\Index.cshtml" />
     <Content Include="Views\Styles\Print.cshtml" />
+    <Content Include="Views\Shared\_PrintLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

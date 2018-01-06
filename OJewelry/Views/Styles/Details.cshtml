@@ -121,7 +121,7 @@
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Print", "Print", new { id = Model.Id }) |
+    @Html.ActionLink("Print", "Print", new { id = Model.Id }, new { target = "_blank" }) |
     @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.CollectionId })
 
 </p>

@@ -41,11 +41,18 @@ textarea {
 .ForPrinting
 {
     color:darkgreen;
+    font-size:20px
 }
 
 .ReportCellHighLight {
-    background-color:lightcoral;
+    background-color:#ffe5cc;
 }
+
+.StyleReportImage {
+    height:200px;
+    width:auto;
+}
+
 #StyleReportHeader {
     padding-top: 2em;
 }
