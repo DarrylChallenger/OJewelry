@@ -29,13 +29,33 @@ textarea {
     padding-left:2em;
     padding-bottom:1em;
 }
-.AddStyleBtn {
-    /border-style:solid;
-    /border-color:grey;
-    /border-radius:.5em;
-    /background-color:lightgrey;
-    /color:white;
-}
+
 .red {
     color:red;
 }
+
+.bold 
+{
+    font-weight:700;
+}
+.ForPrinting
+{
+    color:darkgreen;
+}
+
+.ReportCellHighLight {
+    background-color:lightcoral;
+}
+#StyleReportHeader {
+    padding-top: 2em;
+}
+
+#StyleReportWeight-Date {
+    padding-top: 3em;
+}
+
+#StyleReportPricing {
+    padding-top: 2em;
+}
+
+

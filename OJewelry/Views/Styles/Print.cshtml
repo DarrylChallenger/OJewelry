@@ -4,9 +4,107 @@
     ViewBag.Title = "Details";
 }
 
-<h2>@Model.StyleName</h2>
-
-<div>
+<div class="ForPrinting">
+    <section id="StyleReportHeader">
+        <div class="row">
+            <div class="col-sm-2 bold">Style #</div>
+            <div class="col-sm-4">@Model.StyleNum</div>
+            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2 bold">Style Name</div>
+            <div class="col-sm-4">@Model.StyleName</div>
+            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2 bold">Description</div>
+            <div class="col-sm-4">@Model.Desc</div>
+            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2 bold">Jewery Type</div>
+            <div class="col-sm-4">@Model.JewelryType.Name</div>
+            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2 bold">Collection</div>
+            <div class="col-sm-4">@Model.Collection.Name</div>
+            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-1"></div>
+        </div>
+    </section>
+    <section id="StyleReportWeight-Date">
+        <div class="row">
+            <div class="col-sm-2 bold">Metal Weight</div>
+            <div class="col-sm-2">-</div>
+            <div class="col-sm-offset-4"></div>
+            <div class="col-sm-2 bold">Intro Date</div>
+            <div class="col-sm-2">@Model.IntroDate</div>
+        </div>
+    </section>
+    <section id="StyleReportPricing">
+        <div class="row">
+            <div class="col-sm-2 bold">Pricing</div>
+            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-1 red">MU</div>
+            <div class="col-sm-offset-4"></div>
+            <div class="col-sm-3">Measurements</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2">Total Cost</div>
+            <div class="col-sm-1 red"></div>
+            <div class="col-sm-2 ReportCellHighLight">$100</div>
+            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-2">L</div>
+            <div class="col-sm-1">@Model.Length</div>
+            <div class="col-sm-offset-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2 ">Target Retail</div>
+            <div class="col-sm-1 red"></div>
+            <div class="col-sm-2 ReportCellHighLight">$200</div>
+            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-2">W</div>
+            <div class="col-sm-1">@Model.Width</div>
+            <div class="col-sm-offset-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2">Target Redline</div>
+            <div class="col-sm-1 red"></div>
+            <div class="col-sm-2 ReportCellHighLight">$300</div>
+            <div class="col-sm-offset-2"></div>
+            <div class="col-sm-2">Chain Length</div>
+            <div class="col-sm-1">@Model.ChainLength</div>
+            <div class="col-sm-offset-1"></div>
+        </div>
+    </section>
+    <section id="StyleReportCost">
+        <div class="row">
+            <div class="col-sm-1 bold">Cost</div>
+            <div class="col-sm-offset-11"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-offset-1"></div>
+            <div class="col-sm-11"></div>
+        </div>
+    </section>
+    <hr />
+    <hr />
+    <hr />
+    <hr />
+    <hr />
     <h4>Details</h4>
     <hr />
     <dl class="dl-horizontal">
@@ -119,9 +217,4 @@
     <p class="red">Under Construction</p>
     <p></p>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Print", "Print", new { id = Model.Id }) |
-    @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.CollectionId })
 
-</p>
