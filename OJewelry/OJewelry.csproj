@@ -242,6 +242,7 @@
     <Compile Include="Models\ComponentType.cs">
       <DependentUpon>OJewelryDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataAnnotations.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JewelryType.cs">
       <DependentUpon>OJewelryDBModel.tt</DependentUpon>
