@@ -83,6 +83,7 @@ namespace OJewelry.Controllers
             Collection co = db.Collections.Find(style.CollectionId);
             ViewBag.CollectionId = new SelectList(db.Collections, "Id", "Name", style.CollectionId);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", style.JewelryTypeId);
+            style.Collection = db.Collections.Find(style.Collection);
             return View(style);
         }
 
