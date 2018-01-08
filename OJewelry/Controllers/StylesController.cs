@@ -80,10 +80,9 @@ namespace OJewelry.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index", new { CollectionID = style.CollectionId });
             }
-            Collection co = db.Collections.Find(style.CollectionId);
             ViewBag.CollectionId = new SelectList(db.Collections, "Id", "Name", style.CollectionId);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", style.JewelryTypeId);
-            style.Collection = db.Collections.Find(style.Collection);
+            style.Collection = db.Collections.Find(style.CollectionId);
             return View(style);
         }
 

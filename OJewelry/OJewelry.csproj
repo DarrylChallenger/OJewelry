@@ -211,76 +211,79 @@
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\CollectionsController.cs" />
     <Compile Include="Controllers\CompaniesController.cs" />
+    <Compile Include="Controllers\ComponentsController.cs" />
+    <Compile Include="Controllers\ComponentTypesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JewelryTypesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\StylesController.cs" />
+    <Compile Include="Controllers\VendorsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Buyer.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Client.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ClientViewModel.cs" />
     <Compile Include="Models\Collection.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CollectionViewModel.cs" />
     <Compile Include="Models\Company.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Component.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ComponentType.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataAnnotations.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JewelryType.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Memo.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MemoViewModel.cs" />
-    <Compile Include="Models\OJewelryDBModel.Context.cs">
+    <Compile Include="Models\OJewelryDB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>OJewelryDBModel.Context.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\OJewelryDBModel.cs">
+    <Compile Include="Models\OJewelryDB.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\OJewelryDBModel.Designer.cs">
+    <Compile Include="Models\OJewelryDB.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>OJewelryDBModel.edmx</DependentUpon>
+      <DependentUpon>OJewelryDB.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Presenter.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SalesLedger.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Style.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StyleComponent.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Vendor.cs">
-      <DependentUpon>OJewelryDBModel.tt</DependentUpon>
+      <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -294,27 +297,27 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Images\SquareWithCross.png" />
-    <Content Include="Models\OJewelryDBModel.Context.tt">
+    <Content Include="Models\OJewelryDB.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>OJewelryDBModel.edmx</DependentUpon>
-      <LastGenOutput>OJewelryDBModel.Context.cs</LastGenOutput>
+      <DependentUpon>OJewelryDB.edmx</DependentUpon>
+      <LastGenOutput>OJewelryDB.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\OJewelryDBModel.tt">
+    <Content Include="Models\OJewelryDB.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>OJewelryDBModel.edmx</DependentUpon>
-      <LastGenOutput>OJewelryDBModel.cs</LastGenOutput>
+      <DependentUpon>OJewelryDB.edmx</DependentUpon>
+      <LastGenOutput>OJewelryDB.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EntityDeploy Include="Models\OJewelryDBModel.edmx">
+    <EntityDeploy Include="Models\OJewelryDB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>OJewelryDBModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>OJewelryDB.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\OJewelryDBModel.edmx.diagram">
-      <DependentUpon>OJewelryDBModel.edmx</DependentUpon>
+    <Content Include="Models\OJewelryDB.edmx.diagram">
+      <DependentUpon>OJewelryDB.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -394,10 +397,24 @@
     <Content Include="Views\JewelryTypes\Index.cshtml" />
     <Content Include="Views\Styles\Print.cshtml" />
     <Content Include="Views\Shared\_PrintLayout.cshtml" />
+    <Content Include="Views\ComponentTypes\Create.cshtml" />
+    <Content Include="Views\ComponentTypes\Delete.cshtml" />
+    <Content Include="Views\ComponentTypes\Details.cshtml" />
+    <Content Include="Views\ComponentTypes\Edit.cshtml" />
+    <Content Include="Views\ComponentTypes\Index.cshtml" />
+    <Content Include="Views\Components\Create.cshtml" />
+    <Content Include="Views\Components\Delete.cshtml" />
+    <Content Include="Views\Components\Details.cshtml" />
+    <Content Include="Views\Components\Edit.cshtml" />
+    <Content Include="Views\Components\Index.cshtml" />
+    <Content Include="Views\Vendors\Create.cshtml" />
+    <Content Include="Views\Vendors\Delete.cshtml" />
+    <Content Include="Views\Vendors\Details.cshtml" />
+    <Content Include="Views\Vendors\Edit.cshtml" />
+    <Content Include="Views\Vendors\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Company\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
