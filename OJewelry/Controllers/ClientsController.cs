@@ -26,7 +26,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index","Home");
             }
             Client client = dc.Clients.Find(id);
             if (client == null)
@@ -66,7 +66,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Client client = dc.Clients.Find(id);
             if (client == null)
@@ -99,7 +99,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Client client = dc.Clients.Find(id);
             if (client == null)

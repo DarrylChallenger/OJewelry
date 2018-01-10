@@ -29,7 +29,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Style style = db.Styles.Find(id);
             if (style == null)
@@ -43,7 +43,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Style style = db.Styles.Find(id);
             if (style == null)
@@ -91,7 +91,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Style style = db.Styles.Find(id);
             if (style == null)
@@ -128,7 +128,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Style style = db.Styles.Find(id);
             if (style == null)
@@ -157,9 +157,13 @@ namespace OJewelry.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
+            Style style = db.Styles.Find(id);
+            if (style == null)
+            {
+                return HttpNotFound();
+            }
             // Move a Style in or out of Memo
-            OJewelryDBEntities dc = new OJewelryDBEntities();
-            Style style = dc.Styles.Find(id);
+
             MemoViewModel m = new MemoViewModel();
             m.style = new StyleModel()
             {
@@ -174,7 +178,7 @@ namespace OJewelry.Controllers
 
             m.Memos = new List<MemoModel>();
             m.numPresentersWithStyle = 0;
-            foreach (Memo i in dc.Memos)
+            foreach (Memo i in db.Memos)
             {
                 MemoModel mm = new MemoModel()
                 {
@@ -191,7 +195,7 @@ namespace OJewelry.Controllers
             }
             m.Presenters = new List<SelectListItem>();
             m.CompanyId = style.Collection.CompanyId;
-            foreach (Presenter i in dc.Presenters.Where(w => w.CompanyId == m.CompanyId))
+            foreach (Presenter i in db.Presenters.Where(w => w.CompanyId == m.CompanyId))
             {
                 SelectListItem sli = new SelectListItem()
                 {
@@ -357,12 +361,15 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
 
             // Move a Style in or out of Memo
-            OJewelryDBEntities dc = new OJewelryDBEntities();
-            Style style = dc.Styles.Find(id);
+            Style style = db.Styles.Find(id);
+            if (style == null)
+            {
+                return HttpNotFound();
+            }
             MemoViewModel m = new MemoViewModel();
             m.style = new StyleModel()
             {

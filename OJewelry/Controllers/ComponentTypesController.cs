@@ -25,7 +25,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             ComponentType componentType = db.ComponentTypes.Find(id);
             if (componentType == null)
@@ -63,7 +63,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             ComponentType componentType = db.ComponentTypes.Find(id);
             if (componentType == null)
@@ -94,7 +94,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             ComponentType componentType = db.ComponentTypes.Find(id);
             if (componentType == null)

@@ -28,7 +28,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             JewelryType jewelryType = db.JewelryTypes.Find(id);
             if (jewelryType == null)
@@ -43,14 +43,14 @@ namespace OJewelry.Controllers
         {
             if (CompanyId == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Company co = db.Companies.Find(CompanyId); 
             if (co == null)
             {
                 return HttpNotFound();
             }
-                        
+
             ViewBag.CompanyName = co.Name;
             ViewBag.CompanyId = co.Id;
             return View();
@@ -78,7 +78,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             JewelryType jewelryType = db.JewelryTypes.Find(id);
             if (jewelryType == null)
@@ -114,7 +114,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             JewelryType jewelryType = db.JewelryTypes.Find(id);
             if (jewelryType == null)

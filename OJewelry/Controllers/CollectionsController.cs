@@ -28,9 +28,17 @@ namespace OJewelry.Controllers
             };
             return View(cvm);
             */
-            OJewelryDBEntities dc = new OJewelryDBEntities();
+            if (CompanyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            Company co = db.Companies.Find(CompanyId);
+            if (co == null)
+            {
+                return HttpNotFound();
+            }
+
             CollectionViewModel m = new CollectionViewModel();
-            Company co = dc.Companies.Find(CompanyId);
             m.CompanyId = co.Id;
             m.CompanyName = co.Name;
             m.Collections = new List<CollectionModel>();
@@ -68,7 +76,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Collection collection = db.Collections.Find(id);
             if (collection == null)
@@ -90,6 +98,11 @@ namespace OJewelry.Controllers
         // GET: Collections/Create
         public ActionResult Create(int? id)
         {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name");
             ViewBag.comId = id.Value;
             return View();
@@ -118,7 +131,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Collection collection = db.Collections.Find(id);
             if (collection == null)
@@ -151,7 +164,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
             Collection collection = db.Collections.Find(id);
             if (collection == null)
