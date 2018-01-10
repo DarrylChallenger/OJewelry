@@ -25,7 +25,6 @@ namespace OJewelry.Models
         public int ComponentTypeId { get; set; }
         public string Name { get; set; }
         public Nullable<int> VendorId { get; set; }
-        public Nullable<int> Quantity { get; set; }
         public Nullable<decimal> Price { get; set; }
         public Nullable<decimal> PricePerHour { get; set; }
         public Nullable<decimal> PricePerPiece { get; set; }

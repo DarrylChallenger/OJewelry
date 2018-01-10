@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="OJewelryDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="OJewelryDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ACL">
           <Key>
             <PropertyRef Name="Id" />
@@ -56,7 +56,6 @@
           <Property Name="ComponentTypeId" Type="int" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="VendorId" Type="int" />
-          <Property Name="Quantity" Type="int" />
           <Property Name="Price" Type="money" />
           <Property Name="PricePerHour" Type="money" />
           <Property Name="PricePerPiece" Type="money" />
@@ -122,6 +121,7 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="StyleId" Type="int" Nullable="false" />
           <Property Name="ComponentId" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Styles">
           <Key>
@@ -135,12 +135,13 @@
           <Property Name="CollectionId" Type="int" Nullable="false" />
           <Property Name="IntroDate" Type="date" />
           <Property Name="Image" Type="image" />
-          <Property Name="Width" Type="int" />
-          <Property Name="Length" Type="int" />
+          <Property Name="Width" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Length" Type="decimal" Precision="18" Scale="0" />
           <Property Name="ChainLength" Type="int" />
           <Property Name="RetailRatio" Type="decimal" Precision="8" Scale="5" />
           <Property Name="RedlineRatio" Type="decimal" Precision="8" Scale="5" />
           <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="MetalWt" Type="decimal" Precision="18" Scale="0" />
         </EntityType>
         <EntityType Name="Vendors">
           <Key>
@@ -407,8 +408,7 @@
             <End Role="StyleComponents" EntitySet="StyleComponents" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="OJewelryDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -474,7 +474,6 @@
           <Property Name="ComponentTypeId" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="VendorId" Type="Int32" />
-          <Property Name="Quantity" Type="Int32" />
           <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="PricePerHour" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="PricePerPiece" Type="Decimal" Precision="19" Scale="4" />
@@ -554,6 +553,7 @@
           <Property Name="ComponentId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Component" Relationship="Self.FK_StyleComponents_ToComponents" FromRole="StyleComponents" ToRole="Components" />
           <NavigationProperty Name="Style" Relationship="Self.FK_StyleComponents_ToStyles" FromRole="StyleComponents" ToRole="Styles" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Style">
           <Key>
@@ -577,6 +577,7 @@
           <NavigationProperty Name="JewelryType" Relationship="Self.FK_Style_TOJewelryDBTypes" FromRole="Styles" ToRole="JewelryTypes" />
           <NavigationProperty Name="Memos" Relationship="Self.FK_Memo_ToStyles" FromRole="Styles" ToRole="Memo" />
           <NavigationProperty Name="StyleComponents" Relationship="Self.FK_StyleComponents_ToStyles" FromRole="Styles" ToRole="StyleComponents" />
+          <Property Name="MetalWt" Type="Decimal" Precision="18" Scale="0" />
         </EntityType>
         <EntityType Name="Vendor">
           <Key>
@@ -905,7 +906,6 @@
                 <ScalarProperty Name="ComponentTypeId" ColumnName="ComponentTypeId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="VendorId" ColumnName="VendorId" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="PricePerHour" ColumnName="PricePerHour" />
                 <ScalarProperty Name="PricePerPiece" ColumnName="PricePerPiece" />
@@ -974,6 +974,7 @@
           <EntitySetMapping Name="StyleComponents">
             <EntityTypeMapping TypeName="OJewelryDBModel.StyleComponent">
               <MappingFragment StoreEntitySet="StyleComponents">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StyleId" ColumnName="StyleId" />
                 <ScalarProperty Name="ComponentId" ColumnName="ComponentId" />
@@ -983,6 +984,7 @@
           <EntitySetMapping Name="Styles">
             <EntityTypeMapping TypeName="OJewelryDBModel.Style">
               <MappingFragment StoreEntitySet="Styles">
+                <ScalarProperty Name="MetalWt" ColumnName="MetalWt" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StyleNum" ColumnName="StyleNum" />
                 <ScalarProperty Name="StyleName" ColumnName="StyleName" />

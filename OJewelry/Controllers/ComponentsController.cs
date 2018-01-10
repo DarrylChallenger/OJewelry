@@ -61,7 +61,7 @@ namespace OJewelry.Controllers
             {
                 db.Components.Add(component);
                 db.SaveChanges();
-                return RedirectToAction("Index", new { CompanyId = component.CompanyId});
+                return RedirectToAction("Index", new { component.CompanyId});
             }
 
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", component.CompanyId);
@@ -101,7 +101,7 @@ namespace OJewelry.Controllers
             {
                 db.Entry(component).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index", new { CompanyId = component.CompanyId });
+                return RedirectToAction("Index", new { component.CompanyId });
             }
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", component.CompanyId);
             ViewBag.ComponentTypeId = new SelectList(db.ComponentTypes, "Id", "Name", component.ComponentTypeId);

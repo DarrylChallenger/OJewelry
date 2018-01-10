@@ -306,7 +306,7 @@ namespace OJewelry.Controllers
                 //return View(m);
             }
             return Memo(m.style.Id);
-
+            /*
             // Re-present the page to allow for corrections
             GetPresenters(dc, m, m.CompanyId);
 
@@ -350,6 +350,7 @@ namespace OJewelry.Controllers
                 m.numPresentersWithStyle++;
             }
             return View(m.style.Id);
+            */
         }
 
         public ActionResult Sell(int? id)

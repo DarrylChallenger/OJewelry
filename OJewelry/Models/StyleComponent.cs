@@ -17,6 +17,7 @@ namespace OJewelry.Models
         public int Id { get; set; }
         public int StyleId { get; set; }
         public int ComponentId { get; set; }
+        public int Quantity { get; set; }
     
         public virtual Component Component { get; set; }
         public virtual Style Style { get; set; }
