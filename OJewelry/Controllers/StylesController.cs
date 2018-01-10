@@ -154,7 +154,7 @@ namespace OJewelry.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index", "Home");
             }
 
             Style style = db.Styles.Find(id);
@@ -173,8 +173,6 @@ namespace OJewelry.Controllers
                 Qty = style.Quantity,
                 Memod = style.Memos.Sum(s => s.Quantity)
             };
-            m.SendReturnMemoRadio = 1;
-            m.NewExistingPresenterRadio = 1;
 
             m.Memos = new List<MemoModel>();
             m.numPresentersWithStyle = 0;
@@ -195,6 +193,7 @@ namespace OJewelry.Controllers
             }
             m.Presenters = new List<SelectListItem>();
             m.CompanyId = style.Collection.CompanyId;
+            m.NewExistingPresenterRadio = 2;
             foreach (Presenter i in db.Presenters.Where(w => w.CompanyId == m.CompanyId))
             {
                 SelectListItem sli = new SelectListItem()
@@ -203,8 +202,11 @@ namespace OJewelry.Controllers
                     Value = i.Id.ToString(),
                 };
                 m.Presenters.Add(sli);
+                // select only new presenter if there aren't any presenters
+                m.NewExistingPresenterRadio = 1;
             }
-            m.PresenterName = "initname";
+            m.SendReturnMemoRadio = 1;
+            m.PresenterName = "";
             ViewBag.CollectionId = style.CollectionId;
             return View(m);
         }

@@ -4,7 +4,7 @@
     ViewBag.Title = "Memo";
 }
 
-<h2 >Memos for <i>@Model.style.Name</i></h2>
+<h2>Memos for <i>@Model.style.Name</i></h2>
 
 <div>
     <dl class="dl-horizontal">
@@ -70,55 +70,51 @@
             @Html.HiddenFor(model => model.numPresentersWithStyle)
             @Html.HiddenFor(model => model.CompanyId)
 
-            @*
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            *@
             <div class="form-group row">
-                @Html.RadioButtonFor(m => m.SendReturnMemoRadio, 1) Memo a Style
+                @Html.RadioButtonFor(m => m.SendReturnMemoRadio, 1, new { @onclick = "setSendReturnControls()" }) Memo a Style
                 <div class="form-group formborder row">
-                    @Html.RadioButtonFor(m => m.NewExistingPresenterRadio, 1) Select a Presenter
-                    <div class="row">
-                        @Html.LabelFor(m => m.Presenters)
-                        @Html.DropDownListFor(m => m.PresenterId, Model.Presenters)
-                    </div>
-                    @Html.RadioButtonFor(m => m.NewExistingPresenterRadio, 2) New Presenter
-                    <div>
-                        <div class="form-group row">
-                            @Html.LabelFor(model => model.PresenterName, htmlAttributes: new { @class = "col-form-label col-md-1" })
-                            @Html.EditorFor(model => model.PresenterName, new { htmlAttributes = new { @class = "form-control col-md-4" } })
+                    <div id="StyleMemoMemoGroup">
+                        @Html.RadioButtonFor(m => m.NewExistingPresenterRadio, 1, new { @onclick = "setNewExistingControls()" }) Select a Presenter
+                        <div class="row" id="StyleMemoPresentersGroup">
+                            @Html.LabelFor(m => m.Presenters)
+                            @Html.DropDownListFor(m => m.PresenterId, Model.Presenters)
                         </div>
-                        <div class="form-group row">
-                            @Html.LabelFor(model => model.PresenterPhone, htmlAttributes: new { @class = "col-form-label col-md-1" })
-                            @Html.EditorFor(model => model.PresenterPhone, new { htmlAttributes = new { @class = "form-control col-md-1" } })
+                        @Html.RadioButtonFor(m => m.NewExistingPresenterRadio, 2, new { @onclick = "setNewExistingControls()" }) New Presenter
+                        <div class="form-group formborder" id="StyleMemoExistingGroup">
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.PresenterName, htmlAttributes: new { @class = "col-form-label col-md-1" })
+                                @Html.EditorFor(model => model.PresenterName, new { htmlAttributes = new { @class = "form-control col-md-4" } })
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.PresenterPhone, htmlAttributes: new { @class = "col-form-label col-md-1" })
+                                @Html.EditorFor(model => model.PresenterPhone, new { htmlAttributes = new { @class = "form-control col-md-1" } })
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.PresenterEmail, htmlAttributes: new { @class = "col-form-label col-md-1" })
+                                @Html.EditorFor(model => model.PresenterEmail, new { htmlAttributes = new { @class = "form-control col-md-4" } })
+                            </div>
                         </div>
+
                         <div class="form-group row">
-                            @Html.LabelFor(model => model.PresenterEmail, htmlAttributes: new { @class = "col-form-label col-md-1" })
-                            @Html.EditorFor(model => model.PresenterEmail, new { htmlAttributes = new { @class = "form-control col-md-4" } })
+                            @Html.LabelFor(model => model.SendQty, htmlAttributes: new { @class = "col-form-label col-md-1" })
+                            @Html.EditorFor(model => model.SendQty, new { htmlAttributes = new { @class = "form-control col-md-1" } })
                         </div>
                     </div>
                 </div>
-                <div class="form-group row">
-                    @Html.LabelFor(model => model.SendQty, htmlAttributes: new { @class = "col-form-label col-md-1" })
-                    @Html.EditorFor(model => model.SendQty, new { htmlAttributes = new { @class = "form-control col-md-1" } })
-                </div>
-                @Html.RadioButtonFor(m => m.SendReturnMemoRadio, 2) Return a Style
-                <div class="form-group formborder">
-                    @for (int i = 0; i < Model.Memos.Count(); i++)
-                    {
-                        <div class="form-group row">
-                            <span class="col-md-3">@Model.Memos[i].PresenterName has @Model.Memos[i].Quantity item(s) memo'd</span>
-                            @Html.LabelFor(model => model.Memos[i].RetrunQty, htmlAttributes: new { @class = "col-form-label col-md-2" })
-                            @Html.EditorFor(model => model.Memos[i].RetrunQty, new { htmlAttributes = new { @class = "form-control col-md-1" } })
-                            @Html.HiddenFor(model => model.Memos[i].Id)
-                            @Html.HiddenFor(model => model.Memos[i].Quantity)
-                        </div>
-                    }
+                @Html.RadioButtonFor(m => m.SendReturnMemoRadio, 2, new { @onclick = "setSendReturnControls()" }) Return a Style
+                <div id="StyleMemoReturnGroup">
+                    <div class="form-group formborder">
+                        @for (int i = 0; i < Model.Memos.Count(); i++)
+                        {
+                            <div class="form-group row">
+                                <span class="col-md-3">@Model.Memos[i].PresenterName has @Model.Memos[i].Quantity item(s) memo'd</span>
+                                @Html.LabelFor(model => model.Memos[i].RetrunQty, htmlAttributes: new { @class = "col-form-label col-md-2" })
+                                @Html.EditorFor(model => model.Memos[i].RetrunQty, new { htmlAttributes = new { @class = "form-control col-md-1" } })
+                                @Html.HiddenFor(model => model.Memos[i].Id)
+                                @Html.HiddenFor(model => model.Memos[i].Quantity)
+                            </div>
+                        }
+                    </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-1 col-md-11">
@@ -135,5 +131,8 @@
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.style.Id }) |
     @Html.ActionLink("Style List", "Index", new { CollectionId = ViewBag.CollectionID })
-
 </p>
+
+@section Scripts {
+    <script src="~/Scripts/Memo.js"></script>
+}
