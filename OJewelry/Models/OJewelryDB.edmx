@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="OJewelryDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="OJewelryDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ACL">
           <Key>
             <PropertyRef Name="Id" />
@@ -56,7 +56,6 @@
           <Property Name="ComponentTypeId" Type="int" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="VendorId" Type="int" />
-          <Property Name="Quantity" Type="int" />
           <Property Name="Price" Type="money" />
           <Property Name="PricePerHour" Type="money" />
           <Property Name="PricePerPiece" Type="money" />
@@ -135,11 +134,12 @@
           <Property Name="Desc" Type="varchar" MaxLength="150" />
           <Property Name="JewelryTypeId" Type="int" />
           <Property Name="CollectionId" Type="int" Nullable="false" />
+          <Property Name="MetalWeight" Type="money" />
           <Property Name="IntroDate" Type="date" />
           <Property Name="Image" Type="image" />
-          <Property Name="Width" Type="int" />
-          <Property Name="Length" Type="int" />
-          <Property Name="ChainLength" Type="int" />
+          <Property Name="Width" Type="decimal" Precision="8" Scale="5" />
+          <Property Name="Length" Type="decimal" Precision="8" Scale="5" />
+          <Property Name="ChainLength" Type="decimal" Precision="8" Scale="5" />
           <Property Name="RetailRatio" Type="decimal" Precision="8" Scale="5" />
           <Property Name="RedlineRatio" Type="decimal" Precision="8" Scale="5" />
           <Property Name="Quantity" Type="int" Nullable="false" />
@@ -409,7 +409,8 @@
             <End Role="StyleComponents" EntitySet="StyleComponents" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="OJewelryDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -495,8 +496,8 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Components" Relationship="Self.FK_Components_ToComponentTypes" FromRole="ComponentTypes" ToRole="Components" />
           <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Components" Relationship="Self.FK_Components_ToComponentTypes" FromRole="ComponentTypes" ToRole="Components" />
         </EntityType>
         <EntityType Name="JewelryType">
           <Key>
@@ -553,9 +554,9 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="StyleId" Type="Int32" Nullable="false" />
           <Property Name="ComponentId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Component" Relationship="Self.FK_StyleComponents_ToComponents" FromRole="StyleComponents" ToRole="Components" />
           <NavigationProperty Name="Style" Relationship="Self.FK_StyleComponents_ToStyles" FromRole="StyleComponents" ToRole="Styles" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Style">
           <Key>
@@ -567,18 +568,19 @@
           <Property Name="Desc" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <Property Name="JewelryTypeId" Type="Int32" />
           <Property Name="CollectionId" Type="Int32" Nullable="false" />
+          <Property Name="MetalWeight" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="IntroDate" Type="DateTime" Precision="0" />
           <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Width" Type="Int32" />
-          <Property Name="Length" Type="Int32" />
-          <Property Name="ChainLength" Type="Int32" />
+          <Property Name="Width" Type="Decimal" Precision="8" Scale="5" />
+          <Property Name="Length" Type="Decimal" Precision="8" Scale="5" />
+          <Property Name="ChainLength" Type="Decimal" Precision="8" Scale="5" />
           <Property Name="RetailRatio" Type="Decimal" Precision="8" Scale="5" />
           <Property Name="RedlineRatio" Type="Decimal" Precision="8" Scale="5" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Collection" Relationship="Self.FK_Style_ToCollections" FromRole="Styles" ToRole="Collections" />
           <NavigationProperty Name="JewelryType" Relationship="Self.FK_Style_TOJewelryDBTypes" FromRole="Styles" ToRole="JewelryTypes" />
           <NavigationProperty Name="Memos" Relationship="Self.FK_Memo_ToStyles" FromRole="Styles" ToRole="Memo" />
           <NavigationProperty Name="StyleComponents" Relationship="Self.FK_StyleComponents_ToStyles" FromRole="Styles" ToRole="StyleComponents" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Vendor">
           <Key>
@@ -922,9 +924,9 @@
           <EntitySetMapping Name="ComponentTypes">
             <EntityTypeMapping TypeName="OJewelryDBModel.ComponentType">
               <MappingFragment StoreEntitySet="ComponentTypes">
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -976,23 +978,23 @@
           <EntitySetMapping Name="StyleComponents">
             <EntityTypeMapping TypeName="OJewelryDBModel.StyleComponent">
               <MappingFragment StoreEntitySet="StyleComponents">
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StyleId" ColumnName="StyleId" />
                 <ScalarProperty Name="ComponentId" ColumnName="ComponentId" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Styles">
             <EntityTypeMapping TypeName="OJewelryDBModel.Style">
               <MappingFragment StoreEntitySet="Styles">
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StyleNum" ColumnName="StyleNum" />
                 <ScalarProperty Name="StyleName" ColumnName="StyleName" />
                 <ScalarProperty Name="Desc" ColumnName="Desc" />
                 <ScalarProperty Name="JewelryTypeId" ColumnName="JewelryTypeId" />
                 <ScalarProperty Name="CollectionId" ColumnName="CollectionId" />
+                <ScalarProperty Name="MetalWeight" ColumnName="MetalWeight" />
                 <ScalarProperty Name="IntroDate" ColumnName="IntroDate" />
                 <ScalarProperty Name="Image" ColumnName="Image" />
                 <ScalarProperty Name="Width" ColumnName="Width" />
@@ -1000,6 +1002,7 @@
                 <ScalarProperty Name="ChainLength" ColumnName="ChainLength" />
                 <ScalarProperty Name="RetailRatio" ColumnName="RetailRatio" />
                 <ScalarProperty Name="RedlineRatio" ColumnName="RedlineRatio" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

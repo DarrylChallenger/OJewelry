@@ -212,13 +212,13 @@ namespace OJewelry.Models
 
 
         [Display(Name = "Width")]
-        public Nullable<int> Width { get; set; }
+        public Nullable<decimal> Width { get; set; }
 
         [Display(Name = "Length")]
-        public Nullable<int> Length { get; set; }
+        public Nullable<decimal> Length { get; set; }
 
         [Display(Name = "Chain Length")]
-        public Nullable<int> ChainLength { get; set; }
+        public Nullable<decimal> ChainLength { get; set; }
 
         [Display(Name = "Retail Ratio")]
         public Nullable<decimal> RetailRatio { get; set; }

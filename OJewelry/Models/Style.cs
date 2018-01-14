@@ -27,11 +27,12 @@ namespace OJewelry.Models
         public string Desc { get; set; }
         public Nullable<int> JewelryTypeId { get; set; }
         public int CollectionId { get; set; }
+        public Nullable<decimal> MetalWeight { get; set; }
         public Nullable<System.DateTime> IntroDate { get; set; }
         public byte[] Image { get; set; }
-        public Nullable<int> Width { get; set; }
-        public Nullable<int> Length { get; set; }
-        public Nullable<int> ChainLength { get; set; }
+        public Nullable<decimal> Width { get; set; }
+        public Nullable<decimal> Length { get; set; }
+        public Nullable<decimal> ChainLength { get; set; }
         public Nullable<decimal> RetailRatio { get; set; }
         public Nullable<decimal> RedlineRatio { get; set; }
         public int Quantity { get; set; }
