@@ -103,6 +103,7 @@ namespace OJewelry.Controllers
             }
 
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name");
+            ViewBag.CompanyName = db.Companies.Find(id).Name;
             ViewBag.comId = id.Value;
             return View();
         }

@@ -4,11 +4,10 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
+<h2>Delete the <i>@Model.Name</i> Component</h2>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Component</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -17,14 +16,6 @@
 
         <dd>
             @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Quantity)
         </dd>
 
         <dt>
@@ -125,7 +116,8 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
