@@ -22,6 +22,7 @@ namespace OJewelry.Models
     
         public int Id { get; set; }
         public string Name { get; set; }
+        public int Sequence { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Component> Components { get; set; }

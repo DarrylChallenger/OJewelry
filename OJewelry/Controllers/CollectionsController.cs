@@ -58,7 +58,6 @@ namespace OJewelry.Controllers
                         Id = sty.Id,
                         Name = sty.StyleName,
                         Num = sty.StyleNum,
-                        Qty = sty.Quantity,
                         Memod = sty.Memos.Sum(s => s.Quantity)
                         // Cost is the sum of the component prices
                         //Retail Price is the cost * retail ratio

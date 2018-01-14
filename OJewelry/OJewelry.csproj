@@ -224,83 +224,66 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\Buyer.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\Client.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\ClientViewModel.cs" />
     <Compile Include="Models\Collection.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\CollectionViewModel.cs" />
     <Compile Include="Models\Company.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\Component.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\ComponentType.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\DataAnnotations.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JewelryType.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Memo.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\MemoViewModel.cs" />
     <Compile Include="Models\OJewelryDB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>OJewelryDB.Context.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\OJewelryDB.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\OJewelryDB.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>OJewelryDB.edmx</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\Presenter.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\SalesLedger.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\Style.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\StyleComponent.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Models\Vendor.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -318,13 +301,11 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>OJewelryDB.edmx</DependentUpon>
       <LastGenOutput>OJewelryDB.Context.cs</LastGenOutput>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Models\OJewelryDB.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>OJewelryDB.edmx</DependentUpon>
       <LastGenOutput>OJewelryDB.cs</LastGenOutput>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -334,11 +315,9 @@
     <EntityDeploy Include="Models\OJewelryDB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>OJewelryDB.Designer.cs</LastGenOutput>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EntityDeploy>
     <Content Include="Models\OJewelryDB.edmx.diagram">
       <DependentUpon>OJewelryDB.edmx</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy Debug.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy Release.pubxml" />
@@ -362,6 +341,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />

@@ -1,4 +1,12 @@
 ﻿using System;
+
+public class Class1
+{
+	public Class1()
+	{
+	}
+}
+using System;
 using System.Collections.Generic;
 using System.Web.DynamicData;
 using System.ComponentModel.DataAnnotations;
@@ -135,7 +143,7 @@ namespace OJewelry.Models
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
         public String Phone { get; set; }
 
-        [Display(Name="Vendor Email")]
+        [Display(Name = "Vendor Email")]
         [Required(ErrorMessage = "Email is required.")]
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
