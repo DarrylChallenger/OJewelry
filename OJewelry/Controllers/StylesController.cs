@@ -27,16 +27,18 @@ namespace OJewelry.Controllers
         // GET: Styles/Details/5
         public ActionResult Details(int? id)
         {
+            StyleViewModel sm = new StyleViewModel();
             if (id == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-            Style style = db.Styles.Find(id);
-            if (style == null)
+            sm.Style = db.Styles.Find(id);
+            if (sm.Style == null)
             {
                 return HttpNotFound();
             }
-            return View(style);
+            PopulateStyleViewModel(id, sm);
+            return View(sm);
         }
 
         public ActionResult Print(int? id)
@@ -93,20 +95,135 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Style style = db.Styles.Find(id);
-            if (style == null)
+            StyleViewModel sm = new StyleViewModel();
+            sm.Style = db.Styles.Find(id);
+            if (sm.Style == null)
             {
                 return HttpNotFound();
             }
-            Collection co = db.Collections.Find(style.CollectionId);
-            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", style.JewelryTypeId);
-            return View(style);
+            PopulateStyleViewModel(id, sm);
+            Collection co = db.Collections.Find(sm.Style.CollectionId);
+            sm.CompanyId = co.CompanyId;
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", sm.Style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", sm.Style.JewelryTypeId);
+            return View(sm);
         }
 
-        // POST: Styles/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(StyleViewModel svm)
+        {
+            // Save the Style and all edited components; add the new ones and remove the deleted ones
+            db.Entry(svm.Style).State = EntityState.Modified;
+            // Iterate thru the components
+            foreach (MetalComponent c in svm.Metals)
+            {
+                switch (c.SVMState)
+                {
+                    case SVMStateEnum.Added:
+                        break;
+                    case SVMStateEnum.Clean:
+                        break;
+                    case SVMStateEnum.Deleted:
+                        break;
+                    case SVMStateEnum.Dirty:
+                        db.Entry(c.Comp).State = EntityState.Modified;
+                        break;
+                }
+                // Update the Syle-Component Link
+                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                sc.Quantity = c.Qty;
+            }
+            foreach (StoneComponent c in svm.Stones)
+            {
+                switch (c.SVMState)
+                {
+                    case SVMStateEnum.Added:
+                        break;
+                    case SVMStateEnum.Clean:
+                        break;
+                    case SVMStateEnum.Deleted:
+                        break;
+                    case SVMStateEnum.Dirty:
+                        db.Entry(c.Comp).State = EntityState.Modified;
+                        break;
+                }
+                // Update the Syle-Component Link
+                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                sc.Quantity = c.Qty;
+            }
+            foreach (FindingsComponent c in svm.Findings)
+            {
+                switch (c.SVMState)
+                {
+                    case SVMStateEnum.Added:
+                        break;
+                    case SVMStateEnum.Clean:
+                        break;
+                    case SVMStateEnum.Deleted:
+                        break;
+                    case SVMStateEnum.Dirty:
+                        db.Entry(c.Comp).State = EntityState.Modified;
+                        break;
+                }
+                // Update the Syle-Component Link
+                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                sc.Quantity = c.Qty;
+            }
+            foreach (LaborComponent c in svm.Labors)
+            {
+                switch (c.SVMState)
+                {
+                    case SVMStateEnum.Added:
+                        break;
+                    case SVMStateEnum.Clean:
+                        break;
+                    case SVMStateEnum.Deleted:
+                        break;
+                    case SVMStateEnum.Dirty:
+                        db.Entry(c.Comp).State = EntityState.Modified;
+                        break;
+                }
+                // Update the Syle-Component Link
+                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                sc.Quantity = c.Qty;
+            }
+            foreach (MiscComponent c in svm.Miscs)
+            {
+                switch (c.SVMState)
+                {
+                    case SVMStateEnum.Added:
+                        break;
+                    case SVMStateEnum.Clean:
+                        break;
+                    case SVMStateEnum.Deleted:
+                        break;
+                    case SVMStateEnum.Dirty:
+                        db.Entry(c.Comp).State = EntityState.Modified;
+                        break;
+                }
+                // Update the Syle-Component Link
+                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                sc.Quantity = c.Qty;
+            }
+            if (ModelState.IsValid)
+            {
+                // Save changes, go to Home
+                db.SaveChanges();
+                return RedirectToAction("Index", "Home"); 
+            }
+            Collection co = db.Collections.Find(svm.Style.CollectionId);
+            svm.CompanyId = co.CompanyId;
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
+            return View(svm);
+        }
+
+// POST: Styles/Edit/5
+// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+/*
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
@@ -122,7 +239,7 @@ namespace OJewelry.Controllers
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", style.JewelryTypeId);
             return View(style);
         }
-
+*/
         // GET: Styles/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -276,19 +393,19 @@ namespace OJewelry.Controllers
                 // iterate thru the memos to take items back. Increase the inventory as appropriate. If all items are returned, delete the memo
                 foreach (MemoModel memo in m.Memos)
                 {
-                    if (memo.RetrunQty < 0)
+                    if (memo.ReturnQty < 0)
                     {
                         ModelState.AddModelError("Return Style", "You can only return a positive number to inventory.");
                     }
-                    if (memo.RetrunQty > 0)
+                    if (memo.ReturnQty > 0)
                     {
-                        if (memo.RetrunQty > memo.Quantity)
+                        if (memo.ReturnQty > memo.Quantity)
                         {
                             ModelState.AddModelError("Return Style", "You can't return more items than were memo'd out.");
                         }
                         // update db
                         Memo mdb = dc.Memos.Find(memo.Id);
-                        if (mdb.Quantity == memo.RetrunQty)
+                        if (mdb.Quantity == memo.ReturnQty)
                         {
                             // remove the row and remove item from collection
                             dc.Memos.Remove(mdb);
@@ -296,9 +413,9 @@ namespace OJewelry.Controllers
                         else
                         {
                             // decrease the amount
-                            mdb.Quantity -= memo.RetrunQty;
+                            mdb.Quantity -= memo.ReturnQty;
                         }
-                        sdb.Quantity += memo.RetrunQty;
+                        sdb.Quantity += memo.ReturnQty;
                     }
                     // ReturnQty is 0, no action
                 }
@@ -312,51 +429,7 @@ namespace OJewelry.Controllers
                 //return View(m);
             }
             return Memo(m.style.Id);
-            /*
-            // Re-present the page to allow for corrections
-            GetPresenters(dc, m, m.CompanyId);
 
-            int numPresentersWithStyle = m.numPresentersWithStyle;
-            m.numPresentersWithStyle = 0;
-            Dictionary<int, int> d = new Dictionary<int, int>();
-            for (int ii = 0; ii < numPresentersWithStyle; ii++)
-            {
-                d.Add(m.Memos[ii].Id, ii);
-            }
-
-            foreach (Memo memo in dc.Memos)
-            {
-                if (d.ContainsKey(memo.Id))
-                {
-                    memo.Presenter = dc.Presenters.Find(memo.PresenterID);
-                    m.Memos[d[memo.Id]].Quantity = memo.Quantity;
-                    m.Memos[d[memo.Id]].date = memo.Date;
-                    m.Memos[d[memo.Id]].PresenterName = memo.Presenter.Name;
-                    m.Memos[d[memo.Id]].PresenterPhone = memo.Presenter.Phone;
-                    m.Memos[d[memo.Id]].PresenterEmail = memo.Presenter.Email;
-                    m.Memos[d[memo.Id]].Notes = memo.Notes;
-                    m.style.Memod += dc.Memos.Find(memo.Id).Quantity;
-                }
-                else
-                {
-                    MemoModel mm = new MemoModel()
-                    {
-                        Id = memo.Id,
-                        Quantity = memo.Quantity,
-                        date = memo.Date,
-                        PresenterName = memo.Presenter.Name,
-                        PresenterPhone = memo.Presenter.Phone,
-                        PresenterEmail = memo.Presenter.Email,
-                        Notes = memo.Notes
-                    };
-                    m.style.Memod += dc.Memos.Find(memo.Id).Quantity;
-
-                    m.Memos.Add(mm);
-                }
-                m.numPresentersWithStyle++;
-            }
-            return View(m.style.Id);
-            */
         }
 
         public ActionResult Sell(int? id)
@@ -384,13 +457,74 @@ namespace OJewelry.Controllers
             return View(m);
         }
 
-        protected override void Dispose(bool disposing)
+        void PopulateStyleViewModel(int? id, StyleViewModel sm)
         {
-            if (disposing)
+            sm.Metals = new List<MetalComponent>();
+            sm.Stones = new List<StoneComponent>();
+            sm.Findings = new List<FindingsComponent>();
+            sm.Labors = new List<LaborComponent>();
+            sm.Miscs = new List<MiscComponent>();
+            // Get component links
+            sm.Style.StyleComponents = db.StyleComponents.Where(x => x.StyleId == sm.Style.Id).ToList();
+            // get components for each link
+            decimal t = 0, t2 = 0;
+            foreach (StyleComponent sc in sm.Style.StyleComponents)
             {
-                db.Dispose();
+                //StyleViewComponentModel scm = new StyleViewComponentModel();
+                Component Comp = db.Components.Find(sc.ComponentId);
+                switch (sc.Component.ComponentType.Id)
+                {
+                    case 1:
+                        Comp.Vendor = db.Vendors.Find(Comp.VendorId);// ?? new Vendor();
+                        MetalComponent mtscm = new MetalComponent(Comp);
+                        mtscm.Qty = sc.Quantity;
+                        t = mtscm.Price ?? 0;
+                        mtscm.Total = sc.Quantity * t;
+                        sm.MetalsTotal += mtscm.Total;
+                        sm.Metals.Add(mtscm);
+                        sm.Total += mtscm.Total;
+                        break;
+                    case 2:
+                        Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
+                        StoneComponent stscm = new StoneComponent(Comp);
+                        stscm.Qty = sc.Quantity;
+                        t = stscm.PPC ?? 0;
+                        stscm.Total = sc.Quantity * t;
+                        sm.StonesTotal += stscm.Total;
+                        sm.Stones.Add(stscm);
+                        sm.Total += stscm.Total;
+                        break;
+                    case 3:
+                        Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
+                        FindingsComponent fiscm = new FindingsComponent(Comp);
+                        fiscm.Qty = sc.Quantity;
+                        t = fiscm.Price ?? 0;
+                        fiscm.Total = sc.Quantity * t;
+                        sm.FindingsTotal += fiscm.Total;
+                        sm.Findings.Add(fiscm);
+                        sm.Total += fiscm.Total;
+                        break;
+                    case 4:
+                        LaborComponent liscm = new LaborComponent(Comp);
+                        liscm.Qty = sc.Quantity;
+                        t = liscm.PPH ?? 0;
+                        t2 = liscm.PPP ?? 0;
+                        liscm.Total = sc.Quantity * (t + t2);
+                        sm.LaborsTotal += liscm.Total;
+                        sm.Labors.Add(liscm);
+                        sm.Total += liscm.Total;
+                        break;
+                    default:
+                        MiscComponent miscm = new MiscComponent(Comp);
+                        miscm.Qty = sc.Quantity;
+                        t = miscm.PPP ?? 0;
+                        miscm.Total = sc.Quantity * t;
+                        sm.MiscsTotal += miscm.Total;
+                        sm.Miscs.Add(miscm);
+                        sm.Total += miscm.Total;
+                        break;
+                }
             }
-            base.Dispose(disposing);
         }
 
         void GetPresenters(OJewelryDBEntities dc, MemoViewModel m, int CompanyId)
@@ -407,5 +541,13 @@ namespace OJewelry.Controllers
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

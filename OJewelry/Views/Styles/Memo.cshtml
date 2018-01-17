@@ -108,8 +108,8 @@
                         {
                             <div class="form-group row">
                                 <span class="col-md-3">@Model.Memos[i].PresenterName has @Model.Memos[i].Quantity item(s) memo'd</span>
-                                @Html.LabelFor(model => model.Memos[i].RetrunQty, htmlAttributes: new { @class = "col-form-label col-md-2" })
-                                @Html.EditorFor(model => model.Memos[i].RetrunQty, new { htmlAttributes = new { @class = "form-control col-md-1" } })
+                                @Html.LabelFor(model => model.Memos[i].ReturnQty, htmlAttributes: new { @class = "col-form-label col-md-2" })
+                                @Html.EditorFor(model => model.Memos[i].ReturnQty, new { htmlAttributes = new { @class = "form-control col-md-1" } })
                                 @Html.HiddenFor(model => model.Memos[i].Id)
                                 @Html.HiddenFor(model => model.Memos[i].Quantity)
                             </div>
@@ -126,7 +126,6 @@
     }
     <hr />
 </div>
-
 
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.style.Id }) |

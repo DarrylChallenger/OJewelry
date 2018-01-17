@@ -18,6 +18,7 @@ namespace OJewelry
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             ModelBinders.Binders.Add(typeof(MemoViewModel), new MemoViewModelBinder());
+            ModelBinders.Binders.Add(typeof(StyleViewModel), new StyleViewModelBinder());
         }
     }
 }

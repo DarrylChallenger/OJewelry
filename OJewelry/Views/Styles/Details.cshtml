@@ -1,127 +1,273 @@
-﻿@model OJewelry.Models.Style
+﻿@model OJewelry.Models.StyleViewModel
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>The <i>@Model.StyleName</i> Style</h2>
+<h2>The <i>@Model.Style.StyleName</i> Style</h2>
 
 <div>
     <h4>Details</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.StyleNum)
+            @Html.DisplayNameFor(model => model.Style.StyleNum)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.StyleNum)
+            @Html.DisplayFor(model => model.Style.StyleNum)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.StyleName)
+            @Html.DisplayNameFor(model => model.Style.StyleName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.StyleName)
+            @Html.DisplayFor(model => model.Style.StyleName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Desc)
+            @Html.DisplayNameFor(model => model.Style.Desc)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Desc)
+            @Html.DisplayFor(model => model.Style.Desc)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.IntroDate)
+            @Html.DisplayNameFor(model => model.Style.MetalWeight)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.IntroDate)
+            @Html.DisplayFor(model => model.Style.MetalWeight)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Image)
+            @Html.DisplayNameFor(model => model.Style.IntroDate)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Image)
+            @Html.DisplayFor(model => model.Style.IntroDate)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Width)
+            @Html.DisplayNameFor(model => model.Style.Image)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Width)
+            @Html.DisplayFor(model => model.Style.Image)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Length)
+            @Html.DisplayNameFor(model => model.Style.Width)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Length)
+            @Html.DisplayFor(model => model.Style.Width)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ChainLength)
+            @Html.DisplayNameFor(model => model.Style.Length)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ChainLength)
+            @Html.DisplayFor(model => model.Style.Length)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.RetailRatio)
+            @Html.DisplayNameFor(model => model.Style.ChainLength)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.RetailRatio)
+            @Html.DisplayFor(model => model.Style.ChainLength)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.RedlineRatio)
+            @Html.DisplayNameFor(model => model.Style.RetailRatio)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.RedlineRatio)
+            @Html.DisplayFor(model => model.Style.RetailRatio)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Quantity)
+            @Html.DisplayNameFor(model => model.Style.RedlineRatio)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Quantity)
+            @Html.DisplayFor(model => model.Style.RedlineRatio)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Collection.Name)
+            @Html.DisplayNameFor(model => model.Style.Quantity)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Collection.Name)
+            @Html.DisplayFor(model => model.Style.Quantity)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.JewelryType.Name)
+            @Html.DisplayNameFor(model => model.Style.Collection.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.JewelryType.Name)
+            @Html.DisplayFor(model => model.Style.Collection.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Style.JewelryType.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Style.JewelryType.Name)
         </dd>
 
     </dl>
-    <h4><b>Components</b></h4>
-    <p class="red">Under Construction</p>
+    <div>
+        <h3>Cost</h3>
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-2">Metal</div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-2">Vendor</div>
+            <div class="col-sm-1">Metal</div>
+            <div class="col-sm-1">Price</div>
+            <div class="col-sm-1">Labor</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.MetalComponent c in Model.Metals)
+    {
+        <div class="row">
+            <div class="col-sm-2 bordered">@c.Name</div>
+            <div class="col-sm-2 bordered">-</div>
+            <div class="col-sm-2 bordered">@c.Vendor</div>
+            <div class="col-sm-1 bordered">@c.Metal</div>
+            <div class="col-sm-1 bordered">@c.Price</div>
+            <div class="col-sm-1 bordered">@c.Labor</div>
+            <div class="col-sm-1 bordered">@c.Qty</div>
+            <div class="col-sm-2 bordered">@c.Total</div>
+        </div>
+}
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Metals</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2">@Model.MetalsTotal</div>
+        </div>
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-2">Stones</div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-2">Vendor</div>
+            <div class="col-sm-1">Ct Wt</div>
+            <div class="col-sm-1">Size</div>
+            <div class="col-sm-1">PPC/$</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.StoneComponent c in Model.Stones)
+    {
+        <div class="row">
+            <div class="col-sm-2 bordered">@c.Name</div>
+            <div class="col-sm-2 bordered">-</div>
+            <div class="col-sm-2 bordered">@c.Vendor</div>
+            <div class="col-sm-1 bordered">@c.CtWt</div>
+            <div class="col-sm-1 bordered">@c.Size</div>
+            <div class="col-sm-1 bordered">@c.PPC</div>
+            <div class="col-sm-1 bordered">@c.Qty</div>
+            <div class="col-sm-2 bordered">@c.Total</div>
+        </div>
+}
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Stones</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2">@Model.StonesTotal</div>
+        </div>
+
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-2">Findings</div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-2">Vendor</div>
+            <div class="col-sm-1">Metal</div>
+            <div class="col-sm-1">Price</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.FindingsComponent c in Model.Findings)
+    {
+        <div class="row">
+            <div class="col-sm-2 bordered">@c.Name</div>
+            <div class="col-sm-3 bordered">-</div>
+            <div class="col-sm-2 bordered">@c.Vendor</div>
+            <div class="col-sm-1 bordered">@c.Metal</div>
+            <div class="col-sm-1 bordered">@c.Price</div>
+            <div class="col-sm-1 bordered">@c.Qty</div>
+            <div class="col-sm-2 bordered">@c.Total</div>
+        </div>
+}
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Findings</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2">@Model.FindingsTotal</div>
+        </div>
+
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-2">Labor</div>
+            <div class="col-sm-5"></div>
+            <div class="col-sm-1">Price/PPH</div>
+            <div class="col-sm-1">Price/PPC</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.LaborComponent c in Model.Labors)
+    {
+        <div class="row">
+            <div class="col-sm-2 bordered">@c.Name</div>
+            <div class="col-sm-5 bordered">-</div>
+            <div class="col-sm-1 bordered">@c.PPH</div>
+            <div class="col-sm-1 bordered">@c.PPP</div>
+            <div class="col-sm-1 bordered">@c.Qty</div>
+            <div class="col-sm-2 bordered">@c.Total</div>
+        </div>
+}
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Labor</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2">@Model.LaborsTotal</div>
+        </div>
+
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-2">Misc</div>
+            <div class="col-sm-6"></div>
+            <div class="col-sm-1">Price</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.MiscComponent c in Model.Miscs)
+    {
+        <div class="row">
+            <div class="col-sm-2 bordered">@c.Name</div>
+            <div class="col-sm-6 bordered">-</div>
+            <div class="col-sm-1 bordered">@c.PPP</div>
+            <div class="col-sm-1 bordered">@c.Qty</div>
+            <div class="col-sm-2 bordered">@c.Total</div>
+        </div>
+}
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Misc</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2">@Model.MiscsTotal</div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2"><h3><b>Total Cost</b></h3></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2">@Model.Total</div>
+        </div>
+    </div>
     <p></p>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Print", "Print", new { id = Model.Id }, new { target = "_blank" }) |
-    @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.CollectionId })
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Style.Id }) |
+        @Html.ActionLink("Print", "Print", new { id = Model.Style.Id }, new { target = "_blank" }) |
+        @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId })
 
-</p>
+    </p>

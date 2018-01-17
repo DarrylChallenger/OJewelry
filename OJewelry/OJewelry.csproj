@@ -282,6 +282,7 @@
     <Compile Include="Models\StyleComponent.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\StyleViewModel.cs" />
     <Compile Include="Models\Vendor.cs">
       <DependentUpon>OJewelryDB.tt</DependentUpon>
     </Compile>

@@ -1,135 +1,324 @@
-﻿@model OJewelry.Models.Style
+﻿@model OJewelry.Models.StyleViewModel
 
 @{
     ViewBag.Title = "Edit";
 }
 
-<h2>The <i>@Model.StyleName</i> Stylesheet</h2>
+<h2>The <i>@Model.Style.StyleName</i> Stylesheet</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+   
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Style.Id)
+    @Html.HiddenFor(model => model.Style.CollectionId)
+    @Html.HiddenFor(model => model.Style.JewelryTypeId)
+    @Html.HiddenFor(model => model.CompanyId)
     
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
-
+    <div class="row">
         <div class="form-group">
-            @Html.LabelFor(model => model.StyleNum, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StyleNum, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StyleNum, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.StyleNum, "", new { @class = "text-danger" })
+            </div>
+            @Html.LabelFor(model => model.Style.StyleName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.StyleName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.StyleName, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.StyleName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StyleName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StyleName, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Style.Desc, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.Desc, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.Desc, "", new { @class = "text-danger" })
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Desc, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Desc, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Desc, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.JewelryTypeId, "JewelryTypeId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            @Html.LabelFor(model => model.Style.JewelryTypeId, "JewelryTypeId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
                 @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.JewelryTypeId, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Style.JewelryTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.CollectionId, "CollectionId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            @Html.LabelFor(model => model.Style.CollectionId, "CollectionId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
                 @Html.DropDownList("CollectionId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CollectionId, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Style.CollectionId, "", new { @class = "text-danger" })
+            </div>
+            @Html.LabelFor(model => model.Style.MetalWeight, "Metal Weight", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.MetalWeight, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.IntroDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.IntroDate, "", new { @class = "text-danger" })
+            </div>
+            @Html.LabelFor(model => model.Style.Image, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.Image, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.Image, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.IntroDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.IntroDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.IntroDate, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Style.Width, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.Width, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.Width, "", new { @class = "text-danger" })
+            </div>
+            @Html.LabelFor(model => model.Style.Length, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.Length, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.Length, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Image, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Style.ChainLength, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.ChainLength, "", new { @class = "text-danger" })
+            </div>
+
+            @Html.LabelFor(model => model.Style.RetailRatio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.RetailRatio, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.RetailRatio, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Width, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Width, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Width, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Style.RedlineRatio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.RedlineRatio, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.RedlineRatio, "", new { @class = "text-danger" })
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Length, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Length, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Length, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ChainLength, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ChainLength, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ChainLength, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RetailRatio, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.RetailRatio, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RetailRatio, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RedlineRatio, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.RedlineRatio, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RedlineRatio, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+            @Html.LabelFor(model => model.Style.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Style.Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Style.Quantity, "", new { @class = "text-danger" })
             </div>
         </div>
     </div>
+
+    <h3>Components</h3>
+    <div>
+        <h3>Cost</h3>
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-1">+</div>
+            <div class="col-sm-2">Metal</div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2">Vendor</div>
+            <div class="col-sm-1">Metal</div>
+            <div class="col-sm-1">Price</div>
+            <div class="col-sm-1">Labor</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @for (int i = 0; i < Model.Metals.Count(); i++)
+        {
+            var c = Model.Metals[i];
+        <div class="row ltbordered">
+            <div class="col-sm-1">X</div>
+            @Html.EditorFor(Model => Model.Metals[i].Name, new { htmlAttributes = new { @class = " col-sm-2" } })
+            <div class="col-sm-1 "></div>
+            @Html.EditorFor(Model => Model.Metals[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2" } })
+            @Html.EditorFor(Model => Model.Metals[i].Metal, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Metals[i].Price, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Metals[i].Labor, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Metals[i].Qty, new { htmlAttributes = new { @class = " col-sm-1" } })
+            <div class="col-sm-2">@(c.Price * c.Qty)</div> <!-- script to make this update -->
+            @Html.ValidationMessageFor(Model => Model.Metals[i].Name, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Metals[i].Vendor, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Metals[i].Metal, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Metals[i].Price, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Metals[i].Labor, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Metals[i].Qty, "", new { @class = "text-danger" })
+            @Html.HiddenFor(Model => Model.Metals[i].Id)
+            @Html.HiddenFor(Model => Model.Metals[i].VendorID)
+            @Html.HiddenFor(Model => Model.Metals[i].ComponentTypeId)
+        </div>
+
+        }
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Metals</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2 h4">@Model.MetalsTotal</div> <!-- script to make this update -->
+        </div>
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-1">+</div>
+            <div class="col-sm-2">Stones</div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2">Vendor</div>
+            <div class="col-sm-1">Ct Wt</div>
+            <div class="col-sm-1">Size</div>
+            <div class="col-sm-1">PPC/$</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @for (int i = 0; i < Model.Stones.Count(); i++)
+        {
+            var c = Model.Stones[i];
+        <div class="row ltbordered">
+            <div class="col-sm-1">X</div>
+            @Html.EditorFor(Model => Model.Stones[i].Name, new { htmlAttributes = new { @class = " col-sm-2" } })
+            <div class="col-sm-1 "></div>
+            @Html.EditorFor(Model => Model.Stones[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2" } })
+            @Html.EditorFor(Model => Model.Stones[i].CtWt, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Stones[i].Size, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Stones[i].PPC, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Stones[i].Qty, new { htmlAttributes = new { @class = " col-sm-1" } })
+            <div class="col-sm-2 ">@(c.PPC * c.Qty)</div> <!-- script to make this update -->
+            @Html.ValidationMessageFor(Model => Model.Stones[i].Name, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Stones[i].Vendor, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Stones[i].CtWt, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Stones[i].Size, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Stones[i].PPC, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Stones[i].Qty, "", new { @class = "text-danger" })
+            @Html.HiddenFor(Model => Model.Stones[i].Id)
+            @Html.HiddenFor(Model => Model.Stones[i].VendorID)
+            @Html.HiddenFor(Model => Model.Stones[i].ComponentTypeId)
+        </div>
+
+        }
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Stones</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2 h4">@Model.StonesTotal</div><!-- script to make this update -->
+        </div>
+
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-1">+</div>
+            <div class="col-sm-2">Findings</div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-2">Vendor</div>
+            <div class="col-sm-1">Metal</div>
+            <div class="col-sm-1">Price</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @for (int i = 0; i < Model.Findings.Count(); i++)
+        {
+            var c = Model.Findings[i];
+        <div class="row ltbordered">
+            <div class="col-sm-1">X</div>
+            @Html.EditorFor(Model => Model.Findings[i].Name, new { htmlAttributes = new { @class = " col-sm-2" } })
+            <div class="col-sm-2 "></div>
+            @Html.EditorFor(Model => Model.Findings[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2" } })
+            @Html.EditorFor(Model => Model.Findings[i].Metal, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Findings[i].Price, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Findings[i].Qty, new { htmlAttributes = new { @class = " col-sm-1" } })
+            <div class="col-sm-2">@(c.Price * c.Qty)</div> <!-- script to make this update -->
+            @Html.ValidationMessageFor(Model => Model.Findings[i].Name, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Findings[i].Vendor, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Findings[i].Metal, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Findings[i].Price, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Findings[i].Qty, "", new { @class = "text-danger" })
+            @Html.HiddenFor(Model => Model.Findings[i].Id)
+            @Html.HiddenFor(Model => Model.Findings[i].VendorID)
+            @Html.HiddenFor(Model => Model.Findings[i].ComponentTypeId)
+        </div>
+        }
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Findings</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2 h4">@Model.FindingsTotal</div><!-- script to make this update -->
+        </div>
+
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-1">+</div>
+            <div class="col-sm-2">Labor</div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-1">Price/PPH</div>
+            <div class="col-sm-1">Price/PPC</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @for (int i = 0; i < Model.Labors.Count(); i++)
+        {
+            var c = Model.Labors[i];
+        <div class="row ltbordered">
+            <div class="col-sm-1">X</div>
+            @Html.EditorFor(Model => Model.Labors[i].Name, new { htmlAttributes = new { @class = " col-sm-2" } })
+            <div class="col-sm-4 "></div>
+            @Html.EditorFor(Model => Model.Labors[i].PPH, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Labors[i].PPP, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Labors[i].Qty, new { htmlAttributes = new { @class = " col-sm-1" } })
+            <div class="col-sm-2">@((c.PPH + c.PPP) * c.Qty)</div> <!-- script to make this update -->
+            @Html.ValidationMessageFor(Model => Model.Labors[i].Name, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Labors[i].PPH, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Labors[i].PPP, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Labors[i].Qty, "", new { @class = "text-danger" })
+            @Html.HiddenFor(Model => Model.Labors[i].Id)
+            @Html.HiddenFor(Model => Model.Labors[i].ComponentTypeId)
+        </div>
+
+        }
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Labor</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2 h4">@Model.LaborsTotal</div><!-- script to make this update -->
+        </div>
+
+        <div class="row StyleComponentsRowHeader">
+            <div class="col-sm-1">+</div>
+            <div class="col-sm-2">Misc</div>
+            <div class="col-sm-5"></div>
+            <div class="col-sm-1">Price</div>
+            <div class="col-sm-1">Qty</div>
+            <div class="col-sm-2">Total</div>
+        </div>
+        @for (int i = 0; i < Model.Miscs.Count(); i++)
+        {
+            var c = Model.Miscs[i];
+        <div class="row ltbordered">
+            <div class="col-sm-1">X</div>
+            @Html.EditorFor(Model => Model.Miscs[i].Name, new { htmlAttributes = new { @class = " col-sm-2" } })
+            <div class="col-sm-5 "></div>
+            @Html.EditorFor(Model => Model.Miscs[i].PPP, new { htmlAttributes = new { @class = " col-sm-1" } })
+            @Html.EditorFor(Model => Model.Miscs[i].Qty, new { htmlAttributes = new { @class = " col-sm-1" } })
+            <div class="col-sm-2">@(c.PPP * c.Qty)</div> <!-- script to make this update -->
+            @Html.ValidationMessageFor(Model => Model.Miscs[i].Name, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Miscs[i].PPP, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(Model => Model.Miscs[i].Qty, "", new { @class = "text-danger" })
+            @Html.HiddenFor(Model => Model.Miscs[i].Id)
+            @Html.HiddenFor(Model => Model.Miscs[i].ComponentTypeId)
+        </div>
+
+        }
+        <div class="row">
+            <div class="col-sm-2"><h4><b>Total Misc</b></h4></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2 h4">@Model.MiscsTotal</div><!-- script to make this update -->
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2"><h3><b>Total Cost</b></h3></div>
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2 h3"><b>@Model.Total</b></div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
     <div>
-        @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.CollectionId })
-
+        @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId })
     </div>
 
 @section Scripts {

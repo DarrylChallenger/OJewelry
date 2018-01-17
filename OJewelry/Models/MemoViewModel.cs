@@ -26,7 +26,7 @@ namespace OJewelry.Models
         public DateTime? date { get; set; }
         public int Quantity { get; set; }
         public String Notes { get; set; }
-        [Display(Name = "Return Qty")] public int RetrunQty { get; set; }
+        [Display(Name = "Return Qty")] public int ReturnQty { get; set; }
 
     }
 
@@ -72,7 +72,7 @@ namespace OJewelry.Models
                 MemoModel memo = new MemoModel()
                 {
                     Id = id,
-                    RetrunQty = retrunQty,
+                    ReturnQty = retrunQty,
                     Quantity = qty,
                 };
                 m.Memos.Add(memo);

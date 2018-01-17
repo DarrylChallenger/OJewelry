@@ -22,6 +22,11 @@ select,
 textarea {
     max-width: 280px;
 }
+/* Override form-control */
+.form-control
+{ 
+    width:unset;
+}
 
 .formborder {
     border-style: solid;
@@ -30,13 +35,26 @@ textarea {
     padding-bottom:1em;
 }
 
+.bordered {
+    border-style: solid;
+    border-color: black;
+}
+
+.ltbordered {
+    border-style: solid;
+    border-color: #cccccc;
+}
+
 .red {
     color:red;
 }
 
-.bold 
-{
+.StyleComponentsRowHeader {
     font-weight:700;
+}
+
+.bold {
+    font-weight: 700;
 }
 
 .ForPrinting

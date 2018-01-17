@@ -273,28 +273,28 @@ namespace OJewelry.Controllers
                 // iterate thru the memos to take items back. Increase the inventory as appropriate. If all items are returned, delete the memo
                 foreach(MemoModel memo in m.Memos)
                 {
-                    if (memo.RetrunQty < 0)
+                    if (memo.ReturnQty < 0)
                     {
                         ModelState.AddModelError("Return Style", "You can only return a positive number to inventory.");
                     }
-                    if (memo.RetrunQty > 0)
+                    if (memo.ReturnQty > 0)
                     {
-                        if (memo.RetrunQty > memo.Quantity)
+                        if (memo.ReturnQty > memo.Quantity)
                         {
                             ModelState.AddModelError("Return Style", "You can't return more items than were memo'd out.");
                         }
                         // update db
                         Memo mdb = dc.Memos.Find(memo.Id);
-                        if (mdb.Quantity == memo.RetrunQty)
+                        if (mdb.Quantity == memo.ReturnQty)
                         {
                             // remove the row
                             dc.Memos.Remove(mdb);
                         } else
                         {
                             // decrease the amount
-                            mdb.Quantity -= memo.RetrunQty; 
+                            mdb.Quantity -= memo.ReturnQty; 
                         }
-                        sdb.Quantity += memo.RetrunQty;
+                        sdb.Quantity += memo.ReturnQty;
                     }
                     // ReturnQty is 0, no action
                 }

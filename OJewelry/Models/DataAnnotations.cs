@@ -76,7 +76,7 @@ namespace OJewelry.Models
         [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
     }
-
+    
     [MetadataType(typeof(ComponentMetaData))]   //component
     public partial class Component
     {
@@ -88,19 +88,19 @@ namespace OJewelry.Models
         public String Name { get; set; }
 
         [Display(Name = "Price")]
-        //[Required(ErrorMessage = "Price is required.")]
-        [RegularExpression(@"(\.\d{2}){1}$")]
-        public decimal Price { get; set; }
+        [Required(ErrorMessage = "Price is required.")]
+        //[RegularExpression(@"(\.\d{2}){1}$")]
+        public decimal? Price { get; set; }
 
-        [Display(Name = "Price")]
-        //[Required(ErrorMessage = "Price is required.")]
-        [RegularExpression(@"(\.\d{2}){1}$")]
-        public decimal PricePreHour { get; set; }
+        [Display(Name = "$PPH")]
+        [Required(ErrorMessage = "Price is required.")]
+        //[RegularExpression(@"(\.\d{2}){1}$")]
+        public Nullable<decimal> PricePerHour { get; set; }
 
-        [Display(Name = "Price")]
-        //[Required(ErrorMessage = "Price is required.")]
-        [RegularExpression(@"(\.\d{2}){1}$")]
-        public decimal PricePerPiece { get; set; }
+        [Display(Name = "$PPP")]
+        [Required(ErrorMessage = "Price is required.")]
+        //[RegularExpression(@"(\.\d{2}){1}$")]
+        public decimal? PricePerPiece { get; set; }
 
         [Display(Name ="Metal")]
         public string MetalMetal { get; set; }
@@ -114,14 +114,14 @@ namespace OJewelry.Models
         [Display(Name = "Size")]
         public string StoneSize { get; set; }
 
-        [Display(Name = "PPC")]
+        [Display(Name = "$PPC")]
         public Nullable<decimal> StonePPC { get; set; }
 
         [Display(Name = "Metal")]
         public string FindingsMetal { get; set; }
 
     }
-
+    
     [MetadataType(typeof(ComponentTypeMetaData))]   // Component Type
     public partial class ComponentType
     {
@@ -204,12 +204,14 @@ namespace OJewelry.Models
         [Display(Name = "Desc")]
         public string Desc { get; set; }
 
+        [Display(Name = "Metal Weight")]
+        public Nullable<decimal> MetalWeight { get; set; }
+
         [Display(Name = "Intro Date")]
         public Nullable<System.DateTime> IntroDate { get; set; }
 
         [Display(Name = "Image")]
         public byte[] Image { get; set; }
-
 
         [Display(Name = "Width")]
         public Nullable<decimal> Width { get; set; }
