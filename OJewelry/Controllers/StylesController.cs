@@ -114,6 +114,7 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(StyleViewModel svm)
         {
+            ModelState.Clear();
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             db.Entry(svm.Style).State = EntityState.Modified;
             // Iterate thru the components
@@ -216,7 +217,7 @@ namespace OJewelry.Controllers
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.JewelryTypes = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             return View(svm);
         }
 
@@ -479,7 +480,8 @@ namespace OJewelry.Controllers
                         MetalComponent mtscm = new MetalComponent(Comp);
                         mtscm.Qty = sc.Quantity;
                         t = mtscm.Price ?? 0;
-                        mtscm.Total = sc.Quantity * t;
+                        t2 = mtscm.Labor ?? 0;
+                        mtscm.Total = sc.Quantity * t + t2;
                         sm.MetalsTotal += mtscm.Total;
                         sm.Metals.Add(mtscm);
                         sm.Total += mtscm.Total;

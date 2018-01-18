@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -7,32 +8,6 @@ using System.Web.Mvc;
 
 namespace OJewelry.Models
 {
-    /*
-    public class MetalModel
-    {
-        public List<Component> Metals { get; set; }
-    }
-
-    public class StoneModel
-    {
-        public List<Component> Stones { get; set; }
-    }
-
-    public class FindingModel
-    {
-        public List<Component> Findings { get; set; }
-    }
-
-    public class LaborModel
-    {
-        public List<Component> Labors { get; set; }
-    }
-
-    public class MiscModel
-    {
-        public List<Component> Miscs { get; set; }
-    }
-    */
     public class MetalComponent : StyleViewComponentModel
     {
         public MetalComponent() { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
@@ -49,6 +24,7 @@ namespace OJewelry.Models
                 Comp.Price = value;
             }
         }
+        [Display(Name ="LaborXX")]
         public decimal? Labor { get { return Comp.MetalLabor ?? 0; } set { Comp.MetalLabor = value; } }
     }
     public class StoneComponent : StyleViewComponentModel
@@ -98,7 +74,6 @@ namespace OJewelry.Models
         {
             Comp = new Component();
             Comp.Id = 0;
-            Comp.CompanyId = 0;
             Comp.Price = 0;
             Comp.PricePerHour = 0;
             Comp.PricePerPiece = 0;
@@ -112,6 +87,7 @@ namespace OJewelry.Models
         public int ComponentTypeId { get { return Comp.ComponentTypeId; } set { Comp.ComponentTypeId = value; } }
         public Component Comp { get; set; }
         public String Name { get { return Comp.Name; } set { Comp.Name = value; } }
+        [Display(Name = "Quantity")]
         public int Qty { get; set; }
         public decimal Total { get; set; }
         public SVMStateEnum SVMState { get; set; }
@@ -150,7 +126,12 @@ namespace OJewelry.Models
             // Get CompanyID
             s = request.Form.Get("CompanyID");
             Int32.TryParse(s, out int coID);
-
+            // JewelryTypeID
+            sb.Clear();
+            sb.AppendFormat("JewelryTypeID");
+            s = request.Form.Get(sb.ToString());
+            Int32.TryParse(s, out int jtid);
+            m.Style.JewelryTypeId = jtid;
             // build Metals
             for (int i = 0; i < m.Metals.Count; i++)
             {
@@ -190,7 +171,7 @@ namespace OJewelry.Models
                 Decimal.TryParse(s, out decimal price);
                 m.Metals[i].Price = price;
                 sb.Clear();
-                sb.AppendFormat("Metals[{0}].MetalLabor", i);
+                sb.AppendFormat("Metals[{0}].Labor", i);
                 s = request.Form.Get(sb.ToString());
                 Decimal.TryParse(s, out decimal labor);
                 m.Metals[i].Labor = labor;
@@ -199,7 +180,7 @@ namespace OJewelry.Models
                 s = request.Form.Get(sb.ToString());
                 Int32.TryParse(s, out int q);
                 m.Metals[i].Qty = q;
-                m.Metals[i].Total = q * price;
+                m.Metals[i].Total = q * price + labor;
                 subtotal += m.Metals[i].Total;
             }
             m.MetalsTotal = subtotal;

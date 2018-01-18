@@ -137,13 +137,15 @@
             @Html.EditorFor(Model => Model.Metals[i].Price, new { htmlAttributes = new { @class = " col-sm-1" } })
             @Html.EditorFor(Model => Model.Metals[i].Labor, new { htmlAttributes = new { @class = " col-sm-1" } })
             @Html.EditorFor(Model => Model.Metals[i].Qty, new { htmlAttributes = new { @class = " col-sm-1" } })
-            <div class="col-sm-2">@(c.Price * c.Qty)</div> <!-- script to make this update -->
-            @Html.ValidationMessageFor(Model => Model.Metals[i].Name, "", new { @class = "text-danger" })
-            @Html.ValidationMessageFor(Model => Model.Metals[i].Vendor, "", new { @class = "text-danger" })
-            @Html.ValidationMessageFor(Model => Model.Metals[i].Metal, "", new { @class = "text-danger" })
-            @Html.ValidationMessageFor(Model => Model.Metals[i].Price, "", new { @class = "text-danger" })
-            @Html.ValidationMessageFor(Model => Model.Metals[i].Labor, "", new { @class = "text-danger" })
-            @Html.ValidationMessageFor(Model => Model.Metals[i].Qty, "", new { @class = "text-danger" })
+            <div class="col-sm-2">@(c.Price * c.Qty + c.Labor)</div> <!-- script to make this update -->
+            <p>
+                @Html.ValidationMessageFor(Model => Model.Metals[i].Name, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(Model => Model.Metals[i].Vendor, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(Model => Model.Metals[i].Metal, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(Model => Model.Metals[i].Price, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(Model => Model.Metals[i].Labor, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(Model => Model.Metals[i].Qty, "", new { @class = "text-danger" })
+            </p>
             @Html.HiddenFor(Model => Model.Metals[i].Id)
             @Html.HiddenFor(Model => Model.Metals[i].VendorID)
             @Html.HiddenFor(Model => Model.Metals[i].ComponentTypeId)

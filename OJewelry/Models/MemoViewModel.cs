@@ -37,10 +37,25 @@ namespace OJewelry.Models
         public int SendReturnMemoRadio { get; set; } // Radio Bth
         public int NewExistingPresenterRadio { get; set; } // Radio Bth
         public List<SelectListItem> Presenters { get; set; } // dropdown
-        [Display(Name="Name")] public String PresenterName { get; set; }
-        [Display(Name = "Phone")] public String PresenterPhone { get; set; }
-        [Display(Name = "Email")] public String PresenterEmail { get; set; }
-        [Display(Name = "Send Qty")] public int SendQty { get; set; }
+
+        [Display(Name="Name")]
+        [Required(ErrorMessage = "Name is required.")]
+        public String PresenterName { get; set; }
+
+        [Display(Name = "Presenter Phone")]
+        [Required(ErrorMessage = "Phone is required.")]
+        [DataType(DataType.PhoneNumber)]
+        [Phone]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        public String PresenterPhone { get; set; }
+
+        [Display(Name = "Email")]
+        [Required(ErrorMessage = "Email is required.")]
+        [DataType(DataType.EmailAddress)]
+        public String PresenterEmail { get; set; }
+
+        [Display(Name = "Send Qty")]
+        public int SendQty { get; set; }
         public int PresenterId { get; set; }
         public int numPresentersWithStyle { get; set; }
         public int CompanyId { get; set; }
@@ -57,9 +72,9 @@ namespace OJewelry.Models
             for (int i = 0; i <m.numPresentersWithStyle; i++)
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("Memos[{0}].RetrunQty", i);
+                sb.AppendFormat("Memos[{0}].ReturnQty", i);
                 string s = request.Form.Get(sb.ToString());
-                if (!Int32.TryParse(s, out int retrunQty)) retrunQty = 0;
+                if (!Int32.TryParse(s, out int returnQty)) returnQty = 0;
                 sb.Clear();
                 sb.AppendFormat("Memos[{0}].Id", i);
                 s = request.Form.Get(sb.ToString());
@@ -72,7 +87,7 @@ namespace OJewelry.Models
                 MemoModel memo = new MemoModel()
                 {
                     Id = id,
-                    ReturnQty = retrunQty,
+                    ReturnQty = returnQty,
                     Quantity = qty,
                 };
                 m.Memos.Add(memo);
