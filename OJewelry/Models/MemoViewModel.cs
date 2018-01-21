@@ -36,20 +36,21 @@ namespace OJewelry.Models
         public List<MemoModel> Memos { get; set; }
         public int SendReturnMemoRadio { get; set; } // Radio Bth
         public int NewExistingPresenterRadio { get; set; } // Radio Bth
+        [Display(Name = "Locations")]
         public List<SelectListItem> Presenters { get; set; } // dropdown
 
         [Display(Name="Name")]
         [Required(ErrorMessage = "Name is required.")]
         public String PresenterName { get; set; }
 
-        [Display(Name = "Presenter Phone")]
+        [Display(Name = "Location Phone")]
         [Required(ErrorMessage = "Phone is required.")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
         public String PresenterPhone { get; set; }
 
-        [Display(Name = "Email")]
+        [Display(Name = "Location Email")]
         [Required(ErrorMessage = "Email is required.")]
         [DataType(DataType.EmailAddress)]
         public String PresenterEmail { get; set; }

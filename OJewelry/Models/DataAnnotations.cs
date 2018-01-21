@@ -147,6 +147,14 @@ namespace OJewelry.Models
         public String Name { get; set; }
     }
 
+    [MetadataType(typeof(LedgerMetaData))]  // Ledger
+    public partial class Ledger
+    {
+    }
+    public partial class LedgerMetaData
+    {
+    }
+
     [MetadataType(typeof(MemoMetaData))]   // Memo
     public partial class Memo
     {
@@ -165,7 +173,7 @@ namespace OJewelry.Models
         [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
 
-        [DisplayName("Phone")]
+        [Display(Name ="Phone")]
         [Required(ErrorMessage = "Phone is required.")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
@@ -178,12 +186,15 @@ namespace OJewelry.Models
         public String Email { get; set; }
     }
 
-    [MetadataType(typeof(LedgerMetaData))]  // Ledger
-    public partial class Ledger
+    [MetadataType(typeof(PresentersMetaData))]   
+    public partial class Presenters
     {
     }
-    public partial class LedgerMetaData
+    public partial class PresentersMetaData
     {
+
+        [Display(Name = "Location")]
+        public String Name { get; }
     }
 
     [MetadataType(typeof(StyleMetaData))]   // Style
@@ -262,7 +273,7 @@ namespace OJewelry.Models
     public partial class XXX
     {
     }
-    public partial class XXX
+    public partial class XXXMetaData
     {
 
         [Display(Name = "Name")]

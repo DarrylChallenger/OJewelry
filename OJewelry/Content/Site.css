@@ -63,10 +63,25 @@ textarea {
     background-color:#ffe5cc;
 }
 
+#StyleMemoExistingGroup {
+    width: 95%;
+    border-style: solid;
+    border-color: grey;
+    padding-left: 2em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+#StyleMemoReturnGroup {
+    /border-style: solid;
+    /border-color: red;
+    padding-top: 1em;
+}
+
 .StyleReportHeader {
     padding-top: 2em;
     /border-style:solid;
-    border-color:cyan;
+    border-color: cyan;
     width: 100%;
     display: inline-block;
 }
