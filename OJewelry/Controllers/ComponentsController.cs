@@ -47,7 +47,12 @@ namespace OJewelry.Controllers
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name");
             ViewBag.Id = CompanyId;
             ViewBag.CompanyName = db.Companies.Find(CompanyId).Name;
-            return View();
+            Component comp = new Component();
+            comp.Price = 0;
+            comp.PricePerHour = 0;
+            comp.PricePerPiece = 0;
+            comp.StonePPC = 0;
+            return View(comp);
         }
 
         // POST: Components/Create
@@ -130,7 +135,7 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Component component = db.Components.Find(id);
-            int companyId = component.CompanyId;
+            int companyId = component.CompanyId.Value;
             db.Components.Remove(component);
             db.SaveChanges();
             return RedirectToAction("Index", new { CompanyId = companyId });

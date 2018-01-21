@@ -43,16 +43,18 @@ namespace OJewelry.Controllers
 
         public ActionResult Print(int? id)
         {
+            StyleViewModel sm = new StyleViewModel();
             if (id == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-            Style style = db.Styles.Find(id);
-            if (style == null)
+            sm.Style = db.Styles.Find(id);
+            if (sm.Style == null)
             {
                 return HttpNotFound();
             }
-            return View(style);
+            PopulateStyleViewModel(id, sm);
+            return View(sm);
         }
 
         // GET: Styles/Create
@@ -478,10 +480,10 @@ namespace OJewelry.Controllers
                     case 1:
                         Comp.Vendor = db.Vendors.Find(Comp.VendorId);// ?? new Vendor();
                         MetalComponent mtscm = new MetalComponent(Comp);
-                        mtscm.Qty = sc.Quantity;
+                        mtscm.Qty = sc.Quantity.Value;
                         t = mtscm.Price ?? 0;
                         t2 = mtscm.Labor ?? 0;
-                        mtscm.Total = sc.Quantity * t + t2;
+                        mtscm.Total = sc.Quantity.Value * t + t2;
                         sm.MetalsTotal += mtscm.Total;
                         sm.Metals.Add(mtscm);
                         sm.Total += mtscm.Total;
@@ -489,9 +491,9 @@ namespace OJewelry.Controllers
                     case 2:
                         Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                         StoneComponent stscm = new StoneComponent(Comp);
-                        stscm.Qty = sc.Quantity;
+                        stscm.Qty = sc.Quantity.Value;
                         t = stscm.PPC ?? 0;
-                        stscm.Total = sc.Quantity * t;
+                        stscm.Total = sc.Quantity.Value * t;
                         sm.StonesTotal += stscm.Total;
                         sm.Stones.Add(stscm);
                         sm.Total += stscm.Total;
@@ -499,28 +501,28 @@ namespace OJewelry.Controllers
                     case 3:
                         Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                         FindingsComponent fiscm = new FindingsComponent(Comp);
-                        fiscm.Qty = sc.Quantity;
+                        fiscm.Qty = sc.Quantity.Value;
                         t = fiscm.Price ?? 0;
-                        fiscm.Total = sc.Quantity * t;
+                        fiscm.Total = sc.Quantity.Value * t;
                         sm.FindingsTotal += fiscm.Total;
                         sm.Findings.Add(fiscm);
                         sm.Total += fiscm.Total;
                         break;
                     case 4:
                         LaborComponent liscm = new LaborComponent(Comp);
-                        liscm.Qty = sc.Quantity;
+                        liscm.Qty = sc.Quantity.Value;
                         t = liscm.PPH ?? 0;
                         t2 = liscm.PPP ?? 0;
-                        liscm.Total = sc.Quantity * (t + t2);
+                        liscm.Total = sc.Quantity.Value * (t + t2);
                         sm.LaborsTotal += liscm.Total;
                         sm.Labors.Add(liscm);
                         sm.Total += liscm.Total;
                         break;
                     default:
                         MiscComponent miscm = new MiscComponent(Comp);
-                        miscm.Qty = sc.Quantity;
+                        miscm.Qty = sc.Quantity.Value;
                         t = miscm.PPP ?? 0;
-                        miscm.Total = sc.Quantity * t;
+                        miscm.Total = sc.Quantity.Value * t;
                         sm.MiscsTotal += miscm.Total;
                         sm.Miscs.Add(miscm);
                         sm.Total += miscm.Total;

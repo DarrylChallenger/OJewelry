@@ -11,7 +11,7 @@ function setNewExistingControls() {
     console.log("setNewExistingControls");
     var radioButtons = document.getElementsByName("NewExistingPresenterRadio");
     //if the presenters dropdown is empty, select the New Presenters radio button
-    if (document.getElementById("PresenterId").options.length == 0)
+    if (document.getElementById("PresenterId").options.length === 0)
     {
         // check the new presenter radio, disable the existing
         console.log("Empty Presenter list");

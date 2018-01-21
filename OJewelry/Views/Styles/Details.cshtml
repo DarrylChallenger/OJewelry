@@ -63,7 +63,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Style.Width)
+            @Html.DisplayFor(model => model.Style.Width)"
         </dd>
 
         <dt>
@@ -71,7 +71,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Style.Length)
+            @Html.DisplayFor(model => model.Style.Length)"
         </dd>
 
         <dt>
@@ -79,7 +79,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Style.ChainLength)
+            @Html.DisplayFor(model => model.Style.ChainLength)"
         </dd>
 
         <dt>
@@ -137,15 +137,15 @@
         </div>
         @foreach (OJewelry.Models.MetalComponent c in Model.Metals)
     {
-        <div class="row">
-            <div class="col-sm-2 bordered">@c.Name</div>
-            <div class="col-sm-2 bordered">-</div>
-            <div class="col-sm-2 bordered">@c.Vendor</div>
-            <div class="col-sm-1 bordered">@c.Metal</div>
-            <div class="col-sm-1 bordered">@c.Price</div>
-            <div class="col-sm-1 bordered">@c.Labor</div>
-            <div class="col-sm-1 bordered">@c.Qty</div>
-            <div class="col-sm-2 bordered">@c.Total</div>
+        <div class="row ltbordered">
+            <div class="col-sm-2 ">@c.Name</div>
+            <div class="col-sm-2 "></div>
+            <div class="col-sm-2 ">@c.Vendor</div>
+            <div class="col-sm-1 ">@c.Metal</div>
+            <div class="col-sm-1 ">@c.Price</div>
+            <div class="col-sm-1 ">@c.Labor</div>
+            <div class="col-sm-1 ">@c.Qty</div>
+            <div class="col-sm-2 ">@c.Total</div>
         </div>
 }
         <div class="row">
@@ -165,15 +165,15 @@
         </div>
         @foreach (OJewelry.Models.StoneComponent c in Model.Stones)
     {
-        <div class="row">
-            <div class="col-sm-2 bordered">@c.Name</div>
-            <div class="col-sm-2 bordered">-</div>
-            <div class="col-sm-2 bordered">@c.Vendor</div>
-            <div class="col-sm-1 bordered">@c.CtWt</div>
-            <div class="col-sm-1 bordered">@c.Size</div>
-            <div class="col-sm-1 bordered">@c.PPC</div>
-            <div class="col-sm-1 bordered">@c.Qty</div>
-            <div class="col-sm-2 bordered">@c.Total</div>
+        <div class="row ltbordered">
+            <div class="col-sm-2 ">@c.Name</div>
+            <div class="col-sm-2 "></div>
+            <div class="col-sm-2 ">@c.Vendor</div>
+            <div class="col-sm-1 ">@c.CtWt</div>
+            <div class="col-sm-1 ">@c.Size</div>
+            <div class="col-sm-1 ">@c.PPC</div>
+            <div class="col-sm-1 ">@c.Qty</div>
+            <div class="col-sm-2 ">@c.Total</div>
         </div>
 }
         <div class="row">
@@ -193,14 +193,14 @@
         </div>
         @foreach (OJewelry.Models.FindingsComponent c in Model.Findings)
     {
-        <div class="row">
-            <div class="col-sm-2 bordered">@c.Name</div>
-            <div class="col-sm-3 bordered">-</div>
-            <div class="col-sm-2 bordered">@c.Vendor</div>
-            <div class="col-sm-1 bordered">@c.Metal</div>
-            <div class="col-sm-1 bordered">@c.Price</div>
-            <div class="col-sm-1 bordered">@c.Qty</div>
-            <div class="col-sm-2 bordered">@c.Total</div>
+        <div class="row ltbordered">
+            <div class="col-sm-2 ">@c.Name</div>
+            <div class="col-sm-3 "></div>
+            <div class="col-sm-2 ">@c.Vendor</div>
+            <div class="col-sm-1 ">@c.Metal</div>
+            <div class="col-sm-1 ">@c.Price</div>
+            <div class="col-sm-1 ">@c.Qty</div>
+            <div class="col-sm-2 ">@c.Total</div>
         </div>
 }
         <div class="row">
@@ -219,13 +219,13 @@
         </div>
         @foreach (OJewelry.Models.LaborComponent c in Model.Labors)
     {
-        <div class="row">
-            <div class="col-sm-2 bordered">@c.Name</div>
-            <div class="col-sm-5 bordered">-</div>
-            <div class="col-sm-1 bordered">@c.PPH</div>
-            <div class="col-sm-1 bordered">@c.PPP</div>
-            <div class="col-sm-1 bordered">@c.Qty</div>
-            <div class="col-sm-2 bordered">@c.Total</div>
+        <div class="row ltbordered">
+            <div class="col-sm-2 ">@c.Name</div>
+            <div class="col-sm-5 "></div>
+            <div class="col-sm-1 ">@c.PPH</div>
+            <div class="col-sm-1 ">@c.PPP</div>
+            <div class="col-sm-1 ">@c.Qty</div>
+            <div class="col-sm-2 ">@c.Total</div>
         </div>
 }
         <div class="row">
@@ -243,12 +243,12 @@
         </div>
         @foreach (OJewelry.Models.MiscComponent c in Model.Miscs)
     {
-        <div class="row">
-            <div class="col-sm-2 bordered">@c.Name</div>
-            <div class="col-sm-6 bordered">-</div>
-            <div class="col-sm-1 bordered">@c.PPP</div>
-            <div class="col-sm-1 bordered">@c.Qty</div>
-            <div class="col-sm-2 bordered">@c.Total</div>
+        <div class="row ltbordered">
+            <div class="col-sm-2 ">@c.Name</div>
+            <div class="col-sm-6 "></div>
+            <div class="col-sm-1 ">@c.PPP</div>
+            <div class="col-sm-1 ">@c.Qty</div>
+            <div class="col-sm-2 ">@c.Total</div>
         </div>
 }
         <div class="row">

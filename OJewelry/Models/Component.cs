@@ -21,7 +21,7 @@ namespace OJewelry.Models
         }
     
         public int Id { get; set; }
-        public int CompanyId { get; set; }
+        public Nullable<int> CompanyId { get; set; }
         public int ComponentTypeId { get; set; }
         public string Name { get; set; }
         public Nullable<int> VendorId { get; set; }

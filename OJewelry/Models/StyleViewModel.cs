@@ -83,7 +83,7 @@ namespace OJewelry.Models
             // Comp.Vendor = new Vendor(); 
         }
         public int Id { get { return Comp.Id; } set { Comp.Id = value; } }
-        public int CompanyId { get { return Comp.CompanyId; } set { Comp.CompanyId = value; } }
+        public int CompanyId { get { return Comp.CompanyId.Value; } set { Comp.CompanyId = value; } }
         public int ComponentTypeId { get { return Comp.ComponentTypeId; } set { Comp.ComponentTypeId = value; } }
         public Component Comp { get; set; }
         public String Name { get { return Comp.Name; } set { Comp.Name = value; } }

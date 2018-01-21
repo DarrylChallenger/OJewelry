@@ -1,4 +1,4 @@
-﻿@model OJewelry.Models.Style
+﻿@model OJewelry.Models.StyleViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -6,114 +6,236 @@
 }
 
 <div class="ForPrinting">
-    <section id="StyleReportHeader">
-        <div class="row row20">
-            <div class="col-sm-2 bold">Style #</div>
-            <div class="col-sm-4">@Model.StyleNum</div>
-            <!--<div class="col-sm-offset-2"></div>
-    <div class="col-sm-3 "><img class="StyleReportImage " src="~/Images/SquareWithCross.png" /></div>
-    <div class="col-sm-1"></div>-->
-            <img class="StyleReportImage " src="~/Images/SquareWithCross.png" />
-        </div>
-        <div class="row">
-            <div class="col-sm-2 bold">Style Name</div>
-            <div class="col-sm-4">@Model.StyleName</div>
-            <!--
-    <div class="col-sm-offset-2"></div>
-    <div class="col-sm-3"></div>
-    <div class="col-sm-1"></div>
-        -->
-        </div>
-        <div class="row">
-            <div class="col-sm-2 bold">Description</div>
-            <div class="col-sm-4">@Model.Desc</div>
-            <!--
-    <div class="col-sm-offset-2"></div>
-    <div class="col-sm-3"></div>
-    <div class="col-sm-1"></div>
-        -->
-        </div>
-        <div class="row">
-            <div class="col-sm-2 bold">Jewery Type</div>
-            <div class="col-sm-4">@Model.JewelryType.Name</div>
-            <!--
-    <div class="col-sm-offset-2"></div>
-    <div class="col-sm-3"></div>
-    <div class="col-sm-1"></div>
-        -->
-        </div>
-        <div class="row">
-            <div class="col-sm-2 bold">Collection</div>
-            <div class="col-sm-4">@Model.Collection.Name</div>
-            <!--
-    <div class="col-sm-offset-2"></div>
-    <div class="col-sm-3"></div>
-    <div class="col-sm-1"></div>
-        -->
+    <section id="StyleReportHeader" class="StyleReportHeader">
+        <div>
+            <div class="StyleReportHeaderDataColumn">
+                <div class="row">
+                    <div class="col-sm-3 col-xs-3 bold">Style #</div>
+                    <div class="col-sm-4 col-xs-4">@Model.Style.StyleNum</div>
+                    <div class="col-sm-3 col-xs-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 col-xs-3 bold">Style Name</div>
+                    <div class="col-sm-4 col-xs-4">@Model.Style.StyleName</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 col-xs-3 bold">Description</div>
+                    <div class="col-sm-4 col-xs-4">@Model.Style.Desc</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 col-xs-3 bold">Jewery Type</div>
+                    <div class="col-sm-4 col-xs-4">@Model.Style.JewelryType.Name</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 col-xs-3 bold">Collection</div>
+                    <div class="col-sm-4 col-xs-4">@Model.Style.Collection.Name</div>
+                </div>
+            </div>
+            <img class="StyleReportHeaderImageColumn" src="~/Images/SquareWithCross.png" />
+
         </div>
     </section>
     <section id="StyleReportWeight-Date">
-        <div class="row">
-            <div class="col-sm-2 bold">Metal Weight</div>
-            <div class="col-sm-2">-</div>
-            <div class="col-sm-offset-4"></div>
-            <div class="col-sm-2 bold">Intro Date</div>
-            <div class="col-sm-2">@Model.IntroDate</div>
+        <div class="row ">
+            <div class="col-sm-2 col-xs-2 bold">Metal Weight</div>
+            <div class="col-sm-2 col-xs-2"></div>
+            <div class="col-sm-3 col-xs-3"></div>
+            <div class="col-sm-2 col-xs-2 bold">Intro Date</div>
+            <div class="col-sm-3 col-xs-3">@Model.Style.IntroDate</div>
         </div>
     </section>
     <section id="StyleReportPricing">
         <div class="row">
-            <div class="col-sm-2 bold">Pricing</div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-1 red">MU</div>
-            <div class="col-sm-3"></div>
-            <div class="col-sm-2 bold">Measurements</div>
-            <div class="col-sm-3"></div>
+            <div class="col-sm-2 col-xs-2 bold">Pricing</div>
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-1 col-xs-1 red">MU</div>
+            <div class="col-sm-3 col-xs-3"></div>
+            <div class="col-sm-2 col-xs-2 bold">Measurements</div>
+            <div class="col-sm-3 col-xs-3"></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-2">Total Cost</div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-1 ReportCellHighLight">$100</div>
-            <div class="col-sm-2"></div>
-            <div class="col-sm-2">L</div>
-            <div class="col-sm-2">@Model.Length</div>
-            <div class="col-sm-1"></div>
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-2 col-xs-2">Total Cost</div>
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-1 col-xs-1 ReportCellHighLight">$100</div>
+            <div class="col-sm-2 col-xs-2"></div>
+            <div class="col-sm-2 col-xs-2">L</div>
+            <div class="col-sm-2 col-xs-2">@Model.Style.Length"</div>
+            <div class="col-sm-1 col-xs-1"></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-2 ">Target Retail</div>
-            <div class="col-sm-1 red">@Model.RetailRatio</div>
-            <div class="col-sm-1 ReportCellHighLight">$200</div>
-            <div class="col-sm-2"></div>
-            <div class="col-sm-2">W</div>
-            <div class="col-sm-2">@Model.Width</div>
-            <div class="col-sm-1"></div>
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-2 col-xs-2 ">Target Retail</div>
+            <div class="col-sm-1 col-xs-1 red">@Model.Style.RetailRatio</div>
+            <div class="col-sm-1 col-xs-1 ReportCellHighLight">$200</div>
+            <div class="col-sm-2 col-xs-2"></div>
+            <div class="col-sm-2 col-xs-2">W</div>
+            <div class="col-sm-2 col-xs-2">@Model.Style.Width"</div>
+            <div class="col-sm-1 col-xs-1"></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-2">Target Redline</div>
-            <div class="col-sm-1 red">@Model.RedlineRatio</div>
-            <div class="col-sm-1 ReportCellHighLight">$300</div>
-            <div class="col-sm-2"></div>
-            <div class="col-sm-2">Chain Length</div>
-            <div class="col-sm-2">@Model.ChainLength</div>
-            <div class="col-sm-1"></div>
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-2 col-xs-2">Target Redline</div>
+            <div class="col-sm-1 col-xs-1 red">@Model.Style.RedlineRatio</div>
+            <div class="col-sm-1 col-xs-1 ReportCellHighLight">$300</div>
+            <div class="col-sm-2 col-xs-2"></div>
+            <div class="col-sm-2 col-xs-2">Chain Length</div>
+            <div class="col-sm-2 col-xs-2">@Model.Style.ChainLength"</div>
+            <div class="col-sm-1 col-xs-1"></div>
         </div>
     </section>
     <section id="StyleReportCost">
         <div class="row">
-            <div class="col-sm-1 bold">Cost</div>
+            <div class="col-sm-1 col-xs-1 bold">Cost</div>
             <div class="col-sm-offset-11"></div>
         </div>
         <div class="row">
             <div class="col-sm-offset-1"></div>
-            <div class="col-sm-11"></div>
+            <div class="col-sm-1 col-xs-11"></div>
         </div>
     </section>
 
     <h4><b>Components</b></h4>
-    <p class="red">Under Construction</p>
+    <div>
+        <h3>Cost</h3>
+        <div class="row StyleReportComponentsRowHeader">
+            <div class="col-sm-2 col-xs-2">Metal</div>
+            <div class="col-sm-2 col-xs-2"></div>
+            <div class="col-sm-2 col-xs-2">Vendor</div>
+            <div class="col-sm-1 col-xs-1">Metal</div>
+            <div class="col-sm-1 col-xs-1">Price</div>
+            <div class="col-sm-1 col-xs-1">Labor</div>
+            <div class="col-sm-1 col-xs-1">Qty</div>
+            <div class="col-sm-2 col-xs-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.MetalComponent c in Model.Metals)
+        {
+            <div class="row StyleReportComponentsRow">
+                <div class="col-sm-2 col-xs-2 ">@c.Name</div>
+                <div class="col-sm-2 col-xs-2 "></div>
+                <div class="col-sm-2 col-xs-2 ">@c.Vendor</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Metal</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Price</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Labor</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Qty</div>
+                <div class="col-sm-2 col-xs-2 ">@c.Total</div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-sm-2 col-xs-2"><h4><b>Total Metals</b></h4></div>
+            <div class="col-sm-8 col-xs-8"></div>
+            <div class="col-sm-2 col-xs-2">@Model.MetalsTotal</div>
+        </div>
+        <div class="row StyleReportComponentsRowHeader">
+            <div class="col-sm-2 col-xs-2">Stones</div>
+            <div class="col-sm-2 col-xs-2"></div>
+            <div class="col-sm-2 col-xs-2">Vendor</div>
+            <div class="col-sm-1 col-xs-1">Ct Wt</div>
+            <div class="col-sm-1 col-xs-1">Size (cm)</div>
+            <div class="col-sm-1 col-xs-1">PPC/$</div>
+            <div class="col-sm-1 col-xs-1">Qty</div>
+            <div class="col-sm-2 col-xs-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.StoneComponent c in Model.Stones)
+        {
+            <div class="row StyleReportComponentsRow">
+                <div class="col-sm-2 col-xs-2 ">@c.Name</div>
+                <div class="col-sm-2 col-xs-2 "></div>
+                <div class="col-sm-2 col-xs-2 ">@c.Vendor</div>
+                <div class="col-sm-1 col-xs-1 ">@c.CtWt</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Size</div>
+                <div class="col-sm-1 col-xs-1 ">@c.PPC</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Qty</div>
+                <div class="col-sm-2 col-xs-2 ">@c.Total</div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-sm-2 col-xs-2"><h4><b>Total Stones</b></h4></div>
+            <div class="col-sm-8 col-xs-8"></div>
+            <div class="col-sm-2 col-xs-2">@Model.StonesTotal</div>
+        </div>
+
+        <div class="row StyleReportComponentsRowHeader">
+            <div class="col-sm-2 col-xs-2">Findings</div>
+            <div class="col-sm-3 col-xs-3"></div>
+            <div class="col-sm-2 col-xs-2">Vendor</div>
+            <div class="col-sm-1 col-xs-1">Metal</div>
+            <div class="col-sm-1 col-xs-1">Price</div>
+            <div class="col-sm-1 col-xs-1">Qty</div>
+            <div class="col-sm-2 col-xs-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.FindingsComponent c in Model.Findings)
+        {
+            <div class="row StyleReportComponentsRow">
+                <div class="col-sm-2 col-xs-2 ">@c.Name</div>
+                <div class="col-sm-3 col-xs-3 "></div>
+                <div class="col-sm-2 col-xs-2 ">@c.Vendor</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Metal</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Price</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Qty</div>
+                <div class="col-sm-2 col-xs-2 ">@c.Total</div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-sm-2 col-xs-2"><h4><b>Total Findings</b></h4></div>
+            <div class="col-sm-8 col-xs-8"></div>
+            <div class="col-sm-2 col-xs-2">@Model.FindingsTotal</div>
+        </div>
+
+        <div class="row StyleReportComponentsRowHeader">
+            <div class="col-sm-2 col-xs-2">Labor</div>
+            <div class="col-sm-5 col-xs-5"></div>
+            <div class="col-sm-1 col-xs-1">Price/PPH</div>
+            <div class="col-sm-1 col-xs-1">Price/PPC</div>
+            <div class="col-sm-1 col-xs-1">Qty</div>
+            <div class="col-sm-2 col-xs-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.LaborComponent c in Model.Labors)
+        {
+            <div class="row StyleReportComponentsRow">
+                <div class="col-sm-2 col-xs-2 ">@c.Name</div>
+                <div class="col-sm-5 col-xs-5 "></div>
+                <div class="col-sm-1 col-xs-1 ">@c.PPH</div>
+                <div class="col-sm-1 col-xs-1 ">@c.PPP</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Qty</div>
+                <div class="col-sm-2 col-xs-2 ">@c.Total</div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-sm-2 col-xs-2"><h4><b>Total Labor</b></h4></div>
+            <div class="col-sm-8 col-xs-8"></div>
+            <div class="col-sm-2 col-xs-2">@Model.LaborsTotal</div>
+        </div>
+
+        <div class="row StyleReportComponentsRowHeader">
+            <div class="col-sm-2 col-xs-2">Misc</div>
+            <div class="col-sm-6 col-xs-6"></div>
+            <div class="col-sm-1 col-xs-1">Price</div>
+            <div class="col-sm-1 col-xs-1">Qty</div>
+            <div class="col-sm-2 col-xs-2">Total</div>
+        </div>
+        @foreach (OJewelry.Models.MiscComponent c in Model.Miscs)
+        {
+            <div class="row StyleReportComponentsRow">
+                <div class="col-sm-2 col-xs-2 ">@c.Name</div>
+                <div class="col-sm-6 col-xs-6 "></div>
+                <div class="col-sm-1 col-xs-1 ">@c.PPP</div>
+                <div class="col-sm-1 col-xs-1 ">@c.Qty</div>
+                <div class="col-sm-2 col-xs-2 ">@c.Total</div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-sm-2 col-xs-2"><h4><b>Total Misc</b></h4></div>
+            <div class="col-sm-8 col-xs-8"></div>
+            <div class="col-sm-2 col-xs-2">@Model.MiscsTotal</div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2 col-xs-2"><h3><b>Total Cost</b></h3></div>
+            <div class="col-sm-8 col-xs-8"></div>
+            <div class="col-sm-2 col-xs-2">@Model.Total</div>
+        </div>
+    </div>
     <p></p>
 </div>
 
