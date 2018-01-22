@@ -4,26 +4,16 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create a new Jewelry Type for <i>@ViewBag.CompanyName</i></h2>
+<h2>Create a new Jewelry Type</h2>
 
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.CompanyId)
     <div class="form-horizontal">
         <h4>JewelryType</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @*
-        <div class="form-group">
-            @Html.LabelFor(model => model.Id, "CompanyId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CompanyId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        *@
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -41,7 +31,7 @@
 }
 
     <div>
-        @Html.ActionLink("Jewelry Types List", "Index", new { CompanyId = ViewBag.CompanyId })
+        @Html.ActionLink("Jewelry Types List", "Index")
     </div>
 
 @section Scripts {

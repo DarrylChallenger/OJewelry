@@ -4,12 +4,12 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Jewelry Types for <i>@ViewBag.CompanyName</i></h2>
+<h2>Jewelry Types</h2>
 
 <p>
     @{
-        int vbid = ViewBag.Id;
-        <text>@Html.ActionLink("Create New", "Create", new { CompanyId = vbid })</text>
+        int? vbid = ViewBag.Id;
+        <text>@Html.ActionLink("Create New", "Create")</text>
     }
 
 </p>
@@ -18,19 +18,12 @@
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Company.Name)
-        </th>
-        <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Company.Name)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
@@ -42,9 +35,3 @@
 
 </table>
 
-<div>
-    @{
-        String str = ViewBag.CompanyName + " Details";
-        <text>@Html.ActionLink(str, "Details", "Companies", new { id = ViewBag.Id }, null)</text>
-    }
-</div>

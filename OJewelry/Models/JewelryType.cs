@@ -21,10 +21,8 @@ namespace OJewelry.Models
         }
     
         public int Id { get; set; }
-        public Nullable<int> CompanyId { get; set; }
         public string Name { get; set; }
     
-        public virtual Company Company { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Style> Styles { get; set; }
     }

@@ -62,7 +62,7 @@ namespace OJewelry.Controllers
         {
             Collection co = db.Collections.Find(collectionId);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes);
             Style s = new Style()
             {
                 CollectionId = collectionId,
@@ -107,7 +107,7 @@ namespace OJewelry.Controllers
             Collection co = db.Collections.Find(sm.Style.CollectionId);
             sm.CompanyId = co.CompanyId;
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", sm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", sm.Style.JewelryTypeId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", sm.Style.JewelryTypeId);
             return View(sm);
         }
 
@@ -219,7 +219,7 @@ namespace OJewelry.Controllers
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypes = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.JewelryTypes = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
             return View(svm);
         }
 

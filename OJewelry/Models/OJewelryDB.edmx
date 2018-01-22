@@ -79,7 +79,6 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CompanyId" Type="int" />
           <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Memo">
@@ -225,18 +224,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_JewelryTypes_ToTable">
-          <End Role="Companies" Type="Self.Companies" Multiplicity="0..1" />
-          <End Role="JewelryTypes" Type="Self.JewelryTypes" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Companies">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JewelryTypes">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Memo_ToPresenters">
           <End Role="Presenters" Type="Self.Presenters" Multiplicity="1" />
           <End Role="Memo" Type="Self.Memo" Multiplicity="*" />
@@ -372,10 +359,6 @@
             <End Role="Vendors" EntitySet="Vendors" />
             <End Role="Components" EntitySet="Components" />
           </AssociationSet>
-          <AssociationSet Name="FK_JewelryTypes_ToTable" Association="Self.FK_JewelryTypes_ToTable">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="JewelryTypes" EntitySet="JewelryTypes" />
-          </AssociationSet>
           <AssociationSet Name="FK_Memo_ToPresenters" Association="Self.FK_Memo_ToPresenters">
             <End Role="Presenters" EntitySet="Presenters" />
             <End Role="Memo" EntitySet="Memo" />
@@ -464,7 +447,6 @@
           <NavigationProperty Name="Clients" Relationship="Self.FK_Clients_ToCompanies" FromRole="Companies" ToRole="Clients" />
           <NavigationProperty Name="Collections" Relationship="Self.FK_Collections_ToCompanies" FromRole="Companies" ToRole="Collections" />
           <NavigationProperty Name="Components" Relationship="Self.FK_Components_ToCompanies" FromRole="Companies" ToRole="Components" />
-          <NavigationProperty Name="JewelryTypes" Relationship="Self.FK_JewelryTypes_ToTable" FromRole="Companies" ToRole="JewelryTypes" />
           <NavigationProperty Name="Presenters" Relationship="Self.FK_Presenters_ToCompanies" FromRole="Companies" ToRole="Presenters" />
         </EntityType>
         <EntityType Name="Component">
@@ -504,9 +486,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CompanyId" Type="Int32" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Company" Relationship="Self.FK_JewelryTypes_ToTable" FromRole="JewelryTypes" ToRole="Companies" />
           <NavigationProperty Name="Styles" Relationship="Self.FK_Style_TOJewelryDBTypes" FromRole="JewelryTypes" ToRole="Styles" />
         </EntityType>
         <EntityType Name="Memo">
@@ -664,18 +644,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_JewelryTypes_ToTable">
-          <End Role="Companies" Type="Self.Company" Multiplicity="0..1" />
-          <End Role="JewelryTypes" Type="Self.JewelryType" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Companies">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="JewelryTypes">
-              <PropertyRef Name="CompanyId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Presenters_ToCompanies">
           <End Role="Companies" Type="Self.Company" Multiplicity="0..1" />
           <End Role="Presenters" Type="Self.Presenter" Multiplicity="*" />
@@ -811,10 +779,6 @@
             <End Role="Companies" EntitySet="Companies" />
             <End Role="Components" EntitySet="Components" />
           </AssociationSet>
-          <AssociationSet Name="FK_JewelryTypes_ToTable" Association="Self.FK_JewelryTypes_ToTable">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="JewelryTypes" EntitySet="JewelryTypes" />
-          </AssociationSet>
           <AssociationSet Name="FK_Presenters_ToCompanies" Association="Self.FK_Presenters_ToCompanies">
             <End Role="Companies" EntitySet="Companies" />
             <End Role="Presenters" EntitySet="Presenters" />
@@ -934,7 +898,6 @@
             <EntityTypeMapping TypeName="OJewelryDBModel.JewelryType">
               <MappingFragment StoreEntitySet="JewelryTypes">
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="CompanyId" ColumnName="CompanyId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -18,24 +18,15 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Company.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Company.Name)
-        </dd>
-
     </dl>
 
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.CompanyId)
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Jewelry Types List", "Index", new { CompanyId = Model.Id })
+            @Html.ActionLink("Jewelry Types List", "Index")
         </div>
     }
 </div>
