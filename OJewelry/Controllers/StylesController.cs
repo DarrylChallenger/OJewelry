@@ -120,101 +120,116 @@ namespace OJewelry.Controllers
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             db.Entry(svm.Style).State = EntityState.Modified;
             // Iterate thru the components
-            foreach (MetalComponent c in svm.Metals)
+            if (svm.Metals != null)
             {
-                switch (c.SVMState)
+                foreach (MetalComponent c in svm.Metals)
                 {
-                    case SVMStateEnum.Added:
-                        break;
-                    case SVMStateEnum.Clean:
-                        break;
-                    case SVMStateEnum.Deleted:
-                        break;
-                    case SVMStateEnum.Dirty:
-                        db.Entry(c.Comp).State = EntityState.Modified;
-                        break;
+                    switch (c.SVMState)
+                    {
+                        case SVMStateEnum.Added:
+                            break;
+                        case SVMStateEnum.Clean:
+                            break;
+                        case SVMStateEnum.Deleted:
+                            break;
+                        case SVMStateEnum.Dirty:
+                            db.Entry(c.Comp).State = EntityState.Modified;
+                            break;
+                    }
+                    // Update the Syle-Component Link
+                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                    sc.Quantity = c.Qty;
                 }
-                // Update the Syle-Component Link
-                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                sc.Quantity = c.Qty;
             }
-            foreach (StoneComponent c in svm.Stones)
+            if (svm.Stones != null)
             {
-                switch (c.SVMState)
+                foreach (StoneComponent c in svm.Stones)
                 {
-                    case SVMStateEnum.Added:
-                        break;
-                    case SVMStateEnum.Clean:
-                        break;
-                    case SVMStateEnum.Deleted:
-                        break;
-                    case SVMStateEnum.Dirty:
-                        db.Entry(c.Comp).State = EntityState.Modified;
-                        break;
+                    switch (c.SVMState)
+                    {
+                        case SVMStateEnum.Added:
+                            break;
+                        case SVMStateEnum.Clean:
+                            break;
+                        case SVMStateEnum.Deleted:
+                            break;
+                        case SVMStateEnum.Dirty:
+                            db.Entry(c.Comp).State = EntityState.Modified;
+                            break;
+                    }
+                    // Update the Syle-Component Link
+                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                    sc.Quantity = c.Qty;
                 }
-                // Update the Syle-Component Link
-                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                sc.Quantity = c.Qty;
             }
-            foreach (FindingsComponent c in svm.Findings)
+            if (svm.Findings != null)
             {
-                switch (c.SVMState)
+                foreach (FindingsComponent c in svm.Findings)
                 {
-                    case SVMStateEnum.Added:
-                        break;
-                    case SVMStateEnum.Clean:
-                        break;
-                    case SVMStateEnum.Deleted:
-                        break;
-                    case SVMStateEnum.Dirty:
-                        db.Entry(c.Comp).State = EntityState.Modified;
-                        break;
+                    switch (c.SVMState)
+                    {
+                        case SVMStateEnum.Added:
+                            break;
+                        case SVMStateEnum.Clean:
+                            break;
+                        case SVMStateEnum.Deleted:
+                            break;
+                        case SVMStateEnum.Dirty:
+                            db.Entry(c.Comp).State = EntityState.Modified;
+                            break;
+                    }
+                    // Update the Syle-Component Link
+                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                    sc.Quantity = c.Qty;
                 }
-                // Update the Syle-Component Link
-                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                sc.Quantity = c.Qty;
             }
-            foreach (LaborComponent c in svm.Labors)
+            if (svm.Labors != null)
             {
-                switch (c.SVMState)
+                foreach (LaborComponent c in svm.Labors)
                 {
-                    case SVMStateEnum.Added:
-                        break;
-                    case SVMStateEnum.Clean:
-                        break;
-                    case SVMStateEnum.Deleted:
-                        break;
-                    case SVMStateEnum.Dirty:
-                        db.Entry(c.Comp).State = EntityState.Modified;
-                        break;
+                    switch (c.SVMState)
+                    {
+                        case SVMStateEnum.Added:
+                            break;
+                        case SVMStateEnum.Clean:
+                            break;
+                        case SVMStateEnum.Deleted:
+                            break;
+                        case SVMStateEnum.Dirty:
+                            db.Entry(c.Comp).State = EntityState.Modified;
+                            break;
+                    }
+                    // Update the Syle-Component Link
+                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                    sc.Quantity = c.Qty;
                 }
-                // Update the Syle-Component Link
-                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                sc.Quantity = c.Qty;
             }
-            foreach (MiscComponent c in svm.Miscs)
+            if (svm.Miscs != null)
             {
-                switch (c.SVMState)
+                foreach (MiscComponent c in svm.Miscs)
                 {
-                    case SVMStateEnum.Added:
-                        break;
-                    case SVMStateEnum.Clean:
-                        break;
-                    case SVMStateEnum.Deleted:
-                        break;
-                    case SVMStateEnum.Dirty:
-                        db.Entry(c.Comp).State = EntityState.Modified;
-                        break;
+                    switch (c.SVMState)
+                    {
+                        case SVMStateEnum.Added:
+                            break;
+                        case SVMStateEnum.Clean:
+                            break;
+                        case SVMStateEnum.Deleted:
+                            break;
+                        case SVMStateEnum.Dirty:
+                            db.Entry(c.Comp).State = EntityState.Modified;
+                            break;
+                    }
+                    // Update the Syle-Component Link
+                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                    sc.Quantity = c.Qty;
                 }
-                // Update the Syle-Component Link
-                StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                sc.Quantity = c.Qty;
             }
             if (ModelState.IsValid)
             {
                 // Save changes, go to Home
                 db.SaveChanges();
-                return RedirectToAction("Index", "Home"); 
+                return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
             }
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;

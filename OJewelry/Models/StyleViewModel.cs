@@ -133,234 +133,251 @@ namespace OJewelry.Models
             Int32.TryParse(s, out int jtid);
             m.Style.JewelryTypeId = jtid;
             // build Metals
-            for (int i = 0; i < m.Metals.Count; i++)
+            if (m.Metals != null)
             {
-                sb.Clear();
-                sb.AppendFormat("Metals[{0}].Id", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int id);
-                m.Metals[i].Id = id;
-                m.Metals[i].CompanyId = coID;
+                for (int i = 0; i < m.Metals.Count; i++)
+                {
+                    sb.Clear();
+                    sb.AppendFormat("Metals[{0}].Id", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int id);
+                    m.Metals[i].Id = id;
+                    m.Metals[i].CompanyId = coID;
 
-                sb.Clear();
-                sb.AppendFormat("Metals[{0}].ComponentTypeId", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int ctid);
-                m.Metals[i].ComponentTypeId = ctid;
+                    sb.Clear();
+                    sb.AppendFormat("Metals[{0}].ComponentTypeId", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int ctid);
+                    m.Metals[i].ComponentTypeId = ctid;
 
-                sb.Clear();
-                sb.AppendFormat("Metals[{0}].Name", i);
-                s = request.Form.Get(sb.ToString());
-                m.Metals[i].Name = s;
-                sb.Clear();
-                sb.AppendFormat("Metals[{0}].Vendor", i);
-                s = request.Form.Get(sb.ToString());
-                m.Metals[i].Vendor = s;
-                sb.Clear();
-                sb.AppendFormat("Metals[{0}].VendorID", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int vId);
-                m.Metals[i].VendorID = vId;
-                sb.Clear();
-                sb.AppendFormat("Metals[{0}].Metal", i);
-                s = request.Form.Get(sb.ToString());
-                m.Metals[i].Metal = s;
-                sb.Clear();
-                sb.AppendFormat("Metals[{0}].Price", i);
-                s = request.Form.Get(sb.ToString());
-                Decimal.TryParse(s, out decimal price);
-                m.Metals[i].Price = price;
-                sb.Clear();
-                sb.AppendFormat("Metals[{0}].Labor", i);
-                s = request.Form.Get(sb.ToString());
-                Decimal.TryParse(s, out decimal labor);
-                m.Metals[i].Labor = labor;
-                sb.Clear();
-                sb.AppendFormat("Metals[{0}].Qty", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int q);
-                m.Metals[i].Qty = q;
-                m.Metals[i].Total = q * price + labor;
-                subtotal += m.Metals[i].Total;
+                    sb.Clear();
+                    sb.AppendFormat("Metals[{0}].Name", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Metals[i].Name = s;
+                    sb.Clear();
+                    sb.AppendFormat("Metals[{0}].Vendor", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Metals[i].Vendor = s;
+                    sb.Clear();
+                    sb.AppendFormat("Metals[{0}].VendorID", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int vId);
+                    m.Metals[i].VendorID = vId;
+                    sb.Clear();
+                    sb.AppendFormat("Metals[{0}].Metal", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Metals[i].Metal = s;
+                    sb.Clear();
+                    sb.AppendFormat("Metals[{0}].Price", i);
+                    s = request.Form.Get(sb.ToString());
+                    Decimal.TryParse(s, out decimal price);
+                    m.Metals[i].Price = price;
+                    sb.Clear();
+                    sb.AppendFormat("Metals[{0}].Labor", i);
+                    s = request.Form.Get(sb.ToString());
+                    Decimal.TryParse(s, out decimal labor);
+                    m.Metals[i].Labor = labor;
+                    sb.Clear();
+                    sb.AppendFormat("Metals[{0}].Qty", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int q);
+                    m.Metals[i].Qty = q;
+                    m.Metals[i].Total = q * price + labor;
+                    subtotal += m.Metals[i].Total;
+                }
             }
             m.MetalsTotal = subtotal;
             total += m.MetalsTotal;
             // build Stones
             subtotal = 0;
-            for (int i = 0; i < m.Stones.Count; i++)
+            if (m.Stones != null)
             {
-                sb.Clear();
-                sb.AppendFormat("Stones[{0}].Id", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int id);
-                m.Stones[i].Id = id;
-                m.Stones[i].CompanyId = coID;
+                for (int i = 0; i < m.Stones.Count; i++)
+                {
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].Id", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int id);
+                    m.Stones[i].Id = id;
+                    m.Stones[i].CompanyId = coID;
 
-                sb.Clear();
-                sb.AppendFormat("Stones[{0}].ComponentTypeId", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int ctid);
-                m.Stones[i].ComponentTypeId = ctid;
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].ComponentTypeId", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int ctid);
+                    m.Stones[i].ComponentTypeId = ctid;
 
-                sb.Clear();
-                sb.AppendFormat("Stones[{0}].Name", i);
-                s = request.Form.Get(sb.ToString());
-                m.Stones[i].Name = s;
-                sb.Clear();
-                sb.AppendFormat("Stones[{0}].Vendor", i);
-                s = request.Form.Get(sb.ToString());
-                m.Stones[i].Vendor = s;
-                sb.Clear();
-                sb.AppendFormat("Stones[{0}].VendorID", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int vId);
-                m.Stones[i].VendorID = vId;
-                sb.Clear();
-                sb.AppendFormat("Stones[{0}].CtWt", i);
-                Int32.TryParse(s, out int ctwt);
-                m.Stones[i].CtWt = ctwt;
-                sb.Clear();
-                sb.AppendFormat("Stones[{0}].Size", i);
-                s = request.Form.Get(sb.ToString());
-                m.Stones[i].Size = s;
-                sb.Clear();
-                sb.AppendFormat("Stones[{0}].PPC", i);
-                s = request.Form.Get(sb.ToString());
-                Decimal.TryParse(s, out decimal PPC);
-                m.Stones[i].PPC = PPC;
-                sb.Clear();
-                sb.AppendFormat("Stones[{0}].Qty", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int q);
-                m.Stones[i].Qty = q;
-                m.Stones[i].Total = q * PPC;
-                subtotal += m.Stones[i].Total;
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].Name", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Stones[i].Name = s;
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].Vendor", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Stones[i].Vendor = s;
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].VendorID", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int vId);
+                    m.Stones[i].VendorID = vId;
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].CtWt", i);
+                    Int32.TryParse(s, out int ctwt);
+                    m.Stones[i].CtWt = ctwt;
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].Size", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Stones[i].Size = s;
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].PPC", i);
+                    s = request.Form.Get(sb.ToString());
+                    Decimal.TryParse(s, out decimal PPC);
+                    m.Stones[i].PPC = PPC;
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].Qty", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int q);
+                    m.Stones[i].Qty = q;
+                    m.Stones[i].Total = q * PPC;
+                    subtotal += m.Stones[i].Total;
+                }
             }
             m.StonesTotal = subtotal;
             total += m.StonesTotal;
             // build Findings
             subtotal = 0;
-            for (int i = 0; i < m.Findings.Count; i++)
+            if (m.Findings != null)
             {
-                sb.Clear();
-                sb.AppendFormat("Findings[{0}].Id", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int id);
-                m.Findings[i].Id = id;
-                m.Findings[i].CompanyId = coID;
+                for (int i = 0; i < m.Findings.Count; i++)
+                {
+                    sb.Clear();
+                    sb.AppendFormat("Findings[{0}].Id", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int id);
+                    m.Findings[i].Id = id;
+                    m.Findings[i].CompanyId = coID;
 
-                sb.Clear();
-                sb.AppendFormat("Findings[{0}].ComponentTypeId", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int ctid);
-                m.Findings[i].ComponentTypeId = ctid;
+                    sb.Clear();
+                    sb.AppendFormat("Findings[{0}].ComponentTypeId", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int ctid);
+                    m.Findings[i].ComponentTypeId = ctid;
 
-                sb.Clear();
-                sb.AppendFormat("Findings[{0}].Name", i);
-                s = request.Form.Get(sb.ToString());
-                m.Findings[i].Name = s;
-                sb.Clear();
-                sb.AppendFormat("Findings[{0}].Vendor", i);
-                s = request.Form.Get(sb.ToString());
-                m.Findings[i].Vendor = s;
-                sb.Clear();
-                sb.AppendFormat("Findings[{0}].VendorID", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int vId);
-                m.Findings[i].VendorID = vId;
-                sb.Clear();
-                sb.AppendFormat("Findings[{0}].Metal", i);
-                s = request.Form.Get(sb.ToString());
-                m.Findings[i].Metal = s;
-                sb.Clear();
-                sb.AppendFormat("Findings[{0}].Price", i);
-                s = request.Form.Get(sb.ToString());
-                Decimal.TryParse(s, out decimal price);
-                m.Findings[i].Price = price;
-                sb.Clear();
-                sb.AppendFormat("Findings[{0}].Qty", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int q);
-                m.Findings[i].Qty = q;
-                m.Findings[i].Total = q * price;
-                subtotal += m.Findings[i].Total;
+                    sb.Clear();
+                    sb.AppendFormat("Findings[{0}].Name", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Findings[i].Name = s;
+                    sb.Clear();
+                    sb.AppendFormat("Findings[{0}].Vendor", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Findings[i].Vendor = s;
+                    sb.Clear();
+                    sb.AppendFormat("Findings[{0}].VendorID", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int vId);
+                    m.Findings[i].VendorID = vId;
+                    sb.Clear();
+                    sb.AppendFormat("Findings[{0}].Metal", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Findings[i].Metal = s;
+                    sb.Clear();
+                    sb.AppendFormat("Findings[{0}].Price", i);
+                    s = request.Form.Get(sb.ToString());
+                    Decimal.TryParse(s, out decimal price);
+                    m.Findings[i].Price = price;
+                    sb.Clear();
+                    sb.AppendFormat("Findings[{0}].Qty", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int q);
+                    m.Findings[i].Qty = q;
+                    m.Findings[i].Total = q * price;
+                    subtotal += m.Findings[i].Total;
+                }
             }
             m.FindingsTotal = subtotal;
             total += m.FindingsTotal;
+
             // build Labors
             subtotal = 0;
-            for (int i = 0; i < m.Labors.Count; i++)
+            if (m.Labors != null)
             {
-                sb.Clear();
-                sb.AppendFormat("Labors[{0}].Id", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int id);
-                m.Labors[i].Id = id;
-                m.Labors[i].CompanyId = coID;
+                for (int i = 0; i < m.Labors.Count; i++)
+                {
+                    sb.Clear();
+                    sb.AppendFormat("Labors[{0}].Id", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int id);
+                    m.Labors[i].Id = id;
+                    m.Labors[i].CompanyId = coID;
 
-                sb.Clear();
-                sb.AppendFormat("Labors[{0}].ComponentTypeId", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int ctid);
-                m.Labors[i].ComponentTypeId = ctid;
+                    sb.Clear();
+                    sb.AppendFormat("Labors[{0}].ComponentTypeId", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int ctid);
+                    m.Labors[i].ComponentTypeId = ctid;
 
-                sb.Clear();
-                sb.AppendFormat("Labors[{0}].Name", i);
-                s = request.Form.Get(sb.ToString());
-                m.Labors[i].Name = s;
-                sb.Clear();
-                sb.AppendFormat("Labors[{0}].PPH", i);
-                s = request.Form.Get(sb.ToString());
-                Decimal.TryParse(s, out decimal pph);
-                m.Labors[i].PPH = pph;
-                sb.Clear();
-                sb.AppendFormat("Labors[{0}].PPP", i);
-                s = request.Form.Get(sb.ToString());
-                Decimal.TryParse(s, out decimal ppc);
-                m.Labors[i].PPP = ppc;
-                sb.Clear();
-                sb.AppendFormat("Labors[{0}].Qty", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int q);
-                m.Labors[i].Qty = q;
-                m.Labors[i].Total = q * (ppc + pph);
-                subtotal += m.Labors[i].Total;
+                    sb.Clear();
+                    sb.AppendFormat("Labors[{0}].Name", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Labors[i].Name = s;
+                    sb.Clear();
+                    sb.AppendFormat("Labors[{0}].PPH", i);
+                    s = request.Form.Get(sb.ToString());
+                    Decimal.TryParse(s, out decimal pph);
+                    m.Labors[i].PPH = pph;
+                    sb.Clear();
+                    sb.AppendFormat("Labors[{0}].PPP", i);
+                    s = request.Form.Get(sb.ToString());
+                    Decimal.TryParse(s, out decimal ppc);
+                    m.Labors[i].PPP = ppc;
+                    sb.Clear();
+                    sb.AppendFormat("Labors[{0}].Qty", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int q);
+                    m.Labors[i].Qty = q;
+                    m.Labors[i].Total = q * (ppc + pph);
+                    subtotal += m.Labors[i].Total;
+                }
             }
-            // build Miscs
             m.LaborsTotal = subtotal;
             total += m.LaborsTotal;
+
             subtotal = 0;
-            for (int i = 0; i < m.Miscs.Count; i++)
+            // build Miscs
+            if (m.Miscs != null)
             {
-                sb.Clear();
-                sb.AppendFormat("Miscs[{0}].Id", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int id);
-                m.Miscs[i].Id = id;
-                m.Miscs[i].CompanyId = coID;
+                for (int i = 0; i < m.Miscs.Count; i++)
+                {
+                    sb.Clear();
+                    sb.AppendFormat("Miscs[{0}].Id", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int id);
+                    m.Miscs[i].Id = id;
+                    m.Miscs[i].CompanyId = coID;
 
-                sb.Clear();
-                sb.AppendFormat("Miscs[{0}].ComponentTypeId", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int ctid);
-                m.Miscs[i].ComponentTypeId = ctid;
+                    sb.Clear();
+                    sb.AppendFormat("Miscs[{0}].ComponentTypeId", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int ctid);
+                    m.Miscs[i].ComponentTypeId = ctid;
 
-                sb.Clear();
-                sb.AppendFormat("Miscs[{0}].Name", i);
-                s = request.Form.Get(sb.ToString());
-                m.Miscs[i].Name = s;
-                sb.Clear();
-                sb.AppendFormat("Miscs[{0}].PPP", i);
-                s = request.Form.Get(sb.ToString());
-                Decimal.TryParse(s, out decimal ppc);
-                m.Miscs[i].PPP = ppc;
-                sb.Clear();
-                sb.AppendFormat("Miscs[{0}].Qty", i);
-                s = request.Form.Get(sb.ToString());
-                Int32.TryParse(s, out int q);
-                m.Miscs[i].Qty = q;
-                m.Labors[i].Total = q * ppc;
-                subtotal += m.Labors[i].Total;
+                    sb.Clear();
+                    sb.AppendFormat("Miscs[{0}].Name", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Miscs[i].Name = s;
+                    sb.Clear();
+                    sb.AppendFormat("Miscs[{0}].PPP", i);
+                    s = request.Form.Get(sb.ToString());
+                    Decimal.TryParse(s, out decimal ppc);
+                    m.Miscs[i].PPP = ppc;
+                    sb.Clear();
+                    sb.AppendFormat("Miscs[{0}].Qty", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int q);
+                    m.Miscs[i].Qty = q;
+                    m.Labors[i].Total = q * ppc;
+                    subtotal += m.Labors[i].Total;
+                }
             }
             m.MiscsTotal = subtotal;
             total += m.MiscsTotal;
