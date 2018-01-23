@@ -83,6 +83,9 @@ namespace OJewelry.Models
     }
     public partial class ComponentMetaData
     {
+        [Display(Name ="Component Types")]
+        public int ComponentTypeId { get; set; }
+
         [Display(Name = "Name")]
         [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
@@ -120,8 +123,11 @@ namespace OJewelry.Models
         [Display(Name = "Metal")]
         public string FindingsMetal { get; set; }
 
+        [Display(Name = "Vendors")]
+        public int VendorId { get; set; }
+
     }
-    
+
     [MetadataType(typeof(ComponentTypeMetaData))]   // Component Type
     public partial class ComponentType
     {
@@ -251,8 +257,6 @@ namespace OJewelry.Models
 
         [Display(Name = "Collections")]
         public int CollectionId { get; set; }
-
-
     }
 
     [MetadataType(typeof(VendorMetaData))]
@@ -262,6 +266,9 @@ namespace OJewelry.Models
 
     public partial class VendorMetaData
     {
+        [Display(Name ="Vendors")]
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
 
