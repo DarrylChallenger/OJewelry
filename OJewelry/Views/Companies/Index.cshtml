@@ -7,7 +7,7 @@
 <h2>Company List for <i>User</i></h2>
 
 <p>
-    @Html.ActionLink("Create New Company", "Create")
+    @Html.ActionLink("Create New Company", "Create", new { @companyId = ViewBag.companyId })
 </p>
 <table class="table">
     <tr>
@@ -27,7 +27,8 @@
             @Html.ActionLink("Details", "Details", new { id = item.Id }) |
             @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
             @Html.ActionLink("Collections", "Index", "Collections", new { Companyid = item.Id }, null) |
-            @Html.ActionLink("Components", "Index", "Components", new { Companyid = item.Id }, null) 
+            @Html.ActionLink("Components", "Index", "Components", new { Companyid = item.Id }, null) |
+            @Html.ActionLink("Locations", "Index", "Presenters", new { companyId = item.Id }, null)
         </td>
     </tr>
 }

@@ -101,11 +101,12 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-
-            ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name");
+            CollectionModel cm = new CollectionModel()
+            {
+                CompanyId = id.Value,
+            };
             ViewBag.CompanyName = db.Companies.Find(id).Name;
-            ViewBag.comId = id.Value;
-            return View();
+            return View(cm);
         }
 
         // POST: Collections/Create
@@ -113,7 +114,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyId,Name")] Collection collection)
+        public ActionResult Create([Bind(Include = "Id,CompanyId,Name,CompanyId")] Collection collection)
         {
             if (ModelState.IsValid)
             {

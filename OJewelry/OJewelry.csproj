@@ -216,6 +216,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JewelryTypesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PresentersController.cs" />
     <Compile Include="Controllers\StylesController.cs" />
     <Compile Include="Controllers\VendorsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -422,6 +423,11 @@
     <Content Include="Views\Vendors\Details.cshtml" />
     <Content Include="Views\Vendors\Edit.cshtml" />
     <Content Include="Views\Vendors\Index.cshtml" />
+    <Content Include="Views\Presenters\Create.cshtml" />
+    <Content Include="Views\Presenters\Delete.cshtml" />
+    <Content Include="Views\Presenters\Details.cshtml" />
+    <Content Include="Views\Presenters\Edit.cshtml" />
+    <Content Include="Views\Presenters\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -53,54 +53,56 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PricePerHour)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PricePerPiece)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MetalMetal)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MetalLabor)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StonesCtWt)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StoneSize)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StonePPC)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FindingsMetal)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Company.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ComponentType.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Vendor.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePerHour)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePerPiece)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MetalMetal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MetalLabor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StonesCtWt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StoneSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StonePPC)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FindingsMetal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ComponentType.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vendor.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
 
-}
+    }
 
 </table>
+@Html.ActionLink("Companies List", "Index", "Companies")
