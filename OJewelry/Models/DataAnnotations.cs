@@ -95,13 +95,13 @@ namespace OJewelry.Models
         //[RegularExpression(@"(\.\d{2}){1}$")]
         public decimal? Price { get; set; }
 
-        [Display(Name = "$PPH")]
-        [Required(ErrorMessage = "Price is required.")]
+        [Display(Name = "$/Hour")]
+        [Required(ErrorMessage = "Hourly cost is required.")]
         //[RegularExpression(@"(\.\d{2}){1}$")]
         public Nullable<decimal> PricePerHour { get; set; }
 
-        [Display(Name = "$PPP")]
-        [Required(ErrorMessage = "Price is required.")]
+        [Display(Name = "$/Piece")]
+        [Required(ErrorMessage = "Price per piece is required.")]
         //[RegularExpression(@"(\.\d{2}){1}$")]
         public decimal? PricePerPiece { get; set; }
 
@@ -117,7 +117,7 @@ namespace OJewelry.Models
         [Display(Name = "Size")]
         public string StoneSize { get; set; }
 
-        [Display(Name = "$PPC")]
+        [Display(Name = "$/Piece")]
         public Nullable<decimal> StonePPC { get; set; }
 
         [Display(Name = "Metal")]
