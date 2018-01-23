@@ -142,6 +142,9 @@ namespace OJewelry.Models
     }
     public partial class JewelryTypeMetaData
     {
+        [Display(Name ="Jewelry Types")]
+        public int Id { get; set; }
+
         [Display(Name = "Name")]
         [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
@@ -242,6 +245,13 @@ namespace OJewelry.Models
         [Display(Name = "Quantity")]
         [Required(ErrorMessage = "Quantity is required.")]
         public int Quantity { get; set; }
+
+        [Display(Name = "Jewelry Types")]
+        public Nullable<int> JewelryTypeId { get; set; }
+
+        [Display(Name = "Collections")]
+        public int CollectionId { get; set; }
+
 
     }
 

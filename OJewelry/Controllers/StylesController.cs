@@ -61,12 +61,13 @@ namespace OJewelry.Controllers
         public ActionResult Create(int collectionId)
         {
             Collection co = db.Collections.Find(collectionId);
-            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes);
             Style s = new Style()
             {
                 CollectionId = collectionId,
             };
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
+            //ViewBag.JewelryTypes = new SelectList(db.JewelryTypes);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", s.JewelryTypeId);
             s.Collection = db.Collections.Find(collectionId);
             return View(s);
         }
