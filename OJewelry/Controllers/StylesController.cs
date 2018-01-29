@@ -309,10 +309,11 @@ namespace OJewelry.Controllers
                 Qty = style.Quantity,
                 Memod = style.Memos.Sum(s => s.Quantity)
             };
-
+            
             m.Memos = new List<MemoModel>();
             m.numPresentersWithStyle = 0;
-            foreach (Memo i in db.Memos)
+            
+            foreach (Memo i in db.Memos.Where(x => x.StyleID == style.Id).Include(x => x.Presenter))
             {
                 MemoModel mm = new MemoModel()
                 {
@@ -327,6 +328,7 @@ namespace OJewelry.Controllers
                 m.Memos.Add(mm);
                 m.numPresentersWithStyle++;
             }
+            
             m.Presenters = new List<SelectListItem>();
             m.CompanyId = style.Collection.CompanyId;
             m.NewExistingPresenterRadio = 2;
@@ -343,6 +345,7 @@ namespace OJewelry.Controllers
             }
             m.SendReturnMemoRadio = 1;
             m.PresenterName = "";
+            
             ViewBag.CollectionId = style.CollectionId;
             return View(m);
         }

@@ -16,6 +16,9 @@ namespace OJewelry.Models
         public String Vendor { get { if ((Comp.Vendor != null) && (Comp.Vendor.Name != null)) { return Comp.Vendor.Name; } else return ""; } set { if (Comp.Vendor != null) { Comp.Vendor.Name = value; } } }
         public int VendorID { get { if (Comp.Vendor != null) { return Comp.Vendor.Id; } else { return 0; } } set { if (Comp.Vendor != null) { Comp.Vendor.Id = value; } } }
         public String Metal { get { return Comp.MetalMetal ?? ""; } set { Comp.MetalMetal = value; } }
+
+        [Display(Name = "Price")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal? Price {
             get {
                 return Comp.Price ?? 0;
@@ -24,7 +27,8 @@ namespace OJewelry.Models
                 Comp.Price = value;
             }
         }
-        [Display(Name ="LaborXX")]
+
+        [Display(Name ="Labor")]
         public decimal? Labor { get { return Comp.MetalLabor ?? 0; } set { Comp.MetalLabor = value; } }
     }
     public class StoneComponent : StyleViewComponentModel
@@ -36,6 +40,9 @@ namespace OJewelry.Models
         public int VendorID { get { if (Comp.Vendor != null) { return Comp.Vendor.Id; } else { return 0; } } set { if (Comp.Vendor != null) { Comp.Vendor.Id = value; } } }
         public int? CtWt { get { return Comp.StonesCtWt ?? 0; } set { Comp.StonesCtWt = value; } }
         public String Size { get { return Comp.StoneSize ?? ""; } set { Comp.StoneSize = value; } }
+
+        [Display(Name = "$/Piece")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal? PPC { get { return Comp.StonePPC ?? 0; } set { Comp.StonePPC = value; } }
     }
     public class FindingsComponent : StyleViewComponentModel
@@ -46,6 +53,9 @@ namespace OJewelry.Models
         public String Vendor { get { if ((Comp.Vendor != null) && (Comp.Vendor.Name != null)) { return Comp.Vendor.Name; } else return ""; } set { if (Comp.Vendor != null) { Comp.Vendor.Name = value; } } }
         public int VendorID { get { if (Comp.Vendor != null) { return Comp.Vendor.Id; } else { return 0; } } set { if (Comp.Vendor != null) { Comp.Vendor.Id = value; } } }
         public String Metal { get { return Comp.FindingsMetal ?? ""; } set { Comp.FindingsMetal = value; } }
+
+        [Display(Name = "Price")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal? Price { get { return Comp.Price ?? 0; } set { Comp.Price = value; } }
     }
     public class LaborComponent : StyleViewComponentModel
@@ -53,7 +63,13 @@ namespace OJewelry.Models
         public LaborComponent() { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public LaborComponent(Component c) { Comp = c; }
         // PRICE/HR	PRICE/PC
+
+        [Display(Name = "$/Hour")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal? PPH { get { return Comp.PricePerHour ?? 0; } set { Comp.PricePerHour = value; } }
+
+        [Display(Name = "$/Piece")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal? PPP { get { return Comp.PricePerPiece ?? 0; } set { Comp.PricePerPiece = value; } }
     }
     public class MiscComponent : StyleViewComponentModel
@@ -61,6 +77,9 @@ namespace OJewelry.Models
         public MiscComponent() { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public MiscComponent(Component c) { Comp = c; }
         // PRICE/PC
+
+        [Display(Name = "$/Piece")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal? PPP { get { return Comp.PricePerPiece ?? 0; } set { Comp.PricePerPiece = value; } }
     }
 
