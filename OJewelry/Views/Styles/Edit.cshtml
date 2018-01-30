@@ -124,24 +124,24 @@
             <div class="col-sm-2">Total</div>
         </div>
         @for (int i = 0; i < Model.Castings.Count; i++)
-    {
-        OJewelry.Models.CastingComponent c = Model.Castings[i];
-        <div class="row ltbordered">
-            @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
-            <div class="col-sm-2 "></div>
-            <div class="col-sm-2 ">@c.VendorName </div>
-            <div class="col-sm-1 ">@c.MetalCode </div>
-            @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Castings[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
-            <div class="col-sm-2 ">@c.Total</div>
-        </div>
-        <div class="row">
-            <!--Validations Here-->
-        </div>
-}
-        <div class="row">
-            <div class="col-sm-2"><h4><b>Total Metals</b></h4></div>
+        {
+            OJewelry.Models.CastingComponent c = Model.Castings[i];
+            <div class="row ltbordered">
+                @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+                <div class="col-sm-2 "></div>
+                <div class="col-sm-2 ">@c.VendorName </div>
+                <div class="col-sm-1 ">@c.MetalCode </div>
+                @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Castings[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
+                <div class="col-sm-2 ">@c.Total</div>
+            </div>
+            <div class="row">
+                <!--Validations Here-->
+            </div>
+        }
+        <div class="row h4 bold">
+            <div class="col-sm-2"><b>Total Castings</b></div>
             <div class="col-sm-8"></div>
             <div class="col-sm-2">@Model.MetalsTotal</div>
         </div>
@@ -158,24 +158,24 @@
         </div>
         @for (int i = 0; i < Model.Stones.Count; i++)
         {
-        OJewelry.Models.StoneComponent c = Model.Stones[i];
-        <div class="row ltbordered">
-            @Html.EditorFor(model => model.Stones[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
-            <div class="col-sm-2 "></div>
-            @Html.EditorFor(model => model.Stones[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2" } })
-            @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Stones[i].Size, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Stones[i].PPC, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Stones[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
-            <div class="col-sm-2 ">@c.Total</div>
-        </div>
-        <div class="row">
-            <!--Validations Here-->
-        </div>
+            OJewelry.Models.StoneComponent c = Model.Stones[i];
+            <div class="row ltbordered">
+                @Html.EditorFor(model => model.Stones[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+                <div class="col-sm-2 "></div>
+                @Html.EditorFor(model => model.Stones[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2" } })
+                @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Stones[i].Size, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Stones[i].PPC, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Stones[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
+                <div class="col-sm-2 ">@c.Total</div>
+            </div>
+            <div class="row">
+                <!--Validations Here-->
+            </div>
 
         }
-        <div class="row">
-            <div class="col-sm-2"><h4><b>Total Stones</b></h4></div>
+        <div class="row h4 bold">
+            <div class="col-sm-2"><b>Total Stones</b></div>
             <div class="col-sm-8"></div>
             <div class="col-sm-2">@Model.StonesTotal</div>
         </div>
@@ -192,18 +192,18 @@
         @for (int i = 0; i < Model.Findings.Count; i++)
         {
             OJewelry.Models.FindingsComponent c = Model.Findings[i];
-        <div class="row ltbordered">
-            @Html.EditorFor(model => model.Findings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
-            <div class="col-sm-3 "></div>
-            @Html.EditorFor(model => model.Findings[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2" } })
-            @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Findings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Findings[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
-            <div class="col-sm-2 ">@c.Total</div>
+            <div class="row ltbordered">
+                @Html.EditorFor(model => model.Findings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+                <div class="col-sm-3 "></div>
+                @Html.EditorFor(model => model.Findings[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2" } })
+                @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Findings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Findings[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
+                <div class="col-sm-2 ">@c.Total</div>
 
-        </div>
-}
-        <div class="row">
+            </div>
+        }
+        <div class="row h4 bold">
             <div class="col-sm-2"><h4><b>Total Findings</b></h4></div>
             <div class="col-sm-8"></div>
             <div class="col-sm-2">@Model.FindingsTotal</div>
@@ -221,17 +221,17 @@
         @for (int i = 0; i < Model.Labors.Count; i++)
         {
             OJewelry.Models.LaborComponent c = Model.Labors[i];
-        <div class="row ltbordered">
-            @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
-            @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
-            <div class="col-sm-3 "></div>
-            @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Labors[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
-            <div class="col-sm-2 ">@c.Total</div>
-        </div>
-}
-        <div class="row">
+            <div class="row ltbordered">
+                @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+                @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
+                <div class="col-sm-3 "></div>
+                @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Labors[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
+                <div class="col-sm-2 ">@c.Total</div>
+            </div>
+        }
+        <div class="row h4 bold">
             <div class="col-sm-2"><h4><b>Total Labor</b></h4></div>
             <div class="col-sm-8"></div>
             <div class="col-sm-2">@Model.LaborsTotal</div>
@@ -245,36 +245,38 @@
             <div class="col-sm-1">Qty</div>
             <div class="col-sm-2">Total</div>
         </div>
-        @for (int i = 0; i < Model.Miscs.Count; i++) 
+        @for (int i = 0; i < Model.Miscs.Count; i++)
         {
             OJewelry.Models.MiscComponent c = Model.Miscs[i];
-        <div class="row ltbordered">
-            @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
-            @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
-            <div class="col-sm-4 "></div>
-            @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1" } })
-            @Html.EditorFor(model => model.Miscs[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
-            <div class="col-sm-2 ">@c.Total</div>
-        </div>
-}
-        <div class="row">
+            <div class="row ltbordered">
+                @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+                @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
+                <div class="col-sm-4 "></div>
+                @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1" } })
+                @Html.EditorFor(model => model.Miscs[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
+                <div class="col-sm-2 ">@c.Total</div>
+            </div>
+        }
+        <div class="row h4 bold">
             <div class="col-sm-2"><h4><b>Total Misc</b></h4></div>
             <div class="col-sm-8"></div>
             <div class="col-sm-2">@Model.MiscsTotal</div>
         </div>
 
-        <div class="row">
+        <div class="row h3 bold">
             <div class="col-sm-2"><h3><b>Total Cost</b></h3></div>
             <div class="col-sm-8"></div>
             <div class="col-sm-2">@Model.Total</div>
         </div>
     </div>
 
+    <!--
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Save" class="btn btn-default" />
         </div>
     </div>
+        -->
 </div>
 }
 

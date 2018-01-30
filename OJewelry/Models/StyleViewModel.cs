@@ -72,9 +72,9 @@ namespace OJewelry.Models
         [Display(Name ="Metal")]
         public String MetalCode { get; set; }
 
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
     }
-
     public class StoneComponent : StyleViewComponentModel
     {
         public StoneComponent() { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
@@ -102,7 +102,6 @@ namespace OJewelry.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal? Price { get { return Comp.Price ?? 0; } set { Comp.Price = value; } }
     }
-    
     public class LaborComponent 
     {
         private Labor labor { get; set; } 
@@ -125,10 +124,11 @@ namespace OJewelry.Models
 
         [Display(Name = "Quantity")]
         public int? Qty { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
 
     }
-
     public class MiscComponent
     {
         private Misc misc { get; set; }
@@ -147,6 +147,8 @@ namespace OJewelry.Models
 
         [Display(Name = "Quantity")]
         public int? Qty { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
     }
 
@@ -175,7 +177,10 @@ namespace OJewelry.Models
         public String Name { get { return Comp.Name; } set { Comp.Name = value; } }
         [Display(Name = "Quantity")]
         public int Qty { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
+
         public SVMStateEnum SVMState { get; set; }
     }
 
@@ -195,7 +200,10 @@ namespace OJewelry.Models
         public decimal FindingsTotal { get; set; }
         public decimal LaborsTotal { get; set; }
         public decimal MiscsTotal { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
+
         public SVMStateEnum SVMState { get; set; }
         public int CompanyId { get; set; }
     }
@@ -231,42 +239,42 @@ namespace OJewelry.Models
                 for (int i = 0; i < m.Castings.Count; i++)
                 {
                     sb.Clear();
-                    sb.AppendFormat("Metals[{0}].Id", i);
+                    sb.AppendFormat("Castings[{0}].Id", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int id);
                     m.Castings[i].Id = id;
 
                     sb.Clear();
-                    sb.AppendFormat("Metals[{0}].Name", i);
+                    sb.AppendFormat("Castings[{0}].Name", i);
                     s = request.Form.Get(sb.ToString());
                     m.Castings[i].Name = s;
 
                     sb.Clear();
-                    sb.AppendFormat("Metals[{0}].VendorId", i); // vendor id
+                    sb.AppendFormat("Castings[{0}].VendorId", i); // vendor id
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int vId);
                     m.Castings[i].VendorId= vId;
 
                     sb.Clear();
-                    sb.AppendFormat("Metals[{0}].MetalCodeID", i); // metalCode id
+                    sb.AppendFormat("Castings[{0}].MetalCodeID", i); // metalCode id
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int mcid);
                     m.Castings[i].MetalCodeId = mcid;
 
                     sb.Clear();
-                    sb.AppendFormat("Metals[{0}].Price", i);
+                    sb.AppendFormat("Castings[{0}].Price", i);
                     s = request.Form.Get(sb.ToString());
                     Decimal.TryParse(s, out decimal price);
                     m.Castings[i].Price = price;
 
                     sb.Clear();
-                    sb.AppendFormat("Metals[{0}].Labor", i);
+                    sb.AppendFormat("Castings[{0}].Labor", i);
                     s = request.Form.Get(sb.ToString());
                     Decimal.TryParse(s, out decimal labor);
                     m.Castings[i].Labor = labor;
 
                     sb.Clear();
-                    sb.AppendFormat("Metals[{0}].Qty", i);
+                    sb.AppendFormat("Castings[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int q);
                     m.Castings[i].Qty = q;
@@ -333,6 +341,7 @@ namespace OJewelry.Models
             }
             m.StonesTotal = subtotal;
             total += m.StonesTotal;
+
             // build Findings
             subtotal = 0;
             if (m.Findings != null)

@@ -530,9 +530,9 @@ namespace OJewelry.Controllers
                     case 2: // Stones
                         Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                         StoneComponent stscm = new StoneComponent(Comp);
-                        stscm.Qty = sc.Quantity.Value;
+                        stscm.Qty = sc.Quantity ?? 0;
                         t = stscm.PPC ?? 0;
-                        stscm.Total = sc.Quantity.Value * t;
+                        stscm.Total = stscm.Qty * t;
                         sm.StonesTotal += stscm.Total;
                         sm.Stones.Add(stscm);
                         sm.Total += stscm.Total;
@@ -540,9 +540,9 @@ namespace OJewelry.Controllers
                     case 3: // Findings
                         Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                         FindingsComponent fiscm = new FindingsComponent(Comp);
-                        fiscm.Qty = sc.Quantity.Value;
+                        fiscm.Qty = sc.Quantity ?? 0;
                         t = fiscm.Price ?? 0;
-                        fiscm.Total = sc.Quantity.Value * t;
+                        fiscm.Total = fiscm.Qty * t;
                         sm.FindingsTotal += fiscm.Total;
                         sm.Findings.Add(fiscm);
                         sm.Total += fiscm.Total;
@@ -558,7 +558,7 @@ namespace OJewelry.Controllers
             {
                 Labor lb = db.Labors.Find(sl.LaborId); // Stones and Findings
                 LaborComponent liscm = new LaborComponent(lb);
-                liscm.Qty = sl.Labor.Qty;
+                liscm.Qty = sl.Labor.Qty ?? 0;
                 t = liscm.PPH ?? 0;
                 t2 = liscm.PPP ?? 0;
                 liscm.Total = liscm.Qty.Value * (t + t2);
@@ -571,7 +571,7 @@ namespace OJewelry.Controllers
             {
                 Misc misc = db.Miscs.Find(sms.MiscId); // Stones and Findings
                 MiscComponent miscm = new MiscComponent(misc);
-                miscm.Qty = sms.Misc.Qty;
+                miscm.Qty = sms.Misc.Qty ?? 0;
                 t = miscm.PPP ?? 0;
                 miscm.Total = miscm.Qty.Value * t;
                 sm.MiscsTotal += miscm.Total;
