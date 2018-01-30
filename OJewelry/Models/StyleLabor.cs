@@ -6,16 +6,17 @@ namespace OJewelry.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("ACL")]
-    public partial class ACL
+    [Table("StyleLabor")]
+    public partial class StyleLabor
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
-        public int? UserId { get; set; }
+        public int StyleId { get; set; }
 
-        public int? CompanyId { get; set; }
+        public int LaborId { get; set; }
 
-        public virtual Company Company { get; set; }
+        public virtual Labor Labor { get; set; }
+
+        public virtual Style Style { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace OJewelry.Controllers
 {
     public class VendorsController : Controller
     {
-        private OJewelryDBEntities db = new OJewelryDBEntities();
+        private OJewelryDB db = new OJewelryDB();
 
         // GET: Vendors
         public ActionResult Index()

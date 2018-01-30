@@ -12,7 +12,7 @@ namespace OJewelry.Controllers
 {
     public class CollectionsController : Controller
     {
-        private OJewelryDBEntities db = new OJewelryDBEntities();
+        private OJewelryDB db = new OJewelryDB();
         // GET: Collections
         public ActionResult Index(int? CompanyId)
         {

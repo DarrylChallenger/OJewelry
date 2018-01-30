@@ -9,15 +9,16 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-   
+
 <div class="form-horizontal">
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.Style.Id)
     @Html.HiddenFor(model => model.Style.CollectionId)
     @Html.HiddenFor(model => model.Style.JewelryTypeId)
+    @Html.HiddenFor(model => model.Style.MetalWtUnitId)
     @Html.HiddenFor(model => model.CompanyId)
-    
+
     <div class="row">
         <div class="form-group">
             @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -52,10 +53,14 @@
                 @Html.ValidationMessageFor(model => model.Style.CollectionId, "", new { @class = "text-danger" })
             </div>
             @Html.LabelFor(model => model.Style.MetalWeight, "Metal Weight", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
+            <div class="col-md-2">
                 @Html.EditorFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Style.MetalWeight, "", new { @class = "text-danger" })
             </div>
+            <div class="col-md-1">
+                @Html.DropDownList("MetalWtUnitId", null, htmlAttributes: new { @class = "form-control" })
+            </div>
+
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -90,49 +95,49 @@
                 @Html.ValidationMessageFor(model => model.Style.ChainLength, "", new { @class = "text-danger" })
             </div>
 
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Style.RetailRatio, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.Style.RetailRatio, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Style.RetailRatio, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-        <div class="form-group">
             @Html.LabelFor(model => model.Style.RedlineRatio, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
                 @Html.EditorFor(model => model.Style.RedlineRatio, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Style.RedlineRatio, "", new { @class = "text-danger" })
             </div>
-            @Html.LabelFor(model => model.Style.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.Quantity, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.Quantity, "", new { @class = "text-danger" })
-            </div>
         </div>
     </div>
-        <div>
+    <div>
         <h3>Cost</h3>
         <div class="row StyleComponentsRowHeader">
-            <div class="col-sm-2">Metal</div>
+            <div class="col-sm-2">Casting</div>
             <div class="col-sm-2"></div>
-            <div class="col-sm-2">Vendor</div>
-            <div class="col-sm-1">Metal</div>
+            <div class="col-sm-2">Vendor (drpdwn)</div>
+            <div class="col-sm-1">Metal (drpdwn)</div>
             <div class="col-sm-1">Price</div>
             <div class="col-sm-1">Labor</div>
             <div class="col-sm-1">Qty</div>
             <div class="col-sm-2">Total</div>
         </div>
-        @foreach (OJewelry.Models.MetalComponent c in Model.Metals)
+        @for (int i = 0; i < Model.Castings.Count; i++)
     {
+        OJewelry.Models.CastingComponent c = Model.Castings[i];
         <div class="row ltbordered">
-            <div class="col-sm-2 ">@c.Name</div>
+            @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
             <div class="col-sm-2 "></div>
-            <div class="col-sm-2 ">@c.Vendor</div>
-            <div class="col-sm-1 ">@c.Metal</div>
-            <div class="col-sm-1 ">@c.Price</div>
-            <div class="col-sm-1 ">@c.Labor</div>
-            <div class="col-sm-1 ">@c.Qty</div>
+            <div class="col-sm-2 ">@c.VendorName </div>
+            <div class="col-sm-1 ">@c.MetalCode </div>
+            @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Castings[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
             <div class="col-sm-2 ">@c.Total</div>
+        </div>
+        <div class="row">
+            <!--Validations Here-->
         </div>
 }
         <div class="row">
@@ -140,29 +145,35 @@
             <div class="col-sm-8"></div>
             <div class="col-sm-2">@Model.MetalsTotal</div>
         </div>
+
         <div class="row StyleComponentsRowHeader">
             <div class="col-sm-2">Stones</div>
             <div class="col-sm-2"></div>
-            <div class="col-sm-2">Vendor</div>
+            <div class="col-sm-2">Vendor (drpdwn)</div>
             <div class="col-sm-1">Ct Wt</div>
             <div class="col-sm-1">Size</div>
             <div class="col-sm-1">PPC/$</div>
             <div class="col-sm-1">Qty</div>
             <div class="col-sm-2">Total</div>
         </div>
-        @foreach (OJewelry.Models.StoneComponent c in Model.Stones)
-    {
+        @for (int i = 0; i < Model.Stones.Count; i++)
+        {
+        OJewelry.Models.StoneComponent c = Model.Stones[i];
         <div class="row ltbordered">
-            <div class="col-sm-2 ">@c.Name</div>
+            @Html.EditorFor(model => model.Stones[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
             <div class="col-sm-2 "></div>
-            <div class="col-sm-2 ">@c.Vendor</div>
-            <div class="col-sm-1 ">@c.CtWt</div>
-            <div class="col-sm-1 ">@c.Size</div>
-            <div class="col-sm-1 ">@c.PPC</div>
-            <div class="col-sm-1 ">@c.Qty</div>
+            @Html.EditorFor(model => model.Stones[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2" } })
+            @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Stones[i].Size, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Stones[i].PPC, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Stones[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
             <div class="col-sm-2 ">@c.Total</div>
         </div>
-}
+        <div class="row">
+            <!--Validations Here-->
+        </div>
+
+        }
         <div class="row">
             <div class="col-sm-2"><h4><b>Total Stones</b></h4></div>
             <div class="col-sm-8"></div>
@@ -178,16 +189,18 @@
             <div class="col-sm-1">Qty</div>
             <div class="col-sm-2">Total</div>
         </div>
-        @foreach (OJewelry.Models.FindingsComponent c in Model.Findings)
-    {
+        @for (int i = 0; i < Model.Findings.Count; i++)
+        {
+            OJewelry.Models.FindingsComponent c = Model.Findings[i];
         <div class="row ltbordered">
-            <div class="col-sm-2 ">@c.Name</div>
+            @Html.EditorFor(model => model.Findings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
             <div class="col-sm-3 "></div>
-            <div class="col-sm-2 ">@c.Vendor</div>
-            <div class="col-sm-1 ">@c.Metal</div>
-            <div class="col-sm-1 ">@c.Price</div>
-            <div class="col-sm-1 ">@c.Qty</div>
+            @Html.EditorFor(model => model.Findings[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2" } })
+            @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Findings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Findings[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
             <div class="col-sm-2 ">@c.Total</div>
+
         </div>
 }
         <div class="row">
@@ -198,20 +211,23 @@
 
         <div class="row StyleComponentsRowHeader">
             <div class="col-sm-2">Labor</div>
-            <div class="col-sm-5"></div>
+            <div class="col-sm-2 ">Desc</div>
+            <div class="col-sm-3"></div>
             <div class="col-sm-1">Price/PPH</div>
             <div class="col-sm-1">Price/PPC</div>
             <div class="col-sm-1">Qty</div>
             <div class="col-sm-2">Total</div>
         </div>
-        @foreach (OJewelry.Models.LaborComponent c in Model.Labors)
-    {
+        @for (int i = 0; i < Model.Labors.Count; i++)
+        {
+            OJewelry.Models.LaborComponent c = Model.Labors[i];
         <div class="row ltbordered">
-            <div class="col-sm-2 ">@c.Name</div>
-            <div class="col-sm-5 "></div>
-            <div class="col-sm-1 ">@c.PPH</div>
-            <div class="col-sm-1 ">@c.PPP</div>
-            <div class="col-sm-1 ">@c.Qty</div>
+            @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+            @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
+            <div class="col-sm-3 "></div>
+            @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Labors[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
             <div class="col-sm-2 ">@c.Total</div>
         </div>
 }
@@ -223,18 +239,21 @@
 
         <div class="row StyleComponentsRowHeader">
             <div class="col-sm-2">Misc</div>
-            <div class="col-sm-6"></div>
+            <div class="col-sm-2">Desc</div>
+            <div class="col-sm-4"></div>
             <div class="col-sm-1">Price</div>
             <div class="col-sm-1">Qty</div>
             <div class="col-sm-2">Total</div>
         </div>
-        @foreach (OJewelry.Models.MiscComponent c in Model.Miscs)
-    {
+        @for (int i = 0; i < Model.Miscs.Count; i++) 
+        {
+            OJewelry.Models.MiscComponent c = Model.Miscs[i];
         <div class="row ltbordered">
-            <div class="col-sm-2 ">@c.Name</div>
-            <div class="col-sm-6 "></div>
-            <div class="col-sm-1 ">@c.PPP</div>
-            <div class="col-sm-1 ">@c.Qty</div>
+            @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+            @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
+            <div class="col-sm-4 "></div>
+            @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1" } })
+            @Html.EditorFor(model => model.Miscs[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
             <div class="col-sm-2 ">@c.Total</div>
         </div>
 }
@@ -251,7 +270,7 @@
         </div>
     </div>
 
-        <div class="form-group">
+    <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Save" class="btn btn-default" />
         </div>

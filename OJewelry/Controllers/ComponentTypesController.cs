@@ -12,7 +12,7 @@ namespace OJewelry.Controllers
 {
     public class ComponentTypesController : Controller
     {
-        private OJewelryDBEntities db = new OJewelryDBEntities();
+        private OJewelryDB db = new OJewelryDB();
 
         // GET: ComponentTypes
         public ActionResult Index()

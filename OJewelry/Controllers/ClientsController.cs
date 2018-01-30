@@ -12,7 +12,7 @@ namespace OJewelry.Controllers
 {
     public class ClientsController : Controller
     {
-        private OJewelryDBEntities dc = new OJewelryDBEntities();
+        private OJewelryDB dc = new OJewelryDB();
 
         // GET: Clients
         public ActionResult Index()

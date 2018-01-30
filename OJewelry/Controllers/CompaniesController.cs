@@ -13,7 +13,7 @@ namespace OJewelry.Controllers
     public class CompaniesController : Controller
     {
         //private ApplicationDbContext db = new ApplicationDbContext();
-        private OJewelryDBEntities db = new OJewelryDBEntities();
+        private OJewelryDB db = new OJewelryDB();
 
         // GET: Companies
         public ActionResult Index()

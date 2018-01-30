@@ -31,7 +31,7 @@ namespace OJewelry.Controllers
         public ActionResult ClientList()
         {
             ViewBag.Message = "Client List";
-            OJewelryDBEntities dc = new OJewelryDBEntities();
+            OJewelryDB dc = new OJewelryDB();
             var aClient = dc.Clients.Join(dc.Companies, cli => cli.CompanyID, com => com.Id,
                 (cli, com) => new
                 {
@@ -56,8 +56,8 @@ namespace OJewelry.Controllers
         public ActionResult CollectionListByCompany(int id)
         {
             ViewBag.Message = "Collection List for company";
-            
-            OJewelryDBEntities dc = new OJewelryDBEntities();
+
+            OJewelryDB dc = new OJewelryDB();
             CollectionViewModel m = new CollectionViewModel();
             Company co = dc.Companies.Find(id);
             m.CompanyId = co.Id;
@@ -99,7 +99,7 @@ namespace OJewelry.Controllers
             }
 
             // Move a Style in or out of Memo
-            OJewelryDBEntities dc = new OJewelryDBEntities();
+            OJewelryDB dc = new OJewelryDB();
             Style style = dc.Styles.Find(Id);
             MemoViewModel m = new MemoViewModel();
             m.style = new StyleModel()
@@ -212,7 +212,7 @@ namespace OJewelry.Controllers
         public ActionResult MemoStyle(MemoViewModel m)
         {
             ModelState.Clear();
-            OJewelryDBEntities dc = new OJewelryDBEntities();
+            OJewelryDB dc = new OJewelryDB();
             // populate style data
             Style sdb = dc.Styles.Find(m.style.Id);
             m.style.Name = sdb.StyleName;
@@ -351,7 +351,7 @@ namespace OJewelry.Controllers
             return View(m);
         }    
         
-        void GetPresenters(OJewelryDBEntities dc, MemoViewModel m, int CompanyId)
+        void GetPresenters(OJewelryDB dc, MemoViewModel m, int CompanyId)
         {
             m.Presenters = new List<SelectListItem>();
             foreach (Presenter i in dc.Presenters.Where(w => w.CompanyId == CompanyId))

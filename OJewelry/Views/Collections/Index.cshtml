@@ -58,7 +58,7 @@
                 <td>@Html.DisplayFor(modelItem => sty.Memod)</td> @*Add popup over non-zero memo to show where items are*@
                 <td>
                     @Html.ActionLink("Edit", "Edit", "Styles", new { id = sty.Id }, null) |
-                    @Html.ActionLink("Details", "Details", "Styles", new { id = sty.Id }, null) |
+                     @* @Html.ActionLink("Details", "Details", "Styles", new { id = sty.Id }, null) | *@
                     @Html.ActionLink("Delete", "Delete", "Styles", new { id = sty.Id }, null) |
                     @Html.ActionLink("Sell", "Sell", "Styles", new { id = sty.Id }, null) |
                     @Html.ActionLink("Memo", "Memo", "Styles", new { id = sty.Id }, null)

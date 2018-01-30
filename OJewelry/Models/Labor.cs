@@ -6,21 +6,31 @@ namespace OJewelry.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class JewelryType
+    [Table("Labor")]
+    public partial class Labor
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public JewelryType()
+        public Labor()
         {
-            Styles = new HashSet<Style>();
+            StyleLabors = new HashSet<StyleLabor>();
         }
 
-        public int Id { get; set; }
-
-        [Required]
         [StringLength(50)]
         public string Name { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Id { get; set; }
+
+        [StringLength(50)]
+        public string Desc { get; set; }
+
+        public decimal? PricePerHour { get; set; }
+
+        public decimal? PricePerPiece { get; set; }
+
+        public int? Qty { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Style> Styles { get; set; }
+        public virtual ICollection<StyleLabor> StyleLabors { get; set; }
     }
 }

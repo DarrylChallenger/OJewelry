@@ -12,7 +12,7 @@ namespace OJewelry.Controllers
 {
     public class StylesController : Controller
     {
-        private OJewelryDBEntities db = new OJewelryDBEntities();
+        private OJewelryDB db = new OJewelryDB();
 
         // GET: Styles
         public ActionResult Index(int CollectionId)
@@ -66,6 +66,7 @@ namespace OJewelry.Controllers
                 CollectionId = collectionId,
             };
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit");
             //ViewBag.JewelryTypes = new SelectList(db.JewelryTypes);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", s.JewelryTypeId);
             s.Collection = db.Collections.Find(collectionId);
@@ -109,6 +110,7 @@ namespace OJewelry.Controllers
             sm.CompanyId = co.CompanyId;
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", sm.Style.CollectionId);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", sm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", sm.Style.MetalWtUnitId);
             return View(sm);
         }
 
@@ -121,9 +123,11 @@ namespace OJewelry.Controllers
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             db.Entry(svm.Style).State = EntityState.Modified;
             // Iterate thru the components
+            /*
             if (svm.Metals != null)
             {
-                foreach (MetalComponent c in svm.Metals)
+                
+                foreach (MetalCode c in svm.Metals)
                 {
                     switch (c.SVMState)
                     {
@@ -142,6 +146,7 @@ namespace OJewelry.Controllers
                     sc.Quantity = c.Qty;
                 }
             }
+            */
             if (svm.Stones != null)
             {
                 foreach (StoneComponent c in svm.Stones)
@@ -184,6 +189,7 @@ namespace OJewelry.Controllers
                     sc.Quantity = c.Qty;
                 }
             }
+            /*
             if (svm.Labors != null)
             {
                 foreach (LaborComponent c in svm.Labors)
@@ -226,6 +232,7 @@ namespace OJewelry.Controllers
                     sc.Quantity = c.Qty;
                 }
             }
+            */
             if (ModelState.IsValid)
             {
                 // Save changes, go to Home
@@ -354,7 +361,7 @@ namespace OJewelry.Controllers
         public ActionResult Memo(MemoViewModel m)
         {
             ModelState.Clear();
-            OJewelryDBEntities dc = new OJewelryDBEntities();
+            OJewelryDB dc = new OJewelryDB();
             // populate style data
             Style sdb = dc.Styles.Find(m.style.Id);
             m.style.Name = sdb.StyleName;
@@ -481,33 +488,46 @@ namespace OJewelry.Controllers
 
         void PopulateStyleViewModel(int? id, StyleViewModel sm)
         {
-            sm.Metals = new List<MetalComponent>();
+            decimal t = 0, t2 = 0;
+            sm.Castings = new List<CastingComponent>();
             sm.Stones = new List<StoneComponent>();
             sm.Findings = new List<FindingsComponent>();
             sm.Labors = new List<LaborComponent>();
             sm.Miscs = new List<MiscComponent>();
+            // Get Casting Links
+            sm.Style.StyleCastings = db.StyleCastings.Where(x => x.StyleId == sm.Style.Id).ToList();
             // Get component links
             sm.Style.StyleComponents = db.StyleComponents.Where(x => x.StyleId == sm.Style.Id).ToList();
+            // Get Labor Links
+            sm.Style.StyleLabors = db.StyleLabors.Where(x => x.StyleId == sm.Style.Id).ToList(); ;
+            // Get Misc Links
+            sm.Style.StyleMiscs = db.StyleMiscs.Where(x => x.StyleId == sm.Style.Id).ToList(); ;
             // get components for each link
-            decimal t = 0, t2 = 0;
+            // Metals
+            foreach (StyleCasting sc in sm.Style.StyleCastings)
+            {
+                Casting casting = db.Castings.Find(sc.CastingId); // Castings
+                CastingComponent cstc = new CastingComponent(casting);
+                // Need to get the vendor and metal code
+                cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
+                cstc.MetalCode = db.MetalCodes.Find(casting.MetalCodeID).Code; // Metal Code
+                cstc.Qty = casting.Qty.Value;
+                t = cstc.Price ?? 0;
+                t2 = cstc.Labor ?? 0;
+                cstc.Total = cstc.Qty * (t + t2);
+                sm.MetalsTotal += cstc.Total;
+                sm.Castings.Add(cstc);
+                sm.Total += cstc.Total;
+            }
             foreach (StyleComponent sc in sm.Style.StyleComponents)
             {
-                //StyleViewComponentModel scm = new StyleViewComponentModel();
-                Component Comp = db.Components.Find(sc.ComponentId);
+                Component Comp = db.Components.Find(sc.ComponentId); // Stones and Findings
                 switch (sc.Component.ComponentType.Id)
-                {
-                    case 1:
-                        Comp.Vendor = db.Vendors.Find(Comp.VendorId);// ?? new Vendor();
-                        MetalComponent mtscm = new MetalComponent(Comp);
-                        mtscm.Qty = sc.Quantity.Value;
-                        t = mtscm.Price ?? 0;
-                        t2 = mtscm.Labor ?? 0;
-                        mtscm.Total = sc.Quantity.Value * t + t2;
-                        sm.MetalsTotal += mtscm.Total;
-                        sm.Metals.Add(mtscm);
-                        sm.Total += mtscm.Total;
+                {   
+                    case 1: // Metals (Castings)
                         break;
-                    case 2:
+                        
+                    case 2: // Stones
                         Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                         StoneComponent stscm = new StoneComponent(Comp);
                         stscm.Qty = sc.Quantity.Value;
@@ -517,7 +537,7 @@ namespace OJewelry.Controllers
                         sm.Stones.Add(stscm);
                         sm.Total += stscm.Total;
                         break;
-                    case 3:
+                    case 3: // Findings
                         Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                         FindingsComponent fiscm = new FindingsComponent(Comp);
                         fiscm.Qty = sc.Quantity.Value;
@@ -527,30 +547,40 @@ namespace OJewelry.Controllers
                         sm.Findings.Add(fiscm);
                         sm.Total += fiscm.Total;
                         break;
-                    case 4:
-                        LaborComponent liscm = new LaborComponent(Comp);
-                        liscm.Qty = sc.Quantity.Value;
-                        t = liscm.PPH ?? 0;
-                        t2 = liscm.PPP ?? 0;
-                        liscm.Total = sc.Quantity.Value * (t + t2);
-                        sm.LaborsTotal += liscm.Total;
-                        sm.Labors.Add(liscm);
-                        sm.Total += liscm.Total;
+                    case 4:  // Labor
                         break;
-                    default:
-                        MiscComponent miscm = new MiscComponent(Comp);
-                        miscm.Qty = sc.Quantity.Value;
-                        t = miscm.PPP ?? 0;
-                        miscm.Total = sc.Quantity.Value * t;
-                        sm.MiscsTotal += miscm.Total;
-                        sm.Miscs.Add(miscm);
-                        sm.Total += miscm.Total;
+                    default: // Misc
                         break;
                 }
             }
+            // Labor
+            foreach (StyleLabor sl in sm.Style.StyleLabors)
+            {
+                Labor lb = db.Labors.Find(sl.LaborId); // Stones and Findings
+                LaborComponent liscm = new LaborComponent(lb);
+                liscm.Qty = sl.Labor.Qty;
+                t = liscm.PPH ?? 0;
+                t2 = liscm.PPP ?? 0;
+                liscm.Total = liscm.Qty.Value * (t + t2);
+                sm.LaborsTotal += liscm.Total;
+                sm.Labors.Add(liscm);
+                sm.Total += liscm.Total;
+            }
+            // Misc
+            foreach (StyleMisc sms in sm.Style.StyleMiscs)
+            {
+                Misc misc = db.Miscs.Find(sms.MiscId); // Stones and Findings
+                MiscComponent miscm = new MiscComponent(misc);
+                miscm.Qty = sms.Misc.Qty;
+                t = miscm.PPP ?? 0;
+                miscm.Total = miscm.Qty.Value * t;
+                sm.MiscsTotal += miscm.Total;
+                sm.Miscs.Add(miscm);
+                sm.Total += miscm.Total;
+            }
         }
 
-        void GetPresenters(OJewelryDBEntities dc, MemoViewModel m, int CompanyId)
+        void GetPresenters(OJewelryDB dc, MemoViewModel m, int CompanyId)
         {
             m.Presenters = new List<SelectListItem>();
             foreach (Presenter i in dc.Presenters.Where(w => w.CompanyId == CompanyId))

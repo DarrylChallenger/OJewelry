@@ -6,16 +6,14 @@ namespace OJewelry.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("ACL")]
-    public partial class ACL
+    public partial class MetalCode
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
-        public int? UserId { get; set; }
+        [StringLength(6)]
+        public string Code { get; set; }
 
-        public int? CompanyId { get; set; }
-
-        public virtual Company Company { get; set; }
+        [StringLength(50)]
+        public string Desc { get; set; }
     }
 }

@@ -6,21 +6,31 @@ namespace OJewelry.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class JewelryType
+    public partial class Casting
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public JewelryType()
+        public Casting()
         {
-            Styles = new HashSet<Style>();
+            StyleCastings = new HashSet<StyleCasting>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string Name { get; set; }
 
+        public int? VendorId { get; set; }
+
+        public int? MetalCodeID { get; set; }
+
+        public decimal? Price { get; set; }
+
+        public decimal? Labor { get; set; }
+
+        public int? Qty { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Style> Styles { get; set; }
+        public virtual ICollection<StyleCasting> StyleCastings { get; set; }
     }
 }
