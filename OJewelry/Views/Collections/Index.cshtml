@@ -42,9 +42,7 @@
                 <b>@Html.DisplayFor(modelItem => item.Name)</b>
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
                 @Html.ActionLink("Add new Style", "Create", "Styles", new { collectionId = item.Id }, null) 
             </td>
         </tr>
@@ -58,8 +56,6 @@
                 <td>@Html.DisplayFor(modelItem => sty.Memod)</td> @*Add popup over non-zero memo to show where items are*@
                 <td>
                     @Html.ActionLink("Edit", "Edit", "Styles", new { id = sty.Id }, null) |
-                     @* @Html.ActionLink("Details", "Details", "Styles", new { id = sty.Id }, null) | *@
-                    @Html.ActionLink("Delete", "Delete", "Styles", new { id = sty.Id }, null) |
                     @Html.ActionLink("Sell", "Sell", "Styles", new { id = sty.Id }, null) |
                     @Html.ActionLink("Memo", "Memo", "Styles", new { id = sty.Id }, null)
                 </td>
@@ -69,7 +65,7 @@
 
 </table>
 <p>        
-    @Html.ActionLink("Companies List", "Index", "Companies")
+    @Html.ActionLink("Companies", "Index", "Companies")
 </p>
 <!--
 @*
