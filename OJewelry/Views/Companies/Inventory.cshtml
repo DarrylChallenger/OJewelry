@@ -1,0 +1,68 @@
+﻿@model OJewelry.Models.InventoryViewModel
+
+@{
+    ViewBag.Title = "Inventory";
+}
+
+<h2>Manage Inventory for the <i>@Model.CompanyName</i> Company</h2>
+
+
+<h3>Add Inventory</h3>
+<div class="formborder">
+    @using (Html.BeginForm("AddInventory", "Companies", new { CompanyId = Model.CompanyId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(model => model.CompanyId)
+        <span>Select File:</span>
+        @Html.TextBoxFor(model => model.AddPostedFile, new { type = "file" })
+        @*<input type="file" name="@Html.NameFor(model => model.AddPostedFile)" id="@Html.IdFor(model => model.AddPostedFile)" />*@
+        @Html.ValidationMessageFor(model => model.AddPostedFile, "", new { @class = "text-danger" })
+        <br />
+        <input type="submit" value="Upload" />
+        <br />
+    }
+</div>
+<hr />
+
+<h3>Move Inventory</h3>
+<div class="formborder">
+    @using (Html.BeginForm("MoveInventory", "Companies", new { CompanyId = Model.CompanyId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(model => model.CompanyId)
+        <div class="form-group">
+            From dropdown
+            @Html.DropDownListFor(model => model.FromLocationId, Model.FromLocations)
+            To dropdown
+            @Html.DropDownListFor(model => model.ToLocationId, Model.ToLocations)
+        </div>
+        <span>Select File:</span>
+        @Html.TextBoxFor(model => model.MovePostedFile, new { type = "file" })
+        @Html.ValidationMessageFor(model => model.MovePostedFile, "", new { @class = "text-danger" })
+        <br />
+        <input type="submit" value="Upload" />
+        <br />
+    }
+</div>
+<hr />
+
+<div>
+    <span style="color:green">@ViewBag.Message</span>
+</div>
+
+
+@*
+    <h3>Sell Inventory</h3>
+    <hr />
+*@
+
+@if(Model.Errors.Count() != 0)
+{  
+<h3>Errors</h3>
+    foreach(string s in Model.Errors)
+    {
+        <p class="text-danger">@s</p>
+    }
+}
+<div>
+    @Html.ActionLink("Companies", "Index")
+</div>
+
