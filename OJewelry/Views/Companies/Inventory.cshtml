@@ -49,20 +49,25 @@
 </div>
 
 
-@*
-    <h3>Sell Inventory</h3>
-    <hr />
-*@
-
-@if(Model.Errors.Count() != 0)
-{  
-<h3>Errors</h3>
-    foreach(string s in Model.Errors)
+<p></p>
+<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#InventoryErrors">Errors</button>
+<div id="InventoryErrors" class="collapse">
+    <h3>Errors</h3>
+    @if (Model.Errors.Count() != 0)
     {
-        <p class="text-danger">@s</p>
+        foreach (string s in Model.Errors)
+        {
+            <p class="text-danger">@s</p>
+        }
+    } else
+    {
+        <p>No errors</p>
     }
-}
+
+</div>
+
 <div>
+    @Html.ActionLink("Inventory Report", "InventoryReport", new { CompanyId = Model.CompanyId }) |
     @Html.ActionLink("Companies", "Index")
 </div>
 

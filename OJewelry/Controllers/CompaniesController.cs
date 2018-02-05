@@ -132,9 +132,7 @@ namespace OJewelry.Controllers
             }
             InventoryViewModel ivm = new InventoryViewModel();
             ivm.CompanyId = CompanyId.Value;
-            ivm.CompanyName = db.Companies.Find(CompanyId).Name;
-            ivm.FromLocations = new SelectList(db.Presenters, "Id", "Name");
-            ivm.ToLocations = new SelectList(db.Presenters, "Id", "Name");
+            ivm = SetPresentersLists(ivm);
             return View("Inventory", ivm);
         }
 
@@ -144,155 +142,7 @@ namespace OJewelry.Controllers
             try
             {
                 String error;
-                if (ModelState.IsValid)
-                {
-                    // open file
-
-                    Package spreadsheetPackage = Package.Open(ivm.AddPostedFile.FileName, FileMode.Open, FileAccess.Read);
-
-                    // Open a SpreadsheetDocument based on a package.
-                    using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(spreadsheetPackage))
-                    {
-                        // validate file as spreadsheet
-                        WorkbookPart wbPart = spreadsheetDocument.WorkbookPart;
-                        Workbook wb = wbPart.Workbook;
-                        SharedStringTablePart stringtable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
-                        List<Style> styles = new List<Style>();
-                        List<Collection> colls = new List<Collection>();
-                        foreach (Sheet sheet in wb.Sheets)
-                        {
-                            WorksheetPart wsp = (WorksheetPart) wbPart.GetPartById(sheet.Id);
-                            Worksheet worksheet = wsp.Worksheet;
-                            if (CellMatches("A1", worksheet, stringtable, "Style") &&
-                                (CellMatches("B1", worksheet, stringtable, "Name")) &&
-                                (CellMatches("C1", worksheet, stringtable, "JewelryType")) &&
-                                (CellMatches("D1", worksheet, stringtable, "Collection")) &&
-                                (CellMatches("E1", worksheet, stringtable, "Description")) &&
-                                (CellMatches("F1", worksheet, stringtable, "Retail")) &&
-                                (CellMatches("G1", worksheet, stringtable, "Qty")))
-                            { 
-                                if (worksheet.Descendants<Row>().Count() >= 2)
-                                {
-                                    for (int i = 1,  j=2; i <  worksheet.Descendants<Row>().Count(); i++, j=i+1) /* Add checks for empty values */
-                                    {
-                                        //process each cell in cols 1-5
-                                        Style style = new Style();
-                                        Collection collection = new Collection();
-                                        //StyleNum
-                                        Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).First();
-                                        style.StyleNum = GetStringVal(cell, stringtable);
-                                        
-                                        // Style Name
-                                        cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).First();
-                                        style.StyleName = GetStringVal(cell, stringtable);
-                                        
-                                        // Jewelry Type - find a jewelry type with the same name or reject
-                                        cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).First();
-                                        string JewelryTypeName = GetStringVal(cell, stringtable);
-                                        int JewelryTypeId = GetJewelryTypeId(JewelryTypeName);
-                                        if (JewelryTypeId == -1)
-                                        {
-                                            error = "The Jewelry Type [" + JewelryTypeName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
-                                            ivm.Errors.Add(error);
-                                            continue; // add this row of this sheet to error list
-                                        } else
-                                        {
-                                            style.JewelryTypeId = JewelryTypeId;
-                                        }
-                                        // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
-                                        cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).First();
-                                        string CollectionName = GetStringVal(cell, stringtable);
-                                        int CollectionId = GetCollectionId(CollectionName);
-                                        if (CollectionId == -1)
-                                        {
-                                            error = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
-                                            ivm.Errors.Add(error);
-                                            continue; // add this row of this sheet to error list
-                                        }
-                                        else {
-                                            style.CollectionId = CollectionId;
-                                            // Add coll here 
-                                            // colls.Add(collection);
-                                        }
-                                        // Descrription
-                                        cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).First();
-                                        style.Desc = GetStringVal(cell, stringtable);
-                                        
-                                        // Retail - Oh oh, not stored, only computed! Add new column just for retail cost :(
-                                        cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).First();
-                                        string retail = GetStringVal(cell, stringtable);
-                                        
-                                        // Quantity 
-                                        cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).First();
-                                        style.Quantity = GetIntVal(cell);
-                                        styles.Add(style);
-                                        
-                                    }
-                                } else { // row count < 2
-                                    error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
-                                    ivm.Errors.Add(error);
-                                }
-                            } else { // incorrect headers
-                                error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the New Style Template";
-                                ivm.Errors.Add(error);
-                            }
-                        }
-                        // process collections and styles
-                        // new collection
-                        foreach (Collection c in colls) // should be empty for now as I'm not allowing new collections
-                        {
-                            if (db.Collections.Where(x => x.CompanyId == ivm.CompanyId && x.Name == c.Name).Count() == 0)
-                            {
-                                db.Collections.Add(c);
-                            }
-                        }
-                        // existing style - if style already exists, just update the quant
-                        foreach (Style s in styles)
-                        {
-                            Collection c = db.Collections.Find(s.CollectionId);
-                            int count = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Count();
-                            if (count == 1)
-                            {
-                                Style sty = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Single();
-                                sty.Quantity += s.Quantity;
-                            }
-                            // new sytle
-                            if (count == 0)
-                            {
-                                db.Styles.Add(s); 
-                            }
-                            if (count > 1)
-                            {
-                                error = "Something went wrong trying to update a style quantity [" + s.StyleNum + "]. Count = [" + count + "].";
-                                ivm.Errors.Add(error);
-                            }
-                        }
-                        // Done processing, update db
-                        if (ivm.Errors.Count() == 0)
-                        {
-                            db.SaveChanges();
-                            ViewBag.Message += ivm.AddPostedFile.FileName + " added!";
-
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                ViewBag.Message += ("Exception[" +e.ToString()+ "]");
-            } finally {
-                ivm.CompanyName = db.Companies.Find(ivm.CompanyId).Name;
-                ivm.FromLocations = new SelectList(db.Presenters, "Id", "Name");
-                ivm.ToLocations = new SelectList(db.Presenters, "Id", "Name");
-            }
-            return View("Inventory", ivm);
-        }
-
-        [HttpPost]
-        public ActionResult MoveInventory(InventoryViewModel ivm, HttpPostedFileBase postedFile)
-        {
-            try
-            {
-                String error;
-                if (ModelState.IsValid)
+                if (isValidAddModel())//(ModelState.IsValid)
                 {
                     // open file
 
@@ -311,71 +161,244 @@ namespace OJewelry.Controllers
                         {
                             WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
                             Worksheet worksheet = wsp.Worksheet;
-                            if (CellMatches("A1", worksheet, stringtable, "Style") &&
-                                CellMatches("B1", worksheet, stringtable, "Description") &&
-                                CellMatches("C1", worksheet, stringtable, "Retail") &&
-                                CellMatches("D1", worksheet, stringtable, "Qty"))
+                            int rc = worksheet.Descendants<Row>().Count();
+                            if (rc != 0)
                             {
-                                if (worksheet.Descendants<Row>().Count() >= 2)
+                                if (CellMatches("A1", worksheet, stringtable, "Style") &&
+                                (CellMatches("B1", worksheet, stringtable, "Name")) &&
+                                (CellMatches("C1", worksheet, stringtable, "JewelryType")) &&
+                                (CellMatches("D1", worksheet, stringtable, "Collection")) &&
+                                (CellMatches("E1", worksheet, stringtable, "Description")) &&
+                                (CellMatches("F1", worksheet, stringtable, "Retail")) &&
+                                (CellMatches("G1", worksheet, stringtable, "Qty")))
                                 {
-                                    for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                    if (worksheet.Descendants<Row>().Count() >= 2)
                                     {
-                                        //process each cell in cols 1-4
-                                        Style style = new Style();
+                                        for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                        {
+                                            //process each cell in cols 1-5
+                                            Style style = new Style();
+                                            Collection collection = new Collection();
+                                            //StyleNum
+                                            Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).First();
+                                            style.StyleNum = GetStringVal(cell, stringtable);
 
-                                        //StyleNum
-                                        Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).First();
-                                        style.StyleNum = GetStringVal(cell, stringtable);
-                                        
-                                        // Descrription
-                                        cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).First();
-                                        style.Desc = GetStringVal(cell, stringtable);
+                                            // Style Name
+                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).First();
+                                            style.StyleName = GetStringVal(cell, stringtable);
 
-                                        // Retail - Oh oh, not stored, only computed! Add new column just for retail cost :(
-                                        cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).First();
-                                        string retail = GetStringVal(cell, stringtable);
+                                            // Jewelry Type - find a jewelry type with the same name or reject
+                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).First();
+                                            string JewelryTypeName = GetStringVal(cell, stringtable);
+                                            int JewelryTypeId = GetJewelryTypeId(JewelryTypeName);
+                                            if (JewelryTypeId == -1)
+                                            {
+                                                error = "The Jewelry Type [" + JewelryTypeName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
+                                                ivm.Errors.Add(error);
+                                                continue; // add this row of this sheet to error list
+                                            }
+                                            else
+                                            {
+                                                style.JewelryTypeId = JewelryTypeId;
+                                            }
+                                            // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
+                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).First();
+                                            string CollectionName = GetStringVal(cell, stringtable);
+                                            int CollectionId = GetCollectionId(CollectionName);
+                                            if (CollectionId == -1)
+                                            {
+                                                error = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
+                                                ivm.Errors.Add(error);
+                                                continue; // add this row of this sheet to error list
+                                            }
+                                            else
+                                            {
+                                                style.CollectionId = CollectionId;
+                                                // Add coll here 
+                                                // colls.Add(collection);
+                                            }
+                                            // Descrription
+                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).First();
+                                            style.Desc = GetStringVal(cell, stringtable);
 
-                                        // Quantity 
-                                        cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).First();
-                                        style.Quantity = GetIntVal(cell);
-                                        styles.Add(style);
+                                            // Retail - Oh oh, not stored, only computed! Add new column just for retail cost :(
+                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).First();
+                                            string retail = GetStringVal(cell, stringtable);
+
+                                            // Quantity 
+                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).First();
+                                            style.Quantity = GetIntVal(cell);
+                                            styles.Add(style);
+
+                                        }
                                     }
-                                } else { // row count < 2
-                                    error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
+                                    else
+                                    { // row count < 2
+                                        error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
+                                        ivm.Errors.Add(error);
+                                    }
+                                }
+                                else
+                                { // incorrect headers
+                                    error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the New Style Template";
                                     ivm.Errors.Add(error);
                                 }
-                            } else { // incorrect headers
-                                error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the New Style Template";
+                            }
+                            else
+                            {
+                                // empty sheet
+                                error = "The sheet [" + sheet.Name + "] is empty. Please use the 'New Style' Template";
+                                ModelState.AddModelError("AddPostedFile", error);
                                 ivm.Errors.Add(error);
+                            }
+                            // process collections and styles
+                            // new collection
+                            foreach (Collection c in colls) // should be empty for now as I'm not allowing new collections
+                            {
+                                if (db.Collections.Where(x => x.CompanyId == ivm.CompanyId && x.Name == c.Name).Count() == 0)
+                                {
+                                    db.Collections.Add(c);
+                                }
+                            }
+                            // existing style - if style already exists, just update the quant
+                            foreach (Style s in styles)
+                            {
+                                Collection c = db.Collections.Find(s.CollectionId);
+                                int count = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Count();
+                                if (count == 1)
+                                {
+                                    Style sty = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Single();
+                                    sty.Quantity += s.Quantity;
+                                }
+                                // new sytle
+                                if (count == 0)
+                                {
+                                    db.Styles.Add(s);
+                                }
+                                if (count > 1)
+                                {
+                                    error = "Something went wrong trying to update a style quantity [" + s.StyleNum + "]. Count = [" + count + "].";
+                                    ivm.Errors.Add(error);
+                                }
+                            }
+                            // Done processing, update db
+                            if (ivm.Errors.Count() == 0)
+                            {
+                                db.SaveChanges();
+                                ViewBag.Message += ivm.AddPostedFile.FileName + " added!";
+
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                ViewBag.Message += ("Exception[" +e.ToString()+ "]");
+            } finally {
+                ivm = SetPresentersLists(ivm);
+            }
+            return View("Inventory", ivm);
+        }
+
+        [HttpPost]
+        public ActionResult MoveInventory(InventoryViewModel ivm, HttpPostedFileBase postedFile)
+        {
+            try
+            {
+                String error;
+                if (isValidMoveModel())//(ModelState.IsValid)
+                {
+                    // open file
+
+                    Package spreadsheetPackage = Package.Open(ivm.MovePostedFile.FileName, FileMode.Open, FileAccess.Read);
+
+                    // Open a SpreadsheetDocument based on a package.
+                    using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(spreadsheetPackage))
+                    {
+                        // validate file as spreadsheet
+                        WorkbookPart wbPart = spreadsheetDocument.WorkbookPart;
+                        Workbook wb = wbPart.Workbook;
+                        SharedStringTablePart stringtable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+                        List<Style> styles = new List<Style>();
+                        List<Collection> colls = new List<Collection>();
+                        foreach (Sheet sheet in wb.Sheets)
+                        {
+                            WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
+                            Worksheet worksheet = wsp.Worksheet;
+                            int rc = worksheet.Descendants<Row>().Count();
+                            if (rc != 0)
+                            {
+                                int q = worksheet.Descendants<Column>().Count();
+                                if ((true) && //worksheet.Descendants<Column>().Count() >= 4) &&
+                                    (CellMatches("A1", worksheet, stringtable, "Style") &&
+                                    CellMatches("B1", worksheet, stringtable, "Description") &&
+                                    CellMatches("C1", worksheet, stringtable, "Retail") &&
+                                    CellMatches("D1", worksheet, stringtable, "Qty")))
+                                {
+                                    if (worksheet.Descendants<Row>().Count() >= 2)
+                                    {
+                                        for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                        {
+                                            //process each cell in cols 1-4
+                                            Style style = new Style();
+
+                                            //StyleNum
+                                            Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).First();
+                                            style.StyleNum = GetStringVal(cell, stringtable);
+
+                                            // Descrription
+                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).First();
+                                            style.Desc = GetStringVal(cell, stringtable);
+
+                                            // Retail - Oh oh, not stored, only computed! Add new column just for retail cost :(
+                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).First();
+                                            string retail = GetStringVal(cell, stringtable);
+
+                                            // Quantity 
+                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).First();
+                                            style.Quantity = GetIntVal(cell);
+                                            styles.Add(style);
+                                        }
+                                    }
+                                    else
+                                    { // row count < 2
+                                        error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
+                                        ivm.Errors.Add(error);
+                                        ModelState.AddModelError("MovePostedFile", error);
+                                    }
+                                }
+                                else
+                                { // incorrect headers
+                                    error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the New Style Template";
+                                    ivm.Errors.Add(error);
+                                    ModelState.AddModelError("MovePostedFile", error);
+                                }
+                            } else
+                            {
+                                // empty sheet
+                                error = "The sheet [" + sheet.Name + "] is empty. Please use the 'Move Inventory' Template";
+                                ivm.Errors.Add(error);
+                                ModelState.AddModelError("MovePostedFile", error);
                             }
                         }
                         // process moves
                         foreach (Style s in styles)
                         {
-                            Style theStyle = db.Styles.Include("Collection").Where(x => x.StyleNum == s.StyleNum && s.Collection.CompanyId == ivm.CompanyId).SingleOrDefault();
-                            Presenter from, to;
-                            from = db.Presenters.Find(ivm.FromLocationId);
-                            to = db.Presenters.Find(ivm.ToLocationId);
-                            //// if moving from home
-                            //// if moving to home
-                            //// if moving from and to memo'd
-                            //// if selling
+                            //List<Collection> colist = db.Collections.Where(x => x.CompanyId == ivm.CompanyId).Include("Styles").ToList();
+                            Style theStyle = db.Styles.Include("Collection").Where(x => x.StyleNum == s.StyleNum).Where(y => y.Collection.CompanyId == ivm.CompanyId).SingleOrDefault();
 
-                            /* 
-                             * note: current memos are memo transactions. 
-                             * Change so that Presenters have a style/qty relationship in a new table. 
-                             */
-
-
-                            // find the from memos
-                            int fromqty = db.Memos.Where(x => x.Id == ivm.FromLocationId).Sum(y => y.Quantity);
-                            // if qty in from < qty, error
-                            if (fromqty < s.Quantity)
+                            if (theStyle == null)
                             {
-                                error = "Too few items in style [" + s.StyleNum + "].";
+                                error = "The style [" + s.StyleNum + "] is not found.";
                                 ivm.Errors.Add(error);
                                 continue;
                             }
+                            // update desc and retail if blank in DB
+                            if (theStyle.Desc == null) theStyle.Desc = s.Desc;
+                            // should we always update retail?
+                            //if (theStyle.Retail == null) theStyle.Retail = s.Retail;  
+                            //// if moving from home
+                            int moveQty = s.Quantity;
+
                             // if from == to, error
                             if (ivm.FromLocationId == ivm.ToLocationId)
                             {
@@ -383,18 +406,75 @@ namespace OJewelry.Controllers
                                 ivm.Errors.Add(error);
                                 continue;
                             }
-                            // OK  ...
-                            // from -= qty, to += qty
-                            // update desc and retail if blank in DB
-                            if (theStyle.Desc == null) theStyle.Desc = s.Desc;
-                            //if (theStyle.Retail == null) theStyle.Retail = s.Retail;  // should we always update retail?
 
+                            // from -= qty, to += qty
+                            Memo fromMemo, toMemo;
+                            // if moving from home, create a memo. If moving to home, decrease memo qty/remove the memo
+                            if(ivm.FromLocationId == 0) // get the quant from syles
+                            {
+                                if (moveQty <= theStyle.Quantity)
+                                {
+                                    theStyle.Quantity -= moveQty;
+                                }
+                                else
+                                {
+                                    // if qty in from < qty, error
+                                    error = "Too few items (" + theStyle.Quantity + ") in style [" + s.StyleNum + "] - cannot move " + moveQty + ".";
+                                    ivm.Errors.Add(error);
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                fromMemo = db.Memos.Where(x => x.PresenterID == ivm.FromLocationId && x.StyleID == theStyle.Id).SingleOrDefault();
+                                if ((fromMemo != null) && (moveQty <= fromMemo.Quantity))
+                                {
+                                    fromMemo.Quantity -= moveQty;
+                                    if (fromMemo.Quantity == 0)
+                                    {
+                                        db.Memos.Remove(fromMemo);
+                                    }
+                                }
+                                else
+                                {
+                                    Presenter f = db.Presenters.Find(ivm.FromLocationId);
+                                    error = "Too few items (" + (fromMemo == null ? 0 : fromMemo.Quantity  )+ ") in style '" + s.StyleNum + "' at " + f.Name + " - cannot move " + moveQty + ".";
+                                ivm.Errors.Add(error);
+                                continue;
+                                }
+                            }
+                            // if moving to home
+                            if (ivm.ToLocationId == 0)
+                            {
+                                theStyle.Quantity += moveQty;
+                            } else if (ivm.ToLocationId == -1) {
+                                // if moving to sold
+                                // make a new ledger entry
+                            } else {
+                                // if moving to other location
+                                toMemo = db.Memos.Where(x => x.PresenterID == ivm.ToLocationId && x.StyleID == theStyle.Id).SingleOrDefault();
+                                if (toMemo == null)
+                                {
+                                    toMemo = new Memo()
+                                    {
+                                        PresenterID = ivm.ToLocationId,
+                                        StyleID = theStyle.Id,
+                                        Date = DateTime.Now,
+                                        Quantity = moveQty,
+                                        Notes = ""
+                                    };
+                                    db.Memos.Add(toMemo);
+                                } else
+                                {
+                                    toMemo.Quantity += moveQty;
+                                }
+                            }
                         }
                         // Done processing, update db
                         if (ivm.Errors.Count() == 0)
                         {
                             db.SaveChanges();
-                            ViewBag.Message += ivm.AddPostedFile.FileName + " added!";
+                            ViewBag.Message += ivm.MovePostedFile.FileName + " added!";
 
                         }
                     }
@@ -406,11 +486,24 @@ namespace OJewelry.Controllers
             }
             finally
             {
-                ivm.CompanyName = db.Companies.Find(ivm.CompanyId).Name;
-                ivm.FromLocations = new SelectList(db.Presenters, "Id", "Name");
-                ivm.ToLocations = new SelectList(db.Presenters, "Id", "Name");
+                ivm = SetPresentersLists(ivm);
             }
             return View("Inventory", ivm);
+        }
+
+        public ActionResult InventoryReport(int? CompanyId)
+        {
+            if (CompanyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (CompanyId == 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            InventoryReportModel irm = new InventoryReportModel();
+            irm.styles = db.Styles.Join(db.Memos, s => s, m => m, (s, m) => new { Id = s.Id, StyleNum = s.StyleNum, Quantity = s.Quantity });
+            return View(irm);
         }
 
         protected override void Dispose(bool disposing)
@@ -576,6 +669,63 @@ namespace OJewelry.Controllers
                 return -1;
             }
             return co.Id;
+        }
+
+        InventoryViewModel SetPresentersLists(InventoryViewModel ivm)
+        {
+            Company co = db.Companies.Find(ivm.CompanyId);
+            ivm.CompanyName = co.Name;
+            List<Presenter> tpl = db.Presenters.Where(x => x.CompanyId == ivm.CompanyId).ToList();
+            Presenter pSo = new Presenter();
+            pSo.Id = 0;
+            pSo.Name = ivm.CompanyName;
+            tpl.Insert(0, pSo);
+            List<Presenter> fpl = tpl.ToList();
+            ivm.FromLocations = new SelectList(fpl, "Id", "Name");
+            Presenter pCo = new Presenter();
+            pCo.CompanyId = -1;
+            pCo.Name = "SOLD";
+            tpl.Add(pCo);
+            ivm.ToLocations = new SelectList(tpl, "Id", "Name");
+            return ivm;
+        }
+
+        bool isValidAddModel()
+        {
+            bool b = true;
+            // Iterate thru ModelState: if errors in Add, then there is a problem
+            foreach (KeyValuePair<string, ModelState> m in ModelState)
+            {
+                if (m.Key == "AddPostedFile" && m.Value.Errors.Count != 0)
+                {
+                    b =  false;
+                }
+                if (m.Key == "MovePostedFile" && m.Value.Errors.Count != 0)
+                {
+                    m.Value.Errors.Clear();
+                }
+
+            }
+            return b;
+        }
+
+        bool isValidMoveModel()
+        {
+            bool b = true;
+            // Iterate thru ModelState: if errors in From, To, or Move, then there is a problem
+            foreach (KeyValuePair<string, ModelState> m in ModelState)
+            {
+                if (m.Key == "MovePostedFile" && m.Value.Errors.Count != 0)
+                {
+                    b = false;
+                }
+                if (m.Key == "AddPostedFile" && m.Value.Errors.Count != 0)
+                {
+                    m.Value.Errors.Clear();
+                }
+
+            }
+            return b;
         }
 
     }

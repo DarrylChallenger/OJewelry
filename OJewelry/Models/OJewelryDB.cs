@@ -256,5 +256,7 @@ namespace OJewelry.Models
                 .Property(e => e.Email)
                 .IsUnicode(false);
         }
+
+        public System.Data.Entity.DbSet<OJewelry.Models.MemoModel> MemoModels { get; set; }
     }
 }

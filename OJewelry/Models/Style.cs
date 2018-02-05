@@ -57,7 +57,7 @@ namespace OJewelry.Models
 
         public int Quantity { get; set; }
 
-        public decimal? RetailPrice { get; set; }
+        //public decimal? RetailPrice { get; set; }
 
         public virtual Collection Collection { get; set; }
 

@@ -441,6 +441,7 @@
     <Content Include="Views\Presenters\Index.cshtml" />
     <Content Include="Views\Shared\_AdminPartial.cshtml" />
     <Content Include="Views\Companies\Inventory.cshtml" />
+    <Content Include="Views\Companies\InventoryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
