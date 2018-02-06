@@ -9,7 +9,7 @@ using System.Web.Mvc;
 namespace OJewelry.Models
 {
     public class InventoryViewModel
-    { 
+    {
         public InventoryViewModel()
         {
             Errors = new List<string>();
@@ -33,16 +33,37 @@ namespace OJewelry.Models
 
     public class InventoryReportModel
     {
-        public List<Style> styles;
-        public List<Presenter> locations;
-        public List<LQ> locationQuantsbystyle;
+        public List<irmStyle> styles { get; set; }
+        public List<irmLocation> locations { get; set; }
+        public List<irmLS> locationQuantsbystyle { get; set; }
+        public int CompanyId { get; set; }
+        public string CompanyName { get; set; }
     }
 
-    public class LQ
+    public class irmStyle
     {
+        public int StyleId { get; set; }
+        //public int PresenterId { get; set; }
         public string StyleNum { get; set; }
+        public string StyleName { get; set; }
+        public string StyleDesc { get; set; }
+        public int StyleQuantity { get; set; }
+    }
+
+    public class irmLocation
+    {
+        public int PresenterId { get; set; }
+        public string PresenterName { get; set; }
+    }
+
+    public class irmLS
+    {
+        public int StyleId { get; set; }
+        public int PresenterId { get; set; }
+        public string StyleNum { get; set; }
+        public int StyleQuantity { get; set; }
         public string LocationName { get; set; }
-        public int Qty { get; set; }
+        public int MemoQty { get; set; }
     }
 }
 

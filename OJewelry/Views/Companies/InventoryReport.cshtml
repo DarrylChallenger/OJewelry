@@ -1,60 +1,45 @@
-﻿@model IEnumerable<OJewelry.Models.InventoryReportModel>
+﻿@model OJewelry.Models.InventoryReportModel
 
 @{
     ViewBag.Title = "InventoryReport";
 }
 
-<h2>InventoryReport</h2>
+<h2>Inventory Report for the <i>@Model.CompanyName</i> Company</h2>
 
 <table class="table">
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.PresenterName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PresenterPhone)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PresenterEmail)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ReturnQty)
-        </th>
-        <th></th>
+        <th>Style</th>
+        <th>Name</th>
+        <th>Retail</th>
+        <th>@Model.CompanyName</th>
+        <!--Loop thru Memo locations-->
+        @foreach (OJewelry.Models.irmLocation l in Model.locations)
+        {
+            <th>@l.PresenterName</th>
+        }
+        <th>SOLD</th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.PresenterName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PresenterPhone)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PresenterEmail)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Quantity)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Notes)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ReturnQty)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (OJewelry.Models.irmStyle s in Model.styles)
+    {
+        <tr>
+            <td>@s.StyleNum</td>
+            <td>@s.StyleName</td>
+            <td>Retail</td>
+            <td>@s.StyleQuantity</td>
+            @foreach (OJewelry.Models.irmLocation l in Model.locations)
+            {
+                OJewelry.Models.irmLS cell = @Model.locationQuantsbystyle.Where(x => x.StyleId == s.StyleId && x.PresenterId == l.PresenterId).SingleOrDefault();
+                string qty = "-";
+                if (cell != null) @qty = cell.MemoQty.ToString();
+                <td>@qty</td>
+            }
+            <td>SOLD</td>
+        </tr>
+        <tr></tr>
+    }
 
 </table>
+
+@Html.ActionLink("Inventory", "Inventory", new { CompanyId = Model.CompanyId })
+

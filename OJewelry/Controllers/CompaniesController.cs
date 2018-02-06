@@ -502,7 +502,77 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", "Home");
             }
             InventoryReportModel irm = new InventoryReportModel();
-            irm.styles = db.Styles.Join(db.Memos, s => s, m => m, (s, m) => new { Id = s.Id, StyleNum = s.StyleNum, Quantity = s.Quantity });
+            irm.styles = db.Styles.
+                Join(db.Collections,
+                x => x.CollectionId,
+                cl => cl.Id,
+                (x, cl) => new { StyleId = x.Id,
+                    StyleNum = x.StyleNum,
+                    StyleQuantity = x.Quantity,
+                    StyleName = x.StyleName,
+                    StyleDesc = x.Desc,
+                    x.CollectionId,
+                    cl.CompanyId}).
+                    Where(x => x.CompanyId == CompanyId).
+                    Join(db.Companies,
+                x => x.CompanyId,
+                cp => cp.Id,
+                (x, cp) => new irmStyle()
+                {
+                    StyleId = x.StyleId,
+                    StyleNum = x.StyleNum,
+                    StyleQuantity = x.StyleQuantity,
+                    StyleName = x.StyleName,
+                    StyleDesc = x.StyleDesc
+                }).Distinct().ToList();
+
+            // irmStyle() { StyleId = s.Id, StyleNum = s.StyleNum, StyleQuantity = s.Quantity, StyleName = s.StyleName, StyleDesc = s.Desc, s.CollectionId }
+            irm.locations = db.Styles.Join(
+                db.Memos,
+                s => s.Id,
+                m => m.StyleID,
+                (s, m) => new { m.PresenterID }).Join(
+                db.Presenters,
+                x => x.PresenterID,
+                p => p.Id,
+                (x, p) => new { PresenterId = p.Id, PresenterName = p.Name, p.CompanyId }).Where(x => x.CompanyId == CompanyId)
+                .Where(x => x.CompanyId == CompanyId).Join(
+                db.Companies,
+                x => x.CompanyId,
+                c => c.Id,
+                (x, c) => new irmLocation() { PresenterId = x.PresenterId, PresenterName = x.PresenterName }).Distinct().ToList();
+            irm.locationQuantsbystyle = db.Styles.Join(
+                db.Memos,
+                s => s.Id,
+                m => m.StyleID,
+                (s, m) => new { m.PresenterID, m.Quantity, s.Id, s.StyleNum, sQty = s.Quantity }).Join(
+                db.Presenters,
+                x => x.PresenterID,
+                p => p.Id,
+                (x, p) => new { StyleId = x.Id,
+                    PresenterId = p.Id,
+                    StyleNum = x.StyleNum,
+                    LocationName = p.Name,
+                    MemoQty = x.Quantity,
+                    StyleQuantity = x.sQty,
+                    p.CompanyId
+                }).Where(x => x.CompanyId == CompanyId).Where(x => x.CompanyId == CompanyId).Join(
+                db.Companies,
+                x => x.CompanyId,
+                c => c.Id,
+                (x, c) => new irmLS()
+                {
+                    StyleId = x.StyleId,
+                    PresenterId = x.PresenterId,
+                    StyleNum = x.StyleNum,
+                    LocationName = x.LocationName,
+                    MemoQty = x.MemoQty,
+                    StyleQuantity = x.StyleQuantity
+                }).
+                Distinct().OrderBy(x => x.LocationName).OrderBy(x => x.StyleNum).ToList();
+            irm.CompanyId = CompanyId.Value;
+            irm.CompanyName = db.Companies.Find(CompanyId.Value).Name;
+            // need a style x location 2d array
             return View(irm);
         }
 
