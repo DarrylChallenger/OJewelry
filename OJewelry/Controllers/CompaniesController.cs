@@ -11,6 +11,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
 using System.IO.Packaging;
 using System.IO;
+using DocumentFormat.OpenXml;
 
 namespace OJewelry.Controllers
 {
@@ -518,12 +519,154 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            InventoryReportModel irm = SetIRM(CompanyId.Value);
+            return View(irm);
+        }
+
+        public FileResult ExportInventoryReport(int? CompanyId)
+        {
+            if (CompanyId == null)
+            {
+                //return RedirectToAction("Index", "Home");
+            }
+            if (CompanyId == 0)
+            {
+                //return RedirectToAction("Index", "Home");
+            }
+            InventoryReportModel irm = SetIRM(CompanyId.Value);
+            byte[] b;
+            // save the doc on local storage (blob)
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
+                {
+                    // Build Excel File
+                    WorkbookPart workbookPart = document.AddWorkbookPart();
+                    workbookPart.Workbook = new Workbook();
+
+                    WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    worksheetPart.Worksheet = new Worksheet(new SheetData());
+
+                    Sheets sheets = document.WorkbookPart.Workbook.AppendChild(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
+
+                    Sheet sheet = new Sheet()
+                    {
+                        Id = workbookPart.GetIdOfPart(worksheetPart),
+                        SheetId = 1,
+                        Name = irm.CompanyName + " Inventory" // as of " + DateTime.Now.ToShortDateString()
+                    };
+                    sheets.Append(sheet);
+
+                    Worksheet worksheet = new Worksheet();
+                    SheetData sd = new SheetData();
+
+                    // Date row
+                    Row row = new Row();
+                    Cell cell;
+                    // Save Col A for image
+                    cell = SetCellVal("A2", "Date: " + DateTime.Now.ToString()); 
+                    row.Append(cell);
+                    sd.Append(row);
+                    char ch;
+                    string loc;
+                    int rr;
+                    // Header row
+                    row = new Row();
+                    cell = SetCellVal("B2", "Style"); row.Append(cell);
+                    cell = SetCellVal("C2", "Name"); row.Append(cell);
+                    cell = SetCellVal("D2", "Retail"); row.Append(cell);
+                    cell = SetCellVal("E2", irm.CompanyName); row.Append(cell);
+                    for (int i = 0; i < irm.locations.Count(); i++)
+                    {
+                        ch = (char)(((int)'F') + i);
+                        loc = ch + "2";
+                        cell = SetCellVal(loc, irm.locations[i].PresenterName);
+                        row.Append(cell);
+                    }
+                    ch = (char)(((int)'F') + irm.locations.Count());
+                    loc = ch + "2";
+                    cell = SetCellVal(loc, "SOLD");
+                    row.Append(cell);
+                    sd.Append(row);
+
+                    // Loop thru styles
+                    for (int i = 0; i < irm.styles.Count; i++)
+                    {
+                        row = new Row();
+                        rr = 3 + i;
+                        loc = "B" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleNum); row.Append(cell);
+                        loc = "C" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleName); row.Append(cell);
+                        loc = "D" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StylePrice); row.Append(cell);
+                        loc = "E" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleQuantity); row.Append(cell);
+                        
+                        for (int j = 0; j < irm.locations.Count; j++)
+                        {
+                            ch = (char)(((int)'F') + j);
+                            loc = ch.ToString() + rr.ToString();
+                            irmLS irmls = irm.locationQuantsbystyle.
+                                Where(x => x.StyleId == irm.styles[i].StyleId && x.PresenterId == irm.locations[j].PresenterId).SingleOrDefault();
+                            if (irmls != null)
+                            {
+                                cell = SetCellVal(loc, irmls.MemoQty);
+                            }
+                            else
+                            {
+                                cell = SetCellVal(loc, "-");
+                            }
+                            row.Append(cell);
+                           
+                        }
+                        
+                        ch = (char)(((int)'F') + irm.locations.Count());
+                        loc = ch.ToString() + rr.ToString();
+                        cell = SetCellVal(loc, irm.styles[i].StyleQtySold); row.Append(cell);
+                        sd.Append(row);
+                     }
+                    /*
+                     *     @foreach (OJewelry.Models.irmStyle s in Model.styles)
+                            {
+                                <tr>
+                                    <td>@s.StyleNum</td>
+                                    <td>@s.StyleName</td>
+                                    <td>@s.StylePrice</td>
+                                    <td>@s.StyleQuantity</td>
+                                    @foreach (OJewelry.Models.irmLocation l in Model.locations)
+                                    {
+                                        OJewelry.Models.irmLS cell = @Model.locationQuantsbystyle.
+                                        Where(x => x.StyleId == s.StyleId && x.PresenterId == l.PresenterId).SingleOrDefault();
+                                        string qty = "-";
+                                        if (cell != null) @qty = cell.MemoQty.ToString();
+                                        <td>@qty</td>
+                                    }
+                                    <td>@s.StyleQtySold</td>
+                                </tr>
+                                <tr></tr>
+                            }
+                     * 
+                     */
+                    worksheet.Append(sd);
+                    worksheetPart.Worksheet = worksheet;
+                    workbookPart.Workbook.Save();
+                    document.Close();
+                }
+                b = memStream.ToArray();
+                return File(b, 
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                    irm.CompanyName + " Inventory as of " + DateTime.Now.ToString() + ".xlsx");
+            }
+
+        }
+
+        InventoryReportModel SetIRM(int CompanyId)
+        {
             InventoryReportModel irm = new InventoryReportModel();
             irm.styles = db.Styles.
                 Join(db.Collections,
                 x => x.CollectionId,
                 cl => cl.Id,
-                (x, cl) => new { StyleId = x.Id,
+                (x, cl) => new
+                {
+                    StyleId = x.Id,
                     StyleNum = x.StyleNum,
                     StyleQuantity = x.Quantity,
                     StyleName = x.StyleName,
@@ -531,7 +674,8 @@ namespace OJewelry.Controllers
                     StylePrice = x.RetailPrice,
                     StyleSold = x.UnitsSold,
                     x.CollectionId,
-                    cl.CompanyId }).
+                    cl.CompanyId
+                }).
                     Where(x => x.CompanyId == CompanyId).
                     Join(db.Companies,
                 x => x.CompanyId,
@@ -570,7 +714,9 @@ namespace OJewelry.Controllers
                 db.Presenters,
                 x => x.PresenterID,
                 p => p.Id,
-                (x, p) => new { StyleId = x.Id,
+                (x, p) => new
+                {
+                    StyleId = x.Id,
                     PresenterId = p.Id,
                     StyleNum = x.StyleNum,
                     LocationName = p.Name,
@@ -591,10 +737,10 @@ namespace OJewelry.Controllers
                     StyleQuantity = x.StyleQuantity
                 }).
                 Distinct().OrderBy(x => x.LocationName).OrderBy(x => x.StyleNum).ToList();
-            irm.CompanyId = CompanyId.Value;
-            irm.CompanyName = db.Companies.Find(CompanyId.Value).Name;
-            // need a style x location 2d array
-            return View(irm);
+            irm.CompanyId = CompanyId;
+            irm.CompanyName = db.Companies.Find(CompanyId).Name;
+
+            return irm;
         }
 
         protected override void Dispose(bool disposing)
@@ -730,6 +876,26 @@ namespace OJewelry.Controllers
             }
 
             return i;
+        }
+
+        Cell SetCellVal(string loc, int val)
+        {
+
+            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
+            return cell;
+        }
+
+        Cell SetCellVal(string loc, decimal val)
+        {
+
+            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
+            return cell;
+        }
+
+        Cell SetCellVal(string loc, string val)
+        {
+            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.String, CellValue = new CellValue(val) };
+            return cell;
         }
 
         int GetJewelryTypeId(string JewelryTypeName)
