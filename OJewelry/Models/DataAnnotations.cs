@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.ComponentModel;
+using System.Text;
 
 namespace OJewelry.Models
 {
@@ -301,5 +302,14 @@ namespace OJewelry.Models
          [Required(ErrorMessage = "is required.")]
   */
 
-
+    partial class Style
+    {
+        public String RenderInfo()
+        {
+            StringBuilder sb = new StringBuilder();
+            
+            sb.Append("Rendered contents");
+            return sb.ToString();
+        }
+    }
 }

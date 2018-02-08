@@ -25,7 +25,7 @@
         <tr>
             <td>@s.StyleNum</td>
             <td>@s.StyleName</td>
-            <td>Retail</td>
+            <td>@s.StylePrice</td>
             <td>@s.StyleQuantity</td>
             @foreach (OJewelry.Models.irmLocation l in Model.locations)
             {
@@ -34,7 +34,7 @@
                 if (cell != null) @qty = cell.MemoQty.ToString();
                 <td>@qty</td>
             }
-            <td>SOLD</td>
+            <td>@s.StyleQtySold</td>
         </tr>
         <tr></tr>
     }

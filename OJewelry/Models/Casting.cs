@@ -14,7 +14,6 @@ namespace OJewelry.Models
             StyleCastings = new HashSet<StyleCasting>();
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [StringLength(50)]

@@ -51,13 +51,15 @@ namespace OJewelry.Models
 
         public decimal? ChainLength { get; set; }
 
+        public decimal? RetailPrice { get; set; }
+
         public decimal? RetailRatio { get; set; }
 
         public decimal? RedlineRatio { get; set; }
 
         public int Quantity { get; set; }
 
-        //public decimal? RetailPrice { get; set; }
+        public int UnitsSold { get; set; }
 
         public virtual Collection Collection { get; set; }
 

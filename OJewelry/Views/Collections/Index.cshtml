@@ -42,7 +42,7 @@
                 <b>@Html.DisplayFor(modelItem => item.Name)</b>
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Add new Style", "Create", "Styles", new { collectionId = item.Id }, null) 
             </td>
         </tr>

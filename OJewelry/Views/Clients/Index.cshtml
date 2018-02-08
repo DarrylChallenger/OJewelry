@@ -4,10 +4,10 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Client List for <i>User</i></h2>
+<h2>Client List for <i>@ViewBag.CompanyName</i></h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", new { CompanyId = @ViewBag.CompanyId })
 </p>
 <table class="table">
     <tr>
@@ -49,6 +49,6 @@
             </td>
         </tr>
     }
-    @Html.ActionLink("Companies", "Index", "Companies")
 
 </table>
+@Html.ActionLink("Companies", "Index", "Companies")

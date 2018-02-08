@@ -1,18 +1,11 @@
 ﻿select s.Stylenum, s.stylename, s.Quantity from styles as s
 
-select  distinct c.Id, s.Id, s.[Desc], s.StyleNum from styles as s
+select  distinct c.Id, s.Id, s.[Desc], s.StyleNum, m.Quantity from styles as s
+left outer join memo as m on s.id = m.StyleID
 join Collections as c on s.CollectionId = c.Id
 join Companies as cp on cp.Id = c.CompanyId
-where c.CompanyId in(1)
+where c.CompanyId in(1, 2)
 order by s.StyleNum
-
-select s.Id, sum(sl.UnitsSold) as unitssold from SalesLedger sl 
-join Styles s on s.id = sl.StyleId
-join Collections as c on s.CollectionId = c.Id
-where c.CompanyId in (1)
-group by s.Id
-
-select * from SalesLedger
 
 select comp.Id, s.Id, p.Id, s.stylenum, p.Name, m.Quantity from Companies as Comp
 join Collections as coll on comp.Id = coll.CompanyId

@@ -9,7 +9,7 @@ namespace OJewelry.Models
     [Table("SalesLedger")]
     public partial class SalesLedger
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         public int? StyleId { get; set; }
@@ -21,7 +21,7 @@ namespace OJewelry.Models
 
         public DateTime? Date { get; set; }
 
-        [StringLength(10)]
+        [StringLength(512)]
         public string Notes { get; set; }
 
         public int? BuyerId { get; set; }

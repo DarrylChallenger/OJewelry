@@ -15,11 +15,10 @@ namespace OJewelry.Models
             StyleLabors = new HashSet<StyleLabor>();
         }
 
+        public int Id { get; set; }
+
         [StringLength(50)]
         public string Name { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
 
         [StringLength(50)]
         public string Desc { get; set; }

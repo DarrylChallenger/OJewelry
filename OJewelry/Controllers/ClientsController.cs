@@ -12,12 +12,23 @@ namespace OJewelry.Controllers
 {
     public class ClientsController : Controller
     {
-        private OJewelryDB dc = new OJewelryDB();
+        private OJewelryDB db = new OJewelryDB();
 
         // GET: Clients
-        public ActionResult Index()
+        public ActionResult Index(int? CompanyId)
         {
-            var clients = dc.Clients.Include(c => c.Company);
+            if (CompanyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            Company co = db.Companies.Find(CompanyId);
+            if (co == null)
+            {
+                return HttpNotFound();
+            }
+            var clients = db.Clients.Where(c => c.CompanyID == CompanyId).Include(c => c.Company);
+            ViewBag.CompanyId = CompanyId;
+            ViewBag.CompanyName = co.Name;
             return View(clients.ToList());
         }
 
@@ -28,7 +39,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index","Home");
             }
-            Client client = dc.Clients.Find(id);
+            Client client = db.Clients.Find(id);
             if (client == null)
             {
                 return HttpNotFound();
@@ -37,10 +48,19 @@ namespace OJewelry.Controllers
         }
 
         // GET: Clients/Create
-        public ActionResult Create()
+        public ActionResult Create(int? CompanyId)
         {
-            ViewBag.CompanyID = new SelectList(dc.Companies, "Id", "Name");
-            return View();
+            if (CompanyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            Client cl = new Client() { CompanyID = CompanyId };
+            cl.Company = db.Companies.Find(CompanyId);
+            if (cl.Company == null)
+            {
+                return HttpNotFound();
+            }
+            return View(cl);
         }
 
         // POST: Clients/Create
@@ -52,12 +72,11 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                dc.Clients.Add(client);
-                dc.SaveChanges();
-                return RedirectToAction("Index");
+                db.Clients.Add(client);
+                db.SaveChanges();
+                return RedirectToAction("Index", new { CompanyId = client.CompanyID });
             }
 
-            ViewBag.CompanyID = new SelectList(dc.Companies, "Id", "Name", client.CompanyID);
             return View(client);
         }
 
@@ -68,12 +87,11 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Client client = dc.Clients.Find(id);
+            Client client = db.Clients.Find(id);
             if (client == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CompanyID = new SelectList(dc.Companies, "Id", "Name", client.CompanyID);
             return View(client);
         }
 
@@ -86,11 +104,10 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                dc.Entry(client).State = EntityState.Modified;
-                dc.SaveChanges();
-                return RedirectToAction("Index");
+                db.Entry(client).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index", new { CompanyId = client.CompanyID });
             }
-            ViewBag.CompanyID = new SelectList(dc.Companies, "Id", "Name", client.CompanyID);
             return View(client);
         }
 
@@ -101,7 +118,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Client client = dc.Clients.Find(id);
+            Client client = db.Clients.Find(id);
             if (client == null)
             {
                 return HttpNotFound();
@@ -114,17 +131,18 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Client client = dc.Clients.Find(id);
-            dc.Clients.Remove(client);
-            dc.SaveChanges();
-            return RedirectToAction("Index");
+            Client client = db.Clients.Find(id);
+            int? coid = client.CompanyID;
+            db.Clients.Remove(client);
+            db.SaveChanges();
+            return RedirectToAction("Index", new { CompanyId = coid ?? 0 });
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                dc.Dispose();
+                db.Dispose();
             }
             base.Dispose(disposing);
         }

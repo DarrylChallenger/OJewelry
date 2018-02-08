@@ -223,7 +223,14 @@ namespace OJewelry.Controllers
 
                                             // Retail - Oh oh, not stored, only computed! Add new column just for retail cost :(
                                             cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).First();
-                                            string retail = GetStringVal(cell, stringtable);
+                                            if (Decimal.TryParse(GetStringVal(cell, stringtable), out decimal rp))
+                                            {
+                                                style.RetailPrice = rp;
+                                            } else {
+                                                error = "Invalid price [" + GetStringVal(cell, stringtable) + "]in row " + j + " of sheet [" + sheet.Name + "].";
+                                                ivm.Errors.Add(error);
+                                                continue; // add this row of this sheet to error list
+                                            }
 
                                             // Quantity 
                                             cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).First();
@@ -415,6 +422,7 @@ namespace OJewelry.Controllers
                                 if (moveQty <= theStyle.Quantity)
                                 {
                                     theStyle.Quantity -= moveQty;
+                                    
                                 }
                                 else
                                 {
@@ -449,6 +457,15 @@ namespace OJewelry.Controllers
                                 theStyle.Quantity += moveQty;
                             } else if (ivm.ToLocationId == -1) {
                                 // if moving to sold
+                                SalesLedger sl = new SalesLedger()
+                                {
+                                    StyleId = theStyle.Id,
+                                    Date = DateTime.Now,
+                                    UnitsSold = moveQty,
+                                    StyleInfo = theStyle.RenderInfo()
+                                };
+                                theStyle.UnitsSold += moveQty;
+                                db.SalesLedgers.Add(sl);
                                 // make a new ledger entry
                             } else {
                                 // if moving to other location
@@ -511,8 +528,10 @@ namespace OJewelry.Controllers
                     StyleQuantity = x.Quantity,
                     StyleName = x.StyleName,
                     StyleDesc = x.Desc,
+                    StylePrice = x.RetailPrice,
+                    StyleSold = x.UnitsSold,
                     x.CollectionId,
-                    cl.CompanyId}).
+                    cl.CompanyId }).
                     Where(x => x.CompanyId == CompanyId).
                     Join(db.Companies,
                 x => x.CompanyId,
@@ -523,7 +542,9 @@ namespace OJewelry.Controllers
                     StyleNum = x.StyleNum,
                     StyleQuantity = x.StyleQuantity,
                     StyleName = x.StyleName,
-                    StyleDesc = x.StyleDesc
+                    StyleDesc = x.StyleDesc,
+                    StylePrice = x.StylePrice ?? 0,
+                    StyleQtySold = x.StyleSold
                 }).Distinct().ToList();
 
             // irmStyle() { StyleId = s.Id, StyleNum = s.StyleNum, StyleQuantity = s.Quantity, StyleName = s.StyleName, StyleDesc = s.Desc, s.CollectionId }
@@ -753,7 +774,7 @@ namespace OJewelry.Controllers
             List<Presenter> fpl = tpl.ToList();
             ivm.FromLocations = new SelectList(fpl, "Id", "Name");
             Presenter pCo = new Presenter();
-            pCo.CompanyId = -1;
+            pCo.Id = -1;
             pCo.Name = "SOLD";
             tpl.Add(pCo);
             ivm.ToLocations = new SelectList(tpl, "Id", "Name");

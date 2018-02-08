@@ -48,6 +48,8 @@ namespace OJewelry.Models
         public string StyleName { get; set; }
         public string StyleDesc { get; set; }
         public int StyleQuantity { get; set; }
+        public decimal StylePrice { get; set; }
+        public int StyleQtySold { get; set; }
     }
 
     public class irmLocation

@@ -8,7 +8,6 @@ namespace OJewelry.Models
 
     public partial class StyleCasting
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         public int? StyleId { get; set; }

@@ -220,12 +220,21 @@ namespace OJewelry.Models
             // Get CompanyID
             s = request.Form.Get("CompanyID");
             Int32.TryParse(s, out int coID);
+
+            // Collection Id
+            sb.Clear();
+            sb.AppendFormat("CollectionId");
+            s = request.Form.Get(sb.ToString());
+            Int32.TryParse(s, out int collid);
+            m.Style.CollectionId = collid;
+            
             // JewelryTypeID
             sb.Clear();
             sb.AppendFormat("JewelryTypeID");
             s = request.Form.Get(sb.ToString());
             Int32.TryParse(s, out int jtid);
             m.Style.JewelryTypeId = jtid;
+            // Metal Weight Id
             sb.Clear();
             sb.AppendFormat("MetalWtUnitId");
             s = request.Form.Get(sb.ToString());

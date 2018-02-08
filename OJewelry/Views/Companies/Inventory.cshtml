@@ -50,18 +50,14 @@
 
 
 <p></p>
-<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#InventoryErrors">Errors</button>
-<div id="InventoryErrors" class="collapse">
-    <h3>Errors</h3>
+<div id="InventoryErrors">
     @if (Model.Errors.Count() != 0)
     {
+        <h3>Errors</h3>
         foreach (string s in Model.Errors)
         {
             <p class="text-danger">@s</p>
         }
-    } else
-    {
-        <p>No errors</p>
     }
 
 </div>
