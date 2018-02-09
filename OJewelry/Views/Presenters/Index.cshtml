@@ -36,11 +36,12 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
             </td>
         </tr>
     }
 
 </table>
 
+@Html.ActionLink("Export Locations to Excel", "ExportLocationReport", new { CompanyId = ViewBag.CompanyId }) |
 @Html.ActionLink("Companies List", "Index", "Companies")

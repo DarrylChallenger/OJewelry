@@ -535,7 +535,6 @@ namespace OJewelry.Controllers
             }
             InventoryReportModel irm = SetIRM(CompanyId.Value);
             byte[] b;
-            // save the doc on local storage (blob)
             using (MemoryStream memStream = new MemoryStream())
             {
                 using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
@@ -560,16 +559,19 @@ namespace OJewelry.Controllers
                     Worksheet worksheet = new Worksheet();
                     SheetData sd = new SheetData();
 
-                    // Date row
-                    Row row = new Row();
+                    // declare locals
+                    Row row;
                     Cell cell;
-                    // Save Col A for image
-                    cell = SetCellVal("A2", "Date: " + DateTime.Now.ToString()); 
-                    row.Append(cell);
-                    sd.Append(row);
                     char ch;
                     string loc;
                     int rr;
+
+                    // Date row
+                    // Save Col A for image
+                    row = new Row();
+                    cell = SetCellVal("A2", "Date: " + DateTime.Now.ToString()); 
+                    row.Append(cell);
+                    sd.Append(row);
                     // Header row
                     row = new Row();
                     cell = SetCellVal("B2", "Style"); row.Append(cell);
@@ -616,7 +618,6 @@ namespace OJewelry.Controllers
                             row.Append(cell);
                            
                         }
-                        
                         ch = (char)(((int)'F') + irm.locations.Count());
                         loc = ch.ToString() + rr.ToString();
                         cell = SetCellVal(loc, irm.styles[i].StyleQtySold); row.Append(cell);
