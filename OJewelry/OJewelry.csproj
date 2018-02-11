@@ -276,6 +276,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JewelryTypesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MetalCodesController.cs" />
     <Compile Include="Controllers\PresentersController.cs" />
     <Compile Include="Controllers\StylesController.cs" />
     <Compile Include="Controllers\VendorsController.cs" />
@@ -293,6 +294,10 @@
     <Compile Include="Migrations\201802071937285_v.45a.cs" />
     <Compile Include="Migrations\201802071937285_v.45a.Designer.cs">
       <DependentUpon>201802071937285_v.45a.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802102011553_v.5.cs" />
+    <Compile Include="Migrations\201802102011553_v.5.Designer.cs">
+      <DependentUpon>201802102011553_v.5.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -456,6 +461,11 @@
     <Content Include="Views\Shared\_AdminPartial.cshtml" />
     <Content Include="Views\Companies\Inventory.cshtml" />
     <Content Include="Views\Companies\InventoryReport.cshtml" />
+    <Content Include="Views\MetalCodes\Create.cshtml" />
+    <Content Include="Views\MetalCodes\Delete.cshtml" />
+    <Content Include="Views\MetalCodes\Details.cshtml" />
+    <Content Include="Views\MetalCodes\Edit.cshtml" />
+    <Content Include="Views\MetalCodes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -485,6 +495,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802071937285_v.45a.resx">
       <DependentUpon>201802071937285_v.45a.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802102011553_v.5.resx">
+      <DependentUpon>201802102011553_v.5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

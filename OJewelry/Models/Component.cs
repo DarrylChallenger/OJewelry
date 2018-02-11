@@ -34,8 +34,6 @@ namespace OJewelry.Models
         [Column(TypeName = "money")]
         public decimal? PricePerPiece { get; set; }
 
-        [StringLength(50)]
-        public string MetalMetal { get; set; }
 
         [Column(TypeName = "money")]
         public decimal? MetalLabor { get; set; }
@@ -48,8 +46,7 @@ namespace OJewelry.Models
         [Column(TypeName = "money")]
         public decimal? StonePPC { get; set; }
 
-        [StringLength(50)]
-        public string FindingsMetal { get; set; }
+        public int? MetalCodeId { get; set; }
 
         public virtual Company Company { get; set; }
 
@@ -59,5 +56,11 @@ namespace OJewelry.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StyleComponent> StyleComponents { get; set; }
+
+        [StringLength(50)]
+        public string FindingsMetal { get; set; }
+        [StringLength(50)]
+        public string MetalMetal { get; set; }
+
     }
 }

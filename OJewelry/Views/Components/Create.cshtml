@@ -65,10 +65,10 @@
             </div>
 
             <div id="ecMetalMetalGroup" class="form-group">
-                @Html.LabelFor(model => model.MetalMetal, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.MetalCodeId, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.MetalMetal, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.MetalMetal, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(model => model.MetalCodeId, (SelectList)ViewBag.MetalCodes, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MetalCodeId, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -103,14 +103,15 @@
                     @Html.ValidationMessageFor(model => model.StonePPC, "", new { @class = "text-danger" })
                 </div>
             </div>
-
+            @*
             <div id="ecFindingsMetalGroup" class="form-group">
-                @Html.LabelFor(model => model.FindingsMetal, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.MetalCodeId, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.FindingsMetal, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.FindingsMetal, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(model => model.MetalCodeId, (SelectList)ViewBag.MetalCodes, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MetalCodeId, "", new { @class = "text-danger" })
                 </div>
             </div>
+            *@
         </div>
 
         <div>

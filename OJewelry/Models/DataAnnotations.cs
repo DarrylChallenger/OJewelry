@@ -33,6 +33,21 @@ namespace OJewelry.Models
 
     }
 
+    [MetadataType(typeof(CastingMetaData))]   // template
+    public partial class Casting
+    {
+    }
+    public partial class CastingMetaData
+    {
+        [Display(Name = "Price")]
+        [DataType(DataType.Currency)]
+        public decimal Price { get; set; }
+
+        [Display(Name = "Labor")]
+        [DataType(DataType.Currency)]
+        public decimal Labor { get; set; }
+    }
+
     [MetadataType(typeof(ClientMetaData))]   // Client
     public partial class Client
     {
@@ -109,6 +124,12 @@ namespace OJewelry.Models
         [Display(Name ="Metal")]
         public string MetalMetal { get; set; }
 
+        [Display(Name = "Metal")]
+        public string FindingsMetal { get; set; }
+
+        [Display(Name = "Metal")]
+        public int MetalCodeId { get; set; }
+
         [Display(Name = "Labor")]
         public Nullable<decimal> MetalLabor { get; set; }
 
@@ -120,9 +141,6 @@ namespace OJewelry.Models
 
         [Display(Name = "$/Piece")]
         public Nullable<decimal> StonePPC { get; set; }
-
-        [Display(Name = "Metal")]
-        public string FindingsMetal { get; set; }
 
         [Display(Name = "Vendors")]
         public int VendorId { get; set; }

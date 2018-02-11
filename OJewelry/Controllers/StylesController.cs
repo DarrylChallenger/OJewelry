@@ -61,16 +61,17 @@ namespace OJewelry.Controllers
         public ActionResult Create(int collectionId)
         {
             Collection co = db.Collections.Find(collectionId);
-            Style s = new Style()
-            {
-                CollectionId = collectionId,
-            };
+            StyleViewModel svm = new StyleViewModel();
+            PopulateStyleViewModel(null, svm);
+            svm.Style.Collection = db.Collections.Find(collectionId);
+            svm.Style.CollectionId = collectionId;
+            svm.CompanyId = svm.Style.Collection.CompanyId;
+
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit");
             //ViewBag.JewelryTypes = new SelectList(db.JewelryTypes);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", s.JewelryTypeId);
-            s.Collection = db.Collections.Find(collectionId);
-            return View(s);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name");
+            return View(svm);
         }
 
         // POST: Styles/Create
@@ -78,18 +79,11 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
+        //public ActionResult Create([Bind(Include = "Id,Name,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
+        public ActionResult Create(StyleViewModel svm)
         {
-            if (ModelState.IsValid)
-            {
-                db.Styles.Add(style);
-                db.SaveChanges();
-                return RedirectToAction("Index", new { CollectionID = style.CollectionId });
-            }
-            ViewBag.CollectionId = new SelectList(db.Collections, "Id", "Name", style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", style.JewelryTypeId);
-            style.Collection = db.Collections.Find(style.CollectionId);
-            return View(style);
+            svm.SVMState = SVMStateEnum.Added;
+            return Edit(svm);
         }
 
         // GET: Styles/Edit/5
@@ -99,19 +93,19 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            StyleViewModel sm = new StyleViewModel();
-            sm.Style = db.Styles.Find(id);
-            if (sm.Style == null)
+            StyleViewModel svm = new StyleViewModel();
+            svm.Style = db.Styles.Find(id);
+            if (svm.Style == null)
             {
                 return HttpNotFound();
             }
-            PopulateStyleViewModel(id, sm);
-            Collection co = db.Collections.Find(sm.Style.CollectionId);
-            sm.CompanyId = co.CompanyId;
-            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", sm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", sm.Style.JewelryTypeId);
-            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", sm.Style.MetalWtUnitId);
-            return View(sm);
+            PopulateStyleViewModel(id, svm);
+            Collection co = db.Collections.Find(svm.Style.CollectionId);
+            svm.CompanyId = co.CompanyId;
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
+            return View(svm);
         }
 
 
@@ -123,116 +117,176 @@ namespace OJewelry.Controllers
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             db.Entry(svm.Style).State = EntityState.Modified;
             // Iterate thru the components
-            /*
-            if (svm.Metals != null)
+            
+            // Castings
+            if (svm.Castings != null)
             {
-                
-                foreach (MetalCode c in svm.Metals)
+
+                foreach (CastingComponent c in svm.Castings)
                 {
+                    Casting casting;
+                    StyleCasting sc;
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            break;
-                        case SVMStateEnum.Clean:
+                            casting = new Casting(c);
+                           // add a new link
+                            db.Castings.Add(casting);
+                            sc = new StyleCasting()
+                            {
+                                CastingId = casting.Id,
+                                StyleId = svm.Style.Id
+                            };
+                            db.StyleCastings.Add(sc);
                             break;
                         case SVMStateEnum.Deleted:
+                            sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id).SingleOrDefault();
+                            casting = db.Castings.Find(c.Id);
+                            db.StyleCastings.Remove(sc);
+                            db.Castings.Remove(casting);
                             break;
                         case SVMStateEnum.Dirty:
-                            db.Entry(c.Comp).State = EntityState.Modified;
+                        case SVMStateEnum.Clean:
+                        default:
+                            casting = db.Castings.Find(c.Id);
+                            casting.Set(c);
+                            // Update the Syle-Casting Link
+                            sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id).SingleOrDefault();
                             break;
                     }
-                    // Update the Syle-Component Link
-                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                    sc.Quantity = c.Qty;
                 }
             }
-            */
+            
+            // Stones
             if (svm.Stones != null)
             {
                 foreach (StoneComponent c in svm.Stones)
                 {
+                    Component component;
+                    StyleComponent sc;
+
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            break;
-                        case SVMStateEnum.Clean:
+                            component = new Component(c);
+                            db.Components.Add(component);
+                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = component.Id };
+                            sc.Quantity = c.Qty;
+                            db.StyleComponents.Add(sc);
                             break;
                         case SVMStateEnum.Deleted:
+                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                            db.StyleComponents.Remove(sc);
                             break;
+                        default:
+                        case SVMStateEnum.Clean:
                         case SVMStateEnum.Dirty:
-                            db.Entry(c.Comp).State = EntityState.Modified;
+                            component = db.Components.Find(c.Id);
+                            component.Set(c);
+                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                            sc.Quantity = c.Qty;
                             break;
                     }
-                    // Update the Syle-Component Link
-                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                    sc.Quantity = c.Qty;
                 }
             }
+            
+            // Findings
             if (svm.Findings != null)
             {
                 foreach (FindingsComponent c in svm.Findings)
                 {
+                    Component component;
+                    StyleComponent sc;
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            break;
-                        case SVMStateEnum.Clean:
+                            component = new Component(c);
+                            db.Components.Add(component);
+                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = component.Id };
+                            sc.Quantity = c.Qty;
+                            db.StyleComponents.Add(sc);
                             break;
                         case SVMStateEnum.Deleted:
+                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                            db.StyleComponents.Remove(sc);
                             break;
+                        default:
+                        case SVMStateEnum.Clean:
                         case SVMStateEnum.Dirty:
-                            db.Entry(c.Comp).State = EntityState.Modified;
+                            component = db.Components.Find(c.Id);
+                            component.Set(c);
+                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                            sc.Quantity = c.Qty;
                             break;
                     }
-                    // Update the Syle-Component Link
-                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                    sc.Quantity = c.Qty;
                 }
             }
-            /*
+            
+            // Labors
             if (svm.Labors != null)
             {
                 foreach (LaborComponent c in svm.Labors)
                 {
+                    Labor labor;
+                    StyleLabor sl;
+
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            break;
-                        case SVMStateEnum.Clean:
+                            labor = new Labor(c);
+                            db.Labors.Add(labor);
+                            sl = new StyleLabor() { StyleId = svm.Style.Id, LaborId = labor.Id };
+                            db.StyleLabors.Add(sl);
                             break;
                         case SVMStateEnum.Deleted:
+                            sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
+                            db.StyleLabors.Remove(sl);
                             break;
+                        default:
+                        case SVMStateEnum.Clean:
                         case SVMStateEnum.Dirty:
-                            db.Entry(c.Comp).State = EntityState.Modified;
+                            labor = db.Labors.Find(c.Id);
+                            labor.Set(c);
+                            sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
                             break;
                     }
-                    // Update the Syle-Component Link
-                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                    sc.Quantity = c.Qty;
                 }
             }
+
+            // Misc
             if (svm.Miscs != null)
             {
+                Misc misc;
+                StyleMisc sm;
                 foreach (MiscComponent c in svm.Miscs)
                 {
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            break;
-                        case SVMStateEnum.Clean:
+                            misc = new Misc(c);
+                            db.Miscs.Add(misc);
+                            sm = new StyleMisc() { StyleId = svm.Style.Id, MiscId = misc.Id };
+                            db.StyleMiscs.Add(sm);
                             break;
                         case SVMStateEnum.Deleted:
+                            sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
+                            db.StyleMiscs.Remove(sm);
                             break;
+                        default:
+                        case SVMStateEnum.Clean:
                         case SVMStateEnum.Dirty:
-                            db.Entry(c.Comp).State = EntityState.Modified;
+                            misc = db.Miscs.Find(c.Id);
+                            misc.Set(c);
+                            sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
                             break;
                     }
-                    // Update the Syle-Component Link
-                    StyleComponent sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                    sc.Quantity = c.Qty;
                 }
             }
-            */
+
+            if (svm.SVMState == SVMStateEnum.Added)
+            {
+                db.Styles.Add(svm.Style);
+            }
             if (ModelState.IsValid)
             {
                 // Save changes, go to Home
@@ -486,97 +540,114 @@ namespace OJewelry.Controllers
             return View(m);
         }
 
-        void PopulateStyleViewModel(int? id, StyleViewModel sm)
+        void PopulateStyleViewModel(int? id, StyleViewModel svm)
         {
             decimal t = 0, t2 = 0;
-            sm.Castings = new List<CastingComponent>();
-            sm.Stones = new List<StoneComponent>();
-            sm.Findings = new List<FindingsComponent>();
-            sm.Labors = new List<LaborComponent>();
-            sm.Miscs = new List<MiscComponent>();
-            // Get Casting Links
-            sm.Style.StyleCastings = db.StyleCastings.Where(x => x.StyleId == sm.Style.Id).ToList();
-            // Get component links
-            sm.Style.StyleComponents = db.StyleComponents.Where(x => x.StyleId == sm.Style.Id).ToList();
-            // Get Labor Links
-            sm.Style.StyleLabors = db.StyleLabors.Where(x => x.StyleId == sm.Style.Id).ToList(); ;
-            // Get Misc Links
-            sm.Style.StyleMiscs = db.StyleMiscs.Where(x => x.StyleId == sm.Style.Id).ToList(); ;
-            // get components for each link
-            // Metals
-            foreach (StyleCasting sc in sm.Style.StyleCastings)
+            svm.Castings = new List<CastingComponent>();
+            svm.Stones = new List<StoneComponent>();
+            svm.Findings = new List<FindingsComponent>();
+            svm.Labors = new List<LaborComponent>();
+            svm.Miscs = new List<MiscComponent>();
+            if (id == null)
             {
-                Casting casting = db.Castings.Find(sc.CastingId); // Castings
-                CastingComponent cstc = new CastingComponent(casting);
-                // Need to get the vendor and metal code
-                cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
-                cstc.MetalCode = db.MetalCodes.Find(casting.MetalCodeID).Code; // Metal Code
-                cstc.Qty = casting.Qty.Value;
-                t = cstc.Price ?? 0;
-                t2 = cstc.Labor ?? 0;
-                cstc.Total = cstc.Qty * (t + t2);
-                sm.MetalsTotal += cstc.Total;
-                sm.Castings.Add(cstc);
-                sm.Total += cstc.Total;
+                svm.Style = new Style();
             }
-            foreach (StyleComponent sc in sm.Style.StyleComponents)
+            else
             {
-                Component Comp = db.Components.Find(sc.ComponentId); // Stones and Findings
-                switch (sc.Component.ComponentType.Id)
-                {   
-                    case 1: // Metals (Castings)
-                        break;
-                        
-                    case 2: // Stones
-                        Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
-                        StoneComponent stscm = new StoneComponent(Comp);
-                        stscm.Qty = sc.Quantity ?? 0;
-                        t = stscm.PPC ?? 0;
-                        stscm.Total = stscm.Qty * t;
-                        sm.StonesTotal += stscm.Total;
-                        sm.Stones.Add(stscm);
-                        sm.Total += stscm.Total;
-                        break;
-                    case 3: // Findings
-                        Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
-                        FindingsComponent fiscm = new FindingsComponent(Comp);
-                        fiscm.Qty = sc.Quantity ?? 0;
-                        t = fiscm.Price ?? 0;
-                        fiscm.Total = fiscm.Qty * t;
-                        sm.FindingsTotal += fiscm.Total;
-                        sm.Findings.Add(fiscm);
-                        sm.Total += fiscm.Total;
-                        break;
-                    case 4:  // Labor
-                        break;
-                    default: // Misc
-                        break;
+                // Get Casting Links
+                svm.Style.StyleCastings = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id).ToList();
+                // Get component links
+                svm.Style.StyleComponents = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id).ToList();
+                // Get Labor Links
+                svm.Style.StyleLabors = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id).ToList(); ;
+                // Get Misc Links
+                svm.Style.StyleMiscs = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id).ToList(); ;
+                // get components for each link
+                // Metals
+                foreach (StyleCasting sc in svm.Style.StyleCastings)
+                {
+                    Casting casting = db.Castings.Find(sc.CastingId); // Castings
+                    CastingComponent cstc = new CastingComponent(casting);
+                    // Need to get the vendor and metal code
+                    cstc.VendorId = casting.VendorId.Value;
+                    cstc.VendorList = new SelectList(db.Vendors, "Id", "Name", casting.VendorId.Value);
+                    cstc.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", casting.MetalCodeID.Value);
+                    //cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
+                    cstc.MetalCode = db.MetalCodes.Find(casting.MetalCodeID).Code; // Metal Code
+                    cstc.Qty = casting.Qty.Value;
+                    t = cstc.Price ?? 0;
+                    t2 = cstc.Labor ?? 0;
+                    cstc.Total = cstc.Qty * (t + t2);
+                    svm.MetalsTotal += cstc.Total;
+                    svm.Castings.Add(cstc);
+                    svm.Total += cstc.Total;
                 }
-            }
-            // Labor
-            foreach (StyleLabor sl in sm.Style.StyleLabors)
-            {
-                Labor lb = db.Labors.Find(sl.LaborId); // Stones and Findings
-                LaborComponent liscm = new LaborComponent(lb);
-                liscm.Qty = sl.Labor.Qty ?? 0;
-                t = liscm.PPH ?? 0;
-                t2 = liscm.PPP ?? 0;
-                liscm.Total = liscm.Qty.Value * (t + t2);
-                sm.LaborsTotal += liscm.Total;
-                sm.Labors.Add(liscm);
-                sm.Total += liscm.Total;
-            }
-            // Misc
-            foreach (StyleMisc sms in sm.Style.StyleMiscs)
-            {
-                Misc misc = db.Miscs.Find(sms.MiscId); // Stones and Findings
-                MiscComponent miscm = new MiscComponent(misc);
-                miscm.Qty = sms.Misc.Qty ?? 0;
-                t = miscm.PPP ?? 0;
-                miscm.Total = miscm.Qty.Value * t;
-                sm.MiscsTotal += miscm.Total;
-                sm.Miscs.Add(miscm);
-                sm.Total += miscm.Total;
+                // Stones and Findings
+                foreach (StyleComponent sc in svm.Style.StyleComponents)
+                {
+                    Component Comp = db.Components.Find(sc.ComponentId); // Stones and Findings
+                    switch (sc.Component.ComponentType.Id)
+                    {
+                        case 1: // Metals (Castings)
+                            break;
+
+                        case 2: // Stones
+                            Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
+                            StoneComponent stscm = new StoneComponent(Comp);
+                            stscm.VendorId = Comp.VendorId.Value;
+                            stscm.VendorName = Comp.Vendor.Name;
+                            stscm.Qty = sc.Quantity ?? 0;
+                            t = stscm.PPC ?? 0;
+                            stscm.Total = stscm.Qty * t;
+                            svm.StonesTotal += stscm.Total;
+                            svm.Stones.Add(stscm);
+                            svm.Total += stscm.Total;
+                            break;
+                        case 3: // Findings
+                            Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
+                            FindingsComponent fiscm = new FindingsComponent(Comp);
+                            fiscm.VendorId = Comp.VendorId.Value;
+                            fiscm.VendorName = Comp.Vendor.Name;
+                            fiscm.Metal = db.MetalCodes.Find(Comp.MetalCodeId).Code;
+                            //fiscm.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", Comp.MetalCodeId.Value);
+                            fiscm.Qty = sc.Quantity ?? 0;
+                            t = fiscm.Price ?? 0;
+                            fiscm.Total = fiscm.Qty * t;
+                            svm.FindingsTotal += fiscm.Total;
+                            svm.Findings.Add(fiscm);
+                            svm.Total += fiscm.Total;
+                            break;
+                        case 4:  // Labor
+                            break;
+                        default: // Misc
+                            break;
+                    }
+                }
+                // Labor
+                foreach (StyleLabor sl in svm.Style.StyleLabors)
+                {
+                    Labor lb = db.Labors.Find(sl.LaborId); // Stones and Findings
+                    LaborComponent liscm = new LaborComponent(lb);
+                    liscm.Qty = sl.Labor.Qty ?? 0;
+                    t = liscm.PPH ?? 0;
+                    t2 = liscm.PPP ?? 0;
+                    liscm.Total = liscm.Qty.Value * (t + t2);
+                    svm.LaborsTotal += liscm.Total;
+                    svm.Labors.Add(liscm);
+                    svm.Total += liscm.Total;
+                }
+                // Misc
+                foreach (StyleMisc sms in svm.Style.StyleMiscs)
+                {
+                    Misc misc = db.Miscs.Find(sms.MiscId); // Stones and Findings
+                    MiscComponent miscm = new MiscComponent(misc);
+                    miscm.Qty = sms.Misc.Qty ?? 0;
+                    t = miscm.PPP ?? 0;
+                    miscm.Total = miscm.Qty.Value * t;
+                    svm.MiscsTotal += miscm.Total;
+                    svm.Miscs.Add(miscm);
+                    svm.Total += miscm.Total;
+                }
             }
         }
 

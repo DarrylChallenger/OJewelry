@@ -43,12 +43,12 @@ function resetControls() {
             document.getElementById("ecPriceGroup").style.display = "block";
             document.getElementById("ecPPHGroup").style.display = "none";
             document.getElementById("ecPPPGroup").style.display = "none";
-            document.getElementById("ecMetalMetalGroup").style.display = "none";
+            document.getElementById("ecMetalMetalGroup").style.display = "block";
             document.getElementById("ecMetalLaborGroup").style.display = "none";
             document.getElementById("ecCtwtGroup").style.display = "none";
             document.getElementById("ecStoneSizeGroup").style.display = "none";
             document.getElementById("ecStonePPCGroup").style.display = "none";
-            document.getElementById("ecFindingsMetalGroup").style.display = "block";
+            document.getElementById("ecFindingsMetalGroup").style.display = "none";
             break;
         case 3: // Misc
             console.log("Misc");

@@ -73,6 +73,21 @@ textarea {
     padding-bottom: 1em;
 }
 
+.StyleComponentsRowHeader 
+{
+    font-size:larger;
+}
+
+.StyleComponentsRowFooter {
+    color:green;
+    font-weight:700;
+}
+
+.StyleComponentsFooter {
+    color:orange;
+    font-weight: 700;
+}
+
 #StyleMemoReturnGroup {
     /border-style: solid;
     /border-color: red;
@@ -123,6 +138,7 @@ textarea {
     font-weight: 700;
     /border-style: solid;
     border-color: green;
+    font-size:larger;
 }
 
 .StyleReportComponentsRow {

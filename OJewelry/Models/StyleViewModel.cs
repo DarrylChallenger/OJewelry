@@ -17,21 +17,25 @@ namespace OJewelry.Models
             casting = new Casting();
             Init();
         } // Comp.Vendor = new Vendor(); }
-        public CastingComponent(Casting c) { casting = c; }
+        public CastingComponent(Casting c) { casting = c; Init(); }
         void Init()
         {
-
+            SVMState = SVMStateEnum.Dirty;
         }
         public int Id { get { return casting.Id; } set { casting.Id = value; } }
-        public String Name { get { return casting.Name; } set { casting.Name = value; } }
-        [Display(Name = "Quantity")]
-        public int Qty { get; set; }
 
-        // VENDOR	METAL	PRICE	LABOR 
-        
+        [Required]
+        public String Name { get { return casting.Name; } set { casting.Name = value; } }
+
+        [Display(Name = "Quantity")]
+        [Required]
+        public int Qty { get; set; }
+        public SelectList VendorList { get; set; }
+        public SelectList MetalCodes { get; set; }
 
         [Display(Name = "Price")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
+        [DataType(DataType.Currency)]
         public decimal? Price {
             get {
                 return casting.Price ?? 0;
@@ -42,7 +46,9 @@ namespace OJewelry.Models
         }
         
         [Display(Name ="Labor")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
+        [DataType(DataType.Currency)]
+
         public decimal? Labor
         {
             get
@@ -57,18 +63,21 @@ namespace OJewelry.Models
 
         public int VendorId
         {
-            get { return casting.VendorId.Value; }
+            get { return casting.VendorId ?? 0; }
             set { casting.VendorId = value;  }
         }
         public int MetalCodeId
         {
-            get { return casting.MetalCodeID.Value; }
+            get { return casting.MetalCodeID ?? 0; }
             set { casting.MetalCodeID = value; }
         }
 
-        [Display(Name="Vendor")]
-        public String VendorName { get; set; }
+        public SVMStateEnum SVMState { get; set; }
 
+        /*
+         * [Display(Name="Vendor")]
+        public String VendorName { get; set; }
+        */
         [Display(Name ="Metal")]
         public String MetalCode { get; set; }
 
@@ -80,45 +89,53 @@ namespace OJewelry.Models
         public StoneComponent() { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public StoneComponent(Component c) { Comp = c; }
         // VENDOR CT WT SIZE    PPC/$
-        public String Vendor { get { if ((Comp.Vendor != null) && (Comp.Vendor.Name != null)) { return Comp.Vendor.Name; } else return ""; } set { if (Comp.Vendor != null) { Comp.Vendor.Name = value; } } }
-        public int VendorId { get { if (Comp.Vendor != null) { return Comp.Vendor.Id; } else { return 0; } } set { if (Comp.Vendor != null) { Comp.Vendor.Id = value; } } }
+        public int VendorId { get { return Comp.VendorId ?? 0; } set { Comp.VendorId = value; } }
         public int? CtWt { get { return Comp.StonesCtWt ?? 0; } set { Comp.StonesCtWt = value; } }
         public String Size { get { return Comp.StoneSize ?? ""; } set { Comp.StoneSize = value; } }
 
         [Display(Name = "$/Piece")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? PPC { get { return Comp.StonePPC ?? 0; } set { Comp.StonePPC = value; } }
+        public string VendorName { get { return Comp.Vendor.Name; } set { Comp.Vendor.Name = value; } }
+
     }
     public class FindingsComponent : StyleViewComponentModel
     {
         public FindingsComponent() { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public FindingsComponent(Component c) { Comp = c; }
         // VENDOR	METAL	PRICE 
-        public String Vendor { get { if ((Comp.Vendor != null) && (Comp.Vendor.Name != null)) { return Comp.Vendor.Name; } else return ""; } set { if (Comp.Vendor != null) { Comp.Vendor.Name = value; } } }
-        public int VendorId { get { if (Comp.Vendor != null) { return Comp.Vendor.Id; } else { return 0; } } set { if (Comp.Vendor != null) { Comp.Vendor.Id = value; } } }
-        public String Metal { get { return Comp.FindingsMetal ?? ""; } set { Comp.FindingsMetal = value; } }
+        public int VendorId { get { return Comp.VendorId ?? 0; } set { Comp.VendorId = value; } }
+        public string VendorName { get { return Comp.Vendor.Name; } set { Comp.Vendor.Name = value; } }
+        public String Metal { get; set; }
 
         [Display(Name = "Price")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? Price { get { return Comp.Price ?? 0; } set { Comp.Price = value; } }
+
     }
     public class LaborComponent 
     {
-        private Labor labor { get; set; } 
+        private Labor labor { get; set; }
+        public SVMStateEnum SVMState { get; set; }
         public LaborComponent() { labor = new Labor(); Init(); } // Comp.Vendor = new Vendor(); }
-        public LaborComponent(Labor l) { labor = l; }
-        void Init() { }
+        public LaborComponent(Labor l) { labor = l; Init(); }
+        void Init()
+        {
+            SVMState = SVMStateEnum.Dirty;
+        }
         // PRICE/HR	PRICE/PC
 
         [Display(Name = "$/Hour")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? PPH { get { return labor.PricePerHour ?? 0; } set { labor.PricePerHour = value; } }
 
         [Display(Name = "$/Piece")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? PPP { get { return labor.PricePerPiece ?? 0; } set { labor.PricePerPiece = value; } }
         
         public int Id { get { return labor.Id; } set { labor.Id = value; } }
+
+        [Required]
         public String Name { get { return labor.Name; } set { labor.Name = value; } }
         public string Desc { get { return labor.Desc; } set { labor.Desc = value; } }
 
@@ -133,15 +150,21 @@ namespace OJewelry.Models
     {
         private Misc misc { get; set; }
         public MiscComponent() { misc = new Misc(); Init(); }
-        public void Init() { }
-        public MiscComponent(Misc m) { misc = m; }
+        public SVMStateEnum SVMState { get; set; }
+        void Init()
+        {
+            SVMState = SVMStateEnum.Dirty;
+        }
+        public MiscComponent(Misc m) { misc = m; Init(); }
         // PRICE/PC
 
         [Display(Name = "$/Piece")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? PPP { get { return misc.PricePerPiece ?? 0; } set { misc.PricePerPiece = value; } }
 
         public int Id { get { return misc.Id; } set { misc.Id = value; } }
+
+        [Required]
         public String Name { get { return misc.Name; } set { misc.Name = value; } }
         public string Desc { get { return misc.Desc; } set { misc.Desc = value; } }
 
@@ -171,7 +194,7 @@ namespace OJewelry.Models
             // Comp.Vendor = new Vendor(); 
         }
         public int Id { get { return Comp.Id; } set { Comp.Id = value; } }
-        public int CompanyId { get { return Comp.CompanyId.Value; } set { Comp.CompanyId = value; } }
+        public int CompanyId { get { return Comp.CompanyId ?? 0; } set { Comp.CompanyId = value; } }
         public int ComponentTypeId { get { return Comp.ComponentTypeId; } set { Comp.ComponentTypeId = value; } }
         public Component Comp { get; set; }
         public String Name { get { return Comp.Name; } set { Comp.Name = value; } }
@@ -206,6 +229,94 @@ namespace OJewelry.Models
 
         public SVMStateEnum SVMState { get; set; }
         public int CompanyId { get; set; }
+    }
+
+    public partial class Casting
+    {
+        public Casting(CastingComponent c)
+        {
+            Set(c);
+        }
+
+        public void Set(CastingComponent c)
+        {
+            //Id = c.Id;
+            Name = c.Name;
+            VendorId = c.VendorId;
+            MetalCodeID = c.MetalCodeId;
+            Price = c.Price;
+            Labor = c.Labor;
+            Qty = c.Qty;
+        }
+    }
+
+    public partial class Component
+    {
+        public Component(StoneComponent c)
+        {
+            Set(c);
+        }
+
+        public Component(FindingsComponent c)
+        {
+            Set(c);
+        }
+
+        public void Set(StoneComponent c)
+        {
+            //Id = c.Id;
+            //CompanyId = c.CompanyId;
+            //ComponentTypeId = c.ComponentTypeId;
+            //VendorId = c.VendorId;
+            //StonesCtWt = c.CtWt;
+            //StoneSize = c.Size;
+            //StonePPC = c.PPC;
+        }
+
+        public void Set(FindingsComponent c)
+        {
+            //Id = c.Id;
+            //CompanyId = c.CompanyId;
+            //ComponentTypeId = c.ComponentTypeId;
+            //VendorId = c.VendorId;
+            //Price = c.Price;
+        }
+    }
+
+    public partial class Labor
+    {
+        public Labor(LaborComponent c)
+        {
+            Set(c);
+        }
+
+        public void Set(LaborComponent c)
+        {
+            //Id = c.Id;
+            Name = c.Name;
+            Desc = c.Desc;
+            PricePerHour = c.PPH;
+            PricePerPiece = c.PPP;
+            Qty = c.Qty;
+        }
+    }
+
+    public partial class Misc
+    {
+        public Misc(MiscComponent c)
+        {
+            Set(c);
+        }
+
+        public void Set(MiscComponent c)
+        {
+            //8Id = c.Id;
+            Name = c.Name;
+            Desc = c.Desc;
+            PricePerPiece = c.PPP;
+            Qty = c.Qty;
+
+        }
     }
 
     public class StyleViewModelBinder : DefaultModelBinder
@@ -243,7 +354,9 @@ namespace OJewelry.Models
 
             // build Metals
             
-            if (m.Castings != null)
+            if (m.Castings == null)
+            { m.Castings = new List<CastingComponent>(); }
+            else
             {
                 for (int i = 0; i < m.Castings.Count; i++)
                 {
@@ -296,7 +409,9 @@ namespace OJewelry.Models
             
             // build Stones
             subtotal = 0;
-            if (m.Stones != null)
+            if (m.Stones == null)
+            { m.Stones = new List<StoneComponent>(); }
+            else
             {
                 for (int i = 0; i < m.Stones.Count; i++)
                 {
@@ -317,12 +432,14 @@ namespace OJewelry.Models
                     sb.AppendFormat("Stones[{0}].Name", i);
                     s = request.Form.Get(sb.ToString());
                     m.Stones[i].Name = s;
+                    /*
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].Vendor", i);
                     s = request.Form.Get(sb.ToString());
                     m.Stones[i].Vendor = s;
+                    */
                     sb.Clear();
-                    sb.AppendFormat("Stones[{0}].VendorID", i);
+                    sb.AppendFormat("Stones[{0}].VendorId", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int vId);
                     m.Stones[i].VendorId = vId;
@@ -353,7 +470,9 @@ namespace OJewelry.Models
 
             // build Findings
             subtotal = 0;
-            if (m.Findings != null)
+            if (m.Findings == null)
+            { m.Findings = new List<FindingsComponent>(); }
+            else
             {
                 for (int i = 0; i < m.Findings.Count; i++)
                 {
@@ -374,19 +493,23 @@ namespace OJewelry.Models
                     sb.AppendFormat("Findings[{0}].Name", i);
                     s = request.Form.Get(sb.ToString());
                     m.Findings[i].Name = s;
+                    /*
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].Vendor", i);
                     s = request.Form.Get(sb.ToString());
                     m.Findings[i].Vendor = s;
+                    */
                     sb.Clear();
-                    sb.AppendFormat("Findings[{0}].VendorID", i);
+                    sb.AppendFormat("Findings[{0}].VendorId", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int vId);
                     m.Findings[i].VendorId = vId;
+                    /* Changed to dropdown
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].Metal", i);
                     s = request.Form.Get(sb.ToString());
                     m.Findings[i].Metal = s;
+                    */
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].Price", i);
                     s = request.Form.Get(sb.ToString());
@@ -406,7 +529,9 @@ namespace OJewelry.Models
             
             // build Labors
             subtotal = 0;
-            if (m.Labors != null)
+            if (m.Labors == null)
+            { m.Labors = new List<LaborComponent>(); }
+            else
             {
                 for (int i = 0; i < m.Labors.Count; i++)
                 {
@@ -449,7 +574,9 @@ namespace OJewelry.Models
             
             subtotal = 0;
             // build Miscs
-            if (m.Miscs != null)
+            if (m.Miscs == null)
+            { m.Miscs = new List<MiscComponent>();  }
+            else
             {
                 for (int i = 0; i < m.Miscs.Count; i++)
                 {

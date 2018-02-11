@@ -1,0 +1,127 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using OJewelry.Models;
+
+namespace OJewelry.Controllers
+{
+    public class MetalCodesController : Controller
+    {
+        private OJewelryDB db = new OJewelryDB();
+
+        // GET: MetalCodes
+        public ActionResult Index()
+        {
+            return View(db.MetalCodes.ToList());
+        }
+
+        // GET: MetalCodes/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            MetalCode metalCode = db.MetalCodes.Find(id);
+            if (metalCode == null)
+            {
+                return HttpNotFound();
+            }
+            return View(metalCode);
+        }
+
+        // GET: MetalCodes/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: MetalCodes/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,Code,Desc")] MetalCode metalCode)
+        {
+            if (ModelState.IsValid)
+            {
+                db.MetalCodes.Add(metalCode);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(metalCode);
+        }
+
+        // GET: MetalCodes/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            MetalCode metalCode = db.MetalCodes.Find(id);
+            if (metalCode == null)
+            {
+                return HttpNotFound();
+            }
+            return View(metalCode);
+        }
+
+        // POST: MetalCodes/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,Code,Desc")] MetalCode metalCode)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(metalCode).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(metalCode);
+        }
+
+        // GET: MetalCodes/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            MetalCode metalCode = db.MetalCodes.Find(id);
+            if (metalCode == null)
+            {
+                return HttpNotFound();
+            }
+            return View(metalCode);
+        }
+
+        // POST: MetalCodes/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            MetalCode metalCode = db.MetalCodes.Find(id);
+            db.MetalCodes.Remove(metalCode);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

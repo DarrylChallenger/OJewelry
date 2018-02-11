@@ -50,6 +50,7 @@ namespace OJewelry.Controllers
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name");
             ViewBag.ComponentTypeId = new SelectList(db.ComponentTypes, "Id", "Name");
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name");
+            ViewBag.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code");
             ViewBag.Id = CompanyId;
             ViewBag.CompanyName = db.Companies.Find(CompanyId).Name;
             Component comp = new Component();
@@ -65,7 +66,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyId,ComponentTypeId,Name,VendorId,Quantity,Price,PricePerHour,PricePerPiece,MetalMetal,MetalLabor,StonesCtWt,StoneSize,StonePPC,FindingsMetal")] Component component)
+        public ActionResult Create([Bind(Include = "Id,CompanyId,ComponentTypeId,Name,VendorId,Quantity,Price,PricePerHour,PricePerPiece,MetalLabor,StonesCtWt,StoneSize,StonePPC,MetalCodeId")] Component component)
         {
             if (ModelState.IsValid)
             {
@@ -77,6 +78,7 @@ namespace OJewelry.Controllers
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", component.CompanyId);
             ViewBag.ComponentTypeId = new SelectList(db.ComponentTypes, "Id", "Name", component.ComponentTypeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", component.VendorId);
+            ViewBag.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", component.MetalCodeId);
             return View(component);
         }
 
@@ -97,6 +99,7 @@ namespace OJewelry.Controllers
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", component.VendorId);
             Company co = db.Companies.Find(component.CompanyId);
             ViewBag.CompanyName = co.Name;
+            ViewBag.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", component.MetalCodeId);
             return View(component);
         }
 
@@ -105,7 +108,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CompanyId,ComponentTypeId,Name,VendorId,Quantity,Price,PricePerHour,PricePerPiece,MetalMetal,MetalLabor,StonesCtWt,StoneSize,StonePPC,FindingsMetal")] Component component)
+        public ActionResult Edit([Bind(Include = "Id,CompanyId,ComponentTypeId,Name,VendorId,Quantity,Price,PricePerHour,PricePerPiece,MetalLabor,StonesCtWt,StoneSize,StonePPC,MetalCodeId")] Component component)
         {
             if (ModelState.IsValid)
             {
@@ -116,6 +119,7 @@ namespace OJewelry.Controllers
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", component.CompanyId);
             ViewBag.ComponentTypeId = new SelectList(db.ComponentTypes, "Id", "Name", component.ComponentTypeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", component.VendorId);
+            ViewBag.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", component.MetalCodeId);
             return View(component);
         }
 
