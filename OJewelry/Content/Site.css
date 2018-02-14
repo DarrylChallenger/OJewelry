@@ -78,13 +78,22 @@ textarea {
     font-size:larger;
 }
 
+.StyleComponentsRowHeaderBtn .btn {
+    margin-left: -15px;
+}
+
+.StyleComponentsRowHeaderBtn .col-sm-6 {
+    padding-left: -15px;
+}
+
 .StyleComponentsRowFooter {
-    color:green;
-    font-weight:700;
+    font-weight: 700;
+    padding-top: .25em;
+    padding-bottom: .25em;
 }
 
 .StyleComponentsFooter {
-    color:orange;
+    padding-top: .25em;
     font-weight: 700;
 }
 

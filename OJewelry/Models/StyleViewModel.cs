@@ -28,10 +28,9 @@ namespace OJewelry.Models
         public String Name { get { return casting.Name; } set { casting.Name = value; } }
 
         [Display(Name = "Quantity")]
-        [Required]
+        [DisplayFormat(ApplyFormatInEditMode = true,DataFormatString ="{0:N0}")]
+        [DataType(DataType.Currency)]
         public int Qty { get; set; }
-        public SelectList VendorList { get; set; }
-        public SelectList MetalCodes { get; set; }
 
         [Display(Name = "Price")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
@@ -80,6 +79,9 @@ namespace OJewelry.Models
         */
         [Display(Name ="Metal")]
         public String MetalCode { get; set; }
+
+        public SelectList VendorList { get; set; }
+        public SelectList MetalCodes { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
@@ -208,6 +210,7 @@ namespace OJewelry.Models
     }
 
     public enum SVMStateEnum { Clean, Dirty, Added, Deleted }
+    public enum SVMCCTypeEnum { Casting, Stone,Finding, Labor, Misc }
 
     public class StyleViewModel
     {
@@ -228,7 +231,15 @@ namespace OJewelry.Models
         public decimal Total { get; set; }
 
         public SVMStateEnum SVMState { get; set; }
+        public SVMCCTypeEnum SVMCCType { get; set; }
         public int CompanyId { get; set; }
+
+        public bool CCLastRow { get; set; }
+        public bool CCHeaderRow { get; set; }
+        public int CCRowSection{ get; set; }
+        public int CCRowIndex { get; set; }
+        public int i { get; set; }
+
     }
 
     public partial class Casting

@@ -117,182 +117,184 @@ namespace OJewelry.Controllers
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             db.Entry(svm.Style).State = EntityState.Modified;
             // Iterate thru the components
-            
-            // Castings
-            if (svm.Castings != null)
+            if (false)
             {
-
-                foreach (CastingComponent c in svm.Castings)
+                // Castings
+                if (svm.Castings != null)
                 {
-                    Casting casting;
-                    StyleCasting sc;
-                    switch (c.SVMState)
+
+                    foreach (CastingComponent c in svm.Castings)
                     {
-                        case SVMStateEnum.Added:
-                            casting = new Casting(c);
-                           // add a new link
-                            db.Castings.Add(casting);
-                            sc = new StyleCasting()
-                            {
-                                CastingId = casting.Id,
-                                StyleId = svm.Style.Id
-                            };
-                            db.StyleCastings.Add(sc);
-                            break;
-                        case SVMStateEnum.Deleted:
-                            sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id).SingleOrDefault();
-                            casting = db.Castings.Find(c.Id);
-                            db.StyleCastings.Remove(sc);
-                            db.Castings.Remove(casting);
-                            break;
-                        case SVMStateEnum.Dirty:
-                        case SVMStateEnum.Clean:
-                        default:
-                            casting = db.Castings.Find(c.Id);
-                            casting.Set(c);
-                            // Update the Syle-Casting Link
-                            sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id).SingleOrDefault();
-                            break;
+                        Casting casting;
+                        StyleCasting sc;
+                        switch (c.SVMState)
+                        {
+                            case SVMStateEnum.Added:
+                                casting = new Casting(c);
+                                // add a new link
+                                db.Castings.Add(casting);
+                                sc = new StyleCasting()
+                                {
+                                    CastingId = casting.Id,
+                                    StyleId = svm.Style.Id
+                                };
+                                db.StyleCastings.Add(sc);
+                                break;
+                            case SVMStateEnum.Deleted:
+                                sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id).SingleOrDefault();
+                                casting = db.Castings.Find(c.Id);
+                                db.StyleCastings.Remove(sc);
+                                db.Castings.Remove(casting);
+                                break;
+                            case SVMStateEnum.Dirty:
+                            case SVMStateEnum.Clean:
+                            default:
+                                casting = db.Castings.Find(c.Id);
+                                casting.Set(c);
+                                // Update the Syle-Casting Link
+                                sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id).SingleOrDefault();
+                                break;
+                        }
                     }
                 }
-            }
-            
-            // Stones
-            if (svm.Stones != null)
-            {
-                foreach (StoneComponent c in svm.Stones)
-                {
-                    Component component;
-                    StyleComponent sc;
 
-                    switch (c.SVMState)
+                // Stones
+                if (svm.Stones != null)
+                {
+                    foreach (StoneComponent c in svm.Stones)
                     {
-                        case SVMStateEnum.Added:
-                            component = new Component(c);
-                            db.Components.Add(component);
-                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = component.Id };
-                            sc.Quantity = c.Qty;
-                            db.StyleComponents.Add(sc);
-                            break;
-                        case SVMStateEnum.Deleted:
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                            db.StyleComponents.Remove(sc);
-                            break;
-                        default:
-                        case SVMStateEnum.Clean:
-                        case SVMStateEnum.Dirty:
-                            component = db.Components.Find(c.Id);
-                            component.Set(c);
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                            sc.Quantity = c.Qty;
-                            break;
+                        Component component;
+                        StyleComponent sc;
+
+                        switch (c.SVMState)
+                        {
+                            case SVMStateEnum.Added:
+                                component = new Component(c);
+                                db.Components.Add(component);
+                                sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = component.Id };
+                                sc.Quantity = c.Qty;
+                                db.StyleComponents.Add(sc);
+                                break;
+                            case SVMStateEnum.Deleted:
+                                sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                                db.StyleComponents.Remove(sc);
+                                break;
+                            default:
+                            case SVMStateEnum.Clean:
+                            case SVMStateEnum.Dirty:
+                                component = db.Components.Find(c.Id);
+                                component.Set(c);
+                                sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                                sc.Quantity = c.Qty;
+                                break;
+                        }
                     }
                 }
-            }
-            
-            // Findings
-            if (svm.Findings != null)
-            {
-                foreach (FindingsComponent c in svm.Findings)
+
+                // Findings
+                if (svm.Findings != null)
                 {
-                    Component component;
-                    StyleComponent sc;
-                    switch (c.SVMState)
+                    foreach (FindingsComponent c in svm.Findings)
                     {
-                        case SVMStateEnum.Added:
-                            component = new Component(c);
-                            db.Components.Add(component);
-                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = component.Id };
-                            sc.Quantity = c.Qty;
-                            db.StyleComponents.Add(sc);
-                            break;
-                        case SVMStateEnum.Deleted:
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                            db.StyleComponents.Remove(sc);
-                            break;
-                        default:
-                        case SVMStateEnum.Clean:
-                        case SVMStateEnum.Dirty:
-                            component = db.Components.Find(c.Id);
-                            component.Set(c);
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
-                            sc.Quantity = c.Qty;
-                            break;
+                        Component component;
+                        StyleComponent sc;
+                        switch (c.SVMState)
+                        {
+                            case SVMStateEnum.Added:
+                                component = new Component(c);
+                                db.Components.Add(component);
+                                sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = component.Id };
+                                sc.Quantity = c.Qty;
+                                db.StyleComponents.Add(sc);
+                                break;
+                            case SVMStateEnum.Deleted:
+                                sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                                db.StyleComponents.Remove(sc);
+                                break;
+                            default:
+                            case SVMStateEnum.Clean:
+                            case SVMStateEnum.Dirty:
+                                component = db.Components.Find(c.Id);
+                                component.Set(c);
+                                sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                                sc.Quantity = c.Qty;
+                                break;
+                        }
                     }
                 }
-            }
-            
-            // Labors
-            if (svm.Labors != null)
-            {
-                foreach (LaborComponent c in svm.Labors)
-                {
-                    Labor labor;
-                    StyleLabor sl;
 
-                    switch (c.SVMState)
+                // Labors
+                if (svm.Labors != null)
+                {
+                    foreach (LaborComponent c in svm.Labors)
                     {
-                        case SVMStateEnum.Added:
-                            labor = new Labor(c);
-                            db.Labors.Add(labor);
-                            sl = new StyleLabor() { StyleId = svm.Style.Id, LaborId = labor.Id };
-                            db.StyleLabors.Add(sl);
-                            break;
-                        case SVMStateEnum.Deleted:
-                            sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
-                            db.StyleLabors.Remove(sl);
-                            break;
-                        default:
-                        case SVMStateEnum.Clean:
-                        case SVMStateEnum.Dirty:
-                            labor = db.Labors.Find(c.Id);
-                            labor.Set(c);
-                            sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
-                            break;
+                        Labor labor;
+                        StyleLabor sl;
+
+                        switch (c.SVMState)
+                        {
+                            case SVMStateEnum.Added:
+                                labor = new Labor(c);
+                                db.Labors.Add(labor);
+                                sl = new StyleLabor() { StyleId = svm.Style.Id, LaborId = labor.Id };
+                                db.StyleLabors.Add(sl);
+                                break;
+                            case SVMStateEnum.Deleted:
+                                sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
+                                db.StyleLabors.Remove(sl);
+                                break;
+                            default:
+                            case SVMStateEnum.Clean:
+                            case SVMStateEnum.Dirty:
+                                labor = db.Labors.Find(c.Id);
+                                labor.Set(c);
+                                sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
+                                break;
+                        }
                     }
                 }
-            }
 
-            // Misc
-            if (svm.Miscs != null)
-            {
-                Misc misc;
-                StyleMisc sm;
-                foreach (MiscComponent c in svm.Miscs)
+                // Misc
+                if (svm.Miscs != null)
                 {
-                    switch (c.SVMState)
+                    Misc misc;
+                    StyleMisc sm;
+                    foreach (MiscComponent c in svm.Miscs)
                     {
-                        case SVMStateEnum.Added:
-                            misc = new Misc(c);
-                            db.Miscs.Add(misc);
-                            sm = new StyleMisc() { StyleId = svm.Style.Id, MiscId = misc.Id };
-                            db.StyleMiscs.Add(sm);
-                            break;
-                        case SVMStateEnum.Deleted:
-                            sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
-                            db.StyleMiscs.Remove(sm);
-                            break;
-                        default:
-                        case SVMStateEnum.Clean:
-                        case SVMStateEnum.Dirty:
-                            misc = db.Miscs.Find(c.Id);
-                            misc.Set(c);
-                            sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
-                            break;
+                        switch (c.SVMState)
+                        {
+                            case SVMStateEnum.Added:
+                                misc = new Misc(c);
+                                db.Miscs.Add(misc);
+                                sm = new StyleMisc() { StyleId = svm.Style.Id, MiscId = misc.Id };
+                                db.StyleMiscs.Add(sm);
+                                break;
+                            case SVMStateEnum.Deleted:
+                                sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
+                                db.StyleMiscs.Remove(sm);
+                                break;
+                            default:
+                            case SVMStateEnum.Clean:
+                            case SVMStateEnum.Dirty:
+                                misc = db.Miscs.Find(c.Id);
+                                misc.Set(c);
+                                sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
+                                break;
+                        }
                     }
                 }
-            }
 
-            if (svm.SVMState == SVMStateEnum.Added)
-            {
-                db.Styles.Add(svm.Style);
-            }
-            if (ModelState.IsValid)
-            {
-                // Save changes, go to Home
-                db.SaveChanges();
-                return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
-            }
+                if (svm.SVMState == SVMStateEnum.Added)
+                {
+                    db.Styles.Add(svm.Style);
+                }
+                if (ModelState.IsValid)
+                {
+                    // Save changes, go to Home
+                    db.SaveChanges();
+                    return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
+                }
+            } // false
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
