@@ -100,6 +100,18 @@ namespace OJewelry.Models
         public decimal? PPC { get { return Comp.StonePPC ?? 0; } set { Comp.StonePPC = value; } }
         public string VendorName { get { return Comp.Vendor.Name; } set { Comp.Vendor.Name = value; } }
 
+        public static List<Component> componentsForCompany;
+        private static bool bAvailCompsInitailized = false;
+        public static List<Component> GetAvailComps(int CompanyId)
+        {
+            if (!bAvailCompsInitailized)
+            {
+                OJewelryDB db = new OJewelryDB();
+                componentsForCompany = db.Components.Include("ComponentType").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Stones").ToList();
+            }
+            return componentsForCompany;
+        }
+        public SelectList ac { get; set; }
     }
     public class FindingsComponent : StyleViewComponentModel
     {
@@ -113,6 +125,19 @@ namespace OJewelry.Models
         [Display(Name = "Price")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? Price { get { return Comp.Price ?? 0; } set { Comp.Price = value; } }
+
+        public static List<Component> componentsForCompany;
+        private static bool bAvailCompsInitailized = false;
+        public static List<Component> GetAvailComps(int CompanyId)
+        {
+            if (!bAvailCompsInitailized)
+            {
+                OJewelryDB db = new OJewelryDB();
+                componentsForCompany = db.Components.Include("ComponentType").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Findings").ToList();
+            }
+            return componentsForCompany;
+        }
+        public SelectList ac { get; set; }
 
     }
     public class LaborComponent 
@@ -195,10 +220,12 @@ namespace OJewelry.Models
             Comp.StonePPC = 0;
             // Comp.Vendor = new Vendor(); 
         }
+    
         public int Id { get { return Comp.Id; } set { Comp.Id = value; } }
         public int CompanyId { get { return Comp.CompanyId ?? 0; } set { Comp.CompanyId = value; } }
         public int ComponentTypeId { get { return Comp.ComponentTypeId; } set { Comp.ComponentTypeId = value; } }
         public Component Comp { get; set; }
+ 
         public String Name { get { return Comp.Name; } set { Comp.Name = value; } }
         [Display(Name = "Quantity")]
         public int Qty { get; set; }
@@ -210,7 +237,7 @@ namespace OJewelry.Models
     }
 
     public enum SVMStateEnum { Clean, Dirty, Added, Deleted }
-    public enum SVMCCTypeEnum { Casting, Stone,Finding, Labor, Misc }
+    public enum SVMCCTypeEnum { Castings, Stones, Findings, Labors, Miscs }
 
     public class StyleViewModel
     {
@@ -625,4 +652,5 @@ namespace OJewelry.Models
         }
     }
 }
+
 

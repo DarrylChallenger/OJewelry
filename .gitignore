@@ -261,3 +261,5 @@ __pycache__/
 *.pyc
 /OriginalErrorHandlingClip.cs
 *.xlsx
+/temp.html
+/HTMLPage1.html

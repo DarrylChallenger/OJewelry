@@ -4,19 +4,27 @@
 @*Use CCRowIndex to determine which x button was pressed*@
 <div class="col-sm-1 ">
     <div class="row StyleComponentsRowHeaderBtn ">
+        @{ 
+            string idHeaderBtn = Model.SVMCCType + "AddBtn";
+            string idRowBtn = Model.SVMCCType.ToString() + "AddBtn_" + Model.CCRowIndex.ToString();
+        }
         @if (Model.CCHeaderRow)
         {
             if (Model.CCLastRow)
             {
                 <div class="col-sm-6">
-                    <button type="button" class="btn btn-default" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
+                    <button type="button" id='@idHeaderBtn' class="btn btn-default @idHeaderBtn" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
                         <span class="glyphicon glyphicon-plus"></span>
                     </button>
                 </div>
             }
             else
             {
-                <div class="col-sm-6"></div>
+                <div class="col-sm-6">
+                    <button type="button" id='@idHeaderBtn' class="btn btn-default hidden @idHeaderBtn" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
             }
         }
         else
@@ -24,14 +32,18 @@
             if (Model.CCLastRow)
             {
                 <div class="col-sm-6 ">
-                    <button type="button" class="btn btn-default" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
+                    <button type="button" id='@idRowBtn' class="btn btn-default @idHeaderBtn" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
                         <span class="glyphicon glyphicon-plus"></span>
                     </button>
                 </div>
             }
             else
             {
-                <div class="col-sm-6"></div>
+                <div class="col-sm-6 ">
+                    <button type="button" id='@idRowBtn' class="btn btn-default hidden" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
             }
             <div class="col-sm-6">
                 <button type="button" class="btn btn-default" onclick="RemoveComponentRow('@Model.SVMCCType', @Model.i)">
