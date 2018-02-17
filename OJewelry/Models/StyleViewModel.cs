@@ -98,7 +98,7 @@ namespace OJewelry.Models
         [Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? PPC { get { return Comp.StonePPC ?? 0; } set { Comp.StonePPC = value; } }
-        public string VendorName { get { return Comp.Vendor.Name; } set { Comp.Vendor.Name = value; } }
+        public string xVendorName { get { return Comp.Vendor.Name; } set { Comp.Vendor.Name = value; } }
 
         public static List<Component> componentsForCompany;
         private static bool bAvailCompsInitailized = false;
@@ -111,7 +111,7 @@ namespace OJewelry.Models
             }
             return componentsForCompany;
         }
-        public SelectList ac { get; set; }
+        //public SelectList ac { get; set; }
     }
     public class FindingsComponent : StyleViewComponentModel
     {
@@ -119,7 +119,7 @@ namespace OJewelry.Models
         public FindingsComponent(Component c) { Comp = c; }
         // VENDOR	METAL	PRICE 
         public int VendorId { get { return Comp.VendorId ?? 0; } set { Comp.VendorId = value; } }
-        public string VendorName { get { return Comp.Vendor.Name; } set { Comp.Vendor.Name = value; } }
+        public string xVendorName { get { return Comp.Vendor.Name; } set { Comp.Vendor.Name = value; } }
         public String Metal { get; set; }
 
         [Display(Name = "Price")]
@@ -137,7 +137,7 @@ namespace OJewelry.Models
             }
             return componentsForCompany;
         }
-        public SelectList ac { get; set; }
+        //public SelectList ac { get; set; }
 
     }
     public class LaborComponent 
@@ -203,7 +203,7 @@ namespace OJewelry.Models
     }
 
     public class StyleViewComponentModel
-    {
+    { //Components should be a componentID and a qty
         public StyleViewComponentModel()
         {
             SVMState = SVMStateEnum.Dirty; // For now, update all records
@@ -260,6 +260,11 @@ namespace OJewelry.Models
         public SVMStateEnum SVMState { get; set; }
         public SVMCCTypeEnum SVMCCType { get; set; }
         public int CompanyId { get; set; }
+
+        public SelectList jsVendors { get; set; }
+        public SelectList jsMetals { get; set; }
+        public SelectList jsStones { get; set; }
+        public SelectList jsFindings { get; set; }
 
         public bool CCLastRow { get; set; }
         public bool CCHeaderRow { get; set; }
@@ -390,7 +395,7 @@ namespace OJewelry.Models
             Int32.TryParse(s, out int mutid);
             m.Style.MetalWtUnitId = mutid;
 
-            // build Metals
+            // build Castings (aka Metals)
             
             if (m.Castings == null)
             { m.Castings = new List<CastingComponent>(); }

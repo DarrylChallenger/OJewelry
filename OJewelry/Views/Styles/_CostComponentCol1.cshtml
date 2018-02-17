@@ -13,7 +13,7 @@
             if (Model.CCLastRow)
             {
                 <div class="col-sm-6">
-                    <button type="button" id='@idHeaderBtn' class="btn btn-default @idHeaderBtn" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
+                    <button type="button" id='@idHeaderBtn' class=" btn btn-default @idHeaderBtn" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
                         <span class="glyphicon glyphicon-plus"></span>
                     </button>
                 </div>
@@ -40,7 +40,7 @@
             else
             {
                 <div class="col-sm-6 ">
-                    <button type="button" id='@idRowBtn' class="btn btn-default hidden" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
+                    <button type="button" id='@idRowBtn' class="btn btn-default @idHeaderBtn hidden" onclick="AddComponentRow('@Model.SVMCCType',  @Model.CCRowIndex)">
                         <span class="glyphicon glyphicon-plus"></span>
                     </button>
                 </div>

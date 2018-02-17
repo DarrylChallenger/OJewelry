@@ -32,8 +32,8 @@
                         @Html.Partial("_CostComponentCol1", Model)
                         @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
                         <div class="col-sm-1"></div>
-                        @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-2" })
-                        @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1" })
+                        @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.jsVendors, new { @class = "col-sm-2" })
+                        @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.jsMetals, new { @class = "col-sm-1" })
                         @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
                         @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1" } })
                         @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1" })
@@ -81,17 +81,17 @@
                 <div class="row ltbordered">
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Stones.Count - 1) { Model.CCLastRow = true; }
-                    @Html.HiddenFor(model => model.Stones[i].Id)
-                    @Html.HiddenFor(model => model.Stones[i].Name) <!-- should be dropdown -->
-                    @Html.HiddenFor(model => model.Stones[i].ComponentTypeId)
+                    @Html.HiddenFor(model => model.Stones[i].Comp.Id)
+                    @Html.HiddenFor(model => model.Stones[i].Comp.Name) <!-- should be dropdown -->
+                    @Html.HiddenFor(model => model.Stones[i].Comp.ComponentTypeId)
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
-                    @Html.DropDownListFor(model => model.Stones[i].Comp.Id, Model.Stones[i].ac, new { @class = "col-sm-2" })
+                    @Html.DropDownListFor(model => model.Stones[i].Comp.Id, Model.jsStones, new { @class = "col-sm-2" })
                     <div class="col-sm-1 "></div>
-                    <div class="col-sm-2 ">@c.VendorName </div>
-                    <div class="col-sm-1 ">@c.CtWt </div>
-                    <div class="col-sm-1 ">@c.Size </div>
-                    <div class="col-sm-1 ">@c.PPC </div>
+                    <div class="col-sm-2 ">VendorName </div>
+                    <div class="col-sm-1 ">CtWt </div>
+                    <div class="col-sm-1 ">Size </div>
+                    <div class="col-sm-1 ">PPC </div>
                     @Html.EditorFor(model => model.Stones[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
                     <div id="StonesRowTotalValue_@i" class="col-sm-2 StonesRowTotal ">@Model.Stones[i].Total</div>
                 </div>
@@ -134,14 +134,14 @@
                 <div class="row ltbordered">
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Findings.Count - 1) { Model.CCLastRow = true; }
-                    @Html.HiddenFor(model => model.Findings[i].Id)
-                    @Html.HiddenFor(model => model.Findings[i].Name)
-                    @Html.HiddenFor(model => model.Findings[i].ComponentTypeId)
+                    @Html.HiddenFor(model => model.Findings[i].Comp.Id)
+                    @Html.HiddenFor(model => model.Findings[i].Comp.Name)
+                    @Html.HiddenFor(model => model.Findings[i].Comp.ComponentTypeId)
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
-                    @Html.DropDownListFor(model => model.Findings[i].Comp.Id, Model.Findings[i].ac, new { @class = "col-sm-2" })
+                    @Html.DropDownListFor(model => model.Findings[i].Comp.Id, Model.jsFindings, new { @class = "col-sm-2" })
                     <div class="col-sm-2 "></div>
-                    <div class="col-sm-2 ">@c.VendorName </div>
+                    <div class="col-sm-2 ">VendorName </div>
                     <div class="col-sm-1">@Model.Findings[i].Metal</div>
                     <div class="col-sm-1">@Model.Findings[i].Price</div>
                     @Html.EditorFor(model => model.Findings[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
@@ -266,32 +266,17 @@
         <div id="GrandTotal" class="col-sm-2">@Model.Total</div>
     </div>
     <div class="hidden">
-        <!-- @*
-        <div id="CastingsRow_INDEX">
-            <div class="row ltbordered">
-                @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = INDEX;}
-                @if (i == Model.Castings.Count - 1) { Model.CCLastRow = true; }
-                @Html.HiddenFor(model => model.Castings[i].Id)
-                @Html.Partial("_CostComponentCol1", Model)
-                @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
-                <div class="col-sm-1"></div>
-                @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-2" })
-                @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1" })
-                @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
-                @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1" } })
-                @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1" })
-                <div id="CastingsRowTotalValue_@i" class="col-sm-2 CastingsRowTotal ">@Model.Castings[i].Total</div>
-            </div>
-            <div class="row">
-                <!--Validations Here-->
-                @Html.ValidationMessageFor(model => model.Castings[i].Name, "", new { @class = "text-danger" })
-                @Html.ValidationMessageFor(model => model.Castings[i].Price, "", new { @class = "text-danger" })
-                @Html.ValidationMessageFor(model => model.Castings[i].Labor, "", new { @class = "text-danger" })
-                @Html.ValidationMessageFor(model => model.Castings[i].Qty, "", new { @class = "text-danger" })
-            </div>
-
+        <div id="jsMetals">
+            @Html.DropDownList("jsmINDEX", Model.jsMetals, new { @class = "col-sm-1" })
         </div>
-        *@-->
-
+        <div id="jsVendors">
+            @Html.DropDownList("jsvINDEX", Model.jsVendors, new { @class = "col-sm-2 " })
+        </div>
+        <div id="jsStones">
+            @Html.DropDownList("jssINDEX", Model.jsStones, new { @class = "col-sm-2" })
+        </div>
+        <div id="jsFindings">
+            @Html.DropDownList("jsfINDEX", Model.jsFindings, new { @class = "col-sm-2" })
+        </div>
     </div>
 </div>

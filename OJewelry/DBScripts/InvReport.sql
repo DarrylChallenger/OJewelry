@@ -1,4 +1,4 @@
-﻿select s.Stylenum, s.stylename, s.Quantity from styles as s
+﻿select s.Id, s.Stylenum, s.stylename, s.Quantity from styles as s
 
 select  distinct c.Id, s.Id, s.[Desc], s.StyleNum, m.Quantity from styles as s
 left outer join memo as m on s.id = m.StyleID

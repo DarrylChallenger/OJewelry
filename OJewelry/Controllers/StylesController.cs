@@ -113,7 +113,7 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(StyleViewModel svm)
         {
-            ModelState.Clear();
+            //ModelState.Clear();
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             //db.Entry(svm.Style).State = EntityState.Modified;
             // Iterate thru the components
@@ -294,8 +294,11 @@ namespace OJewelry.Controllers
             } // false
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
+            PopulateStyleViewModelDropDowns(svm);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypes = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
+            // iterate thru modelstate errors, display on page
             return View(svm);
         }
 
@@ -539,6 +542,16 @@ namespace OJewelry.Controllers
             return View(m);
         }
 
+        void PopulateStyleViewModelDropDowns(StyleViewModel svm)
+        {
+            svm.jsVendors = new SelectList(db.Vendors, "Id", "Name", db.Vendors.First().Id);
+            svm.jsMetals = new SelectList(db.MetalCodes, "Id", "Code", db.MetalCodes.First().Id);
+            List<Component> stones = db.Components.Include("ComponentType").Where(x => x.CompanyId == svm.CompanyId && x.ComponentType.Name == "Stones").ToList();
+            List<Component> findings = db.Components.Include("ComponentType").Where(x => x.CompanyId == svm.CompanyId && x.ComponentType.Name == "Findings").ToList();
+            svm.jsStones = new SelectList(stones, "Id", "Name", stones.First().Id);
+            svm.jsFindings = new SelectList(findings, "Id", "Name", findings.First().Id);
+        }
+
         void PopulateStyleViewModel(int? id, StyleViewModel svm)
         {
             decimal t = 0, t2 = 0;
@@ -547,6 +560,9 @@ namespace OJewelry.Controllers
             svm.Findings = new List<FindingsComponent>();
             svm.Labors = new List<LaborComponent>();
             svm.Miscs = new List<MiscComponent>();
+
+            PopulateStyleViewModelDropDowns(svm);
+
             if (id == null)
             {
                 svm.Style = new Style();
@@ -594,10 +610,10 @@ namespace OJewelry.Controllers
                             Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                             StoneComponent stscm = new StoneComponent(Comp);
                             stscm.VendorId = Comp.VendorId.Value;
-                            stscm.VendorName = Comp.Vendor.Name;
+                            //stscm.VendorName = Comp.Vendor.Name;
                             stscm.Qty = sc.Quantity ?? 0;
                             StoneComponent.componentsForCompany = StoneComponent.GetAvailComps(svm.CompanyId);
-                            stscm.ac = new SelectList(StoneComponent.componentsForCompany, "id", "Name", sc.ComponentId);
+                            //stscm.ac = new SelectList(StoneComponent.componentsForCompany, "id", "Name", sc.ComponentId);
                             t = stscm.PPC ?? 0;
                             stscm.Total = stscm.Qty * t;
                             svm.StonesTotal += stscm.Total;
@@ -608,12 +624,12 @@ namespace OJewelry.Controllers
                             Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                             FindingsComponent fiscm = new FindingsComponent(Comp);
                             fiscm.VendorId = Comp.VendorId.Value;
-                            fiscm.VendorName = Comp.Vendor.Name;
+                            //fiscm.VendorName = Comp.Vendor.Name;
                             fiscm.Metal = db.MetalCodes.Find(Comp.MetalCodeId).Code;
                             //fiscm.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", Comp.MetalCodeId.Value);
                             fiscm.Qty = sc.Quantity ?? 0;
                             FindingsComponent.componentsForCompany = FindingsComponent.GetAvailComps(svm.CompanyId);
-                            fiscm.ac = new SelectList(FindingsComponent.componentsForCompany, "id", "Name", sc.ComponentId);
+                            //fiscm.ac = new SelectList(FindingsComponent.componentsForCompany, "id", "Name", sc.ComponentId);
                             t = fiscm.Price ?? 0;
                             fiscm.Total = fiscm.Qty * t;
                             svm.FindingsTotal += fiscm.Total;
