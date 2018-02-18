@@ -27,18 +27,18 @@ namespace OJewelry.Controllers
         // GET: Styles/Details/5
         public ActionResult Details(int? id)
         {
-            StyleViewModel sm = new StyleViewModel();
+            StyleViewModel svm = new StyleViewModel();
             if (id == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-            sm.Style = db.Styles.Find(id);
-            if (sm.Style == null)
+            svm.Style = db.Styles.Find(id);
+            if (svm.Style == null)
             {
                 return HttpNotFound();
             }
-            PopulateStyleViewModel(id, sm);
-            return View(sm);
+            svm.Populate(id, db);
+            return View(svm);
         }
 
         public ActionResult Print(int? id)
@@ -53,7 +53,7 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            PopulateStyleViewModel(id, sm);
+            sm.Populate(id, db);
             return View(sm);
         }
 
@@ -62,7 +62,7 @@ namespace OJewelry.Controllers
         {
             Collection co = db.Collections.Find(collectionId);
             StyleViewModel svm = new StyleViewModel();
-            PopulateStyleViewModel(null, svm);
+            svm.Populate(null, db);
             svm.Style.Collection = db.Collections.Find(collectionId);
             svm.Style.CollectionId = collectionId;
             svm.CompanyId = svm.Style.Collection.CompanyId;
@@ -101,7 +101,7 @@ namespace OJewelry.Controllers
             }
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
-            PopulateStyleViewModel(id, svm);
+            svm.Populate(id, db);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
@@ -145,12 +145,15 @@ namespace OJewelry.Controllers
                             db.Castings.Remove(casting);
                             break;
                         case SVMStateEnum.Dirty:
-                        case SVMStateEnum.Clean:
-                        default:
                             casting = db.Castings.Find(c.Id);
                             casting.Set(c);
+                            /*
                             // Update the Syle-Casting Link
                             sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id).SingleOrDefault();
+                            */
+                            break;
+                        case SVMStateEnum.Clean: // No updates
+                        default:
                             break;
                     }
                 }
@@ -167,23 +170,30 @@ namespace OJewelry.Controllers
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
+                            /*
                             component = new Component(c);
                             db.Components.Add(component);
-                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = component.Id };
+                            */
+                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = c.Id };
+                            sc.ComponentId = c.Id;
                             sc.Quantity = c.Qty;
                             db.StyleComponents.Add(sc);
                             break;
                         case SVMStateEnum.Deleted:
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
                             db.StyleComponents.Remove(sc);
                             break;
-                        default:
-                        case SVMStateEnum.Clean:
                         case SVMStateEnum.Dirty:
+                            /*
                             component = db.Components.Find(c.Id);
                             component.Set(c);
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                            */
+                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
+                            sc.ComponentId = c.Id;
                             sc.Quantity = c.Qty;
+                            break;
+                        case SVMStateEnum.Clean:
+                        default:
                             break;
                     }
                 }
@@ -199,23 +209,30 @@ namespace OJewelry.Controllers
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
+                            /*
                             component = new Component(c);
                             db.Components.Add(component);
-                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = component.Id };
+                            */
+                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = c.Id };
+                            sc.ComponentId = c.Id;
                             sc.Quantity = c.Qty;
                             db.StyleComponents.Add(sc);
                             break;
                         case SVMStateEnum.Deleted:
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
                             db.StyleComponents.Remove(sc);
                             break;
-                        default:
-                        case SVMStateEnum.Clean:
                         case SVMStateEnum.Dirty:
+                            /*
                             component = db.Components.Find(c.Id);
                             component.Set(c);
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.ComponentId == c.Id).Single();
+                            */
+                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
+                            sc.ComponentId = c.Id;
                             sc.Quantity = c.Qty;
+                            break;
+                        case SVMStateEnum.Clean: // No updates
+                        default:
                             break;
                     }
                 }
@@ -241,12 +258,15 @@ namespace OJewelry.Controllers
                             sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
                             db.StyleLabors.Remove(sl);
                             break;
-                        default:
-                        case SVMStateEnum.Clean:
                         case SVMStateEnum.Dirty:
                             labor = db.Labors.Find(c.Id);
                             labor.Set(c);
+                            /*
                             sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
+                            */
+                            break;
+                        case SVMStateEnum.Clean: // No updates
+                        default:
                             break;
                     }
                 }
@@ -271,12 +291,16 @@ namespace OJewelry.Controllers
                             sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
                             db.StyleMiscs.Remove(sm);
                             break;
-                        default:
-                        case SVMStateEnum.Clean:
                         case SVMStateEnum.Dirty:
+                           
                             misc = db.Miscs.Find(c.Id);
                             misc.Set(c);
+                            /*
                             sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
+                            */
+                            break;
+                        case SVMStateEnum.Clean: // No updates
+                        default:
                             break;
                     }
                 }
@@ -294,7 +318,8 @@ namespace OJewelry.Controllers
             } // false
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
-            PopulateStyleViewModelDropDowns(svm);
+            svm.PopulateDropDownData(db);
+            svm.PopulateDropDowns(db);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
@@ -302,26 +327,6 @@ namespace OJewelry.Controllers
             return View(svm);
         }
 
-// POST: Styles/Edit/5
-// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-/*
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(style).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index", new { CollectionID = style.CollectionId });
-            }
-            Collection co = db.Collections.Find(style.CollectionId);
-            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", style.JewelryTypeId);
-            return View(style);
-        }
-*/
         // GET: Styles/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -542,132 +547,14 @@ namespace OJewelry.Controllers
             return View(m);
         }
 
-        void PopulateStyleViewModelDropDowns(StyleViewModel svm)
+        void xPopulateStyleViewModelDropDowns(StyleViewModel svm)
         {
-            svm.jsVendors = new SelectList(db.Vendors, "Id", "Name", db.Vendors.First().Id);
-            svm.jsMetals = new SelectList(db.MetalCodes, "Id", "Code", db.MetalCodes.First().Id);
-            List<Component> stones = db.Components.Include("ComponentType").Where(x => x.CompanyId == svm.CompanyId && x.ComponentType.Name == "Stones").ToList();
-            List<Component> findings = db.Components.Include("ComponentType").Where(x => x.CompanyId == svm.CompanyId && x.ComponentType.Name == "Findings").ToList();
-            svm.jsStones = new SelectList(stones, "Id", "Name", stones.First().Id);
-            svm.jsFindings = new SelectList(findings, "Id", "Name", findings.First().Id);
-        }
-
-        void PopulateStyleViewModel(int? id, StyleViewModel svm)
-        {
-            decimal t = 0, t2 = 0;
-            svm.Castings = new List<CastingComponent>();
-            svm.Stones = new List<StoneComponent>();
-            svm.Findings = new List<FindingsComponent>();
-            svm.Labors = new List<LaborComponent>();
-            svm.Miscs = new List<MiscComponent>();
-
-            PopulateStyleViewModelDropDowns(svm);
-
-            if (id == null)
-            {
-                svm.Style = new Style();
-            }
-            else
-            {
-                // Get Casting Links
-                svm.Style.StyleCastings = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id).ToList();
-                // Get component links
-                svm.Style.StyleComponents = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id).ToList();
-                // Get Labor Links
-                svm.Style.StyleLabors = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id).ToList(); ;
-                // Get Misc Links
-                svm.Style.StyleMiscs = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id).ToList(); ;
-                // get components for each link
-                // Metals
-                foreach (StyleCasting sc in svm.Style.StyleCastings)
-                {
-                    Casting casting = db.Castings.Find(sc.CastingId); // Castings
-                    CastingComponent cstc = new CastingComponent(casting);
-                    // Need to get the vendor and metal code
-                    cstc.VendorId = casting.VendorId.Value;
-                    cstc.VendorList = new SelectList(db.Vendors, "Id", "Name", casting.VendorId.Value);
-                    cstc.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", casting.MetalCodeID.Value);
-                    //cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
-                    cstc.MetalCode = db.MetalCodes.Find(casting.MetalCodeID).Code; // Metal Code
-                    cstc.Qty = casting.Qty.Value;
-                    t = cstc.Price ?? 0;
-                    t2 = cstc.Labor ?? 0;
-                    cstc.Total = cstc.Qty * (t + t2);
-                    svm.MetalsTotal += cstc.Total;
-                    svm.Castings.Add(cstc);
-                    svm.Total += cstc.Total;
-                }
-                // Stones and Findings
-                foreach (StyleComponent sc in svm.Style.StyleComponents)
-                {
-                    Component Comp = db.Components.Find(sc.ComponentId); // Stones and Findings
-                    switch (sc.Component.ComponentType.Id)
-                    {
-                        case 1: // Metals (Castings)
-                            break;
-
-                        case 2: // Stones
-                            Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
-                            StoneComponent stscm = new StoneComponent(Comp);
-                            stscm.VendorId = Comp.VendorId.Value;
-                            //stscm.VendorName = Comp.Vendor.Name;
-                            stscm.Qty = sc.Quantity ?? 0;
-                            StoneComponent.componentsForCompany = StoneComponent.GetAvailComps(svm.CompanyId);
-                            //stscm.ac = new SelectList(StoneComponent.componentsForCompany, "id", "Name", sc.ComponentId);
-                            t = stscm.PPC ?? 0;
-                            stscm.Total = stscm.Qty * t;
-                            svm.StonesTotal += stscm.Total;
-                            svm.Stones.Add(stscm);
-                            svm.Total += stscm.Total;
-                            break;
-                        case 3: // Findings
-                            Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
-                            FindingsComponent fiscm = new FindingsComponent(Comp);
-                            fiscm.VendorId = Comp.VendorId.Value;
-                            //fiscm.VendorName = Comp.Vendor.Name;
-                            fiscm.Metal = db.MetalCodes.Find(Comp.MetalCodeId).Code;
-                            //fiscm.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", Comp.MetalCodeId.Value);
-                            fiscm.Qty = sc.Quantity ?? 0;
-                            FindingsComponent.componentsForCompany = FindingsComponent.GetAvailComps(svm.CompanyId);
-                            //fiscm.ac = new SelectList(FindingsComponent.componentsForCompany, "id", "Name", sc.ComponentId);
-                            t = fiscm.Price ?? 0;
-                            fiscm.Total = fiscm.Qty * t;
-                            svm.FindingsTotal += fiscm.Total;
-                            svm.Findings.Add(fiscm);
-                            svm.Total += fiscm.Total;
-                            break;
-                        case 4:  // Labor
-                            break;
-                        default: // Misc
-                            break;
-                    }
-                }
-                // Labor
-                foreach (StyleLabor sl in svm.Style.StyleLabors)
-                {
-                    Labor lb = db.Labors.Find(sl.LaborId); // Stones and Findings
-                    LaborComponent liscm = new LaborComponent(lb);
-                    liscm.Qty = sl.Labor.Qty ?? 0;
-                    t = liscm.PPH ?? 0;
-                    t2 = liscm.PPP ?? 0;
-                    liscm.Total = liscm.Qty.Value * (t + t2);
-                    svm.LaborsTotal += liscm.Total;
-                    svm.Labors.Add(liscm);
-                    svm.Total += liscm.Total;
-                }
-                // Misc
-                foreach (StyleMisc sms in svm.Style.StyleMiscs)
-                {
-                    Misc misc = db.Miscs.Find(sms.MiscId); // Stones and Findings
-                    MiscComponent miscm = new MiscComponent(misc);
-                    miscm.Qty = sms.Misc.Qty ?? 0;
-                    t = miscm.PPP ?? 0;
-                    miscm.Total = miscm.Qty.Value * t;
-                    svm.MiscsTotal += miscm.Total;
-                    svm.Miscs.Add(miscm);
-                    svm.Total += miscm.Total;
-                }
-            }
+            // reusables
+            svm.jsVendors = db.Vendors.ToList();
+            svm.jsMetals = db.MetalCodes.ToList();
+            svm.jsStones = db.Components.Include("ComponentType").Where(x => x.CompanyId == svm.CompanyId && x.ComponentType.Name == "Stones").ToList();
+            svm.jsFindings = db.Components.Include("ComponentType").Where(x => x.CompanyId == svm.CompanyId && x.ComponentType.Name == "Findings").ToList();
+            // populate each cost component dropdown in model
         }
 
         void GetPresenters(OJewelryDB dc, MemoViewModel m, int CompanyId)

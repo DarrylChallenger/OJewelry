@@ -32,8 +32,8 @@
                         @Html.Partial("_CostComponentCol1", Model)
                         @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
                         <div class="col-sm-1"></div>
-                        @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.jsVendors, new { @class = "col-sm-2" })
-                        @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.jsMetals, new { @class = "col-sm-1" })
+                        @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-2" })
+                        @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1" })
                         @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
                         @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1" } })
                         @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1" })
@@ -79,14 +79,12 @@
             <div class="StonesState">@Html.HiddenFor(model => model.Stones[i].SVMState)</div>
             <div id="StonesRow_@i" class="StonesRow">
                 <div class="row ltbordered">
+                    @Html.HiddenFor(model => model.Stones[i].scId)
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Stones.Count - 1) { Model.CCLastRow = true; }
-                    @Html.HiddenFor(model => model.Stones[i].Comp.Id)
-                    @Html.HiddenFor(model => model.Stones[i].Comp.Name) <!-- should be dropdown -->
-                    @Html.HiddenFor(model => model.Stones[i].Comp.ComponentTypeId)
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
-                    @Html.DropDownListFor(model => model.Stones[i].Comp.Id, Model.jsStones, new { @class = "col-sm-2" })
+                    @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, new { @class = "col-sm-2" })
                     <div class="col-sm-1 "></div>
                     <div class="col-sm-2 ">VendorName </div>
                     <div class="col-sm-1 ">CtWt </div>
@@ -97,7 +95,6 @@
                 </div>
 
                 <div class="row">
-                    @Html.ValidationMessageFor(model => model.Stones[i].Name, "", new { @class = "text-danger" })
                     @Html.ValidationMessageFor(model => model.Stones[i].Qty, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -132,24 +129,20 @@
             <div class="FindingsState">@Html.HiddenFor(model => model.Findings[i].SVMState)</div>
             <div id="FindingsRow_@i" class="FindingsRow">
                 <div class="row ltbordered">
+                    @Html.HiddenFor(model => model.Findings[i].scId)
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Findings.Count - 1) { Model.CCLastRow = true; }
-                    @Html.HiddenFor(model => model.Findings[i].Comp.Id)
-                    @Html.HiddenFor(model => model.Findings[i].Comp.Name)
-                    @Html.HiddenFor(model => model.Findings[i].Comp.ComponentTypeId)
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
-                    @Html.DropDownListFor(model => model.Findings[i].Comp.Id, Model.jsFindings, new { @class = "col-sm-2" })
+                    @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-2" })
                     <div class="col-sm-2 "></div>
                     <div class="col-sm-2 ">VendorName </div>
-                    <div class="col-sm-1">@Model.Findings[i].Metal</div>
-                    <div class="col-sm-1">@Model.Findings[i].Price</div>
+                    <div class="col-sm-1">Metal</div>
+                    <div class="col-sm-1">Price</div>
                     @Html.EditorFor(model => model.Findings[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
                     <div id="FindingsRowTotalValue_@i" class="col-sm-2 FindingsRowTotal ">@Model.Findings[i].Total</div>
                 </div>
                 <div class="row">
-                    @Html.ValidationMessageFor(model => model.Findings[i].Name, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Findings[i].Price, "", new { @class = "text-danger" })
                     @Html.ValidationMessageFor(model => model.Findings[i].Qty, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -267,16 +260,16 @@
     </div>
     <div class="hidden">
         <div id="jsMetals">
-            @Html.DropDownList("jsmINDEX", Model.jsMetals, new { @class = "col-sm-1" })
+            @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.First().Id), new { @class = "col-sm-1" })
         </div>
         <div id="jsVendors">
-            @Html.DropDownList("jsvINDEX", Model.jsVendors, new { @class = "col-sm-2 " })
+            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.First().Id), new { @class = "col-sm-2 " })
         </div>
         <div id="jsStones">
-            @Html.DropDownList("jssINDEX", Model.jsStones, new { @class = "col-sm-2" })
+            @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name", Model.jsStones.First().Id), new { @class = "col-sm-2" })
         </div>
         <div id="jsFindings">
-            @Html.DropDownList("jsfINDEX", Model.jsFindings, new { @class = "col-sm-2" })
+            @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name", Model.jsFindings.First().Id), new { @class = "col-sm-2" })
         </div>
     </div>
 </div>

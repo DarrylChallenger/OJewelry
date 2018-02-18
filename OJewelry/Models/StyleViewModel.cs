@@ -8,8 +8,8 @@ using System.Web.Mvc;
 
 namespace OJewelry.Models
 {
-    
-    public class CastingComponent 
+
+    public class CastingComponent
     {
         private Casting casting { get; set; }
         public CastingComponent()
@@ -28,7 +28,7 @@ namespace OJewelry.Models
         public String Name { get { return casting.Name; } set { casting.Name = value; } }
 
         [Display(Name = "Quantity")]
-        [DisplayFormat(ApplyFormatInEditMode = true,DataFormatString ="{0:N0}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N0}")]
         [DataType(DataType.Currency)]
         public int Qty { get; set; }
 
@@ -43,8 +43,8 @@ namespace OJewelry.Models
                 casting.Price = value;
             }
         }
-        
-        [Display(Name ="Labor")]
+
+        [Display(Name = "Labor")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         [DataType(DataType.Currency)]
 
@@ -63,7 +63,7 @@ namespace OJewelry.Models
         public int VendorId
         {
             get { return casting.VendorId ?? 0; }
-            set { casting.VendorId = value;  }
+            set { casting.VendorId = value; }
         }
         public int MetalCodeId
         {
@@ -77,7 +77,7 @@ namespace OJewelry.Models
          * [Display(Name="Vendor")]
         public String VendorName { get; set; }
         */
-        [Display(Name ="Metal")]
+        [Display(Name = "Metal")]
         public String MetalCode { get; set; }
 
         public SelectList VendorList { get; set; }
@@ -85,59 +85,53 @@ namespace OJewelry.Models
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
+
+        public void SetVendorsList(List<Vendor> vendors, int defaultVendorSelection)
+        {
+            VendorList = new SelectList(vendors, "Id", "Name", defaultVendorSelection);
+        }
+
+        public void SetMetalsList(List<MetalCode> metals, int defaultMetalSelection)
+        {
+            MetalCodes = new SelectList(metals, "Id", "Code", defaultMetalSelection);
+        }
     }
     public class StoneComponent : StyleViewComponentModel
     {
-        public StoneComponent() { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
-        public StoneComponent(Component c) { Comp = c; }
+        public StoneComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
+        public StoneComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
         // VENDOR CT WT SIZE    PPC/$
-        public int VendorId { get { return Comp.VendorId ?? 0; } set { Comp.VendorId = value; } }
-        public int? CtWt { get { return Comp.StonesCtWt ?? 0; } set { Comp.StonesCtWt = value; } }
-        public String Size { get { return Comp.StoneSize ?? ""; } set { Comp.StoneSize = value; } }
-
+        // public int VendorId { get { return Comp.VendorId ?? 0; } set { Comp.VendorId = value; } }
+        //public int? CtWt { get { return Comp.StonesCtWt ?? 0; } set { Comp.StonesCtWt = value; } }
+        //public String Size { get { return Comp.StoneSize ?? ""; } set { Comp.StoneSize = value; } }
+        /*
         [Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? PPC { get { return Comp.StonePPC ?? 0; } set { Comp.StonePPC = value; } }
-        public string xVendorName { get { return Comp.Vendor.Name; } set { Comp.Vendor.Name = value; } }
-
-        public static List<Component> componentsForCompany;
-        private static bool bAvailCompsInitailized = false;
-        public static List<Component> GetAvailComps(int CompanyId)
+        */
+        public void SetStonesList(List<Component> stones, int defaultSelection)
         {
-            if (!bAvailCompsInitailized)
-            {
-                OJewelryDB db = new OJewelryDB();
-                componentsForCompany = db.Components.Include("ComponentType").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Stones").ToList();
-            }
-            return componentsForCompany;
+            CompList = new SelectList(stones, "Id", "Name", defaultSelection);
         }
-        //public SelectList ac { get; set; }
+
     }
     public class FindingsComponent : StyleViewComponentModel
     {
-        public FindingsComponent() { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
-        public FindingsComponent(Component c) { Comp = c; }
+        public FindingsComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
+        public FindingsComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
         // VENDOR	METAL	PRICE 
-        public int VendorId { get { return Comp.VendorId ?? 0; } set { Comp.VendorId = value; } }
-        public string xVendorName { get { return Comp.Vendor.Name; } set { Comp.Vendor.Name = value; } }
-        public String Metal { get; set; }
-
+        //public int VendorId { get { return Comp.VendorId ?? 0; } set { Comp.VendorId = value; } }
+        //public String Metal { get; set; }
+        /*
         [Display(Name = "Price")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? Price { get { return Comp.Price ?? 0; } set { Comp.Price = value; } }
-
-        public static List<Component> componentsForCompany;
-        private static bool bAvailCompsInitailized = false;
-        public static List<Component> GetAvailComps(int CompanyId)
+        public decimal? Price { get { return Comp.Price ?? 0; } set { Comp.Price = value; } } 
+        */
+        public void SetFindingsList(List<Component> findings, int defaultSelection)
         {
-            if (!bAvailCompsInitailized)
-            {
-                OJewelryDB db = new OJewelryDB();
-                componentsForCompany = db.Components.Include("ComponentType").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Findings").ToList();
-            }
-            return componentsForCompany;
+            CompList = new SelectList(findings, "Id", "Name", defaultSelection);
         }
-        //public SelectList ac { get; set; }
+
 
     }
     public class LaborComponent 
@@ -208,27 +202,18 @@ namespace OJewelry.Models
         {
             SVMState = SVMStateEnum.Dirty; // For now, update all records
         }
-        public void Init()
-        {
-            Comp = new Component();
-            Comp.Id = 0;
-            Comp.Price = 0;
-            Comp.PricePerHour = 0;
-            Comp.PricePerPiece = 0;
-            Comp.MetalLabor = 0;
-            Comp.StonesCtWt = 0;
-            Comp.StonePPC = 0;
-            // Comp.Vendor = new Vendor(); 
-        }
     
-        public int Id { get { return Comp.Id; } set { Comp.Id = value; } }
-        public int CompanyId { get { return Comp.CompanyId ?? 0; } set { Comp.CompanyId = value; } }
-        public int ComponentTypeId { get { return Comp.ComponentTypeId; } set { Comp.ComponentTypeId = value; } }
-        public Component Comp { get; set; }
+        public int Id { get; set; }
+        public int scId { get; set; }
+        //public int CompanyId { get { return Comp.CompanyId ?? 0; } set { Comp.CompanyId = value; } }
+        //public int ComponentTypeId { get { return Comp.ComponentTypeId; } set { Comp.ComponentTypeId = value; } }
+        //public Component Comp { get; set; }
  
-        public String Name { get { return Comp.Name; } set { Comp.Name = value; } }
+        //public String Name { get { return Comp.Name; } set { Comp.Name = value; } }
         [Display(Name = "Quantity")]
         public int Qty { get; set; }
+
+        public SelectList CompList { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
@@ -241,7 +226,10 @@ namespace OJewelry.Models
 
     public class StyleViewModel
     {
-        public StyleViewModel() { SVMState = SVMStateEnum.Dirty; } // For now, update all records
+        public StyleViewModel()
+        {
+            SVMState = SVMStateEnum.Dirty; 
+        } // For now, update all records
         public Style Style { get; set; }
         public List<CastingComponent> Castings { get; set; }
         public List<StoneComponent> Stones { get; set; }
@@ -261,16 +249,164 @@ namespace OJewelry.Models
         public SVMCCTypeEnum SVMCCType { get; set; }
         public int CompanyId { get; set; }
 
-        public SelectList jsVendors { get; set; }
-        public SelectList jsMetals { get; set; }
-        public SelectList jsStones { get; set; }
-        public SelectList jsFindings { get; set; }
+        public List<Vendor> jsVendors { get; set; }
+        public List<MetalCode> jsMetals { get; set; }
+        public List<Component> jsStones { get; set; }
+        public List<Component> jsFindings { get; set; }
 
         public bool CCLastRow { get; set; }
         public bool CCHeaderRow { get; set; }
         public int CCRowSection{ get; set; }
         public int CCRowIndex { get; set; }
         public int i { get; set; }
+
+        public void PopulateDropDownData(OJewelryDB db)
+        {
+            jsVendors = db.Vendors.ToList();
+            jsMetals = db.MetalCodes.ToList();
+            jsStones = db.Components.Include("ComponentType").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Stones").ToList();
+            jsFindings = db.Components.Include("ComponentType").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Findings").ToList();
+        }
+
+        public void PopulateDropDowns(OJewelryDB db)
+        {
+            // reusables
+            foreach (CastingComponent cstc in Castings)
+            {
+                cstc.SetVendorsList(jsVendors, cstc.VendorId);
+                cstc.SetMetalsList(jsMetals, cstc.MetalCodeId);
+            }
+            foreach (StoneComponent stscm in Stones)
+            {
+                stscm.SetStonesList(jsStones, stscm.Id);
+            }
+            foreach (FindingsComponent fiscm in Findings)
+            {
+                fiscm.SetFindingsList(jsFindings, fiscm.Id);
+            }
+        }
+
+        public void Populate(int? id, OJewelryDB db)
+        {
+            decimal t = 0, t2 = 0;
+            Castings = new List<CastingComponent>();
+            Stones = new List<StoneComponent>();
+            Findings = new List<FindingsComponent>();
+            Labors = new List<LaborComponent>();
+            Miscs = new List<MiscComponent>();
+
+            PopulateDropDownData(db);
+
+            if (id == null)
+            {
+                Style = new Style();
+            }
+            else
+            {
+                // Get Casting Links
+                Style.StyleCastings = db.StyleCastings.Where(x => x.StyleId == Style.Id).ToList();
+                // Get component links
+                Style.StyleComponents = db.StyleComponents.Where(x => x.StyleId == Style.Id).ToList();
+                // Get Labor Links
+                Style.StyleLabors = db.StyleLabors.Where(x => x.StyleId == Style.Id).ToList(); ;
+                // Get Misc Links
+                Style.StyleMiscs = db.StyleMiscs.Where(x => x.StyleId == Style.Id).ToList(); ;
+                // get components for each link
+                // Metals
+                foreach (StyleCasting sc in Style.StyleCastings)
+                {
+                    Casting casting = db.Castings.Find(sc.CastingId); // Castings
+                    CastingComponent cstc = new CastingComponent(casting);
+                    // Need to get the vendor and metal code
+                    cstc.VendorId = casting.VendorId.Value;
+                    cstc.MetalCodeId = casting.MetalCodeID.Value;
+                    cstc.SetVendorsList(jsVendors, casting.VendorId.Value);
+                    cstc.SetMetalsList(jsMetals, casting.MetalCodeID.Value);// 
+                    //cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
+                    cstc.MetalCode = db.MetalCodes.Find(casting.MetalCodeID).Code; // Metal Code
+                    cstc.Qty = casting.Qty.Value;
+                    t = cstc.Price ?? 0;
+                    t2 = cstc.Labor ?? 0;
+                    cstc.Total = cstc.Qty * (t + t2);
+                    MetalsTotal += cstc.Total;
+                    Castings.Add(cstc);
+                    Total += cstc.Total;
+                }
+                // Stones and Findings
+                foreach (StyleComponent sc in Style.StyleComponents)
+                {
+                    Component Comp = db.Components.Find(sc.ComponentId); // Stones and Findings
+                    switch (sc.Component.ComponentType.Id)
+                    {
+                        case 1: // Metals (Castings)
+                            break;
+
+                        case 2: // Stones
+                            Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
+                            StoneComponent stscm = new StoneComponent(sc.Id, sc.ComponentId, sc.Quantity.GetValueOrDefault());
+                            //stscm.VendorId = Comp.VendorId.Value;
+                            //stscm.VendorName = Comp.Vendor.Name;
+                            stscm.Qty = sc.Quantity ?? 0;
+                            //StoneComponent.componentsForCompany = StoneComponent.GetAvailComps(svm.CompanyId);
+                            stscm.SetStonesList(jsStones, sc.ComponentId);
+                            stscm.CompList = new SelectList(jsStones, "Id", "Name", sc.ComponentId);
+                            //t = stscm.PPC ?? 0;
+                            stscm.Total = stscm.Qty * t;
+                            StonesTotal += stscm.Total;
+                            Stones.Add(stscm);
+                            Total += stscm.Total;
+                            break;
+                        case 3: // Findings
+                            Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
+                            FindingsComponent fiscm = new FindingsComponent(sc.Id, sc.ComponentId, sc.Quantity.GetValueOrDefault());
+                            //fiscm.VendorId = Comp.VendorId.Value;
+                            //fiscm.VendorName = Comp.Vendor.Name;
+                            //fiscm.Metal = db.MetalCodes.Find(Comp.MetalCodeId).Code;
+                            //fiscm.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", Comp.MetalCodeId.Value);
+                            fiscm.Qty = sc.Quantity ?? 0;
+                            //FindingsComponent.componentsForCompany = FindingsComponent.GetAvailComps(svm.CompanyId);
+                            fiscm.SetFindingsList(jsFindings, sc.ComponentId);
+                            //t = fiscm.Price ?? 0;
+                            fiscm.Total = fiscm.Qty * t;
+                            FindingsTotal += fiscm.Total;
+                            Findings.Add(fiscm);
+                            Total += fiscm.Total;
+                            break;
+                        case 4:  // Labor
+                            break;
+                        default: // Misc
+                            break;
+                    }
+                }
+                // Labor
+                foreach (StyleLabor sl in Style.StyleLabors)
+                {
+                    Labor lb = db.Labors.Find(sl.LaborId); // Stones and Findings
+                    LaborComponent liscm = new LaborComponent(lb);
+                    liscm.Qty = sl.Labor.Qty ?? 0;
+                    t = liscm.PPH ?? 0;
+                    t2 = liscm.PPP ?? 0;
+                    liscm.Total = liscm.Qty.Value * (t + t2);
+                    LaborsTotal += liscm.Total;
+                    Labors.Add(liscm);
+                    Total += liscm.Total;
+                }
+                // Misc
+                foreach (StyleMisc sms in Style.StyleMiscs)
+                {
+                    Misc misc = db.Miscs.Find(sms.MiscId); // Stones and Findings
+                    MiscComponent miscm = new MiscComponent(misc);
+                    miscm.Qty = sms.Misc.Qty ?? 0;
+                    t = miscm.PPP ?? 0;
+                    miscm.Total = miscm.Qty.Value * t;
+                    MiscsTotal += miscm.Total;
+                    Miscs.Add(miscm);
+                    Total += miscm.Total;
+                }
+                PopulateDropDowns(db);
+            }
+        }
+
 
     }
 
@@ -463,6 +599,7 @@ namespace OJewelry.Models
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int id);
                     m.Stones[i].Id = id;
+                    /*
                     m.Stones[i].CompanyId = coID;
 
                     sb.Clear();
@@ -475,36 +612,42 @@ namespace OJewelry.Models
                     sb.AppendFormat("Stones[{0}].Name", i);
                     s = request.Form.Get(sb.ToString());
                     m.Stones[i].Name = s;
+                    */
                     /*
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].Vendor", i);
                     s = request.Form.Get(sb.ToString());
                     m.Stones[i].Vendor = s;
                     */
+                    /*
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].VendorId", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int vId);
                     m.Stones[i].VendorId = vId;
+
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].CtWt", i);
                     Int32.TryParse(s, out int ctwt);
                     m.Stones[i].CtWt = ctwt;
+
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].Size", i);
                     s = request.Form.Get(sb.ToString());
                     m.Stones[i].Size = s;
+
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].PPC", i);
                     s = request.Form.Get(sb.ToString());
                     Decimal.TryParse(s, out decimal PPC);
                     m.Stones[i].PPC = PPC;
+                    */
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int q);
                     m.Stones[i].Qty = q;
-                    m.Stones[i].Total = q * PPC;
+                    //m.Stones[i].Total = q * PPC;
                     subtotal += m.Stones[i].Total;
                 }
             }
@@ -524,8 +667,8 @@ namespace OJewelry.Models
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int id);
                     m.Findings[i].Id = id;
-                    m.Findings[i].CompanyId = coID;
-
+                    //m.Findings[i].CompanyId = coID;
+                    /*
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].ComponentTypeId", i);
                     s = request.Form.Get(sb.ToString());
@@ -536,34 +679,39 @@ namespace OJewelry.Models
                     sb.AppendFormat("Findings[{0}].Name", i);
                     s = request.Form.Get(sb.ToString());
                     m.Findings[i].Name = s;
+                    */
                     /*
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].Vendor", i);
                     s = request.Form.Get(sb.ToString());
                     m.Findings[i].Vendor = s;
                     */
+                    /*
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].VendorId", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int vId);
                     m.Findings[i].VendorId = vId;
+                    */
                     /* Changed to dropdown
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].Metal", i);
                     s = request.Form.Get(sb.ToString());
                     m.Findings[i].Metal = s;
                     */
+                    /*
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].Price", i);
                     s = request.Form.Get(sb.ToString());
                     Decimal.TryParse(s, out decimal price);
                     m.Findings[i].Price = price;
+                    */
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int q);
                     m.Findings[i].Qty = q;
-                    m.Findings[i].Total = q * price;
+                    //m.Findings[i].Total = q * price;
                     subtotal += m.Findings[i].Total;
                 }
             }
@@ -593,16 +741,24 @@ namespace OJewelry.Models
                     sb.AppendFormat("Labors[{0}].Name", i);
                     s = request.Form.Get(sb.ToString());
                     m.Labors[i].Name = s;
+
+                    sb.Clear();
+                    sb.AppendFormat("Labors[{0}].Desc", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Labors[i].Desc = s;
+
                     sb.Clear();
                     sb.AppendFormat("Labors[{0}].PPH", i);
                     s = request.Form.Get(sb.ToString());
                     Decimal.TryParse(s, out decimal pph);
                     m.Labors[i].PPH = pph;
+
                     sb.Clear();
                     sb.AppendFormat("Labors[{0}].PPP", i);
                     s = request.Form.Get(sb.ToString());
                     Decimal.TryParse(s, out decimal ppc);
                     m.Labors[i].PPP = ppc;
+
                     sb.Clear();
                     sb.AppendFormat("Labors[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
@@ -633,6 +789,11 @@ namespace OJewelry.Models
                     sb.AppendFormat("Miscs[{0}].Name", i);
                     s = request.Form.Get(sb.ToString());
                     m.Miscs[i].Name = s;
+
+                    sb.Clear();
+                    sb.AppendFormat("Miscs[{0}].Desc", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Miscs[i].Desc = s;
 
                     sb.Clear();
                     sb.AppendFormat("Miscs[{0}].PPP", i);
