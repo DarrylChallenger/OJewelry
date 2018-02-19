@@ -86,6 +86,12 @@ function AddComponentRow(type, index)
     //console.log(ltbordered)
     var str = newState.add(ltbordered);
     $(idTotal).before(str);
+    // reset validation
+    var form = $("#StylesForm");
+    $(form).removeData("validator")    // Added by jQuery Validate
+        .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
+    $.validator.unobtrusive.parse(form);
+
 }
 
 function RemoveComponentRow(type, i)
@@ -120,17 +126,71 @@ function RemoveComponentRow(type, i)
     // if there are none, put the '+' on the last visible btn
     if (visibleRowCount !== 0) {
         // set the last visible row, if any...
-        rem = $(rowClass).not(".hidden").last().find(btnClass).removeClass("hidden")
+        rem = $(rowClass).not(".hidden").last().find(btnClass).removeClass("hidden");
     } else {
         // ... otherwise show the header
         $("#" + idHeaderBtn).removeClass("hidden");
     }
 }
 
+function CalcRowTotal(type, rowId)
+{
+    var ry, qty;
+    //console.log("Calc " + type + " row " + rowId + " totals");
+    // Iterate through row and compute the row total
+    if (type === "Castings")
+    {
+        // (Price + Labor) * qty
+        total = +$("#" + type + "_" + rowId + "__Price").val() + +$("#" + type + "_" + rowId + "__Labor").val();
+        qty = total * $("#" + type + "_" + rowId + "__Qty").val();
+        rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
+    }
+    if (type === "Stones")
+    {
+        console.log("Calc Stones row " + rowId);
+    }
+    if (type === "Findings") { console.log("Calc Stones row " + rowId); }
+    if (type === "Labors")
+    {
+        // (PPH + PPP) * qty
+        total = +$("#" + type + "_" + rowId + "__PPH").val() + +$("#" + type + "_" + rowId + "__PPP").val();
+        qty = total * $("#" + type + "_" + rowId + "__Qty").val();
+        rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
+    }
+    if (type === "Miscs")
+    {
+        // PPP * qty
+        total = +$("#" + type + "_" + rowId + "__PPP").val();
+        qty = total * $("#" + type + "_" + rowId + "__Qty").val();
+        if (isNaN(qty)) qty = 0;
+        rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
+    }
+    CalcSubtotals(type);
+}
+function CalcSubtotals(type) {
+    // Iterate through row totals and compute the type total 
+    var rows = $("." + type + "RowTotal");
+    var total = +0;
+    rows.each(function () {
+        rv = +$("." + type + "RowTotal").html();
+        total = +total + rv;
+    });
+    if (isNaN(total)) total = 0;
+    $("#" + type + "TotalValue").html(total.toFixed(2));
+    CalcTotals();
+}
+
 function CalcTotals()
 {
-    console.log("Calc Totals");
-    // Iterate through each type and compute the row total
+    //console.log("Calc totals");
+    total = 0;
+    total = total + +$("#CastingsTotalValue").html() +
+        +$("#StonesTotalValue").html() +
+        +$("#FindingsTotalValue").html() +
+        +$("#LaborsTotalValue").html() +
+        +$("#MiscsTotalValue").html();
+    if (isNaN(total)) total = 0;
+    $("#GrandTotal").html(total.toFixed(2))
     // Iterate thru each total to get the grand total
 }
 

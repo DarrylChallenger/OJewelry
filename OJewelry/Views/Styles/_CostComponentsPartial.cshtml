@@ -34,9 +34,9 @@
                         <div class="col-sm-1"></div>
                         @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-2" })
                         @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1" })
-                        @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1" } })
-                        @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1" } })
-                        @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1" })
+                        @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1",  onblur="CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')"} })
+                        @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                        @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                         <div id="CastingsRowTotalValue_@i" class="col-sm-2 CastingsRowTotal ">@Model.Castings[i].Total</div>
                     </div>
                     <div class="row">
@@ -90,7 +90,7 @@
                     <div class="col-sm-1 ">CtWt </div>
                     <div class="col-sm-1 ">Size </div>
                     <div class="col-sm-1 ">PPC </div>
-                    @Html.EditorFor(model => model.Stones[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
+                    @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     <div id="StonesRowTotalValue_@i" class="col-sm-2 StonesRowTotal ">@Model.Stones[i].Total</div>
                 </div>
 
@@ -139,7 +139,7 @@
                     <div class="col-sm-2 ">VendorName </div>
                     <div class="col-sm-1">Metal</div>
                     <div class="col-sm-1">Price</div>
-                    @Html.EditorFor(model => model.Findings[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
+                    @Html.TextBoxFor(model => model.Findings[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     <div id="FindingsRowTotalValue_@i" class="col-sm-2 FindingsRowTotal ">@Model.Findings[i].Total</div>
                 </div>
                 <div class="row">
@@ -149,9 +149,9 @@
         }
         <div id="FindingsTotal">
             <div class="row h4 StyleComponentsRowFooter">
-                <div id="FindingsTotalValue" class="col-sm-2"><b>Total Findings</b></div>
+                <div class="col-sm-2"><b>Total Findings</b></div>
                 <div class="col-sm-8"></div>
-                <div class="col-sm-2">@Model.FindingsTotal</div>
+                <div id="FindingsTotalValue" class="col-sm-2">@Model.FindingsTotal</div>
             </div>
         </div>
     </div> <!-- Findings -->
@@ -184,9 +184,9 @@
                     @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
                     @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
                     <div class="col-sm-2 "></div>
-                    @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1" } })
-                    @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1" } })
-                    @Html.EditorFor(model => model.Labors[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
+                    @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                    @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                    @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     <div id="LaborsRowTotalValue_@i" class="col-sm-2 LaborsRowTotal">@Model.Labors[i].Total</div>
                 </div>
                 <div class="row">
@@ -201,7 +201,7 @@
             <div class="row h4 StyleComponentsRowFooter">
                 <div class="col-sm-2"><b>Total Labor</b></div>
                 <div class="col-sm-8"></div>
-                <div id="LaborsRowTotal" class="col-sm-2">@Model.LaborsTotal</div>
+                <div id="LaborsTotalValue" class="col-sm-2">@Model.LaborsTotal</div>
             </div>
         </div>
     </div> <!-- Labors -->
@@ -233,8 +233,8 @@
                     @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
                     @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
                     <div class="col-sm-3 "></div>
-                    @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1" } })
-                    @Html.EditorFor(model => model.Miscs[i].Qty, new { htmlAttributes = new { @class = "col-sm-1" } })
+                    @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                    @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     <div id="MiscsRowTotalValue_@i" class="col-sm-2 MiscsRowTotal">@Model.Miscs[i].Total</div>
                 </div>
                 <div class="row">

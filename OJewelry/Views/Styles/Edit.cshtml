@@ -21,7 +21,7 @@
 </h6>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Styles", FormMethod.Post, new { id = "StylesForm" }))
 {
     @Html.AntiForgeryToken()
 
