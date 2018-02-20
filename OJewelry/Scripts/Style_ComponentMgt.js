@@ -2,7 +2,6 @@
 function AddComponentRow(type, index)
 {
     // " + len +  is the row that was pressed
-    console.log("Add " + type + "[" + index + "]");
     idHeaderBtn = type + "AddBtn";
     idRowBtn = type + "AddBtn_" + index;
 
@@ -30,11 +29,9 @@ function AddComponentRow(type, index)
 
     idTotalName = type + "Total";
     idTotal = "#" + idTotalName;
-    console.log("class:" + stateClass + ", id:" + idTotal);
     classhtml = $(stateClass).html();
     var hiddenState = "<input name='" + type + "[" + len + "].SVMState' id='" + type + "_" + len + "__SVMState' type='hidden' value='Added' data-val-required='The SVMState field is required.' data-val='true'>";
     var newState = $("<div class='" + stateClassName + "'></div>").append(hiddenState);
-    console.log(hiddenState);
     // handle dropdown data, id, name (etc), add validation in code
     if (type === "Castings") {
         
@@ -55,7 +52,6 @@ function AddComponentRow(type, index)
             .attr("data-val-number", "The field MetalCodeId must be a number.")
             .attr("data-val-required", "The MetalCodeId field is required.");
         ltbordered = castingsltbordered.replace("JSVENDORS", jsVendors.html()).replace("JSMETALS", jsMetals.html());
-        console.log(ltbordered);
     }
     if (type === "Stones") { 
         var jsStones = $("#jsStones").clone();
@@ -64,17 +60,19 @@ function AddComponentRow(type, index)
             .attr("id", 'Stones_' + len + '__Id')
             .attr("data-val", "true")
             .attr("data-val-number", "The Id field (Stones[" + len + "].Id) must be a number.")
-            .attr("data-val-required", "The Id field (Stones[" + len + "].Id) is required.");
+            .attr("data-val-required", "The Id field (Stones[" + len + "].Id) is required.")
+            .attr("onchange", "StoneChanged('" + len + "')");
         ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html());
     }
     if (type === "Findings") { 
         var jsFindings = $("#jsFindings").clone();
         jsFindings.find("#jsfINDEX")
             .attr("name", 'Findings[' + len + '].Id')
-            .attr("id", 'Findings' + len + '__Id')
+            .attr("id", 'Findings_' + len + '__Id')
             .attr("data-val", "true")
             .attr("data-val-number", "The Id field (Findings[" + len + "].Id) must be a number.")
-            .attr("data-val-required", "The Id field (Findings[" + len + "].Id) is required.");
+            .attr("data-val-required", "The Id field (Findings[" + len + "].Id) is required.")
+            .attr("onchange", "FindingChanged('" + len + "')");
         ltbordered = findingsltbordered.replace("JSFINDINGS", jsFindings.html());
     }
     if (type === "Labors") {
@@ -86,12 +84,17 @@ function AddComponentRow(type, index)
     //console.log(ltbordered)
     var str = newState.add(ltbordered);
     $(idTotal).before(str);
-    // reset validation
+    /* reset validation */
     var form = $("#StylesForm");
-    $(form).removeData("validator")    // Added by jQuery Validate
+    $(form).removeData("validator")             // Added by jQuery Validate
         .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
     $.validator.unobtrusive.parse(form);
-
+    if (type === "Stones") {
+        StoneChanged(len);
+    }
+    if (type === "Findings") {
+        FindingChanged(len);
+    }
 }
 
 function RemoveComponentRow(type, i)
@@ -148,7 +151,6 @@ function CalcRowTotal(type, rowId)
     if (type === "Stones")
     {
         // (PPC * qty)
-        console.log("Calc Stones row " + rowId);
         total = +$("#" + type + "_" + rowId + "__PPC").val();
         qty = total * $("#" + type + "_" + rowId + "__Qty").val();
         rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
@@ -156,7 +158,6 @@ function CalcRowTotal(type, rowId)
     if (type === "Findings")
     {
         // (Price * qty)
-        console.log("Calc Stones row " + rowId);
         total = +$("#" + type + "_" + rowId + "__Price").val();
         qty = total * $("#" + type + "_" + rowId + "__Qty").val();
         rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
@@ -181,9 +182,7 @@ function CalcRowTotal(type, rowId)
 
 function CalcSubtotals(type) {
     // Iterate through row totals and compute the type total 
-    console.log("Calc " + type + " subtotal from $(." + type + "RowTotal)");
     var rows = $("." + type + "RowTotal");
-    console.log(rows);
     var total = +0;
     rows.each(function () {
         rv = +$(this).html();
@@ -208,6 +207,26 @@ function CalcTotals()
     // Iterate thru each total to get the grand total
 }
 
+function StoneChanged(i) {
+    selected = $("#Stones_" + i + "__Id > option:selected");
+    oldval = selected.val();
+    dataRow = $("#StonesData").find("#" + oldval);
+    $("#Stones_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
+    $("#Stones_" + i + "__CtWt").val(dataRow.find(".CtWt").attr("value"));
+    $("#Stones_" + i + "__Size").val(dataRow.find(".Size").attr("value"));
+    $("#Stones_" + i + "__PPC").val(dataRow.find(".PPC").attr("value"));
+    CalcRowTotal("Stones", i);
+}
+
+function FindingChanged(i) {
+    selected = $("#Findings_" + i + "__Id > option:selected");
+    oldval = selected.val();
+    dataRow = $("#FindingsData").find("#" + oldval);
+    $("#Findings_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
+    $("#Findings_" + i + "__Metal").val(dataRow.find(".Metal").attr("value"));
+    $("#Findings_" + i + "__Price").val(dataRow.find(".Price").attr("value"));
+    CalcRowTotal("Findings", i);
+}
 
 function getCastingsHTML(type, len) {
     return '\
@@ -271,10 +290,10 @@ function getStonesHTML(type, len) {
             </div>\
             JSSTONES\
             <div class="col-sm-1 "></div>\
-            <input class="col-sm-2 text-box single-line locked" data-val="true" data-val-required="The Vendor field is required." id="Stones' + len + '__VendorName" name="Stones[' + len + '].VendorName" type="text" value="" />\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Caret Weight must be a number." id="Stones' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="0" \"/>\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Size must be a number." id="Stones' + len + '__Size" name="Stones[' + len + '].Size" type="text" value="0" \"/>\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Price/Piece must be a number." id="Stones' + len + '__PPC" name="Stones[' + len + '].PPC" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
+            <input class="col-sm-2 text-box single-line locked" data-val="true" data-val-required="The Vendor field is required." id="Stones_' + len + '__VendorName" name="Stones[' + len + '].VendorName" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Caret Weight must be a number." id="Stones_' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="0" \"/>\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Size must be a number." id="Stones_' + len + '__Size" name="Stones[' + len + '].Size" type="text" value="0" \"/>\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Price/Piece must be a number." id="Stones_' + len + '__PPC" name="Stones[' + len + '].PPC" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="StonesRowTotalValue_' + len + '" class="col-sm-2 StonesRowTotal ">0.00\
             </div>\
@@ -309,9 +328,9 @@ function getFindingsHTML(type, len) {
             </div>\
             JSFINDINGS\
             <div class="col-sm-2 "></div>\
-            <input class="col-sm-2 text-box single-line locked" data-val="true" data-val-required="The Vendor field is required." id="Findings' + len + '__VendorName" name="Findings[' + len + '].VendorName" type="text" value="" />\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-required="The Metal is required." id="Findings' + len + '__Metal" name="Findings[' + len + '].Metal" type="text" value="" />\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Price must be a number." id="Findings' + len + '__Price" name="Findings[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
+            <input class="col-sm-2 text-box single-line locked" data-val="true" data-val-required="The Vendor field is required." id="Findings_' + len + '__VendorName" name="Findings[' + len + '].VendorName" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-required="The Metal is required." id="Findings_' + len + '__Metal" name="Findings[' + len + '].Metal" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Price must be a number." id="Findings_' + len + '__Price" name="Findings[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Findings_' + len + '__Qty" name="Findings[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="FindingsRowTotalValue_' + len + '" class="col-sm-2 FindingsRowTotal ">0.00\
             </div>\

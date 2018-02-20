@@ -84,7 +84,8 @@
                     @if (i == Model.Stones.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
-                    @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, new { @class = "col-sm-2" })
+                    @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, 
+                        new { @class = "col-sm-2 ", onchange="StoneChanged('"+ i +"')" })
                     <div class="col-sm-1 "></div>
                     @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
                     @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
@@ -133,7 +134,8 @@
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Findings.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
-                    @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-2" })
+                    @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList,
+                        new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
                     <div class="col-sm-2 "></div>
                     @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
                     @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
@@ -270,6 +272,27 @@
         </div>
         <div id="jsFindings">
             @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name", Model.jsFindings.First().Id), new { @class = "col-sm-2" })
+        </div>
+        <div id="StonesData">
+            @foreach (Component stone in Model.jsStones)
+            {
+            <div id="@stone.Id">
+                <span class="VendorName" value="@stone.Vendor.Name"></span>
+                <span class="CtWt" value="@stone.StonesCtWt"></span>
+                <span class="Size" value="@stone.StoneSize"></span>
+                <span class="PPC" value="@stone.StonePPC"></span>
+            </div>
+            }
+        </div>
+        <div id="FindingsData">
+            @foreach (Component finding in Model.jsFindings)
+            {
+            <div id="@finding.Id">
+                <span class="VendorName" value="@finding.Vendor.Name"></span>
+                <span class="Metal" value="@finding.MetalCodeId"></span>
+                <span class="Price" value="@finding.Price"></span>
+            </div>
+             }
         </div>
     </div>
 </div>
