@@ -147,9 +147,20 @@ function CalcRowTotal(type, rowId)
     }
     if (type === "Stones")
     {
+        // (PPC * qty)
         console.log("Calc Stones row " + rowId);
+        total = +$("#" + type + "_" + rowId + "__PPC").val();
+        qty = total * $("#" + type + "_" + rowId + "__Qty").val();
+        rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
     }
-    if (type === "Findings") { console.log("Calc Stones row " + rowId); }
+    if (type === "Findings")
+    {
+        // (Price * qty)
+        console.log("Calc Stones row " + rowId);
+        total = +$("#" + type + "_" + rowId + "__Price").val();
+        qty = total * $("#" + type + "_" + rowId + "__Qty").val();
+        rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
+    }
     if (type === "Labors")
     {
         // (PPH + PPP) * qty
@@ -260,13 +271,17 @@ function getStonesHTML(type, len) {
             </div>\
             JSSTONES\
             <div class="col-sm-1 "></div>\
-            <div class="col-sm-2 ">VendorName </div>\
-            <div class="col-sm-1 ">CtWt </div>\
-            <div class="col-sm-1 ">Size</div>\
-            <div class="col-sm-1 ">PPC </div>\
-            <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="number" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <input class="col-sm-2 text-box single-line locked" data-val="true" data-val-required="The Vendor field is required." id="Stones' + len + '__VendorName" name="Stones[' + len + '].VendorName" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Caret Weight must be a number." id="Stones' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="0" \"/>\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Size must be a number." id="Stones' + len + '__Size" name="Stones[' + len + '].Size" type="text" value="0" \"/>\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Price/Piece must be a number." id="Stones' + len + '__PPC" name="Stones[' + len + '].PPC" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
+            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="StonesRowTotalValue_' + len + '" class="col-sm-2 StonesRowTotal ">0.00\
             </div>\
+        </div >\
+        <div class="row">\
+        <!--Validations Here-->\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Qty" data-valmsg-replace="true"></span>\
         </div >\
     </div>';
 }
@@ -294,12 +309,16 @@ function getFindingsHTML(type, len) {
             </div>\
             JSFINDINGS\
             <div class="col-sm-2 "></div>\
-            <div class="col-sm-2 ">VendorName </div>\
-            <div class="col-sm-1">Metal </div>\
-            <div class="col-sm-1">Price</div>\
-            <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Findings_' + len + '__Qty" name="Findings[' + len + '].Qty" type="number" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <div id="FindingsRowTotalValue_' + len + ' class="col-sm-2 FindingsRowTotal ">0.00\
+            <input class="col-sm-2 text-box single-line locked" data-val="true" data-val-required="The Vendor field is required." id="Findings' + len + '__VendorName" name="Findings[' + len + '].VendorName" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-required="The Metal is required." id="Findings' + len + '__Metal" name="Findings[' + len + '].Metal" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Price must be a number." id="Findings' + len + '__Price" name="Findings[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
+            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Findings_' + len + '__Qty" name="Findings[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <div id="FindingsRowTotalValue_' + len + '" class="col-sm-2 FindingsRowTotal ">0.00\
             </div>\
+        </div >\
+        <div class="row">\
+        <!--Validations Here-->\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Findings[' + len + '].Qty" data-valmsg-replace="true"></span>\
         </div >\
     </div > ';
 }
@@ -328,9 +347,16 @@ function getLaborsHTML(type, len) {
             <div class="col-sm-2 "></div>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Hour must be a number." id="Labors_' + len + '__PPH" name="Labors[' + len + '].PPH" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Piece must be a number." id="Labors_' + len + '__PPP" name="Labors[' + len + '].PPP" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Quantity must be a number." id="Labors_' + len + '__Qty" name="Labors[' + len + '].Qty" type="number" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <div id="LaborsRowTotalValue_' + len + ' class="col-sm-2 LaborsRowTotal">0.00\
+            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Labors_' + len + '__Qty" name="Labors[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <div id="LaborsRowTotalValue_' + len + '" class="col-sm-2 LaborsRowTotal">0.00\
             </div>\
+        </div >\
+        <div class="row">\
+        <!--Validations Here-->\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].Name" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].PPH" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].PPP" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].Qty" data-valmsg-replace="true"></span>\
         </div >\
     </div > ';
 }
@@ -358,9 +384,15 @@ function getMiscsHTML(type, len) {
             <input class="col-sm-2 text-box single-line" id="Miscs_' + len + '__Desc" name="Miscs[' + len + '].Desc" type="text" value="" />\
             <div class="col-sm-3 "></div>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Piece must be a number." id="Miscs_' + len + '__PPP" name="Miscs[' + len + '].PPP" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Quantity must be a number." id="Miscs_' + len + '__Qty" name="Miscs[' + len + '].Qty" type="number" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\/>\
-            <div id="MiscsRowTotalValue_' + len + ' class="col-sm-2 MiscsRowTotal">0.00</div>\
+            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Miscs_' + len + '__Qty" name="Miscs[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <div id="MiscsRowTotalValue_' + len + '" class="col-sm-2 MiscsRowTotal">0.00</div>\
         </div > \
+        <div class="row">\
+        <!--Validations Here-->\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Miscs[' + len + '].Name" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Miscs[' + len + '].PPP" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Miscs[' + len + '].Qty" data-valmsg-replace="true"></span>\
+        </div >\
     </div>';
 }
 

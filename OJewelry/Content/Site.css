@@ -54,6 +54,10 @@ textarea {
     font-weight: 700;
 }
 
+.locked {
+    background-color: #e0e0ff;
+    cursor: not-allowed;
+}
 .ForPrinting
 {
     //color:darkgreen;

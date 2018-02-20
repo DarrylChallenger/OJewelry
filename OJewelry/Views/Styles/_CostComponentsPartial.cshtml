@@ -86,10 +86,10 @@
                     @*<div class="col-sm-2 ">@c.Name </div>*@
                     @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, new { @class = "col-sm-2" })
                     <div class="col-sm-1 "></div>
-                    <div class="col-sm-2 ">VendorName </div>
-                    <div class="col-sm-1 ">CtWt </div>
-                    <div class="col-sm-1 ">Size </div>
-                    <div class="col-sm-1 ">PPC </div>
+                    @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
+                    @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
+                    @Html.EditorFor(model => model.Stones[i].Size, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
+                    @Html.EditorFor(model => model.Stones[i].PPC, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
                     @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     <div id="StonesRowTotalValue_@i" class="col-sm-2 StonesRowTotal ">@Model.Stones[i].Total</div>
                 </div>
@@ -133,12 +133,11 @@
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Findings.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
-                    @*<div class="col-sm-2 ">@c.Name </div>*@
                     @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-2" })
                     <div class="col-sm-2 "></div>
-                    <div class="col-sm-2 ">VendorName </div>
-                    <div class="col-sm-1">Metal</div>
-                    <div class="col-sm-1">Price</div>
+                    @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
+                    @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
+                    @Html.EditorFor(model => model.Findings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
                     @Html.TextBoxFor(model => model.Findings[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     <div id="FindingsRowTotalValue_@i" class="col-sm-2 FindingsRowTotal ">@Model.Findings[i].Total</div>
                 </div>
@@ -204,6 +203,7 @@
                 <div id="LaborsTotalValue" class="col-sm-2">@Model.LaborsTotal</div>
             </div>
         </div>
+
     </div> <!-- Labors -->
 
     <div class="styleMiscs">

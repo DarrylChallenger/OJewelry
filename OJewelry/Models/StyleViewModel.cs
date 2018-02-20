@@ -100,15 +100,15 @@ namespace OJewelry.Models
     {
         public StoneComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public StoneComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
-        // VENDOR CT WT SIZE    PPC/$
-        // public int VendorId { get { return Comp.VendorId ?? 0; } set { Comp.VendorId = value; } }
-        //public int? CtWt { get { return Comp.StonesCtWt ?? 0; } set { Comp.StonesCtWt = value; } }
-        //public String Size { get { return Comp.StoneSize ?? ""; } set { Comp.StoneSize = value; } }
-        /*
+
+        public String VendorName { get; set; }
+        public int? CtWt { get; set; }
+        public String Size { get; set; }
+        
         [Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? PPC { get { return Comp.StonePPC ?? 0; } set { Comp.StonePPC = value; } }
-        */
+        public decimal? PPC { get; set; }
+
         public void SetStonesList(List<Component> stones, int defaultSelection)
         {
             CompList = new SelectList(stones, "Id", "Name", defaultSelection);
@@ -119,14 +119,14 @@ namespace OJewelry.Models
     {
         public FindingsComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public FindingsComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
-        // VENDOR	METAL	PRICE 
-        //public int VendorId { get { return Comp.VendorId ?? 0; } set { Comp.VendorId = value; } }
-        //public String Metal { get; set; }
-        /*
+
+        public String VendorName { get; set; }
+        public String Metal { get; set; }
+        
         [Display(Name = "Price")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? Price { get { return Comp.Price ?? 0; } set { Comp.Price = value; } } 
-        */
+        public decimal? Price { get; set; }
+
         public void SetFindingsList(List<Component> findings, int defaultSelection)
         {
             CompList = new SelectList(findings, "Id", "Name", defaultSelection);
@@ -344,13 +344,13 @@ namespace OJewelry.Models
                         case 2: // Stones
                             Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                             StoneComponent stscm = new StoneComponent(sc.Id, sc.ComponentId, sc.Quantity.GetValueOrDefault());
-                            //stscm.VendorId = Comp.VendorId.Value;
-                            //stscm.VendorName = Comp.Vendor.Name;
+                            stscm.VendorName = Comp.Vendor.Name;
+                            stscm.CtWt = Comp.StonesCtWt;
+                            stscm.Size = Comp.StoneSize;
+                            stscm.PPC = Comp.StonePPC;
                             stscm.Qty = sc.Quantity ?? 0;
-                            //StoneComponent.componentsForCompany = StoneComponent.GetAvailComps(svm.CompanyId);
                             stscm.SetStonesList(jsStones, sc.ComponentId);
-                            stscm.CompList = new SelectList(jsStones, "Id", "Name", sc.ComponentId);
-                            //t = stscm.PPC ?? 0;
+                            t = stscm.PPC ?? 0;
                             stscm.Total = stscm.Qty * t;
                             StonesTotal += stscm.Total;
                             Stones.Add(stscm);
@@ -359,16 +359,14 @@ namespace OJewelry.Models
                         case 3: // Findings
                             Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
                             FindingsComponent fiscm = new FindingsComponent(sc.Id, sc.ComponentId, sc.Quantity.GetValueOrDefault());
-                            //fiscm.VendorId = Comp.VendorId.Value;
-                            //fiscm.VendorName = Comp.Vendor.Name;
-                            //fiscm.Metal = db.MetalCodes.Find(Comp.MetalCodeId).Code;
-                            //fiscm.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", Comp.MetalCodeId.Value);
-                            fiscm.Qty = sc.Quantity ?? 0;
-                            //FindingsComponent.componentsForCompany = FindingsComponent.GetAvailComps(svm.CompanyId);
-                            fiscm.SetFindingsList(jsFindings, sc.ComponentId);
-                            //t = fiscm.Price ?? 0;
+                            fiscm.VendorName = Comp.Vendor.Name;
+                            fiscm.Metal = db.MetalCodes.Find(Comp.MetalCodeId).Code;
+                            fiscm.Price = Comp.Price;
+                            t = fiscm.Price ?? 0;
                             fiscm.Total = fiscm.Qty * t;
                             FindingsTotal += fiscm.Total;
+                            fiscm.Qty = sc.Quantity ?? 0;
+                            fiscm.SetFindingsList(jsFindings, sc.ComponentId);
                             Findings.Add(fiscm);
                             Total += fiscm.Total;
                             break;
