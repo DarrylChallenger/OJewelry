@@ -265,7 +265,7 @@ namespace OJewelry.Models
             jsVendors = db.Vendors.ToList();
             jsMetals = db.MetalCodes.ToList();
             jsStones = db.Components.Include("ComponentType").Include("Vendor").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Stones").ToList();
-            jsFindings = db.Components.Include("ComponentType").Include("Vendor").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Findings").ToList();
+            jsFindings = db.Components.Include("ComponentType").Include("Vendor").Include("Metal").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Findings").ToList();
         }
 
         public void PopulateDropDowns(OJewelryDB db)

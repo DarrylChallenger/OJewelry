@@ -35,6 +35,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -299,6 +301,10 @@
     <Compile Include="Migrations\201802102011553_v.5.Designer.cs">
       <DependentUpon>201802102011553_v.5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802202333240_v.51.cs" />
+    <Compile Include="Migrations\201802202333240_v.51.Designer.cs">
+      <DependentUpon>201802202333240_v.51.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -501,6 +507,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802102011553_v.5.resx">
       <DependentUpon>201802102011553_v.5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802202333240_v.51.resx">
+      <DependentUpon>201802202333240_v.51.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

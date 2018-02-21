@@ -34,7 +34,7 @@
                         <div class="col-sm-1"></div>
                         @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-2" })
                         @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1" })
-                        @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1",  onblur="CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')"} })
+                        @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                         @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                         @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                         <div id="CastingsRowTotalValue_@i" class="col-sm-2 CastingsRowTotal ">@Model.Castings[i].Total</div>
@@ -47,7 +47,7 @@
                         @Html.ValidationMessageFor(model => model.Castings[i].Qty, "", new { @class = "text-danger" })
                     </div>
                 </div>
-            }
+                            }
             <div id="CastingsTotal">
                 <div class="row h4 StyleComponentsRowFooter">
                     <div class="col-sm-2"><b>Total Castings</b></div>
@@ -84,8 +84,8 @@
                     @if (i == Model.Stones.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
-                    @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, 
-                        new { @class = "col-sm-2 ", onchange="StoneChanged('"+ i +"')" })
+                    @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList,
+             new { @class = "col-sm-2 ", onchange = "StoneChanged('" + i + "')" })
                     <div class="col-sm-1 "></div>
                     @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
                     @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
@@ -99,7 +99,7 @@
                     @Html.ValidationMessageFor(model => model.Stones[i].Qty, "", new { @class = "text-danger" })
                 </div>
             </div>
-        }
+                        }
         <div id="StonesTotal">
             <div class="row h4 StyleComponentsRowFooter">
                 <div class="col-sm-2"><b>Total Stones</b></div>
@@ -135,7 +135,7 @@
                     @if (i == Model.Findings.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
                     @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList,
-                        new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
+             new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
                     <div class="col-sm-2 "></div>
                     @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
                     @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
@@ -147,7 +147,7 @@
                     @Html.ValidationMessageFor(model => model.Findings[i].Qty, "", new { @class = "text-danger" })
                 </div>
             </div>
-        }
+                        }
         <div id="FindingsTotal">
             <div class="row h4 StyleComponentsRowFooter">
                 <div class="col-sm-2"><b>Total Findings</b></div>
@@ -197,7 +197,7 @@
                     @Html.ValidationMessageFor(model => model.Labors[i].Qty, "", new { @class = "text-danger" })
                 </div>
             </div>
-        }
+                        }
         <div id="LaborsTotal">
             <div class="row h4 StyleComponentsRowFooter">
                 <div class="col-sm-2"><b>Total Labor</b></div>
@@ -245,7 +245,7 @@
                     @Html.ValidationMessageFor(model => model.Miscs[i].Qty, "", new { @class = "text-danger" })
                 </div>
             </div>
-        }
+                        }
         <div id="MiscsTotal">
             <div class="row h4 StyleComponentsRowFooter">
                 <div class="col-sm-2"><b>Total Misc</b></div>
@@ -262,16 +262,35 @@
     </div>
     <div class="hidden">
         <div id="jsMetals">
-            @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.First().Id), new { @class = "col-sm-1" })
+            @{
+                List<Component> emptyList = new List<Component>();
+                Component item = new Component() { Id = 1,Name = "" };
+                emptyList.Add(item);
+            }
+                @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault().Id), new { @class = "col-sm-1" })
         </div>
         <div id="jsVendors">
-            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.First().Id), new { @class = "col-sm-2 " })
+            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.FirstOrDefault().Id), new { @class = "col-sm-2 " })
         </div>
         <div id="jsStones">
-            @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name", Model.jsStones.First().Id), new { @class = "col-sm-2" })
+            @if (Model.jsStones.Count == 0)
+            {
+                @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name", 1), new { @class = "col-sm-2" })
+            }
+            else
+            {
+                @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name", Model.jsStones.FirstOrDefault().Id), new { @class = "col-sm-2" })
+            }
         </div>
         <div id="jsFindings">
-            @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name", Model.jsFindings.First().Id), new { @class = "col-sm-2" })
+            @if (Model.jsFindings.Count == 0)
+            {
+                @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name", 1), new { @class = "col-sm-2" })
+            }
+            else
+            {
+                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name", Model.jsFindings.FirstOrDefault().Id), new { @class = "col-sm-2" })
+            }
         </div>
         <div id="StonesData">
             @foreach (Component stone in Model.jsStones)
@@ -289,7 +308,7 @@
             {
             <div id="@finding.Id">
                 <span class="VendorName" value="@finding.Vendor.Name"></span>
-                <span class="Metal" value="@finding.MetalCodeId"></span>
+                <span class="Metal" value="@finding.Metal.Code"></span>
                 <span class="Price" value="@finding.Price"></span>
             </div>
              }
