@@ -164,7 +164,6 @@ namespace OJewelry.Controllers
             {
                 foreach (StoneComponent c in svm.Stones)
                 {
-                    Component component;
                     StyleComponent sc;
 
                     switch (c.SVMState)
@@ -204,7 +203,6 @@ namespace OJewelry.Controllers
             {
                 foreach (FindingsComponent c in svm.Findings)
                 {
-                    Component component;
                     StyleComponent sc;
                     switch (c.SVMState)
                     {
@@ -557,7 +555,7 @@ namespace OJewelry.Controllers
             // populate each cost component dropdown in model
         }
 
-        void GetPresenters(OJewelryDB dc, MemoViewModel m, int CompanyId)
+        void xGetPresenters(OJewelryDB dc, MemoViewModel m, int CompanyId)
         {
             m.Presenters = new List<SelectListItem>();
             foreach (Presenter i in dc.Presenters.Where(w => w.CompanyId == CompanyId))

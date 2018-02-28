@@ -100,6 +100,7 @@ namespace OJewelry.Controllers
             Company co = db.Companies.Find(component.CompanyId);
             ViewBag.CompanyName = co.Name;
             ViewBag.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", component.MetalCodeId);
+            //ViewBag.ErrorMessage = "You cannot delete this component becuase it is still in use by a style.";
             return View(component);
         }
 
@@ -145,8 +146,17 @@ namespace OJewelry.Controllers
         {
             Component component = db.Components.Find(id);
             int companyId = component.CompanyId.Value;
-            db.Components.Remove(component);
-            db.SaveChanges();
+            if (db.StyleComponents.Where(cId => cId.ComponentId == id).Count() == 0)
+            {
+                db.Components.Remove(component);
+                db.SaveChanges();
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "You cannot delete this component becuase it is still in use by a style.";
+                //return RedirectToAction("Edit", new { id });
+                return Delete(id);
+            }
             return RedirectToAction("Index", new { CompanyId = companyId });
         }
 

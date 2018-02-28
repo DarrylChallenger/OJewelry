@@ -119,10 +119,18 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+        if (ViewBag.ErrorMessage != null)
+        {
+            <p class="text-danger">@ViewBag.ErrorMessage</p>
             @Html.ActionLink("Components", "Index", new { CompanyId = Model.CompanyId })
-        </div>
+        }
+        else
+        {
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Components", "Index", new { CompanyId = Model.CompanyId })
+            </div>
+        }
     }
 </div>
