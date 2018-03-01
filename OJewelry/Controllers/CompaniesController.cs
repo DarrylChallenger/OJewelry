@@ -145,8 +145,11 @@ namespace OJewelry.Controllers
                 String error;
                 if (isValidAddModel())//(ModelState.IsValid)
                 {
-                    // open file
-
+                    /* open file */
+                    // create mem stream
+                    // copy file to mem stream
+                    // process data
+                    /* ...or use blob */
                     Package spreadsheetPackage = Package.Open(ivm.AddPostedFile.FileName, FileMode.Open, FileAccess.Read);
 
                     // Open a SpreadsheetDocument based on a package.
@@ -852,6 +855,9 @@ namespace OJewelry.Controllers
                     {
                         str = strings.SharedStringTable.ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText;
                     }
+                } else
+                {
+                    str = cell.CellValue.Text;
                 }
             }
             catch
