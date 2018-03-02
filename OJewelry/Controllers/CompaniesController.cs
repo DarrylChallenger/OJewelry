@@ -145,162 +145,183 @@ namespace OJewelry.Controllers
                 String error;
                 if (isValidAddModel())//(ModelState.IsValid)
                 {
-                    /* open file */
-                    // create mem stream
-                    // copy file to mem stream
-                    // process data
-                    /* ...or use blob */
-                    Package spreadsheetPackage = Package.Open(ivm.AddPostedFile.FileName, FileMode.Open, FileAccess.Read);
+                    /* open file * /
+                    // Get blob
+                    string //containerName = ContainerPrefix + Guid.NewGuid();
+                    containerName = "ojewelry";
 
-                    // Open a SpreadsheetDocument based on a package.
-                    using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(spreadsheetPackage))
+                    // Retrieve storage account information from connection string
+                    CloudStorageAccount storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString")); ;
+
+                    // Create a blob client for interacting with the blob service.
+                    CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+                    CloudBlobContainer container = blobClient.GetContainerReference(containerName);
+                    container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+
+                    string fn = Path.GetFileNameWithoutExtension(ivm.AddPostedFile.FileName);
+                    // Copy file to blob
+                    CloudBlockBlob blockBlob = container.GetBlockBlobReference(fn + Guid.NewGuid() + ".xlsx");
+
+                    blockBlob.UploadFromFile(ivm.AddPostedFile.FileName);
+                    */
+                    using (FileStream filestream = new FileStream(ivm.AddPostedFile.FileName, FileMode.Open))
                     {
-                        // validate file as spreadsheet
-                        WorkbookPart wbPart = spreadsheetDocument.WorkbookPart;
-                        Workbook wb = wbPart.Workbook;
-                        SharedStringTablePart stringtable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
-                        List<Style> styles = new List<Style>();
-                        List<Collection> colls = new List<Collection>();
-                        foreach (Sheet sheet in wb.Sheets)
+                       // ivm.AddPostedFile.   .InputStream.Write(memorystream);
+                        //blockBlob.DownloadToStream(memorystream);
+                        Package spreadsheetPackage = Package.Open(filestream, FileMode.Open, FileAccess.Read);
+                        //memorystream.Close();
+                        // Open a SpreadsheetDocument based on a package.
+                        using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(spreadsheetPackage))
                         {
-                            WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
-                            Worksheet worksheet = wsp.Worksheet;
-                            int rc = worksheet.Descendants<Row>().Count();
-                            if (rc != 0)
+                            // validate file as spreadsheet
+                            WorkbookPart wbPart = spreadsheetDocument.WorkbookPart;
+                            Workbook wb = wbPart.Workbook;
+                            SharedStringTablePart stringtable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+                            List<Style> styles = new List<Style>();
+                            List<Collection> colls = new List<Collection>();
+                            foreach (Sheet sheet in wb.Sheets)
                             {
-                                if (CellMatches("A1", worksheet, stringtable, "Style") &&
-                                (CellMatches("B1", worksheet, stringtable, "Name")) &&
-                                (CellMatches("C1", worksheet, stringtable, "JewelryType")) &&
-                                (CellMatches("D1", worksheet, stringtable, "Collection")) &&
-                                (CellMatches("E1", worksheet, stringtable, "Description")) &&
-                                (CellMatches("F1", worksheet, stringtable, "Retail")) &&
-                                (CellMatches("G1", worksheet, stringtable, "Qty")))
+                                WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
+                                Worksheet worksheet = wsp.Worksheet;
+                                int rc = worksheet.Descendants<Row>().Count();
+                                if (rc != 0)
                                 {
-                                    if (worksheet.Descendants<Row>().Count() >= 2)
+                                    if (CellMatches("A1", worksheet, stringtable, "Style") &&
+                                    (CellMatches("B1", worksheet, stringtable, "Name")) &&
+                                    (CellMatches("C1", worksheet, stringtable, "JewelryType")) &&
+                                    (CellMatches("D1", worksheet, stringtable, "Collection")) &&
+                                    (CellMatches("E1", worksheet, stringtable, "Description")) &&
+                                    (CellMatches("F1", worksheet, stringtable, "Retail")) &&
+                                    (CellMatches("G1", worksheet, stringtable, "Qty")))
                                     {
-                                        for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                        if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
-                                            //process each cell in cols 1-5
-                                            Style style = new Style();
-                                            Collection collection = new Collection();
-                                            //StyleNum
-                                            Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).First();
-                                            style.StyleNum = GetStringVal(cell, stringtable);
-
-                                            // Style Name
-                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).First();
-                                            style.StyleName = GetStringVal(cell, stringtable);
-
-                                            // Jewelry Type - find a jewelry type with the same name or reject
-                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).First();
-                                            string JewelryTypeName = GetStringVal(cell, stringtable);
-                                            int JewelryTypeId = GetJewelryTypeId(JewelryTypeName);
-                                            if (JewelryTypeId == -1)
+                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
                                             {
-                                                error = "The Jewelry Type [" + JewelryTypeName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
-                                                ivm.Errors.Add(error);
-                                                continue; // add this row of this sheet to error list
-                                            }
-                                            else
-                                            {
-                                                style.JewelryTypeId = JewelryTypeId;
-                                            }
-                                            // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
-                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).First();
-                                            string CollectionName = GetStringVal(cell, stringtable);
-                                            int CollectionId = GetCollectionId(CollectionName);
-                                            if (CollectionId == -1)
-                                            {
-                                                error = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
-                                                ivm.Errors.Add(error);
-                                                continue; // add this row of this sheet to error list
-                                            }
-                                            else
-                                            {
-                                                style.CollectionId = CollectionId;
-                                                // Add coll here 
-                                                // colls.Add(collection);
-                                            }
-                                            // Descrription
-                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).First();
-                                            style.Desc = GetStringVal(cell, stringtable);
+                                                //process each cell in cols 1-5
+                                                Style style = new Style();
+                                                Collection collection = new Collection();
+                                                //StyleNum
+                                                Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).First();
+                                                style.StyleNum = GetStringVal(cell, stringtable);
 
-                                            // Retail - Oh oh, not stored, only computed! Add new column just for retail cost :(
-                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).First();
-                                            if (Decimal.TryParse(GetStringVal(cell, stringtable), out decimal rp))
-                                            {
-                                                style.RetailPrice = rp;
-                                            } else {
-                                                error = "Invalid price [" + GetStringVal(cell, stringtable) + "]in row " + j + " of sheet [" + sheet.Name + "].";
-                                                ivm.Errors.Add(error);
-                                                continue; // add this row of this sheet to error list
+                                                // Style Name
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).First();
+                                                style.StyleName = GetStringVal(cell, stringtable);
+
+                                                // Jewelry Type - find a jewelry type with the same name or reject
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).First();
+                                                string JewelryTypeName = GetStringVal(cell, stringtable);
+                                                int JewelryTypeId = GetJewelryTypeId(JewelryTypeName);
+                                                if (JewelryTypeId == -1)
+                                                {
+                                                    error = "The Jewelry Type [" + JewelryTypeName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
+                                                    ivm.Errors.Add(error);
+                                                    continue; // add this row of this sheet to error list
+                                                }
+                                                else
+                                                {
+                                                    style.JewelryTypeId = JewelryTypeId;
+                                                }
+                                                // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).First();
+                                                string CollectionName = GetStringVal(cell, stringtable);
+                                                int CollectionId = GetCollectionId(CollectionName);
+                                                if (CollectionId == -1)
+                                                {
+                                                    error = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
+                                                    ivm.Errors.Add(error);
+                                                    continue; // add this row of this sheet to error list
+                                                }
+                                                else
+                                                {
+                                                    style.CollectionId = CollectionId;
+                                                    // Add coll here 
+                                                    // colls.Add(collection);
+                                                }
+                                                // Descrription
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).First();
+                                                style.Desc = GetStringVal(cell, stringtable);
+
+                                                // Retail - Oh oh, not stored, only computed! Add new column just for retail cost :(
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).First();
+                                                if (Decimal.TryParse(GetStringVal(cell, stringtable), out decimal rp))
+                                                {
+                                                    style.RetailPrice = rp;
+                                                } else {
+                                                    error = "Invalid price [" + GetStringVal(cell, stringtable) + "]in row " + j + " of sheet [" + sheet.Name + "].";
+                                                    ivm.Errors.Add(error);
+                                                    continue; // add this row of this sheet to error list
+                                                }
+
+                                                // Quantity 
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).First();
+                                                style.Quantity = GetIntVal(cell);
+                                                styles.Add(style);
+
                                             }
-
-                                            // Quantity 
-                                            cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).First();
-                                            style.Quantity = GetIntVal(cell);
-                                            styles.Add(style);
-
+                                        }
+                                        else
+                                        { // row count < 2
+                                            error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
+                                            ivm.Errors.Add(error);
                                         }
                                     }
                                     else
-                                    { // row count < 2
-                                        error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
+                                    { // incorrect headers
+                                        error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the New Style Template";
                                         ivm.Errors.Add(error);
                                     }
                                 }
                                 else
-                                { // incorrect headers
-                                    error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the New Style Template";
+                                {
+                                    // empty sheet
+                                    error = "The sheet [" + sheet.Name + "] is empty. Please use the 'New Style' Template";
+                                    ModelState.AddModelError("AddPostedFile", error);
                                     ivm.Errors.Add(error);
                                 }
-                            }
-                            else
-                            {
-                                // empty sheet
-                                error = "The sheet [" + sheet.Name + "] is empty. Please use the 'New Style' Template";
-                                ModelState.AddModelError("AddPostedFile", error);
-                                ivm.Errors.Add(error);
-                            }
-                            // process collections and styles
-                            // new collection
-                            foreach (Collection c in colls) // should be empty for now as I'm not allowing new collections
-                            {
-                                if (db.Collections.Where(x => x.CompanyId == ivm.CompanyId && x.Name == c.Name).Count() == 0)
+                                // process collections and styles
+                                // new collection
+                                foreach (Collection c in colls) // should be empty for now as I'm not allowing new collections
                                 {
-                                    db.Collections.Add(c);
+                                    if (db.Collections.Where(x => x.CompanyId == ivm.CompanyId && x.Name == c.Name).Count() == 0)
+                                    {
+                                        db.Collections.Add(c);
+                                    }
                                 }
-                            }
-                            // existing style - if style already exists, just update the quant
-                            foreach (Style s in styles)
-                            {
-                                Collection c = db.Collections.Find(s.CollectionId);
-                                int count = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Count();
-                                if (count == 1)
+                                // existing style - if style already exists, just update the quant
+                                foreach (Style s in styles)
                                 {
-                                    Style sty = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Single();
-                                    sty.Quantity += s.Quantity;
+                                    Collection c = db.Collections.Find(s.CollectionId);
+                                    int count = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Count();
+                                    if (count == 1)
+                                    {
+                                        Style sty = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Single();
+                                        sty.Quantity += s.Quantity;
+                                    }
+                                    // new sytle
+                                    if (count == 0)
+                                    {
+                                        db.Styles.Add(s);
+                                    }
+                                    if (count > 1)
+                                    {
+                                        error = "Something went wrong trying to update a style quantity [" + s.StyleNum + "]. Count = [" + count + "].";
+                                        ivm.Errors.Add(error);
+                                    }
                                 }
-                                // new sytle
-                                if (count == 0)
+                                // Done processing, update db
+                                if (ivm.Errors.Count() == 0)
                                 {
-                                    db.Styles.Add(s);
-                                }
-                                if (count > 1)
-                                {
-                                    error = "Something went wrong trying to update a style quantity [" + s.StyleNum + "]. Count = [" + count + "].";
-                                    ivm.Errors.Add(error);
-                                }
-                            }
-                            // Done processing, update db
-                            if (ivm.Errors.Count() == 0)
-                            {
-                                db.SaveChanges();
-                                ViewBag.Message += ivm.AddPostedFile.FileName + " added!";
+                                    db.SaveChanges();
+                                    ViewBag.Message += ivm.AddPostedFile.FileName + " added!";
 
+                                }
                             }
                         }
                     }
+                    //blockBlob.DeleteIfExists();
                 }
             } catch (Exception e) {
                 ViewBag.Message += ("Exception[" +e.ToString()+ "]");
