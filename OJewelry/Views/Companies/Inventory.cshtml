@@ -62,6 +62,18 @@
 
 </div>
 
+<div id="InventoryWarningss">
+    @if (Model.Warnings.Count() != 0)
+    {
+        <h3>Warnings</h3>
+        foreach (string s in Model.Warnings)
+        {
+            <p class="text-warning">@s</p>
+        }
+    }
+
+</div>
+
 <div>
     @Html.ActionLink("Inventory Report", "InventoryReport", new { CompanyId = Model.CompanyId }) |
     @Html.ActionLink("Companies", "Index")

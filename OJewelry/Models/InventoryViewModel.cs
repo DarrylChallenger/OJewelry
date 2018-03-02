@@ -13,6 +13,8 @@ namespace OJewelry.Models
         public InventoryViewModel()
         {
             Errors = new List<string>();
+            Warnings = new List<string>();
+            bCC_CompCollCreated = false;
         }
         public int CompanyId { get; set; }
         public string CompanyName { get; set; }
@@ -22,6 +24,8 @@ namespace OJewelry.Models
         public int FromLocationId { get; set; }
         public int ToLocationId { get; set; }
         public List<String> Errors { get; set; }
+        public List<String> Warnings { get; set; }
+        public bool bCC_CompCollCreated { get; set; }
 
         [ExcelAttachment]
         public HttpPostedFileBase AddPostedFile { get; set; }
