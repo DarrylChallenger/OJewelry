@@ -202,27 +202,14 @@ namespace OJewelry.Models
         public String Name { get; set; }
 
         [Display(Name ="Phone")]
-        [Required(ErrorMessage = "Phone is required.")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
         public String Phone { get; set; }
 
         [Display(Name = "Email")]
-        [Required(ErrorMessage = "Email is required.")]
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
-    }
-
-    [MetadataType(typeof(PresentersMetaData))]   
-    public partial class Presenters
-    {
-    }
-    public partial class PresentersMetaData
-    {
-
-        [Display(Name = "Location")]
-        public String Name { get; }
     }
 
     [MetadataType(typeof(StyleMetaData))]   // Style
@@ -292,14 +279,12 @@ namespace OJewelry.Models
         public String Name { get; set; }
 
         [DisplayName("Vendor Phone")]
-        [Required(ErrorMessage = "Phone is required.")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
         public String Phone { get; set; }
 
         [Display(Name="Vendor Email")]
-        [Required(ErrorMessage = "Email is required.")]
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
     }

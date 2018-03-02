@@ -250,10 +250,12 @@ namespace OJewelry.Models
 
             modelBuilder.Entity<Vendor>()
                 .Property(e => e.Phone)
+                .IsOptional()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Vendor>()
                 .Property(e => e.Email)
+                .IsOptional()
                 .IsUnicode(false);
         }
     }

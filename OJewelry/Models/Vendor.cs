@@ -20,13 +20,14 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Name { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string Phone { get; set; }
 
-        [Required]
         [StringLength(50)]
         public string Email { get; set; }
+
+        [StringLength(50)]
+        public string Type { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Component> Components { get; set; }

@@ -75,7 +75,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,CompanyId")] Presenter presenter)
+        public ActionResult Create([Bind(Include = "Id,Name,ShortName,Phone,Email,CompanyId")] Presenter presenter)
         {
             if (ModelState.IsValid)
             {
@@ -110,7 +110,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Phone,Email,CompanyId")] Presenter presenter)
+        public ActionResult Edit([Bind(Include = "Id,Name,ShortName,Phone,Email,CompanyId")] Presenter presenter)
         {
             if (ModelState.IsValid)
             {
