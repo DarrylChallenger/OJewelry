@@ -317,6 +317,14 @@
     <Compile Include="Migrations\201803022142240_v.51b3.Designer.cs">
       <DependentUpon>201803022142240_v.51b3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803030007528_v.51b4.cs" />
+    <Compile Include="Migrations\201803030007528_v.51b4.Designer.cs">
+      <DependentUpon>201803030007528_v.51b4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803030218209_v.51b5.cs" />
+    <Compile Include="Migrations\201803030218209_v.51b5.Designer.cs">
+      <DependentUpon>201803030218209_v.51b5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -327,6 +335,7 @@
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\CollectionViewModel.cs" />
     <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\ComponentType.cs" />
     <Compile Include="Models\DataAnnotations.cs" />
@@ -532,6 +541,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803022142240_v.51b3.resx">
       <DependentUpon>201803022142240_v.51b3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803030007528_v.51b4.resx">
+      <DependentUpon>201803030007528_v.51b4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803030218209_v.51b5.resx">
+      <DependentUpon>201803030218209_v.51b5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

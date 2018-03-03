@@ -44,7 +44,8 @@ namespace OJewelry.Controllers
         // GET: Companies/Create
         public ActionResult Create()
         {
-            return View();
+            CompanyViewModel cvm = new CompanyViewModel();
+            return View(cvm);
         }
 
         // POST: Companies/Create
@@ -52,16 +53,23 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name")] Company company)
+        public ActionResult Create(CompanyViewModel cvm)
         {
             if (ModelState.IsValid)
             {
-                db.Companies.Add(company);
+                db.Companies.Add(cvm.company);
+                foreach (Client c in cvm.clients)
+                {
+                    if (c.Name != "")
+                    {
+                        c.CompanyID = cvm.company.Id;
+                        db.Clients.Add(c);
+                    }
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
-            return View(company);
+            return View(cvm.company);
         }
 
         // GET: Companies/Edit/5
@@ -76,7 +84,11 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            return View(company);
+            CompanyViewModel cvm = new CompanyViewModel();
+            cvm.company = company;
+            cvm.clients = db.Clients.Where(x => x.CompanyID == cvm.company.Id).ToList();
+            cvm.clients.Add(new Client());
+            return View(cvm);
         }
 
         // POST: Companies/Edit/5
@@ -84,15 +96,35 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name")] Company company)
+        public ActionResult Edit(CompanyViewModel cvm)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(company).State = EntityState.Modified;
+                Company company = db.Companies.Find(cvm.company.Id);
+                company.Name = cvm.company.Name;
+                foreach (Client c in cvm.clients)
+                {
+                    if (c.Id == 0)
+                    {
+                        if (c.Name != null)
+                        {
+                            c.CompanyID = cvm.company.Id;
+                            db.Clients.Add(c);
+                        }
+                    } else {
+                        if (c.Name != null)
+                        {
+                            db.Entry(c).State = EntityState.Modified;
+                        } else {
+                            db.Entry(c).State = EntityState.Deleted;
+                        }
+                    }
+                }
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(company);
+            return View(cvm);
         }
 
         // GET: Companies/Delete/5

@@ -55,18 +55,16 @@ namespace OJewelry.Models
     public partial class ClientMetaData
     {
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "Name is required.")]
+        //[Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
 
         [DisplayName("Phone")]
-        [Required(ErrorMessage = "Phone is required.")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
         public String Phone { get; set; }
 
         [Display(Name = "Email")]
-        [Required(ErrorMessage = "Email is required.")]
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
     }

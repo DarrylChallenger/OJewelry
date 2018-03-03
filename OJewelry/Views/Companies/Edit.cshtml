@@ -1,35 +1,64 @@
-﻿@model OJewelry.Models.Company
+﻿@model OJewelry.Models.CompanyViewModel
 
 @{
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit the <i>@Model.Name</i> Company</h2>
+<h2>Edit the <i>@Model.company.Name</i> Company</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.company.Id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-                <input type="submit" value="Delete" formaction="../Delete/@Model.Id" class="btn btn-default" />
-            </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.company.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.company.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.company.Name, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    @if (Model != null && Model.clients != null)
+    {
+        <h4>Clients</h4>
+        for (int i = 0; i < Model.clients.Count; i++)
+        {
+        <div class="form-group">
+            @Html.HiddenFor(model => model.clients[i].Id)
+            @Html.HiddenFor(model => model.clients[i].CompanyID)
+            @Html.LabelFor(model => model.clients[i].Name, htmlAttributes: new { @class = "control-label col-md-1" })
+            <div>
+                @Html.EditorFor(model => model.clients[i].Name, new { htmlAttributes = new { @class = "form-control col-md-2" } })
+            </div>
+            @Html.LabelFor(model => model.clients[i].Phone, htmlAttributes: new { @class = "control-label col-md-1" })
+            <div>
+                @Html.EditorFor(model => model.clients[i].Phone, new { htmlAttributes = new { @class = "form-control col-md-2" } })
+            </div>
+            @Html.LabelFor(model => model.clients[i].Email, htmlAttributes: new { @class = "control-label col-md-1" })
+            <div>
+                @Html.EditorFor(model => model.clients[i].Email, new { htmlAttributes = new { @class = "form-control col-md-2" } })
+            </div>
+        </div>
+            <div class="form-group">
+                @Html.ValidationMessageFor(model => model.clients[i].Name, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.clients[i].Phone, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.clients[i].Email, "", new { @class = "text-danger" })
+            </div>
+        }
+    }
+
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+            <input type="submit" value="Delete" formaction="../Delete/@Model.company.Id" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
 <div>
