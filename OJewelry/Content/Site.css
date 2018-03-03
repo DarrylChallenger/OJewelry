@@ -21,11 +21,25 @@ input,
 select,
 textarea {
     max-width: 280px;
+    max-width: 100%;
 }
 /* Override form-control */
 .form-control
 { 
     width:unset;
+}
+
+
+.form-horizontal .contorl-label-left {
+    text-align: left;
+}
+
+.col-md-3 {
+    width: 25%
+}
+
+.col-md-4 {
+    width: 33%;
 }
 
 .navbar 

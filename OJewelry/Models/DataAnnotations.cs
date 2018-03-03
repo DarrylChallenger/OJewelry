@@ -20,14 +20,12 @@ namespace OJewelry.Models
         String Name { get; set; }
 
         [DisplayName("Phone")]
-        [Required(ErrorMessage = "Phone is required.")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
         [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
         public String Phone { get; set; }
 
         [Display(Name = "Email")]
-        [Required(ErrorMessage = "Email is required.")]
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
 
@@ -67,6 +65,10 @@ namespace OJewelry.Models
         [Display(Name = "Email")]
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
+
+        [Display(Name = "Job Title")]
+        public string JobTitle { get; set; }
+
     }
 
     [MetadataType(typeof(CollectionMetaData))]   // collection
@@ -89,8 +91,24 @@ namespace OJewelry.Models
         [Display(Name = "Name")]
         [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
+
+        [Display(Name = "Addr 1")]
+        public string StreetAddr { get; set; }
+
+        [Display(Name = "Addr 2")]
+        public string Addr2 { get; set; }
+
+        [Display(Name = "Website")]
+        public string Website { get; set; }
+
+        [DisplayName("Phone")]
+        [DataType(DataType.PhoneNumber)]
+        [Phone]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        public String Phone { get; set; }
+
     }
-    
+
     [MetadataType(typeof(ComponentMetaData))]   //component
     public partial class Component
     {

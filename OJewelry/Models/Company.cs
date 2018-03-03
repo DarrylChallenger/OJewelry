@@ -24,6 +24,18 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Name { get; set; }
 
+        [StringLength(150)]
+        public string StreetAddr { get; set; }
+
+        [StringLength(150)]
+        public string Addr2 { get; set; }
+
+        [StringLength(50)]
+        public string Phone { get; set; }
+
+        [StringLength(50)]
+        public string Website { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ACL> ACLs { get; set; }
 

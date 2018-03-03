@@ -60,10 +60,24 @@ namespace OJewelry.Controllers
                 db.Companies.Add(cvm.company);
                 foreach (Client c in cvm.clients)
                 {
-                    if (c.Name != "")
+                    if (c.Id == 0)
                     {
-                        c.CompanyID = cvm.company.Id;
-                        db.Clients.Add(c);
+                        if (c.Name != null)
+                        {
+                            c.CompanyID = cvm.company.Id;
+                            db.Clients.Add(c);
+                        }
+                    }
+                    else
+                    {
+                        if (c.Name != null)
+                        {
+                            db.Entry(c).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            db.Entry(c).State = EntityState.Deleted;
+                        }
                     }
                 }
                 db.SaveChanges();
