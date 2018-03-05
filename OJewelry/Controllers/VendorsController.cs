@@ -129,7 +129,7 @@ namespace OJewelry.Controllers
             base.Dispose(disposing);
         }
 
-        public FileResult ExportVendorReport(int CompanyId)
+        public FileResult ExportVendorReport()
         {
             byte[] b;
             DCTSOpenXML oxl = new DCTSOpenXML();
@@ -190,7 +190,6 @@ namespace OJewelry.Controllers
                     document.Close();
 
                     b = memStream.ToArray();
-                    Company company = db.Companies.Find(CompanyId);
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         "Vendors as of " + DateTime.Now.ToString() + ".xlsx");
                 }

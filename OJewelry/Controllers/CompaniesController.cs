@@ -628,7 +628,7 @@ namespace OJewelry.Controllers
                     {
                         Id = workbookPart.GetIdOfPart(worksheetPart),
                         SheetId = 1,
-                        Name = irm.CompanyName + " Inventory" // as of " + DateTime.Now.ToShortDateString()
+                        Name = irm.CompanyName// + " Inventory" // as of " + DateTime.Now.ToShortDateString()
                     };
                     sheets.Append(sheet);
 
@@ -643,12 +643,14 @@ namespace OJewelry.Controllers
                     int rr;
 
                     // Date row
-                    // Save Col A for image
                     row = new Row();
-                    cell = SetCellVal("A2", "Date: " + DateTime.Now.ToString()); 
+                    cell = SetCellVal("A1", "Inventory Report");
+                    row.Append(cell);
+                    cell = SetCellVal("B1", "Date: " + DateTime.Now.ToString()); 
                     row.Append(cell);
                     sd.Append(row);
                     // Header row
+                    // Save Col A for image
                     row = new Row();
                     cell = SetCellVal("B2", "Style"); row.Append(cell);
                     cell = SetCellVal("C2", "Name"); row.Append(cell);

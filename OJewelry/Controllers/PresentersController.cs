@@ -197,8 +197,9 @@ namespace OJewelry.Controllers
                     // Headers
                     row = new Row();
                     cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
-                    cell = oxl.SetCellVal("B1", "Phone"); row.Append(cell);
-                    cell = oxl.SetCellVal("C1", "Email"); row.Append(cell);
+                    cell = oxl.SetCellVal("B1", "Short Name"); row.Append(cell);
+                    cell = oxl.SetCellVal("C1", "Phone"); row.Append(cell);
+                    cell = oxl.SetCellVal("D1", "Email"); row.Append(cell);
                     sd.Append(row);
                     List<Presenter> locations = db.Presenters.Where(x => x.CompanyId == CompanyId).ToList();
                     // Content
@@ -207,8 +208,9 @@ namespace OJewelry.Controllers
                         row = new Row();
                         rr = 2 + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, locations[i].Name); row.Append(cell);
-                        loc = "B" + rr; cell = oxl.SetCellVal(loc, locations[i].Phone); row.Append(cell);
-                        loc = "C" + rr; cell = oxl.SetCellVal(loc, locations[i].Email); row.Append(cell);
+                        loc = "B" + rr; cell = oxl.SetCellVal(loc, locations[i].ShortName); row.Append(cell);
+                        loc = "C" + rr; cell = oxl.SetCellVal(loc, locations[i].Phone); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, locations[i].Email); row.Append(cell);
                         sd.Append(row);
                     }
                     worksheet.Append(sd);
