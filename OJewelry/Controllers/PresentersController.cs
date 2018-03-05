@@ -218,8 +218,9 @@ namespace OJewelry.Controllers
                     document.Close();
 
                     b = memStream.ToArray();
+                    Company company = db.Companies.Find(CompanyId);
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Company Locations as of " + DateTime.Now.ToString() + ".xlsx");
+                        company.Name + " Locations as of " + DateTime.Now.ToString() + ".xlsx");
                 }
             }
         }

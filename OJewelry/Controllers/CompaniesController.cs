@@ -620,7 +620,7 @@ namespace OJewelry.Controllers
                     workbookPart.Workbook = new Workbook();
 
                     WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-                    worksheetPart.Worksheet = new Worksheet(new SheetData());
+//                    worksheetPart.Worksheet = new Worksheet(new SheetData());
 
                     Sheets sheets = document.WorkbookPart.Workbook.AppendChild(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
 
@@ -699,32 +699,10 @@ namespace OJewelry.Controllers
                         cell = SetCellVal(loc, irm.styles[i].StyleQtySold); row.Append(cell);
                         sd.Append(row);
                      }
-                    /*
-                     *     @foreach (OJewelry.Models.irmStyle s in Model.styles)
-                            {
-                                <tr>
-                                    <td>@s.StyleNum</td>
-                                    <td>@s.StyleName</td>
-                                    <td>@s.StylePrice</td>
-                                    <td>@s.StyleQuantity</td>
-                                    @foreach (OJewelry.Models.irmLocation l in Model.locations)
-                                    {
-                                        OJewelry.Models.irmLS cell = @Model.locationQuantsbystyle.
-                                        Where(x => x.StyleId == s.StyleId && x.PresenterId == l.PresenterId).SingleOrDefault();
-                                        string qty = "-";
-                                        if (cell != null) @qty = cell.MemoQty.ToString();
-                                        <td>@qty</td>
-                                    }
-                                    <td>@s.StyleQtySold</td>
-                                </tr>
-                                <tr></tr>
-                            }
-                     * 
-                     */
-                    worksheet.Append(sd);
-                    worksheetPart.Worksheet = worksheet;
-                    workbookPart.Workbook.Save();
-                    document.Close();
+                     worksheet.Append(sd);
+                     worksheetPart.Worksheet = worksheet;
+                     workbookPart.Workbook.Save();
+                     document.Close();
                 }
                 b = memStream.ToArray();
                 return File(b, 
