@@ -58,7 +58,9 @@ namespace OJewelry.Controllers
                         Id = sty.Id,
                         Name = sty.StyleName,
                         Num = sty.StyleNum,
-                        Memod = sty.Memos.Sum(s => s.Quantity)
+                        Memod = sty.Memos.Sum(s => s.Quantity),
+                        Qty = sty.Quantity,
+                        RetialPrice = sty.RetailPrice.Value,
                         // Cost is the sum of the component prices
                         //Retail Price is the cost * retail ratio
                     };

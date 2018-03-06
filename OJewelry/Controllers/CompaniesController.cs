@@ -226,8 +226,12 @@ namespace OJewelry.Controllers
                                                 Style style = new Style();
                                                 Collection collection = new Collection();
                                                 //StyleNum
-                                                Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).First();
-                                                style.StyleNum = GetStringVal(cell, stringtable);
+                                                style.StyleNum = "";
+                                                Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
+                                                {
+                                                    style.StyleNum = GetStringVal(cell, stringtable);
+                                                }
                                                 if (style.StyleNum == "")
                                                 {
                                                     error = "The style number in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
@@ -235,30 +239,39 @@ namespace OJewelry.Controllers
                                                     ivm.Errors.Add(error);
                                                 }
                                                 // Style Name
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).First();
-                                                style.StyleName = GetStringVal(cell, stringtable);
-                                                if (style.StyleName == "")
+                                                style.StyleName = "";
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
                                                 {
-                                                    style.StyleName = style.StyleNum;
+                                                    style.StyleName = GetStringVal(cell, stringtable);
+                                                }
+                                                if (style.StyleName == "")
+                                                    {
+                                                        style.StyleName = style.StyleNum;
                                                 }
 
                                                 // Jewelry Type - find a jewelry type with the same name or reject
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).First();
-                                                string JewelryTypeName = GetStringVal(cell, stringtable);
+                                                string JewelryTypeName = "";
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
+                                                {
+                                                    JewelryTypeName = GetStringVal(cell, stringtable);
+                                                }
                                                 int JewelryTypeId = GetJewelryTypeId(JewelryTypeName);
                                                 if (JewelryTypeId == -1)
                                                 {
                                                     error = "The Jewelry Type [" + JewelryTypeName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
+                                                    ModelState.AddModelError("JewelryType", error);
                                                     ivm.Errors.Add(error);
-                                                    continue; // add this row of this sheet to error list
                                                 }
                                                 else
                                                 {
                                                     style.JewelryTypeId = JewelryTypeId;
                                                 }
                                                 // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).First();
-                                                string CollectionName = GetStringVal(cell, stringtable);
+                                                string CollectionName = "";
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
+                                                CollectionName = GetStringVal(cell, stringtable);
                                                 int CollectionId = GetCollectionId(CollectionName);
                                                 if (CollectionId == -1)
                                                 {
@@ -273,23 +286,42 @@ namespace OJewelry.Controllers
                                                     style.CollectionId = CollectionId;
                                                 }
                                                 // Descrription
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).First();
-                                                style.Desc = GetStringVal(cell, stringtable);
+                                                style.Desc = "";
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) style.Desc = GetStringVal(cell, stringtable);
 
-                                                // Retail - Oh oh, not stored, only computed! Add new column just for retail cost :(
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).First();
-                                                if (Decimal.TryParse(GetStringVal(cell, stringtable), out decimal rp))
+                                                // Retail 
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
                                                 {
-                                                    style.RetailPrice = rp;
-                                                } else {
-                                                    error = "Invalid price [" + GetStringVal(cell, stringtable) + "]in row " + j + " of sheet [" + sheet.Name + "].";
+                                                    if (Decimal.TryParse(GetStringVal(cell, stringtable), out decimal rp))
+                                                    {
+                                                        style.RetailPrice = rp;
+                                                    }
+                                                    else
+                                                    {
+                                                        error = "Invalid price [" + GetStringVal(cell, stringtable) + "] in row " + j + " of sheet [" + sheet.Name + "].";
+                                                        ModelState.AddModelError("RetailPrice", error); 
+                                                        ivm.Errors.Add(error);
+                                                    }
+                                                } else
+                                                {
+                                                    error = "Invalid price in row " + j + " of sheet [" + sheet.Name + "].";
+                                                    ModelState.AddModelError("RetailPrice", error);
                                                     ivm.Errors.Add(error);
-                                                    continue; // add this row of this sheet to error list
                                                 }
 
                                                 // Quantity 
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).First();
-                                                style.Quantity = GetIntVal(cell);
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
+                                                {
+                                                    style.Quantity = GetIntVal(cell);
+                                                } else {
+                                                    error = "Invalid Quantity in row " + j + " of sheet [" + sheet.Name + "].";
+                                                    ModelState.AddModelError("Quantity", error);
+                                                    ivm.Errors.Add(error);
+
+                                                }
                                                 styles.Add(style);
 
                                             }
@@ -366,7 +398,7 @@ namespace OJewelry.Controllers
                     //blockBlob.DeleteIfExists();
                 }
             } catch (Exception e) {
-                ViewBag.Message += ("Exception[" +e.ToString()+ "]");
+                ViewBag.Message += ("Exception[" +e.ToString()+ "] processing [" + ivm.AddPostedFile + "]");
             } finally {
                 ivm = SetPresentersLists(ivm);
             }
@@ -381,8 +413,14 @@ namespace OJewelry.Controllers
                 String error;
                 if (isValidMoveModel())//(ModelState.IsValid)
                 {
-                    // open file
+                    // if from == to, error
+                    if (ivm.FromLocationId == ivm.ToLocationId)
+                    {
+                        error = "You cannot from/to the same location";
+                        ivm.Errors.Add(error);
+                    }
 
+                    // open file
                     using (MemoryStream memstream = new MemoryStream())
                     {
                         ivm.MovePostedFile.InputStream.CopyTo(memstream);
@@ -397,6 +435,7 @@ namespace OJewelry.Controllers
                             SharedStringTablePart stringtable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
                             List<Style> styles = new List<Style>();
                             List<Collection> colls = new List<Collection>();
+
                             foreach (Sheet sheet in wb.Sheets)
                             {
                                 WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
@@ -419,20 +458,41 @@ namespace OJewelry.Controllers
                                                 Style style = new Style();
 
                                                 //StyleNum
-                                                Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).First();
-                                                style.StyleNum = GetStringVal(cell, stringtable);
+                                                style.StyleNum = "";
+                                                Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) style.StyleNum = GetStringVal(cell, stringtable);
+                                                if (style.StyleNum == "")
+                                                {
+                                                    // error
+                                                    error = "The style number in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("StyleNum", error);
+                                                    ivm.Errors.Add(error);
+                                                }
 
                                                 // Descrription
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).First();
-                                                style.Desc = GetStringVal(cell, stringtable);
+                                                style.Desc = "";
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) style.Desc = GetStringVal(cell, stringtable);
 
-                                                // Retail - Oh oh, not stored, only computed! Add new column just for retail cost :(
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).First();
-                                                string retail = GetStringVal(cell, stringtable);
+                                                // Retail Can be ignored
+                                                /*
+                                                string retail = "";
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) retail = GetStringVal(cell, stringtable);
+                                                */
 
                                                 // Quantity 
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).First();
-                                                style.Quantity = GetIntVal(cell);
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
+                                                {
+                                                    style.Quantity = GetIntVal(cell);
+                                                } else
+                                                {
+                                                    // error
+                                                    error = "The Quantity in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("Quantity", error);
+                                                    ivm.Errors.Add(error);
+                                                }
                                                 styles.Add(style);
                                             }
                                         }
@@ -458,6 +518,7 @@ namespace OJewelry.Controllers
                                     ModelState.AddModelError("MovePostedFile", error);
                                 }
                             }
+
                             // process moves
                             foreach (Style s in styles)
                             {
@@ -466,24 +527,14 @@ namespace OJewelry.Controllers
 
                                 if (theStyle == null)
                                 {
-                                    error = "The style [" + s.StyleNum + "] is not found.";
-                                    ivm.Errors.Add(error);
                                     continue;
                                 }
                                 // update desc and retail if blank in DB
-                                if (theStyle.Desc == null) theStyle.Desc = s.Desc;
+                                if (theStyle.Desc == null || theStyle.Desc == "") theStyle.Desc = s.Desc;
                                 // should we always update retail?
                                 //if (theStyle.Retail == null) theStyle.Retail = s.Retail;  
                                 //// if moving from home
                                 int moveQty = s.Quantity;
-
-                                // if from == to, error
-                                if (ivm.FromLocationId == ivm.ToLocationId)
-                                {
-                                    error = "You cannot from/to the same location";
-                                    ivm.Errors.Add(error);
-                                    continue;
-                                }
 
                                 // from -= qty, to += qty
                                 Memo fromMemo, toMemo;
@@ -628,7 +679,7 @@ namespace OJewelry.Controllers
                     {
                         Id = workbookPart.GetIdOfPart(worksheetPart),
                         SheetId = 1,
-                        Name = irm.CompanyName// + " Inventory" // as of " + DateTime.Now.ToShortDateString()
+                        Name = irm.CompanyName + " Inventory" // as of " + DateTime.Now.ToShortDateString()
                     };
                     sheets.Append(sheet);
 
@@ -731,7 +782,8 @@ namespace OJewelry.Controllers
                     StylePrice = x.RetailPrice,
                     StyleSold = x.UnitsSold,
                     x.CollectionId,
-                    cl.CompanyId
+                    cl.CompanyId,
+                    cl.Name,
                 }).
                     Where(x => x.CompanyId == CompanyId).
                     Join(db.Companies,
@@ -745,7 +797,8 @@ namespace OJewelry.Controllers
                     StyleName = x.StyleName,
                     StyleDesc = x.StyleDesc,
                     StylePrice = x.StylePrice ?? 0,
-                    StyleQtySold = x.StyleSold
+                    StyleQtySold = x.StyleSold,
+                    StyleCollectionName = x.Name
                 }).Distinct().ToList();
 
             // irmStyle() { StyleId = s.Id, StyleNum = s.StyleNum, StyleQuantity = s.Quantity, StyleName = s.StyleName, StyleDesc = s.Desc, s.CollectionId }
@@ -757,12 +810,12 @@ namespace OJewelry.Controllers
                 db.Presenters,
                 x => x.PresenterID,
                 p => p.Id,
-                (x, p) => new { PresenterId = p.Id, PresenterName = p.Name, p.CompanyId }).Where(x => x.CompanyId == CompanyId)
+                (x, p) => new { PresenterId = p.Id, PresenterName = p.Name, p.CompanyId, p.ShortName }).Where(x => x.CompanyId == CompanyId)
                 .Where(x => x.CompanyId == CompanyId).Join(
                 db.Companies,
                 x => x.CompanyId,
                 c => c.Id,
-                (x, c) => new irmLocation() { PresenterId = x.PresenterId, PresenterName = x.PresenterName }).Distinct().ToList();
+                (x, c) => new irmLocation() { PresenterId = x.PresenterId, PresenterName = x.PresenterName, ShortName = x.ShortName }).Distinct().ToList();
             irm.locationQuantsbystyle = db.Styles.Join(
                 db.Memos,
                 s => s.Id,
@@ -997,7 +1050,7 @@ namespace OJewelry.Controllers
                 colls.Add(c);
                 ivm.bCC_CompCollCreated = true;
             }
-            CollectionId = -1;
+            //CollectionId = -1;
             
             return CollectionId;
         }

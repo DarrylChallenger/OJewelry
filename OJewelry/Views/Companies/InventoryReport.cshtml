@@ -10,12 +10,14 @@
     <tr>
         <th>Style</th>
         <th>Name</th>
+        <th>Description</th>
+        <th>Collection</th>
         <th>Retail</th>
-        <th>@Model.CompanyName</th>
+        <th>QOH</th>
         <!--Loop thru Memo locations-->
         @foreach (OJewelry.Models.irmLocation l in Model.locations)
         {
-            <th>@l.PresenterName</th>
+            <th>@l.ShortName</th>
         }
         <th>SOLD</th>
     </tr>
@@ -25,6 +27,8 @@
         <tr>
             <td>@s.StyleNum</td>
             <td>@s.StyleName</td>
+            <td>@s.StyleDesc</td>
+            <td>@s.StyleCollectionName</td>
             <td>@s.StylePrice</td>
             <td>@s.StyleQuantity</td>
             @foreach (OJewelry.Models.irmLocation l in Model.locations)

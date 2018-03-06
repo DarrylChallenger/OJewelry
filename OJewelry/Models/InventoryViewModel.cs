@@ -54,12 +54,27 @@ namespace OJewelry.Models
         public int StyleQuantity { get; set; }
         public decimal StylePrice { get; set; }
         public int StyleQtySold { get; set; }
+        public string StyleCollectionName { get; set; }
     }
 
     public class irmLocation
     {
         public int PresenterId { get; set; }
         public string PresenterName { get; set; }
+        private string shortname;
+        public string ShortName
+        {
+            get
+            {
+                if (shortname == null || shortname == "")
+                { return PresenterName; }
+                else { return shortname; }
+            }
+            set
+            {
+                shortname = value;
+            }
+        }
     }
 
     public class irmLS

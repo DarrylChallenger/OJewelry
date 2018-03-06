@@ -20,8 +20,17 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Name { get; set; }
 
+        private string shortname;
+
         [StringLength(10)]
-        public string ShortName { get; set; }
+        public string ShortName { get
+            {
+                if (shortname == null || shortname =="")
+                { return Name; } else { return shortname; }
+            }
+            set {
+                shortname = value;
+            } }
 
         [StringLength(10)]
         public string Phone { get; set; }
