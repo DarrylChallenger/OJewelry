@@ -46,12 +46,14 @@
                 </div>
             }
             <div class="col-sm-6">
+            @if (Model.DelBtnPos == SVMDelButtonPos.Left)
+            {
                 <button type="button" class="btn btn-default" onclick="RemoveComponentRow('@Model.SVMCCType', @Model.i)">
                     <span class="glyphicon glyphicon-remove"></span>
                 </button>
+            }
             </div> <!-- make into button and handle in js/ajax?  -->
         }
-
     </div>
 </div>
 

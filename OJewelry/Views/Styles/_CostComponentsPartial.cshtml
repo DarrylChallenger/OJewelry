@@ -37,7 +37,10 @@
                         @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                         @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                         @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                        <div id="CastingsRowTotalValue_@i" class="col-sm-2 CastingsRowTotal ">@Model.Castings[i].Total</div>
+                        <div id="CastingsRowTotalValue_@i" class="col-sm-1 CastingsRowTotal ">@Model.Castings[i].Total</div>
+                        <div class="col-sm-1">
+                            @Html.Partial("_CostComponentLastCol", Model)
+                        </div>
                     </div>
                     <div class="row">
                         <!--Validations Here-->
@@ -85,14 +88,18 @@
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
                     @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList,
-             new { @class = "col-sm-2 ", onchange = "StoneChanged('" + i + "')" })
+                       new { @class = "col-sm-2 ", onchange = "StoneChanged('" + i + "')" })
                     <div class="col-sm-1 "></div>
                     @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
                     @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
                     @Html.EditorFor(model => model.Stones[i].Size, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
                     @Html.EditorFor(model => model.Stones[i].PPC, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
                     @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    <div id="StonesRowTotalValue_@i" class="col-sm-2 StonesRowTotal ">@Model.Stones[i].Total</div>
+                    <div id="StonesRowTotalValue_@i" class="col-sm-1 StonesRowTotal ">@Model.Stones[i].Total</div>
+                    <div class="col-sm-1">
+                        @Html.Partial("_CostComponentLastCol", Model)
+                    </div>
+
                 </div>
 
                 <div class="row">
@@ -135,13 +142,17 @@
                     @if (i == Model.Findings.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
                     @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList,
-             new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
+                        new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
                     <div class="col-sm-2 "></div>
                     @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
                     @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
                     @Html.EditorFor(model => model.Findings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
                     @Html.TextBoxFor(model => model.Findings[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    <div id="FindingsRowTotalValue_@i" class="col-sm-2 FindingsRowTotal ">@Model.Findings[i].Total</div>
+                    <div id="FindingsRowTotalValue_@i" class="col-sm-1 FindingsRowTotal ">@Model.Findings[i].Total</div>
+                    <div class="col-sm-1">
+                        @Html.Partial("_CostComponentLastCol", Model)
+                    </div>
+
                 </div>
                 <div class="row">
                     @Html.ValidationMessageFor(model => model.Findings[i].Qty, "", new { @class = "text-danger" })
@@ -188,7 +199,11 @@
                     @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                     @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                     @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    <div id="LaborsRowTotalValue_@i" class="col-sm-2 LaborsRowTotal">@Model.Labors[i].Total</div>
+                    <div id="LaborsRowTotalValue_@i" class="col-sm-1 LaborsRowTotal">@Model.Labors[i].Total</div>
+                    <div class="col-sm-1">
+                        @Html.Partial("_CostComponentLastCol", Model)
+                    </div>
+
                 </div>
                 <div class="row">
                     @Html.ValidationMessageFor(model => model.Labors[i].Name, "", new { @class = "text-danger" })
@@ -237,7 +252,11 @@
                     <div class="col-sm-3 "></div>
                     @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                     @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    <div id="MiscsRowTotalValue_@i" class="col-sm-2 MiscsRowTotal">@Model.Miscs[i].Total</div>
+                    <div id="MiscsRowTotalValue_@i" class="col-sm-1 MiscsRowTotal">@Model.Miscs[i].Total</div>
+                    <div class="col-sm-1">
+                        @Html.Partial("_CostComponentLastCol", Model)
+                    </div>
+
                 </div>
                 <div class="row">
                     @Html.ValidationMessageFor(model => model.Miscs[i].Name, "", new { @class = "text-danger" })

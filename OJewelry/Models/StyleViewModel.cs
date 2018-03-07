@@ -223,12 +223,14 @@ namespace OJewelry.Models
 
     public enum SVMStateEnum { Clean, Dirty, Added, Deleted }
     public enum SVMCCTypeEnum { Castings, Stones, Findings, Labors, Miscs }
+    public enum SVMDelButtonPos { Left, Right }
 
     public class StyleViewModel
     {
         public StyleViewModel()
         {
-            SVMState = SVMStateEnum.Dirty; 
+            SVMState = SVMStateEnum.Dirty;
+            DelBtnPos = SVMDelButtonPos.Right;
         } // For now, update all records
         public Style Style { get; set; }
         public List<CastingComponent> Castings { get; set; }
@@ -259,6 +261,7 @@ namespace OJewelry.Models
         public int CCRowSection{ get; set; }
         public int CCRowIndex { get; set; }
         public int i { get; set; }
+        public SVMDelButtonPos DelBtnPos { get; set; }
 
         public void PopulateDropDownData(OJewelryDB db)
         {

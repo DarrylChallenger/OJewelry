@@ -509,6 +509,7 @@
     <Content Include="Views\MetalCodes\Index.cshtml" />
     <Content Include="Views\Styles\_CostComponentsPartial.cshtml" />
     <Content Include="Views\Styles\_CostComponentCol1.cshtml" />
+    <Content Include="Views\Styles\_CostComponentLastCol.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

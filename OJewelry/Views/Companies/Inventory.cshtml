@@ -29,9 +29,9 @@
     {
         @Html.HiddenFor(model => model.CompanyId)
         <div class="form-group">
-            From dropdown
+            From: 
             @Html.DropDownListFor(model => model.FromLocationId, Model.FromLocations)
-            To dropdown
+            To: 
             @Html.DropDownListFor(model => model.ToLocationId, Model.ToLocations)
         </div>
         <span>Select File:</span>
