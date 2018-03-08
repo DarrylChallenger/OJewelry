@@ -169,10 +169,6 @@ namespace OJewelry.Controllers
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            /*
-                            component = new Component(c);
-                            db.Components.Add(component);
-                            */
                             sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = c.Id };
                             sc.ComponentId = c.Id;
                             sc.Quantity = c.Qty;
@@ -183,10 +179,6 @@ namespace OJewelry.Controllers
                             db.StyleComponents.Remove(sc);
                             break;
                         case SVMStateEnum.Dirty:
-                            /*
-                            component = db.Components.Find(c.Id);
-                            component.Set(c);
-                            */
                             sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
                             sc.ComponentId = c.Id;
                             sc.Quantity = c.Qty;
@@ -307,17 +299,21 @@ namespace OJewelry.Controllers
                 {
                     db.Styles.Add(svm.Style);
                 }
-                if (ModelState.IsValid)
+            } // false
+            if (ModelState.IsValid)
+            {
+                if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
                 {
                     // Save changes, go to Home
                     db.SaveChanges();
                     return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
                 }
-            } // false
+            }
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
             svm.PopulateDropDownData(db);
             svm.PopulateDropDowns(db);
+            svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);

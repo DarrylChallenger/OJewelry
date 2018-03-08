@@ -21,20 +21,33 @@ function AddComponentRow(type, index)
     // reset components values on select; totals
     // move ltbordered values into function
     // fix ltbordered values to match CostComponentPartial
-    castingsltbordered = getCastingsHTML(type, len);
-    stonesltbordered = getStonesHTML(type, len);
-    findingsltbordered = getFindingsHTML(type, len);
-    laborsltbordered = getLaborsHTML(type, len);
-    miscsltbordered = getMiscsHTML(type, len);
 
     idTotalName = type + "Total";
     idTotal = "#" + idTotalName;
+
+    btnPos = $("#DelBtnPos").attr("BtnPos");
+    leftDelBtn = '';
+    rightDelBtn = '';
+
+    if (btnPos === "Right") {
+        rightDelBtn = '<div class="col-sm-1"> <div class="row">\
+                    <div style= "float:right" >\
+                            <button type="button" class="btn btn-default" onclick="RemoveComponentRow(\'' + type + '\', ' + len + ')"> \
+                                <span class="glyphicon glyphicon-remove"></span> \
+                            </button>\
+                    </div>\
+                </div></div>';
+    } else {
+        leftDelBtn = '<button type="button" class="btn btn-default" onclick="RemoveComponentRow(\'' + type + '\', ' + len + ')"> \
+                            <span class="glyphicon glyphicon-remove"></span> \
+                        </button>';
+    }
     classhtml = $(stateClass).html();
     var hiddenState = "<input name='" + type + "[" + len + "].SVMState' id='" + type + "_" + len + "__SVMState' type='hidden' value='Added' data-val-required='The SVMState field is required.' data-val='true'>";
     var newState = $("<div class='" + stateClassName + "'></div>").append(hiddenState);
     // handle dropdown data, id, name (etc), add validation in code
     if (type === "Castings") {
-        
+        castingsltbordered = getCastingsHTML(type, len);
         var jsVendors = $("#jsVendors").clone();
         jsVendors.find("#jsvINDEX")
             .attr("name", 'Castings[' + len + '].VendorId')
@@ -54,36 +67,46 @@ function AddComponentRow(type, index)
         ltbordered = castingsltbordered.replace("JSVENDORS", jsVendors.html()).replace("JSMETALS", jsMetals.html());
     }
     if (type === "Stones") { 
+        stonesltbordered = getStonesHTML(type, len);
         var jsStones = $("#jsStones").clone();
         jsStones.find("#jssINDEX")
             .attr("name", 'Stones[' + len + '].Id')
             .attr("id", 'Stones_' + len + '__Id')
             .attr("data-val", "true")
-            .attr("data-val-number", "The Id field (Stones[" + len + "].Id) must be a number.")
-            .attr("data-val-required", "The Id field (Stones[" + len + "].Id) is required.")
+            .attr("data-val-number", "The Id field must be a number.")
+            .attr("data-val-required", "The Id field is required.")
             .attr("onchange", "StoneChanged('" + len + "')");
         ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html());
     }
     if (type === "Findings") { 
+        findingsltbordered = getFindingsHTML(type, len);
         var jsFindings = $("#jsFindings").clone();
         jsFindings.find("#jsfINDEX")
             .attr("name", 'Findings[' + len + '].Id')
             .attr("id", 'Findings_' + len + '__Id')
             .attr("data-val", "true")
-            .attr("data-val-number", "The Id field (Findings[" + len + "].Id) must be a number.")
-            .attr("data-val-required", "The Id field (Findings[" + len + "].Id) is required.")
-            .attr("onchange", "FindingChanged('" + len + "')");
+            .attr("data-val-number", "The Id field must be a number.")
+            .attr("data-val-required", "The Id field is required.")
+            .attr('data-val-range-min', "0")
+         .attr("onchange", "FindingChanged('" + len + "')");
         ltbordered = findingsltbordered.replace("JSFINDINGS", jsFindings.html());
     }
     if (type === "Labors") {
+        laborsltbordered = getLaborsHTML(type, len);
         ltbordered = laborsltbordered.replace(/INDEX/g, len);
     }
     if (type === "Miscs") {
+        miscsltbordered = getMiscsHTML(type, len);
         ltbordered = miscsltbordered.replace(/INDEX/g, len);
     }
     //console.log(ltbordered)
     var str = newState.add(ltbordered);
     $(idTotal).before(str);
+    // update the stones|finding dropdown
+    if (type === "Stones" || type === "Findings")
+    {
+        //$("#" + type + "_" + (index+1) + "__Id option[value='']").attr("value", "-1");
+    }
     /* reset validation */
     var form = $("#StylesForm");
     $(form).removeData("validator")             // Added by jQuery Validate
@@ -99,7 +122,6 @@ function AddComponentRow(type, index)
 
 function RemoveComponentRow(type, i)
 {
-    console.log("Remove " + type + "[" + i + "]");
 
     var rowId = "#" + type + "Row_" + i;
     idHeaderBtn = type + "AddBtn";
@@ -109,8 +131,7 @@ function RemoveComponentRow(type, i)
     styleClass = ".style" + type;
     thisState = "#" + type + "_" + i + "__SVMState";
     //console.log(str, btnClass)
-    console.log(hide);
-    console.log(thisState);
+
     curState = $(thisState).attr("value");
     if (curState === "Added") {
         // physically remove the row (added rows are not in DB, so don't mark them as deleted)
@@ -122,10 +143,8 @@ function RemoveComponentRow(type, i)
     // Put the '+' back, find last the !Deleted row. If none, show the header
     // find the  visible rows with a visible add btn
     visibleRowCount = $(styleClass).find(rowClass).not(".hidden").length;
-    console.log("vrc", visibleRowCount);
     str = $(styleClass).find(rowClass).not(".hidden").find(btnClass).not(".hidden");
     visibleBtnCount = $(rowClass).not(".hidden").last().length;
-    console.log("vbc", visibleBtnCount);
     // if there are none, put the '+' on the last visible btn
     if (visibleRowCount !== 0) {
         // set the last visible row, if any...
@@ -203,29 +222,36 @@ function CalcTotals()
         +$("#LaborsTotalValue").html() +
         +$("#MiscsTotalValue").html();
     if (isNaN(total)) total = 0;
-    $("#GrandTotal").html(total.toFixed(2))
+    $("#GrandTotal").html(total.toFixed(2));
     // Iterate thru each total to get the grand total
 }
 
 function StoneChanged(i) {
     selected = $("#Stones_" + i + "__Id > option:selected");
     oldval = selected.val();
-    dataRow = $("#StonesData").find("#" + oldval);
-    $("#Stones_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
-    $("#Stones_" + i + "__CtWt").val(dataRow.find(".CtWt").attr("value"));
-    $("#Stones_" + i + "__Size").val(dataRow.find(".Size").attr("value"));
-    $("#Stones_" + i + "__PPC").val(dataRow.find(".PPC").attr("value"));
+    if (oldval !== "")
+    {
+        dataRow = $("#StonesData").find("#" + oldval);
+        $("#Stones_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
+        $("#Stones_" + i + "__CtWt").val(dataRow.find(".CtWt").attr("value"));
+        $("#Stones_" + i + "__Size").val(dataRow.find(".Size").attr("value"));
+        $("#Stones_" + i + "__PPC").val(dataRow.find(".PPC").attr("value"));
+        $("#" + "Stones" + "_" + i + "__Id option[value='']").attr("disabled", "disabled");
+    }
     CalcRowTotal("Stones", i);
 }
 
 function FindingChanged(i) {
     selected = $("#Findings_" + i + "__Id > option:selected");
     oldval = selected.val();
-    dataRow = $("#FindingsData").find("#" + oldval);
-    $("#Findings_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
-    $("#Findings_" + i + "__Metal").val(dataRow.find(".Metal").attr("value"));
-    $("#Findings_" + i + "__Price").val(dataRow.find(".Price").attr("value"));
-    CalcRowTotal("Findings", i);
+    if (oldval !== "") {
+        dataRow = $("#FindingsData").find("#" + oldval);
+        $("#Findings_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
+        $("#Findings_" + i + "__Metal").val(dataRow.find(".Metal").attr("value"));
+        $("#Findings_" + i + "__Price").val(dataRow.find(".Price").attr("value"));
+        $("#" + "Findings" + "_" + i + "__Id option[value='']").attr("disabled", "disabled");
+    }
+CalcRowTotal("Findings", i);
 }
 
 function getCastingsHTML(type, len) {
@@ -239,13 +265,9 @@ function getCastingsHTML(type, len) {
                         <button type="button" id="CastingsAddBtn_' + len + '" class="btn btn-default ' + type + 'AddBtn" onclick="AddComponentRow(\'Castings\', ' + len + ')"> \
                             <span class="glyphicon glyphicon-plus"></span> \
                         </button> \
-                    </div> \
-                    <div class="col-sm-6"> \
-                        <button type="button" class="btn btn-default" onclick="RemoveComponentRow(\'Castings\', ' + len + ')"> \
-                            <span class="glyphicon glyphicon-remove"></span> \
-                        </button> \
-                    </div> <!-- make into button and handle in js/ajax?  --> \
-                </div> \
+                    </div> '
+                + leftDelBtn +
+                '</div> \
             </div>\
             <input class="col-sm-2 text-box single-line" data-val="true" data-val-required="The Name field is required." id="Castings_' + len + '__Name" name="Castings[' + len + '].Name" type="text" value="" />\
             <div class="col-sm-1">\
@@ -255,8 +277,8 @@ function getCastingsHTML(type, len) {
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Price must be a number." id="Castings_' + len + '__Price" name="Castings[' + len + '].Price" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Labor must be a number." id="Castings_' + len + '__Labor" name="Castings[' + len + '].Labor" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Castings_' + len + '__Qty" name="Castings[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <div id="CastingsRowTotalValue_' + len + '" class="col-sm-2 CastingsRowTotal ">0.00</div>\
-        </div>      \
+            <div id="CastingsRowTotalValue_' + len + '" class="col-sm-1 CastingsRowTotal ">0.00</div>\
+            ' + rightDelBtn + '\
         <div class="row">\
         <!--Validations Here-->\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Name" data-valmsg-replace="true"></span>\
@@ -264,6 +286,7 @@ function getCastingsHTML(type, len) {
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Labor" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Qty" data-valmsg-replace="true"></span>\
         </div >\
+        </div>\
     </div >';
 }
 
@@ -271,37 +294,33 @@ function getStonesHTML(type, len) {
     return '\
     <div id="StonesRow_' + len + '"  class="StonesRow">\
         <div class="row ltbordered">\
-            <input data- val="true" data- val - number="The field Id must be a number." data- val - required="The Id field is required." scid= "Stones_' + len + '__Id" name= "Stones[' + len + '].scId" type= "hidden" value= "1" />\
-            <!--<input id="Stones_' + len + '__Name" name="Stones[' + len +'].Name" type="hidden" value="Duvel Hops" /> < -- should be dropdown -- >\
-            <input data-val="true" data-val-number="The field ComponentTypeId must be a number." data-val-required="The ComponentTypeId field is required." id="Stones_' + len + '__ComponentTypeId" name="Stones[' + len + '].ComponentTypeId" type="hidden" value="2" /> -->\
+            <input data-val="true" data-val-number="The field scId must be a number." data-val-required="The scId field is required." id= "Stones_' + len + '__scId" name= "Stones[' + len + '].scId" type= "hidden" value= "-1" />\
             <div class="col-sm-1 ">\
                 <div class="row StyleComponentsRowHeaderBtn ">\
                     <div class="col-sm-6 ">\
                         <button type="button" id="StonesAddBtn_' + len + '" class="btn btn-default ' + type + 'AddBtn" onclick="AddComponentRow(\'Stones\', ' + len + ')">\
                             <span class="glyphicon glyphicon-plus"></span>\
                         </button>\
-                    </div>\
-                    <div class="col-sm-6">\
-                        <button type="button" class="btn btn-default" onclick="RemoveComponentRow(\'Stones\', ' + len + ')">\
-                            <span class="glyphicon glyphicon-remove"></span>\
-                        </button>\
-                    </div> <!-- make into button and handle in js/ajax?  --> \
-                </div>\
+                    </div>'
+                + leftDelBtn +    
+                '</div>\
             </div>\
             JSSTONES\
             <div class="col-sm-1 "></div>\
-            <input class="col-sm-2 text-box single-line locked" data-val="true" data-val-required="The Vendor field is required." id="Stones_' + len + '__VendorName" name="Stones[' + len + '].VendorName" type="text" value="" />\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Caret Weight must be a number." id="Stones_' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="0" \"/>\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Size must be a number." id="Stones_' + len + '__Size" name="Stones[' + len + '].Size" type="text" value="0" \"/>\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Price/Piece must be a number." id="Stones_' + len + '__PPC" name="Stones[' + len + '].PPC" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
+            <input class="col-sm-2 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The Vendor field is required." id="Stones_' + len + '__VendorName" name="Stones[' + len + '].VendorName" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Caret Weight must be a number." id="Stones_' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="0" \"/>\
+            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Size must be a number." id="Stones_' + len + '__Size" name="Stones[' + len + '].Size" type="text" value="0" \"/>\
+            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Price/Piece must be a number." id="Stones_' + len + '__PPC" name="Stones[' + len + '].PPC" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <div id="StonesRowTotalValue_' + len + '" class="col-sm-2 StonesRowTotal ">0.00\
-            </div>\
-        </div >\
-        <div class="row">\
-        <!--Validations Here-->\
-            <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Qty" data-valmsg-replace="true"></span>\
-        </div >\
+            <div id="StonesRowTotalValue_' + len + '" class="col-sm-1 StonesRowTotal ">0.00</div>\
+            ' + rightDelBtn + '\
+           </div>\
+           <div class="row">\
+           <!--Validations Here-->\
+               <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Id" data-valmsg-replace="true"></span>\
+               <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Qty" data-valmsg-replace="true"></span>\
+           </div>\
+        </div>\
     </div>';
 }
 
@@ -309,35 +328,31 @@ function getFindingsHTML(type, len) {
     return '\
     <div id="FindingsRow_' + len + '"  class="FindingsRow">\
         <div class="row ltbordered">\
-            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Findings_' + len + '__scId" name= "Findings[' + len + '].scId" type= "hidden" value= "4" />\
-            <!-- <input id="Findings_' + len + '__Name" name="Findings[' + len + '].Name" type="hidden" value="Duvel Yeast 1" />\
-            <input data-val="true" data-val-number="The field ComponentTypeId must be a number." data-val-required="The ComponentTypeId field is required." id="Findings_' + len + '__ComponentTypeId" name="Findings[' + len + '].ComponentTypeId" type="hidden" value="3" /> -->\
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The scId field is required." id= "Findings_' + len + '__scId" name= "Findings[' + len + '].scId" type= "hidden" value= "-1" />\
             <div class="col-sm-1 ">\
                 <div class="row StyleComponentsRowHeaderBtn ">\
                     <div class="col-sm-6 ">\
                         <button type="button" id="FindingsAddBtn_' + len + '" class="btn btn-default ' + type + 'AddBtn" onclick="AddComponentRow(\'Findings\', ' + len + ')">\
                             <span class="glyphicon glyphicon-plus"></span>\
                         </button>\
-                    </div>\
-                    <div class="col-sm-6">\
-                        <button type="button" class="btn btn-default" onclick="RemoveComponentRow(\'Findings\', ' + len + ')">\
-                            <span class="glyphicon glyphicon-remove"></span>\
-                        </button>\
-                    </div> <!-- make into button and handle in js/ajax?  -->\
-                </div>\
+                    </div>'
+                + leftDelBtn +                
+                '</div >\
             </div>\
             JSFINDINGS\
             <div class="col-sm-2 "></div>\
-            <input class="col-sm-2 text-box single-line locked" data-val="true" data-val-required="The Vendor field is required." id="Findings_' + len + '__VendorName" name="Findings[' + len + '].VendorName" type="text" value="" />\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-required="The Metal is required." id="Findings_' + len + '__Metal" name="Findings[' + len + '].Metal" type="text" value="" />\
-            <input class="col-sm-1 text-box single-line locked" data-val="true" data-val-number="The Price must be a number." id="Findings_' + len + '__Price" name="Findings[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
+            <input class="col-sm-2 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The Vendor field is required." id="Findings_' + len + '__VendorName" name="Findings[' + len + '].VendorName" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The Metal is required." id="Findings_' + len + '__Metal" name="Findings[' + len + '].Metal" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Price must be a number." id="Findings_' + len + '__Price" name="Findings[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Findings_' + len + '__Qty" name="Findings[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <div id="FindingsRowTotalValue_' + len + '" class="col-sm-2 FindingsRowTotal ">0.00\
+            <div id="FindingsRowTotalValue_' + len + '" class="col-sm-1 FindingsRowTotal ">0.00</div>\
+            ' + rightDelBtn + '\
             </div>\
-        </div >\
         <div class="row">\
         <!--Validations Here-->\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Findings[' + len + '].Id" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Findings[' + len + '].Qty" data-valmsg-replace="true"></span>\
+        </div >\
         </div >\
     </div > ';
 }
@@ -346,20 +361,16 @@ function getLaborsHTML(type, len) {
     return '\
     <div id="LaborsRow_' + len + '" class="LaborsRow">\
         <div class="row ltbordered">\
-            <input data- val="true" data- val - number="The field Id must be a number." data- val - required="The Id field is required." id= "Labors_' + len + '__Id" name= "Labors[' + len + '].Id" type= "hidden" value= "1" />\
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Labors_' + len + '__Id" name= "Labors[' + len + '].Id" type= "hidden" value= "1" />\
             <div class="col-sm-1 ">\
                 <div class="row StyleComponentsRowHeaderBtn ">\
                     <div class="col-sm-6 ">\
                         <button type="button" id="LaborsAddBtn_' + len + '" class="btn btn-default ' + type + 'AddBtn" onclick="AddComponentRow(\'Labors\', ' + len + ')">\
                             <span class="glyphicon glyphicon-plus"></span>\
                         </button>\
-                    </div>\
-                    <div class="col-sm-6">\
-                        <button type="button" class="btn btn-default" onclick="RemoveComponentRow(\'Labors\', ' + len + ')">\
-                            <span class="glyphicon glyphicon-remove"></span>\
-                        </button>\
-                    </div> <!-- make into button and handle in js/ajax?  -->\
-                </div>\
+                    </div>'
+                + leftDelBtn +
+                '</div>\
             </div>\
             <input class="col-sm-2 text-box single-line" data-val="true" data-val-required="The Name field is required." id="Labors_' + len + '__Name" name="Labors[' + len + '].Name" type="text" value="" />\
             <input class="col-sm-2 text-box single-line" id="Labors_' + len + '__Desc" name="Labors[' + len + '].Desc" type="text" value="" />\
@@ -367,15 +378,15 @@ function getLaborsHTML(type, len) {
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Hour must be a number." id="Labors_' + len + '__PPH" name="Labors[' + len + '].PPH" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Piece must be a number." id="Labors_' + len + '__PPP" name="Labors[' + len + '].PPP" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Labors_' + len + '__Qty" name="Labors[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <div id="LaborsRowTotalValue_' + len + '" class="col-sm-2 LaborsRowTotal">0.00\
-            </div>\
-        </div >\
+            <div id="LaborsRowTotalValue_' + len + '" class="col-sm-1 LaborsRowTotal">0.00</div>\
+            ' + rightDelBtn + '\
         <div class="row">\
         <!--Validations Here-->\
             <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].Name" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].PPH" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].PPP" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].Qty" data-valmsg-replace="true"></span>\
+        </div >\
         </div >\
     </div > ';
 }
@@ -384,34 +395,31 @@ function getMiscsHTML(type, len) {
     return '\
     <div id="MiscsRow_' + len + '"  class="MiscsRow">\
         <div class="row ltbordered">\
-            <input data- val="true" data- val - number="The field Id must be a number." data- val - required="The Id field is required." id= "Miscs_' + len + '__Id" name= "Miscs[' + len + '].Id" type= "hidden" value= "1" />\
-                <div class="col-sm-1 ">\
-                    <div class="row StyleComponentsRowHeaderBtn ">\
-                        <div class="col-sm-6 ">\
-                            <button type="button" id="MiscsAddBtn_' + len + '" class="btn btn-default ' + type + 'AddBtn" onclick="AddComponentRow(\'Miscs\', ' + len + ')">\
-                                <span class="glyphicon glyphicon-plus"></span>\
-                            </button>\
-                        </div>\
-                        <div class="col-sm-6">\
-                            <button type="button" class="btn btn-default" onclick="RemoveComponentRow(\'Miscs\', ' + len + ')">\
-                                <span class="glyphicon glyphicon-remove"></span>\
-                            </button>\
-                        </div> <!-- make into button and handle in js/ajax?  -->\
-                </div>\
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Miscs_' + len + '__Id" name= "Miscs[' + len + '].Id" type= "hidden" value= "1" />\
+            <div class="col-sm-1 ">\
+                <div class="row StyleComponentsRowHeaderBtn ">\
+                    <div class="col-sm-6 ">\
+                        <button type="button" id="MiscsAddBtn_' + len + '" class="btn btn-default ' + type + 'AddBtn" onclick="AddComponentRow(\'Miscs\', ' + len + ')">\
+                            <span class="glyphicon glyphicon-plus"></span>\
+                        </button>\
+                    </div>'
+                + leftDelBtn +
+                '</div>\
             </div>\
             <input class="col-sm-2 text-box single-line" data-val="true" data-val-required="The Name field is required." id="Miscs_' + len + '__Name" name="Miscs[' + len + '].Name" type="text" value="" />\
             <input class="col-sm-2 text-box single-line" id="Miscs_' + len + '__Desc" name="Miscs[' + len + '].Desc" type="text" value="" />\
             <div class="col-sm-3 "></div>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Piece must be a number." id="Miscs_' + len + '__PPP" name="Miscs[' + len + '].PPP" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Miscs_' + len + '__Qty" name="Miscs[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <div id="MiscsRowTotalValue_' + len + '" class="col-sm-2 MiscsRowTotal">0.00</div>\
-        </div > \
+            <div id="MiscsRowTotalValue_' + len + '" class="col-sm-1 MiscsRowTotal">0.00</div>\
+            ' + rightDelBtn + '\
         <div class="row">\
         <!--Validations Here-->\
             <span class="field-validation-valid text-danger" data-valmsg-for="Miscs[' + len + '].Name" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Miscs[' + len + '].PPP" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Miscs[' + len + '].Qty" data-valmsg-replace="true"></span>\
         </div >\
+        </div > \
     </div>';
 }
 

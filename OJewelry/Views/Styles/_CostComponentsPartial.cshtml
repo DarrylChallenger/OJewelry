@@ -37,7 +37,7 @@
                         @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                         @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                         @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                        <div id="CastingsRowTotalValue_@i" class="col-sm-1 CastingsRowTotal ">@Model.Castings[i].Total</div>
+                        <div id="CastingsRowTotalValue_@i" class="col-sm-1 CastingsRowTotal ">@Model.Castings[i].Total.ToString("F02")</div>
                         <div class="col-sm-1">
                             @Html.Partial("_CostComponentLastCol", Model)
                         </div>
@@ -55,7 +55,7 @@
                 <div class="row h4 StyleComponentsRowFooter">
                     <div class="col-sm-2"><b>Total Castings</b></div>
                     <div class="col-sm-8"></div>
-                    <div id="CastingsTotalValue" class="col-sm-2">@Model.MetalsTotal</div>
+                    <div id="CastingsTotalValue" class="col-sm-2">@Model.MetalsTotal.ToString("F02")</div>
                 </div>
             </div>
         </div>
@@ -80,7 +80,8 @@
             Model.i = i;
             OJewelry.Models.StoneComponent c = Model.Stones[i];
             <div class="StonesState">@Html.HiddenFor(model => model.Stones[i].SVMState)</div>
-            <div id="StonesRow_@i" class="StonesRow">
+            var bHideRow = (Model.Stones[i].SVMState == SVMStateEnum.Clean || Model.Stones[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+            <div id="StonesRow_@i" class="StonesRow @bHideRow">
                 <div class="row ltbordered">
                     @Html.HiddenFor(model => model.Stones[i].scId)
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
@@ -90,12 +91,12 @@
                     @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList,
                        new { @class = "col-sm-2 ", onchange = "StoneChanged('" + i + "')" })
                     <div class="col-sm-1 "></div>
-                    @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
-                    @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
-                    @Html.EditorFor(model => model.Stones[i].Size, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
-                    @Html.EditorFor(model => model.Stones[i].PPC, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
+                    @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.Stones[i].Size, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.Stones[i].PPC, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
                     @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    <div id="StonesRowTotalValue_@i" class="col-sm-1 StonesRowTotal ">@Model.Stones[i].Total</div>
+                    <div id="StonesRowTotalValue_@i" class="col-sm-1 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
                     <div class="col-sm-1">
                         @Html.Partial("_CostComponentLastCol", Model)
                     </div>
@@ -103,6 +104,7 @@
                 </div>
 
                 <div class="row">
+                    @Html.ValidationMessageFor(model => model.Stones[i].Id, "", new { @class = "text-danger" })
                     @Html.ValidationMessageFor(model => model.Stones[i].Qty, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -111,7 +113,7 @@
             <div class="row h4 StyleComponentsRowFooter">
                 <div class="col-sm-2"><b>Total Stones</b></div>
                 <div class="col-sm-8"></div>
-                <div id="StonesTotalValue" class="col-sm-2">@Model.StonesTotal</div>
+                <div id="StonesTotalValue" class="col-sm-2">@Model.StonesTotal.ToString("F02")</div>
             </div>
         </div>
     </div> <!--Stones-->
@@ -135,7 +137,8 @@
             Model.i = i;
             OJewelry.Models.FindingsComponent c = Model.Findings[i];
             <div class="FindingsState">@Html.HiddenFor(model => model.Findings[i].SVMState)</div>
-            <div id="FindingsRow_@i" class="FindingsRow">
+            var bHideRow = (Model.Findings[i].SVMState == SVMStateEnum.Clean || Model.Findings[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+            <div id="FindingsRow_@i" class="FindingsRow @bHideRow">
                 <div class="row ltbordered">
                     @Html.HiddenFor(model => model.Findings[i].scId)
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
@@ -144,11 +147,11 @@
                     @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList,
                         new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
                     <div class="col-sm-2 "></div>
-                    @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked" } })
-                    @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
-                    @Html.EditorFor(model => model.Findings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 locked" } })
+                    @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.Findings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
                     @Html.TextBoxFor(model => model.Findings[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    <div id="FindingsRowTotalValue_@i" class="col-sm-1 FindingsRowTotal ">@Model.Findings[i].Total</div>
+                    <div id="FindingsRowTotalValue_@i" class="col-sm-1 FindingsRowTotal ">@Model.Findings[i].Total.ToString("F02")</div>
                     <div class="col-sm-1">
                         @Html.Partial("_CostComponentLastCol", Model)
                     </div>
@@ -163,7 +166,7 @@
             <div class="row h4 StyleComponentsRowFooter">
                 <div class="col-sm-2"><b>Total Findings</b></div>
                 <div class="col-sm-8"></div>
-                <div id="FindingsTotalValue" class="col-sm-2">@Model.FindingsTotal</div>
+                <div id="FindingsTotalValue" class="col-sm-2">@Model.FindingsTotal.ToString("F02")</div>
             </div>
         </div>
     </div> <!-- Findings -->
@@ -199,7 +202,7 @@
                     @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                     @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                     @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    <div id="LaborsRowTotalValue_@i" class="col-sm-1 LaborsRowTotal">@Model.Labors[i].Total</div>
+                    <div id="LaborsRowTotalValue_@i" class="col-sm-1 LaborsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
                     <div class="col-sm-1">
                         @Html.Partial("_CostComponentLastCol", Model)
                     </div>
@@ -217,7 +220,7 @@
             <div class="row h4 StyleComponentsRowFooter">
                 <div class="col-sm-2"><b>Total Labor</b></div>
                 <div class="col-sm-8"></div>
-                <div id="LaborsTotalValue" class="col-sm-2">@Model.LaborsTotal</div>
+                <div id="LaborsTotalValue" class="col-sm-2">@Model.LaborsTotal.ToString("F02")</div>
             </div>
         </div>
 
@@ -252,7 +255,7 @@
                     <div class="col-sm-3 "></div>
                     @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                     @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    <div id="MiscsRowTotalValue_@i" class="col-sm-1 MiscsRowTotal">@Model.Miscs[i].Total</div>
+                    <div id="MiscsRowTotalValue_@i" class="col-sm-1 MiscsRowTotal">@Model.Miscs[i].Total.ToString("F02")</div>
                     <div class="col-sm-1">
                         @Html.Partial("_CostComponentLastCol", Model)
                     </div>
@@ -269,7 +272,7 @@
             <div class="row h4 StyleComponentsRowFooter">
                 <div class="col-sm-2"><b>Total Misc</b></div>
                 <div class="col-sm-8"></div>
-                <div id="MiscsTotalValue" class="col-sm-2">@Model.MiscsTotal</div>
+                <div id="MiscsTotalValue" class="col-sm-2">@Model.MiscsTotal.ToString("F02")</div>
             </div>
         </div>
     </div> <!-- Misc -->
@@ -277,16 +280,16 @@
     <div class="row h3 StyleComponentsFooter">
         <div class="col-sm-2"><b>Total Cost</b></div>
         <div class="col-sm-8"></div>
-        <div id="GrandTotal" class="col-sm-2">@Model.Total</div>
+        <div id="GrandTotal" class="col-sm-2">@Model.Total.ToString("F02")</div>
     </div>
     <div class="hidden">
         <div id="jsMetals">
             @{
-                List<Component> emptyList = new List<Component>();
-                Component item = new Component() { Id = 1,Name = "" };
-                emptyList.Add(item);
+            List<Component> emptyList = new List<Component>();
+            Component item = new Component() { Id = 1, Name = "" };
+            emptyList.Add(item);
             }
-                @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault().Id), new { @class = "col-sm-1" })
+            @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault().Id), new { @class = "col-sm-1" })
         </div>
         <div id="jsVendors">
             @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.FirstOrDefault().Id), new { @class = "col-sm-2 " })
@@ -298,18 +301,20 @@
             }
             else
             {
-                @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name", Model.jsStones.FirstOrDefault().Id), new { @class = "col-sm-2" })
+                Model.jsStones.Insert(0, Model.DefStone);
+                @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name"), new { @class = "col-sm-2" })
             }
-        </div>
+            </div>
         <div id="jsFindings">
             @if (Model.jsFindings.Count == 0)
             {
-                @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name", 1), new { @class = "col-sm-2" })
+            @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name"), new { @class = "col-sm-2" })
             }
             else
             {
-                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name", Model.jsFindings.FirstOrDefault().Id), new { @class = "col-sm-2" })
-            }
+                Model.jsFindings.Insert(0, Model.DefFinding);
+                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name"), new { @class = "col-sm-2" })
+            }   
         </div>
         <div id="StonesData">
             @foreach (Component stone in Model.jsStones)
@@ -318,7 +323,7 @@
                 <span class="VendorName" value="@stone.Vendor.Name"></span>
                 <span class="CtWt" value="@stone.StonesCtWt"></span>
                 <span class="Size" value="@stone.StoneSize"></span>
-                <span class="PPC" value="@stone.StonePPC"></span>
+                <span class="PPC" value="@stone.StonePPC.Value.ToString("F02")"></span>
             </div>
             }
         </div>
@@ -328,9 +333,12 @@
             <div id="@finding.Id">
                 <span class="VendorName" value="@finding.Vendor.Name"></span>
                 <span class="Metal" value="@finding.Metal.Code"></span>
-                <span class="Price" value="@finding.Price"></span>
+                <span class="Price" value="@finding.Price.Value.ToString("F02")"></span>
             </div>
-             }
+            }
+        </div>
+        <div id="DelBtnPos" BtnPos=@Model.DelBtnPos>
+            
         </div>
     </div>
 </div>

@@ -108,9 +108,10 @@ textarea {
     font-weight: 700;
 }
 
-.locked {
+html input[disabled], locked {
     background-color: #e0e0ff;
     cursor: not-allowed;
+
 }
 .ForPrinting
 {
