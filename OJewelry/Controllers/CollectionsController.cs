@@ -16,18 +16,6 @@ namespace OJewelry.Controllers
         // GET: Collections
         public ActionResult Index(int? CompanyId)
         {
-            /*
-             * Company co = db.Companies.Find(id);
-            var collections = db.Collections.Include(c => c.Company).Where(x => x.CompanyId == id);
-            //var collections = db.Collections.Include(c => c.Company);
-            CollectionsViewModel cvm = new CollectionsViewModel()
-            {
-                CompanyId = id.Value,
-                CompanyName = co.Name,
-                Collections = collections.ToList(),
-            };
-            return View(cvm);
-            */
             if (CompanyId == null)
             {
                 return RedirectToAction("Index", "Home");

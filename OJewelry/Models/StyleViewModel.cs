@@ -963,7 +963,7 @@ namespace OJewelry.Models
                     {
                         if (scl[i].SVMState != SVMStateEnum.Clean)
                         {
-                            items.Add(validationContext.MemberName + " Row " + (i + 1));
+                            items.Add("[" + i+ "].Id");
                         }
                     }
                 }
@@ -976,7 +976,7 @@ namespace OJewelry.Models
                     {
                         if (fcl[i].SVMState != SVMStateEnum.Clean)
                         {
-                            items.Add(validationContext.MemberName + " Row " + (i + 1));
+                            items.Add("[" + i + "].Id");
                         }
                     }
                 }

@@ -23,7 +23,7 @@ namespace OJewelry.Controllers
         // GET: Companies
         public ActionResult Index()
         {
-            return View(db.Companies.ToList());
+            return View(db.Companies.OrderBy(c=>c.Name).ToList());
         }
 
         // GET: Companies/Details/5

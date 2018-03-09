@@ -17,7 +17,7 @@ namespace OJewelry.Controllers
         // GET: MetalCodes
         public ActionResult Index()
         {
-            return View(db.MetalCodes.ToList());
+            return View(db.MetalCodes.OrderBy(mc=>mc.Code).ToList());
         }
 
         // GET: MetalCodes/Details/5

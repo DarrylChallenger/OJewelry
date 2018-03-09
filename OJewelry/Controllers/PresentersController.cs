@@ -31,7 +31,7 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            var presenters = db.Presenters.Where(x => x.CompanyId == companyId).Include(p => p.Company);
+            var presenters = db.Presenters.Where(x => x.CompanyId == companyId).OrderBy(p=>p.Name).Include(p => p.Company);
             ViewBag.CompanyName = co.Name;
             ViewBag.CompanyId = co.Id;
             return View(presenters.ToList());
