@@ -42,7 +42,7 @@ namespace OJewelry.Controllers
             m.CompanyId = co.Id;
             m.CompanyName = co.Name;
             m.Collections = new List<CollectionModel>();
-            foreach (Collection coll in co.Collections)
+            foreach (Collection coll in co.Collections.OrderBy(c=>c.Name))
             {
                 CollectionModel collM = new CollectionModel()
                 {
@@ -51,7 +51,7 @@ namespace OJewelry.Controllers
                     Name = coll.Name
                 };
                 collM.Styles = new List<StyleModel>();
-                foreach (Style sty in coll.Styles)
+                foreach (Style sty in coll.Styles.OrderBy(s=>s.StyleNum))
                 {
                     StyleModel styM = new StyleModel()
                     {

@@ -17,7 +17,7 @@ namespace OJewelry.Controllers
         // GET: Styles
         public ActionResult Index(int CollectionId)
         {
-            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).Include(s => s.JewelryType);
+            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s=>s.StyleNum).Include(s => s.JewelryType);
             ViewBag.CollectionName = db.Collections.Find(CollectionId).Name;
             ViewBag.CollectionId = CollectionId;
             ViewBag.CompanyId = db.Collections.Find(CollectionId).CompanyId;
@@ -115,7 +115,7 @@ namespace OJewelry.Controllers
         {
             //ModelState.Clear();
             // Save the Style and all edited components; add the new ones and remove the deleted ones
-            //db.Entry(svm.Style).State = EntityState.Modified;
+            db.Entry(svm.Style).State = EntityState.Modified;
             // Iterate thru the components
             // Castings
             if (svm.Castings != null)

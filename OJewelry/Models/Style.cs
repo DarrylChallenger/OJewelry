@@ -42,8 +42,9 @@ namespace OJewelry.Models
         [Column(TypeName = "date")]
         public DateTime? IntroDate { get; set; }
 
-        [Column(TypeName = "image")]
-        public byte[] Image { get; set; }
+        [StringLength(255)]
+        [DataType(DataType.ImageUrl)]
+        public string Image { get; set; }
 
         public decimal? Width { get; set; }
 

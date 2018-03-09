@@ -111,11 +111,59 @@ textarea {
 html input[disabled], locked {
     background-color: #e0e0ff;
     cursor: not-allowed;
-
 }
-.ForPrinting
+
+.StyleHeader 
 {
-    font-size:12px;
+    border-color:mediumpurple;
+}
+
+.StyleRightHeader {
+    border-color: green;
+    float: right;
+    height: 15em;
+}
+
+.StyleLeftHeader {
+    float: left;
+    border-color: red;
+    height: 16em;
+}
+
+.StyleImage 
+{
+    border-style:solid;
+    border-color:black;
+    border-width:2px;
+    height:100%;
+    float:right;
+}
+
+.MetalIntroDate {
+    padding-top:2em;
+    padding-bottom:.5em;
+}
+
+.PricingMeasHead {
+    padding-top: 4em;
+    padding-bottom: 2em;
+    font-weight: 700;
+}
+
+.PricingMeas {
+    padding-bottom:2em;
+}
+
+.PricingMeas .text-center {
+    text-align:center;
+}
+
+.control-label-align {
+    padding-top:7px;
+}
+
+.ForPrinting {
+    font-size: 12px;
 }
 
 .ReportCellHighLight {

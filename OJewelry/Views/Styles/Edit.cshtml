@@ -34,98 +34,7 @@
     @Html.HiddenFor(model => model.Style.MetalWtUnitId)
     @Html.HiddenFor(model => model.CompanyId)
 
-    <div class="row">
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.StyleNum, "", new { @class = "text-danger" })
-            </div>
-            @Html.LabelFor(model => model.Style.StyleName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.StyleName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.StyleName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.Desc, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.Desc, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.Desc, "", new { @class = "text-danger" })
-            </div>
-            @Html.LabelFor(model => model.Style.JewelryTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Style.JewelryTypeId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.CollectionId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.DropDownList("CollectionId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Style.CollectionId, "", new { @class = "text-danger" })
-            </div>
-            @Html.LabelFor(model => model.Style.MetalWeight, "Metal Weight", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-2">
-                @Html.EditorFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.MetalWeight, "", new { @class = "text-danger" })
-            </div>
-            <div class="col-md-1">
-                @Html.DropDownList("MetalWtUnitId", null, htmlAttributes: new { @class = "form-control" })
-            </div>
-
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.IntroDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.IntroDate, "", new { @class = "text-danger" })
-            </div>
-            @Html.LabelFor(model => model.Style.Image, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.Image, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.Image, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.Width, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.Width, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.Width, "", new { @class = "text-danger" })
-            </div>
-            @Html.LabelFor(model => model.Style.Length, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-3">
-                @Html.EditorFor(model => model.Style.Length, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.Length, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.ChainLength, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.ChainLength, "", new { @class = "text-danger" })
-            </div>
-
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.RetailRatio, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.RetailRatio, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.RetailRatio, "", new { @class = "text-danger" })
-            </div>
-
-            @Html.LabelFor(model => model.Style.RedlineRatio, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-4">
-                @Html.EditorFor(model => model.Style.RedlineRatio, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Style.RedlineRatio, "", new { @class = "text-danger" })
-            </div>
-        </div>
-    </div>
+    @Html.Partial("_StyleCreateEditPartial", Model)
 
     <div>
         @Html.Partial("_CostComponentsPartial", Model)
@@ -142,7 +51,10 @@
 
 <div>
     @Html.ActionLink("Print", "Print", new { id = Model.Style.Id }, new { target = "_blank" }) |
-    @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId })
+    @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
+    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = @Model.Style.Collection.CompanyId }, null) |
+    @Html.ActionLink("Companies", "Index", "Companies")
+
 </div>
 
 @section Scripts {

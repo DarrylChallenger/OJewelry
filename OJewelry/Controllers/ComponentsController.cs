@@ -22,7 +22,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var components = db.Components.Where(x => x.CompanyId == CompanyId).Include(c => c.Company).Include(c => c.ComponentType).Include(c => c.Vendor);
+            var components = db.Components.Where(x => x.CompanyId == CompanyId).Include(c => c.Company).Include(c => c.ComponentType).OrderBy(c => c.ComponentType.Sequence).Include(c => c.Vendor);
             ViewBag.Id = CompanyId;
             ViewBag.CompanyName = db.Companies.Find(CompanyId).Name;
 

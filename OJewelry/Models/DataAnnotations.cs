@@ -252,9 +252,6 @@ namespace OJewelry.Models
         [Display(Name = "Intro Date")]
         public Nullable<System.DateTime> IntroDate { get; set; }
 
-        [Display(Name = "Image")]
-        public byte[] Image { get; set; }
-
         [Display(Name = "Width")]
         public Nullable<decimal> Width { get; set; }
 

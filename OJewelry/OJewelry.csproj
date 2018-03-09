@@ -337,6 +337,18 @@
     <Compile Include="Migrations\201803031625454_v.51b8.Designer.cs">
       <DependentUpon>201803031625454_v.51b8.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803090233007_v.55.cs" />
+    <Compile Include="Migrations\201803090233007_v.55.Designer.cs">
+      <DependentUpon>201803090233007_v.55.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803090238192_v.55a.cs" />
+    <Compile Include="Migrations\201803090238192_v.55a.Designer.cs">
+      <DependentUpon>201803090238192_v.55a.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803090240093_v.55b.cs" />
+    <Compile Include="Migrations\201803090240093_v.55b.Designer.cs">
+      <DependentUpon>201803090240093_v.55b.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -510,6 +522,7 @@
     <Content Include="Views\Styles\_CostComponentsPartial.cshtml" />
     <Content Include="Views\Styles\_CostComponentCol1.cshtml" />
     <Content Include="Views\Styles\_CostComponentLastCol.cshtml" />
+    <Content Include="Views\Styles\_StyleCreateEditPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -569,6 +582,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803031625454_v.51b8.resx">
       <DependentUpon>201803031625454_v.51b8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803090233007_v.55.resx">
+      <DependentUpon>201803090233007_v.55.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803090238192_v.55a.resx">
+      <DependentUpon>201803090238192_v.55a.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803090240093_v.55b.resx">
+      <DependentUpon>201803090240093_v.55b.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

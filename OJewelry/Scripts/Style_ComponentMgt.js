@@ -223,6 +223,7 @@ function CalcTotals()
         +$("#MiscsTotalValue").html();
     if (isNaN(total)) total = 0;
     $("#GrandTotal").html(total.toFixed(2));
+    $("#GrandTotal2").html(total.toFixed(2));
     // Iterate thru each total to get the grand total
 }
 
