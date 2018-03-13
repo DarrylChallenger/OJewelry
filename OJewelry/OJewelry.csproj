@@ -349,6 +349,10 @@
     <Compile Include="Migrations\201803090240093_v.55b.Designer.cs">
       <DependentUpon>201803090240093_v.55b.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803131610578_v.55c.cs" />
+    <Compile Include="Migrations\201803131610578_v.55c.Designer.cs">
+      <DependentUpon>201803131610578_v.55c.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -362,6 +366,7 @@
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\ComponentType.cs" />
+    <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\DataAnnotations.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InventoryViewModel.cs" />
@@ -375,6 +380,7 @@
     <Compile Include="Models\Misc.cs" />
     <Compile Include="Models\OJewelryDB.cs" />
     <Compile Include="Models\Presenter.cs" />
+    <Compile Include="Models\PresenterViewModel.cs" />
     <Compile Include="Models\SalesLedger.cs" />
     <Compile Include="Models\Style.cs" />
     <Compile Include="Models\StyleCasting.cs" />
@@ -397,6 +403,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Images\logo.png" />
+    <Content Include="Images\MicrosoftExcelLogo.png" />
     <Content Include="Images\SquareWithCross.png" />
     <Content Include="Images\stock-photo-jeweler-measuring-a-ring-with-compass-divider-725600938.png" />
     <Content Include="Scripts\bootstrap.js" />
@@ -404,6 +411,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Excel\MoveInv.xlsx" />
+    <Content Include="Excel\NewInv.xlsx" />
     <None Include="Properties\PublishProfiles\OJewelryDev - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy Debug.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy Release.pubxml" />
@@ -591,6 +600,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803090240093_v.55b.resx">
       <DependentUpon>201803090240093_v.55b.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803131610578_v.55c.resx">
+      <DependentUpon>201803131610578_v.55c.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

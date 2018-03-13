@@ -20,7 +20,9 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             Company co = db.Companies.Find(CompanyId);
+            //co = db.Companies.Include("Collections").Include("Collections.Styles").Include("Collections.Styles.Memos").Where(c => c.Id == CompanyId).SingleOrDefault();
             if (co == null)
             {
                 return HttpNotFound();
@@ -48,7 +50,7 @@ namespace OJewelry.Controllers
                         Num = sty.StyleNum,
                         Memod = sty.Memos.Sum(s => s.Quantity),
                         Qty = sty.Quantity,
-                        RetialPrice = sty.RetailPrice.Value,
+                        RetialPrice = sty.RetailPrice ?? 0,
                         // Cost is the sum of the component prices
                         //Retail Price is the cost * retail ratio
                     };

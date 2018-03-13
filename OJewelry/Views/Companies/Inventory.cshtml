@@ -12,10 +12,16 @@
     @using (Html.BeginForm("AddInventory", "Companies", new { CompanyId = Model.CompanyId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.HiddenFor(model => model.CompanyId)
-        <span>Select File:</span>
-        @Html.TextBoxFor(model => model.AddPostedFile, new { type = "file" })
-        @*<input type="file" name="@Html.NameFor(model => model.AddPostedFile)" id="@Html.IdFor(model => model.AddPostedFile)" />*@
-        @Html.ValidationMessageFor(model => model.AddPostedFile, "", new { @class = "text-danger" })
+    <div class="row">
+        <div class="col-sm-5">
+            <span>Select File:</span>
+            @Html.TextBoxFor(model => model.AddPostedFile, new { type = "file" })
+            @Html.ValidationMessageFor(model => model.AddPostedFile, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-sm-3">
+            <a href="@Url.Action("SaveNewStyleTemplate")" class="InvTemplate"> New Style Template <img src="~/Images/MicrosoftExcelLogo.png" /></a>
+        </div>
+    </div>
         <br />
         <input type="submit" value="Upload" />
         <br />
@@ -28,16 +34,24 @@
     @using (Html.BeginForm("MoveInventory", "Companies", new { CompanyId = Model.CompanyId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.HiddenFor(model => model.CompanyId)
-        <div class="form-group">
-            From: 
-            @Html.DropDownListFor(model => model.FromLocationId, Model.FromLocations)
-            To: 
-            @Html.DropDownListFor(model => model.ToLocationId, Model.ToLocations)
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="form-group">
+                From:
+                @Html.DropDownListFor(model => model.FromLocationId, Model.FromLocations)
+                To:
+                @Html.DropDownListFor(model => model.ToLocationId, Model.ToLocations)
+            </div>
+
+            <span>Select File:</span>
+            @Html.TextBoxFor(model => model.MovePostedFile, new { type = "file" })
+            @Html.ValidationMessageFor(model => model.MovePostedFile, "", new { @class = "text-danger" })
         </div>
-        <span>Select File:</span>
-        @Html.TextBoxFor(model => model.MovePostedFile, new { type = "file" })
-        @Html.ValidationMessageFor(model => model.MovePostedFile, "", new { @class = "text-danger" })
-        <br />
+        <div class="col-sm-3">
+            <a href="@Url.Action("SaveMoveStyleTemplate")" class="InvTemplate" > Move Style Template <img src="~/Images/MicrosoftExcelLogo.png" /></a>
+        </div>
+    </div>
+    <br />
         <input type="submit" value="Upload" />
         <br />
     }

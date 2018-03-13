@@ -652,6 +652,16 @@ namespace OJewelry.Controllers
             return View(irm);
         }
 
+        public FileResult SaveNewStyleTemplate()
+        {
+            return File("~/Excel/NewInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        public FileResult SaveMoveStyleTemplate()
+        {
+            return File("~/Excel/MoveInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
         public FileResult ExportInventoryReport(int? CompanyId)
         {
             if (CompanyId == null)

@@ -162,6 +162,13 @@ html input[disabled], locked {
     padding-top:7px;
 }
 
+.InvTemplate img
+{
+    max-height:2em;
+    float:left;
+    padding-right:1em;
+}
+
 .ForPrinting {
     font-size: 12px;
 }

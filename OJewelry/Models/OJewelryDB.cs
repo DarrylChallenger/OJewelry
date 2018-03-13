@@ -20,6 +20,7 @@ namespace OJewelry.Models
         public virtual DbSet<Company> Companies { get; set; }
         public virtual DbSet<Component> Components { get; set; }
         public virtual DbSet<ComponentType> ComponentTypes { get; set; }
+        public virtual DbSet<Contact> Contacts { get; set; }
         public virtual DbSet<JewelryType> JewelryTypes { get; set; }
         public virtual DbSet<Labor> Labors { get; set; }
         public virtual DbSet<Memo> Memos { get; set; }
@@ -128,6 +129,18 @@ namespace OJewelry.Models
                 .HasMany(e => e.Components)
                 .WithRequired(e => e.ComponentType)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Contact>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Contact>()
+                .Property(e => e.Phone)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Contact>()
+                .Property(e => e.Email)
+                .IsUnicode(false);
 
             modelBuilder.Entity<JewelryType>()
                 .Property(e => e.Name)

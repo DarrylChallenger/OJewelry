@@ -65,9 +65,10 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            PresenterViewModel pvm = new PresenterViewModel();
             ViewBag.CompanyName = co.Name;
-            ViewBag.CompanyId = co.Id;
-            return View();
+            pvm.Location.CompanyId = co.Id;
+            return View(pvm);
         }
 
         // POST: Presenters/Create
@@ -75,17 +76,40 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,ShortName,Phone,Email,CompanyId")] Presenter presenter)
+        public ActionResult Create(PresenterViewModel pvm)
         {
             if (ModelState.IsValid)
             {
-                db.Presenters.Add(presenter);
+                db.Presenters.Add(pvm.Location);
+                foreach (Contact c in pvm.contacts)
+                {
+                    if (c.Id == 0)
+                    {
+                        if (c.Name != null)
+                        {
+                            c.PresenterId = pvm.Location.Id;
+                            db.Contacts.Add(c);
+                        }
+                    }
+                    else
+                    {
+                        if (c.Name != null)
+                        {
+                            db.Entry(c).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            db.Entry(c).State = EntityState.Deleted;
+                        }
+                    }
+                }
+
                 db.SaveChanges();
-                return RedirectToAction("Index", new { companyId = presenter.CompanyId });
+                return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
             }
 
-            presenter.Company = db.Companies.Find(presenter.CompanyId);
-            return View(presenter);
+            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
+            return View(pvm);
         }
 
         // GET: Presenters/Edit/5
@@ -95,14 +119,17 @@ namespace OJewelry.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Presenter presenter = db.Presenters.Find(id);
-            if (presenter == null)
+            PresenterViewModel pvm = new PresenterViewModel();
+            pvm.Location = db.Presenters.Find(id);
+            if (pvm.Location == null)
             {
                 return HttpNotFound();
             }
-            presenter.Company = db.Companies.Find(presenter.CompanyId);
+            pvm.contacts = db.Contacts.Where(c => c.PresenterId == id).ToList();
+            pvm.contacts.Add(new Contact());
+            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
 
-            return View(presenter);
+            return View(pvm);
         }
 
         // POST: Presenters/Edit/5
@@ -110,16 +137,39 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,ShortName,Phone,Email,CompanyId")] Presenter presenter)
+        public ActionResult Edit(PresenterViewModel pvm)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(presenter).State = EntityState.Modified;
+                db.Entry(pvm.Location).State = EntityState.Modified;
+                foreach (Contact c in pvm.contacts)
+                {
+                    if (c.Id == 0)
+                    {
+                        if (c.Name != null)
+                        {
+                            c.PresenterId = pvm.Location.Id;
+                            db.Contacts.Add(c);
+                        }
+                    }
+                    else
+                    {
+                        if (c.Name != null)
+                        {
+                            db.Entry(c).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            db.Entry(c).State = EntityState.Deleted;
+                        }
+                    }
+                }
+
                 db.SaveChanges();
-                return RedirectToAction("Index", new { companyId = presenter.CompanyId });
+                return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
             }
-            presenter.Company = db.Companies.Find(presenter.CompanyId);
-            return View(presenter);
+            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
+            return View(pvm);
         }
 
         // GET: Presenters/Delete/5

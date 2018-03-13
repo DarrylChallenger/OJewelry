@@ -25,11 +25,19 @@ namespace OJewelry.Models
         [StringLength(10)]
         public string ShortName { get
             {
-                if (shortname == null || shortname =="")
-                { return Name; } else { return shortname; }
+                if (shortname == null || shortname.Trim() =="")
+                {
+                    if (Name == null) return "";
+                    return Name.PadRight(10).Substring(0, 10);
+                } else {
+                    return shortname;
+                }
             }
             set {
-                shortname = value;
+                if (value != null)
+                {
+                    shortname = value.PadRight(10).Substring(0, 10);
+                }
             } }
 
         [StringLength(10)]
