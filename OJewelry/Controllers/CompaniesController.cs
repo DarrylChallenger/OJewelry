@@ -527,6 +527,8 @@ namespace OJewelry.Controllers
 
                                 if (theStyle == null)
                                 {
+                                    error = "The style [" + s.StyleNum + "] is not on record.";
+                                    ivm.Errors.Add(error);
                                     continue;
                                 }
                                 // update desc and retail if blank in DB
