@@ -6,47 +6,48 @@
 
 <h2>The <i>@Model.Style.StyleName</i> Stylesheet</h2>
 
-<h6 class="text-danger">
-    @foreach(KeyValuePair<string,ModelState> p in @ViewData.ModelState)
-    {
-        if (p.Value.Errors.Count != 0)
+@*
+    <h6 class="text-danger">
+        @foreach(KeyValuePair<string,ModelState> p in @ViewData.ModelState)
         {
-            // display name and error
-            foreach (ModelError e in p.Value.Errors)
+            if (p.Value.Errors.Count != 0)
             {
-                <text>@p.Key, @e.ErrorMessage</text>
+                // display name and error
+                foreach (ModelError e in p.Value.Errors)
+                {
+                    <text>@p.Key, @e.ErrorMessage</text>
+                }
             }
         }
-    }
-</h6>
-
+    </h6>
+*@
 
 @using (Html.BeginForm("Edit", "Styles", FormMethod.Post, new { id = "StylesForm" }))
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal">
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.Style.Id)
-    @Html.HiddenFor(model => model.Style.CollectionId)
-    @Html.HiddenFor(model => model.Style.JewelryTypeId)
-    @Html.HiddenFor(model => model.Style.MetalWtUnitId)
-    @Html.HiddenFor(model => model.CompanyId)
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Style.Id)
+        @Html.HiddenFor(model => model.Style.CollectionId)
+        @Html.HiddenFor(model => model.Style.JewelryTypeId)
+        @Html.HiddenFor(model => model.Style.MetalWtUnitId)
+        @Html.HiddenFor(model => model.CompanyId)
 
-    @Html.Partial("_StyleCreateEditPartial", Model)
+        @Html.Partial("_StyleCreateEditPartial", Model)
 
-    <div>
-        @Html.Partial("_CostComponentsPartial", Model)
-    </div>
+        <div>
+            @Html.Partial("_CostComponentsPartial", Model)
+        </div>
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
-            <input type="submit" value="Delete" formaction="../Delete/@Model.Style.Id" class="btn btn-default" />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Delete" formaction="../Delete/@Model.Style.Id" class="btn btn-default" />
+            </div>
         </div>
     </div>
-</div>
 }
 
 <div>

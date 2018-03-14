@@ -62,6 +62,7 @@ namespace OJewelry.Controllers
         {
             Collection co = db.Collections.Find(collectionId);
             StyleViewModel svm = new StyleViewModel();
+            svm.CompanyId = co.CompanyId;
             svm.Populate(null, db);
             svm.Style.Collection = db.Collections.Find(collectionId);
             svm.Style.CollectionId = collectionId;

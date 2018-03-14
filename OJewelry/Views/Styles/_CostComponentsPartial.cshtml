@@ -88,8 +88,14 @@
                     @if (i == Model.Stones.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
-                    @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList,
-                       new { @class = "col-sm-2 ", onchange = "StoneChanged('" + i + "')" })
+                    @if (Model.Stones[i].Id == 0)
+                    {
+                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, "You must select a stone", new { @class = "col-sm-2 ", onchange = "StoneChanged('" + i + "')" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, new { @class = "col-sm-2 ", onchange = "StoneChanged('" + i + "')" })
+                    }
                     <div class="col-sm-1 "></div>
                     @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
                     @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
@@ -144,8 +150,13 @@
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Findings.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
-                    @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList,
-                        new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
+                    @if (Model.Findings[i].Id == 0)
+                    {
+                        @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, "You must select a finding", new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
+                    } else
+                    {
+                        @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
+                    }
                     <div class="col-sm-2 "></div>
                     @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
                     @Html.EditorFor(model => model.Findings[i].Metal, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
@@ -158,6 +169,7 @@
 
                 </div>
                 <div class="row">
+                    @Html.ValidationMessageFor(model => model.Findings[i].Id, "", new { @class = "text-danger" })
                     @Html.ValidationMessageFor(model => model.Findings[i].Qty, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -301,8 +313,8 @@
             }
             else
             {
-                Model.jsStones.Insert(0, Model.DefStone);
-                @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name"), new { @class = "col-sm-2" })
+                @*Model.jsStones.Insert(0, Model.DefStone);*@
+                @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name"), "Please select a stone", new { @class = "col-sm-2" })
             }
             </div>
         <div id="jsFindings">
@@ -312,8 +324,8 @@
             }
             else
             {
-                Model.jsFindings.Insert(0, Model.DefFinding);
-                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name"), new { @class = "col-sm-2" })
+                @*Model.jsFindings.Insert(0, Model.DefFinding);*@
+                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name") , "Please select a finding", new { @class = "col-sm-2" })
             }   
         </div>
         <div id="StonesData">

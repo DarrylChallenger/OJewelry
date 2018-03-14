@@ -74,7 +74,7 @@ function AddComponentRow(type, index)
             .attr("id", 'Stones_' + len + '__Id')
             .attr("data-val", "true")
             .attr("data-val-number", "The Id field must be a number.")
-            .attr("data-val-required", "The Id field is required.")
+            .attr("data-val-required", "Please select a stone.")
             .attr("onchange", "StoneChanged('" + len + "')");
         ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html());
     }
@@ -86,7 +86,7 @@ function AddComponentRow(type, index)
             .attr("id", 'Findings_' + len + '__Id')
             .attr("data-val", "true")
             .attr("data-val-number", "The Id field must be a number.")
-            .attr("data-val-required", "The Id field is required.")
+            .attr("data-val-required", "Please select a finding.")
             .attr('data-val-range-min', "0")
          .attr("onchange", "FindingChanged('" + len + "')");
         ltbordered = findingsltbordered.replace("JSFINDINGS", jsFindings.html());
@@ -280,14 +280,14 @@ function getCastingsHTML(type, len) {
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Castings_' + len + '__Qty" name="Castings[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="CastingsRowTotalValue_' + len + '" class="col-sm-1 CastingsRowTotal ">0.00</div>\
             ' + rightDelBtn + '\
+            </div>\
         <div class="row">\
-        <!--Validations Here-->\
+            <!--Validations Here-->\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Name" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Price" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Labor" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Qty" data-valmsg-replace="true"></span>\
         </div >\
-        </div>\
     </div >';
 }
 
@@ -381,13 +381,13 @@ function getLaborsHTML(type, len) {
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Labors_' + len + '__Qty" name="Labors[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="LaborsRowTotalValue_' + len + '" class="col-sm-1 LaborsRowTotal">0.00</div>\
             ' + rightDelBtn + '\
+        </div >\
         <div class="row">\
         <!--Validations Here-->\
             <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].Name" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].PPH" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].PPP" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].Qty" data-valmsg-replace="true"></span>\
-        </div >\
         </div >\
     </div > ';
 }
@@ -414,13 +414,13 @@ function getMiscsHTML(type, len) {
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Miscs_' + len + '__Qty" name="Miscs[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="MiscsRowTotalValue_' + len + '" class="col-sm-1 MiscsRowTotal">0.00</div>\
             ' + rightDelBtn + '\
+         </div > \
         <div class="row">\
         <!--Validations Here-->\
             <span class="field-validation-valid text-danger" data-valmsg-for="Miscs[' + len + '].Name" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Miscs[' + len + '].PPP" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Miscs[' + len + '].Qty" data-valmsg-replace="true"></span>\
         </div >\
-        </div > \
     </div>';
 }
 

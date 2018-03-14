@@ -101,6 +101,9 @@ namespace OJewelry.Models
         public StoneComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public StoneComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
 
+        [Required(ErrorMessage = "You must select a stone!")]
+        public int Id { get; set; }
+
         public String VendorName { get; set; }
         public int? CtWt { get; set; }
         public String Size { get; set; }
@@ -111,7 +114,13 @@ namespace OJewelry.Models
 
         public void SetStonesList(List<Component> stones, int defaultSelection)
         {
-            CompList = new SelectList(stones, "Id", "Name", defaultSelection);
+            if (defaultSelection == -1)
+            {
+                CompList = new SelectList(stones, "Id", "Name");
+            } else
+            {
+                CompList = new SelectList(stones, "Id", "Name", defaultSelection);
+            }
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -129,6 +138,9 @@ namespace OJewelry.Models
         public FindingsComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public FindingsComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
 
+        [Required(ErrorMessage = "You must select a finding!")]
+        public int Id { get; set; }
+
         public String VendorName { get; set; }
         public String Metal { get; set; }
         
@@ -138,7 +150,13 @@ namespace OJewelry.Models
 
         public void SetFindingsList(List<Component> findings, int defaultSelection)
         {
-            CompList = new SelectList(findings, "Id", "Name", defaultSelection);
+            if (defaultSelection == -1)
+            {
+                CompList = new SelectList(findings, "Id", "Name");
+            } else
+            {
+                CompList = new SelectList(findings, "Id", "Name", defaultSelection);
+            }
         }
 
 
@@ -213,7 +231,6 @@ namespace OJewelry.Models
             SVMState = SVMStateEnum.Dirty; // For now, update all records
         }
     
-        public int Id { get; set; }
         public int scId { get; set; }
         //public int CompanyId { get { return Comp.CompanyId ?? 0; } set { Comp.CompanyId = value; } }
         //public int ComponentTypeId { get { return Comp.ComponentTypeId; } set { Comp.ComponentTypeId = value; } }
@@ -241,22 +258,6 @@ namespace OJewelry.Models
         {
             SVMState = SVMStateEnum.Dirty;
             DelBtnPos = SVMDelButtonPos.Right;
-            DefStone = new Component();
-            DefFinding = new Component();
-            DefStone.Id = -1;
-            DefStone.Name = "Select a Stone!";
-            DefStone.Vendor = new Vendor();
-            DefStone.Vendor.Name = "";
-            DefStone.StonesCtWt = 0;
-            DefStone.StoneSize = "";
-            DefStone.StonePPC = 0;
-            DefFinding.Id = -1;
-            DefFinding.Name = "Select a Finding!";
-            DefFinding.Vendor = new Vendor();
-            DefFinding.Vendor.Name = "";
-            DefFinding.Metal = new MetalCode();
-            DefFinding.Metal.Code = "";
-            DefFinding.Price = 0;
         } // For now, update all records
         public Style Style { get; set; }
         public List<CastingComponent> Castings { get; set; }
@@ -294,9 +295,6 @@ namespace OJewelry.Models
         public int i { get; set; }
         public SVMDelButtonPos DelBtnPos { get; set; }
 
-        public Component DefStone { get; set; }
-        public Component DefFinding { get; set; }
-
         public void PopulateDropDownData(OJewelryDB db)
         {
             jsVendors = db.Vendors.ToList();
@@ -330,8 +328,6 @@ namespace OJewelry.Models
             List<Component> jsFindingsWithDefault = new List<Component>();
             jsStonesWithDefault = jsStones.ToList();
             jsFindingsWithDefault=jsFindings.ToList();
-            jsStonesWithDefault.Insert(0, DefStone);
-            jsFindingsWithDefault.Insert(0, DefFinding);
 
             foreach (StoneComponent sc in Stones)
             {
