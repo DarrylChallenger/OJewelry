@@ -222,7 +222,6 @@ namespace OJewelry.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
     }
-
     
     public class StyleViewComponentModel
     { //Components should be a componentID and a qty
@@ -251,6 +250,7 @@ namespace OJewelry.Models
     public enum SVMStateEnum { Clean, Dirty, Added, Deleted }
     public enum SVMCCTypeEnum { Castings, Stones, Findings, Labors, Miscs }
     public enum SVMDelButtonPos { Left, Right }
+    public enum SVMOperation { Create, Edit }
 
     public class StyleViewModel
     {
@@ -258,6 +258,7 @@ namespace OJewelry.Models
         {
             SVMState = SVMStateEnum.Dirty;
             DelBtnPos = SVMDelButtonPos.Right;
+            SVMOp = SVMOperation.Edit;
         } // For now, update all records
         public Style Style { get; set; }
         public List<CastingComponent> Castings { get; set; }
@@ -281,6 +282,7 @@ namespace OJewelry.Models
 
         public SVMStateEnum SVMState { get; set; }
         public SVMCCTypeEnum SVMCCType { get; set; }
+        public SVMOperation SVMOp { get; set; }
         public int CompanyId { get; set; }
 
         public List<Vendor> jsVendors { get; set; }

@@ -225,6 +225,7 @@ namespace OJewelry.Controllers
                                                 //process each cell in cols 1-5
                                                 Style style = new Style();
                                                 Collection collection = new Collection();
+                                                bool bEmptyRow = true;
                                                 //StyleNum
                                                 style.StyleNum = "";
                                                 Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
@@ -235,8 +236,11 @@ namespace OJewelry.Controllers
                                                 if (style.StyleNum == "")
                                                 {
                                                     error = "The style number in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
-                                                    ModelState.AddModelError("StyleNum", error);
+                                                    ModelState.AddModelError("StyleNum-"+j, error);
                                                     ivm.Errors.Add(error);
+                                                } else
+                                                {
+                                                    bEmptyRow = false;
                                                 }
                                                 // Style Name
                                                 style.StyleName = "";
@@ -246,8 +250,9 @@ namespace OJewelry.Controllers
                                                     style.StyleName = GetStringVal(cell, stringtable);
                                                 }
                                                 if (style.StyleName == "")
-                                                    {
-                                                        style.StyleName = style.StyleNum;
+                                                {
+                                                    style.StyleName = style.StyleNum;
+                                                    bEmptyRow = false;
                                                 }
 
                                                 // Jewelry Type - find a jewelry type with the same name or reject
@@ -261,12 +266,13 @@ namespace OJewelry.Controllers
                                                 if (JewelryTypeId == -1)
                                                 {
                                                     error = "The Jewelry Type [" + JewelryTypeName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
-                                                    ModelState.AddModelError("JewelryType", error);
+                                                    ModelState.AddModelError("JewelryType-"+j, error);
                                                     ivm.Errors.Add(error);
                                                 }
                                                 else
                                                 {
                                                     style.JewelryTypeId = JewelryTypeId;
+                                                    bEmptyRow = false;
                                                 }
                                                 // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
                                                 string CollectionName = "";
@@ -284,11 +290,16 @@ namespace OJewelry.Controllers
                                                 else
                                                 {
                                                     style.CollectionId = CollectionId;
+                                                    bEmptyRow = false;
                                                 }
                                                 // Descrription
                                                 style.Desc = "";
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).FirstOrDefault();
                                                 if (cell != null) style.Desc = GetStringVal(cell, stringtable);
+                                                if (style.Desc != "")
+                                                {
+                                                    bEmptyRow = false;
+                                                }
 
                                                 // Retail 
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).FirstOrDefault();
@@ -297,17 +308,17 @@ namespace OJewelry.Controllers
                                                     if (Decimal.TryParse(GetStringVal(cell, stringtable), out decimal rp))
                                                     {
                                                         style.RetailPrice = rp;
+                                                        bEmptyRow = false;
                                                     }
                                                     else
                                                     {
                                                         error = "Invalid price [" + GetStringVal(cell, stringtable) + "] in row " + j + " of sheet [" + sheet.Name + "].";
-                                                        ModelState.AddModelError("RetailPrice", error); 
+                                                        ModelState.AddModelError("RetailPrice-"+j, error); 
                                                         ivm.Errors.Add(error);
                                                     }
-                                                } else
-                                                {
+                                                } else {
                                                     error = "Invalid price in row " + j + " of sheet [" + sheet.Name + "].";
-                                                    ModelState.AddModelError("RetailPrice", error);
+                                                    ModelState.AddModelError("RetailPriceEmpty-"+j, error);
                                                     ivm.Errors.Add(error);
                                                 }
 
@@ -316,25 +327,41 @@ namespace OJewelry.Controllers
                                                 if (cell != null)
                                                 {
                                                     style.Quantity = GetIntVal(cell);
-                                                } else {
+                                                    bEmptyRow = false;
+                                                }
+                                                else {
                                                     error = "Invalid Quantity in row " + j + " of sheet [" + sheet.Name + "].";
-                                                    ModelState.AddModelError("Quantity", error);
+                                                    ModelState.AddModelError("Quantity-"+j, error);
                                                     ivm.Errors.Add(error);
 
                                                 }
-                                                styles.Add(style);
-
+                                                if (bEmptyRow)
+                                                {
+                                                    error = "Row [" + j + "] will be ignored - All fields are blank";
+                                                    ivm.Warnings.Add(error);
+                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 5);
+                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
+                                                    if (ModelState.Remove("RetailPrice-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
+                                                    if (ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
+                                                    if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
+                                                }
+                                                else
+                                                {
+                                                    styles.Add(style);
+                                                }
                                             }
                                         }
                                         else
                                         { // row count < 2
                                             error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
+                                            ModelState.AddModelError("AddPostedFile-No Rows", error);
                                             ivm.Errors.Add(error);
                                         }
                                     }
                                     else
                                     { // incorrect headers
                                         error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the New Style Template";
+                                        ModelState.AddModelError("AddPostedFile-No Headers", error);
                                         ivm.Errors.Add(error);
                                     }
                                 }
@@ -342,7 +369,7 @@ namespace OJewelry.Controllers
                                 {
                                     // empty sheet
                                     error = "The sheet [" + sheet.Name + "] is empty. Please use the 'New Style' Template";
-                                    ModelState.AddModelError("AddPostedFile", error);
+                                    ModelState.AddModelError("AddPostedFile-Empty Sheet", error);
                                     ivm.Errors.Add(error);
                                 }
                                 // process collections and styles
@@ -456,7 +483,7 @@ namespace OJewelry.Controllers
                                             {
                                                 //process each cell in cols 1-4
                                                 Style style = new Style();
-
+                                                bool bEmptyRow = true;
                                                 //StyleNum
                                                 style.StyleNum = "";
                                                 Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
@@ -465,14 +492,24 @@ namespace OJewelry.Controllers
                                                 {
                                                     // error
                                                     error = "The style number in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
-                                                    ModelState.AddModelError("StyleNum", error);
+                                                    ModelState.AddModelError("StyleNum-"+j, error);
                                                     ivm.Errors.Add(error);
+                                                } else
+                                                {
+                                                    bEmptyRow = false;
                                                 }
 
                                                 // Descrription
                                                 style.Desc = "";
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
-                                                if (cell != null) style.Desc = GetStringVal(cell, stringtable);
+                                                if (cell != null)
+                                                {
+                                                    style.Desc = GetStringVal(cell, stringtable);
+                                                }
+                                                if (style.Desc != "")
+                                                {
+                                                    bEmptyRow = false;
+                                                }
 
                                                 // Retail Can be ignored
                                                 /*
@@ -486,28 +523,39 @@ namespace OJewelry.Controllers
                                                 if (cell != null)
                                                 {
                                                     style.Quantity = GetIntVal(cell);
-                                                } else
-                                                {
+                                                    bEmptyRow = false;
+                                                } else {
                                                     // error
                                                     error = "The Quantity in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
-                                                    ModelState.AddModelError("Quantity", error);
+                                                    ModelState.AddModelError("Quantity-"+j, error);
                                                     ivm.Errors.Add(error);
                                                 }
-                                                styles.Add(style);
+                                                // if whole row is blank, remove errors and flag as warning, don't add the style.
+                                                if (bEmptyRow)
+                                                {
+                                                    // Remove last two Model Errors, add warning
+                                                    error = "Row [" + j + "] will be ignored - Style Number and Quantity are blank";
+                                                    ivm.Warnings.Add(error);
+                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
+                                                    if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
+                                                }
+                                                else {
+                                                    styles.Add(style);
+                                                }
                                             }
                                         }
                                         else
                                         { // row count < 2
                                             error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
                                             ivm.Errors.Add(error);
-                                            ModelState.AddModelError("MovePostedFile", error);
+                                            ModelState.AddModelError("MovePostedFile-No Rows", error);
                                         }
                                     }
                                     else
                                     { // incorrect headers
-                                        error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the New Style Template";
+                                        error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the Move Inventory Template";
                                         ivm.Errors.Add(error);
-                                        ModelState.AddModelError("MovePostedFile", error);
+                                        ModelState.AddModelError("MovePostedFile-No Headers", error);
                                     }
                                 }
                                 else
@@ -515,7 +563,7 @@ namespace OJewelry.Controllers
                                     // empty sheet
                                     error = "The sheet [" + sheet.Name + "] is empty. Please use the 'Move Inventory' Template";
                                     ivm.Errors.Add(error);
-                                    ModelState.AddModelError("MovePostedFile", error);
+                                    ModelState.AddModelError("MovePostedFile-Empty Sheet", error);
                                 }
                             }
 

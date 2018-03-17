@@ -263,3 +263,4 @@ __pycache__/
 *.xlsx
 /temp.html
 /HTMLPage1.html
+/SQLQuery1.sql
