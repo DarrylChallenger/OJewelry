@@ -22,6 +22,7 @@ function AddRow(index) {
     var addBtnClass = px + "AddBtn";
     var delBtnClass = px + "DelBtn";
     var valRowContent = px + "TableRowValidation";
+    var contentRowClass = px + "TableRowContent";
 
     // hide the '+' btn
     $("." + addBtnClass).addClass("hidden");
@@ -30,7 +31,8 @@ function AddRow(index) {
     if (index === -1)
     {
         // add after header
-    } else {
+        $("#" + tableClass).last().append(nr);
+   } else {
         // add after last row
         $("#" + tableClass).last().append(nr);
         //$("#" + tableClass).last().append('<div class="row ContactsTableRowData">hello</div>');
@@ -39,9 +41,11 @@ function AddRow(index) {
     // wrap it...
     var newRow = $(rowClass).last();
     newRow.after(vr);
-    console.log(newRow);
     WrapRow(px, newRow);
-    
+
+    // state = "Added"
+    $(contentRowClass).last().data("state", "Added");
+
     // Show the button
     $("." + addBtnClass).last().removeClass("hidden");
     // add id, onclick handler to btns
@@ -55,12 +59,11 @@ function AddRow(index) {
     });
     // add validation
     valRows = $("." + valRowContent).last().children();
-    console.log(valRows);
     $.each(valRows, function (i, value) {
         name = value.getAttribute("name");
         value.setAttribute("data-valmsg-for", ds + "[" + (index + 1) + "]." + name);
     });
-
+    resetValidation(px);
     console.log("AddRow Done");
 }
 
@@ -86,7 +89,7 @@ function WrapHeader(headerId) {
 }
 
 function WrapRow(px, rows) {
-    console.log("WrapRow", rows);
+    //console.log("WrapRow", rows);
     var addBtnClass = px + "AddBtn";
     var delBtnClass = px + "DelBtn";
     var contentRowClass = px + "TableRowContent";
@@ -100,7 +103,7 @@ function WrapRow(px, rows) {
         .after("<div class=col-sm-1>" + delBtn + "</div>")
         .wrapAll('<div class="col-sm-10 ContactTableS2"></div>');
 
-    console.log("WrapRow Done");
+    //console.log("WrapRow Done");
 }
 
 function WrapRows(px) {
@@ -141,11 +144,13 @@ function WrapRows(px) {
         var ds = options.dataStructName;
         var nr = options.newRow;
         var vr = options.valRow;
+        var fn = options.formName;
 
         sessionStorage.setItem("DCTS.tablePrefix", px);
         sessionStorage.setItem("DCTS." + px + ".dataStructName", ds);
         sessionStorage.setItem("DCTS." + px + ".newRow", nr);
         sessionStorage.setItem("DCTS." + px + ".valRow", vr);
+        sessionStorage.setItem("DCTS." + px + ".fromName", fn);
 
         var headerId = "#" + px + "TableHeader";
 
@@ -166,7 +171,7 @@ $(function () { // set name = field name in each cell;don't include id
             '<input name="Id" id="clients_0__Id" type="hidden" value="0" data-val-required="The Id field is required." data-val="true" data-val-number="The field Id must be a number.">' +
             '<input name="CompanyID" id="clients_0__CompanyID" type="hidden" value="" data-val="true" data-val-number="The field CompanyID must be a number.">' +
             '<div>' +
-            '   <input name="Name" class="form-control col-md-3 text-box single-line" id="clients_0__Name" type="text" value="" data-val-length-max="50" data-val-length="The field Name must be a string with a maximum length of 50." data-val="true">' +
+            '   <input name="Name" class="form-control col-md-3 text-box single-line" id="clients_0__Name" type="text" value="" data-val-required="Name is required." data-val-length-max="50" data-val-length="The field Name must be a string with a maximum length of 50." data-val="true">' +
             '</div>' +
             '<div>' +
             '   <input name="JobTitle" class="form-control col-md-3 text-box single-line" id="clients_0__JobTitle" type="text" value="" data-val-length-max="50" data-val-length="The field Job Title must be a string with a maximum length of 50." data-val="true">' +
@@ -184,10 +189,21 @@ $(function () { // set name = field name in each cell;don't include id
             '<span name="Phone" class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="clients[0].Phone"></span>' +
             '<span name="Email" class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="clients[0].Email"></span>' +
             '<span name="JobTitle" class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="clients[0].JobTitle"></span>' +
-        '</div> '
+            '</div> ',
+        formName: 'CompaniesForm'
     });
     //console.log("Ready done.");
 });
+
+function resetValidation(px)
+{
+    formName = sessionStorage.getItem("DCTS." + px + ".fromName");
+    var form = $("#" + formName);
+    $(form).removeData("validator")             // Added by jQuery Validate
+        .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
+    $.validator.unobtrusive.parse(form);
+    console.log("resetValidation", form);
+}
 
 function AddBtnData(addBtnClass) {
     return '<button type="button" class="btn btn-default hidden ' + addBtnClass + '"> \

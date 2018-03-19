@@ -83,7 +83,7 @@ namespace OJewelry.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(cvm.company);
+            return View(cvm);
         }
 
         // GET: Companies/Edit/5

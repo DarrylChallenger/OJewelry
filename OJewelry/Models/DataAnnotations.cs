@@ -53,7 +53,7 @@ namespace OJewelry.Models
     public partial class ClientMetaData
     {
         [Display(Name = "Name")]
-        //[Required(ErrorMessage = "Name is required.")]
+        [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
 
         [DisplayName("Phone")]
@@ -175,6 +175,31 @@ namespace OJewelry.Models
 
         [Display(Name = "Sequence")]
         public int Sequence;
+    }
+
+    [MetadataType(typeof(ContactMetaData))]   // template
+    public partial class Contact
+    {
+    }
+    public partial class ContactMetaData
+    {
+
+        [Display(Name = "Name")]
+        [Required(ErrorMessage = "Name is required.")]
+        public String Name { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        [Phone]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        public String Phone { get; set; }
+
+        [Display(Name = "Email")]
+        [DataType(DataType.EmailAddress)]
+        public String Email { get; set; }
+
+        [Display(Name = "Job Title")]
+        public string JobTitle { get; set; }
+
     }
 
     [MetadataType(typeof(JewelryTypeMetaData))]   //Jewelry Type
