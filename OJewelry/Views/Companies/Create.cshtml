@@ -19,7 +19,6 @@
         @Html.LabelFor(model => model.company.Name, htmlAttributes: new { @class = "control-label col-md-2" })
         <div>
             @Html.EditorFor(model => model.company.Name, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.company.Name, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -48,6 +47,7 @@
         </div>
     </div>
     <div class="form-group">
+        @Html.ValidationMessageFor(model => model.company.Name, "", new { @class = "text-danger" })
         @Html.ValidationMessageFor(model => model.company.StreetAddr, "", new { @class = "text-danger" })
         @Html.ValidationMessageFor(model => model.company.Addr2, "", new { @class = "text-danger" })
         @Html.ValidationMessageFor(model => model.company.Phone, "", new { @class = "text-danger" })
@@ -57,38 +57,41 @@
     @if (Model != null && Model.clients != null)
     {
         <h4>Contacts</h4>
-        <div class="form-group">
+        <div id="ContactsTableHeader" class="form-group">
             @Html.LabelFor(model => model.clients[0].Name, htmlAttributes: new { @class = "control-label contorl-label-left col-md-3" })
             @Html.LabelFor(model => model.clients[0].JobTitle, htmlAttributes: new { @class = "control-label contorl-label-left col-md-3" })
             @Html.LabelFor(model => model.clients[0].Phone, htmlAttributes: new { @class = "control-label contorl-label-left col-md-3" })
             @Html.LabelFor(model => model.clients[0].Email, htmlAttributes: new { @class = "control-label contorl-label-left col-md-3" })
         </div>
-        for (int i = 0; i < Model.clients.Count; i++)
+        <div id="ContactsTableData">
+        @for (int i = 0; i < Model.clients.Count; i++)
         {
-            <div class="form-group">
-                @Html.HiddenFor(model => model.clients[i].Id)
-                @Html.HiddenFor(model => model.clients[i].CompanyID)
-                <div>
-                    @Html.EditorFor(model => model.clients[i].Name, new { htmlAttributes = new { @class = "form-control col-md-3" } })
+            <div class="form-group ContactsTableRowContainer">
+                <div class="row ContactsTableRowData">
+                    @Html.HiddenFor(model => model.clients[i].Id)
+                    @Html.HiddenFor(model => model.clients[i].CompanyID)
+                    <div> @* make name required *@
+                        @Html.EditorFor(model => model.clients[i].Name, new { htmlAttributes = new { @class = "form-control col-md-3" } })
+                    </div>
+                    <div>
+                        @Html.EditorFor(model => model.clients[i].JobTitle, new { htmlAttributes = new { @class = "form-control col-md-3" } })
+                    </div>
+                    <div>
+                        @Html.EditorFor(model => model.clients[i].Phone, new { htmlAttributes = new { @class = "form-control col-md-3" } })
+                    </div>
+                    <div>
+                        @Html.EditorFor(model => model.clients[i].Email, new { htmlAttributes = new { @class = "form-control col-md-3" } })
+                    </div>
                 </div>
-                <div>
-                    @Html.EditorFor(model => model.clients[i].JobTitle, new { htmlAttributes = new { @class = "form-control col-md-3" } })
+                <div class="row ContactsTableRowValidation">
+                    @Html.ValidationMessageFor(model => model.clients[i].Name, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.clients[i].Phone, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.clients[i].Email, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.clients[i].JobTitle, "", new { @class = "text-danger" })
                 </div>
-                <div>
-                    @Html.EditorFor(model => model.clients[i].Phone, new { htmlAttributes = new { @class = "form-control col-md-3" } })
-                </div>
-                <div>
-                    @Html.EditorFor(model => model.clients[i].Email, new { htmlAttributes = new { @class = "form-control col-md-3" } })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.ValidationMessageFor(model => model.clients[i].Name, "", new { @class = "text-danger" })
-                @Html.ValidationMessageFor(model => model.clients[i].Phone, "", new { @class = "text-danger" })
-                @Html.ValidationMessageFor(model => model.clients[i].Email, "", new { @class = "text-danger" })
-                @Html.ValidationMessageFor(model => model.clients[i].JobTitle, "", new { @class = "text-danger" })
-
             </div>
         }
+        </div>
     }
 
 
@@ -106,4 +109,5 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/RowManager.js")
 }
