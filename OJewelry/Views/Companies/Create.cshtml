@@ -71,7 +71,7 @@
                             @Html.HiddenFor(model => model.clients[i].Id)
                             @Html.HiddenFor(model => model.clients[i].CompanyID)
                             <div>
-                                @Html.EditorFor(model => model.clients[i].Name, new { htmlAttributes = new { @class = "form-control col-md-3" } })
+                                @Html.EditorFor(model => model.clients[i].Name, new { htmlAttributes = new { @class = "form-control requiredifnotremoved col-md-3" } })
                             </div>
                             <div>
                                 @Html.EditorFor(model => model.clients[i].JobTitle, new { htmlAttributes = new { @class = "form-control col-md-3" } })

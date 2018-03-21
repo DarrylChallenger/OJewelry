@@ -53,7 +53,8 @@ namespace OJewelry.Models
     public partial class ClientMetaData
     {
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "Name is required.")]
+        //[Required(ErrorMessage = "Name is required.")]
+        [RequiredIfNotRemoved]
         public String Name { get; set; }
 
         [DisplayName("Phone")]
@@ -185,7 +186,8 @@ namespace OJewelry.Models
     {
 
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "Name is required.")]
+        //[Required(ErrorMessage = "Name is required.")]
+        [RequiredIfNotRemoved]
         public String Name { get; set; }
 
         [DataType(DataType.PhoneNumber)]

@@ -353,10 +353,6 @@
     <Compile Include="Migrations\201803131610578_v.55c.Designer.cs">
       <DependentUpon>201803131610578_v.55c.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201803192037513_v.56.cs" />
-    <Compile Include="Migrations\201803192037513_v.56.Designer.cs">
-      <DependentUpon>201803192037513_v.56.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -608,9 +604,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803131610578_v.55c.resx">
       <DependentUpon>201803131610578_v.55c.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201803192037513_v.56.resx">
-      <DependentUpon>201803192037513_v.56.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

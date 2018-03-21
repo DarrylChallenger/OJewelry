@@ -44,7 +44,7 @@ function AddRow(index) {
     WrapRow(px, newRow);
 
     // state = "Added"
-    $(contentRowClass).last().data("state", "Added");
+    $("."+contentRowClass).last().attr("state", "Added");
 
     // Show the button
     $("." + addBtnClass).last().removeClass("hidden");
@@ -89,37 +89,57 @@ function WrapHeader(headerId) {
 }
 
 function WrapRow(px, rows) {
-    //console.log("WrapRow", rows);
+    console.log("WrapRow", rows);
     var addBtnClass = px + "AddBtn";
     var delBtnClass = px + "DelBtn";
     var contentRowClass = px + "TableRowContent";
 
     var addBtn = AddBtnData(addBtnClass);
     var delBtn = DelBtnData(delBtnClass);
-
+    
+    console.log($(rows));
+    
+    $.each($(rows), function (i, value) {
+        console.log(i + " : ", value);
+        var element = $(this);
+        element.wrapAll('<div class="row ' + contentRowClass + '"></div>')
+            .before('<div class="col-sm-1 ">' + addBtn + "</div>")
+            .after("<div class=col-sm-1>" + delBtn + "</div>")
+            .wrapAll('<div class="col-sm-10 ContactTableS2"></div>');
+    });
+    
+    /*
     $(rows)
         .wrapAll('<div class="row ' + contentRowClass + '"></div>')
         .before('<div class="col-sm-1 ">' + addBtn + "</div>")
         .after("<div class=col-sm-1>" + delBtn + "</div>")
         .wrapAll('<div class="col-sm-10 ContactTableS2"></div>');
-
-    //console.log("WrapRow Done");
+    */
+    console.log("WrapRow Done");
 }
 
 function WrapRows(px) {
-    //console.log("WrapRows");
+    console.log("WrapRows");
     var rowClass = "." + px + "TableRowData";
     var addBtnClass = px + "AddBtn";
     var delBtnClass = px + "DelBtn";
 
-    WrapRow(px, rowClass);
+    console.log("rowClass b4 loop:", $(rowClass));
+
     /*
-    $(rowClass)
-        .wrapAll('<div class="row ' + outerRowClass + '"></div>')
-        .before('<div class="col-sm-1 ">' + addBtn + "</div>")
-        .after("<div class=col-sm-1>" + delBtn + "</div>")
-        .wrapAll('<div class="col-sm-10 ContactTableS2"></div>');
+    $(".ContactsTableRowData").map(function(i, value) {
+    //$.each($(rowClass), function (i, value) {
+        console.log("rowClass in loop:", this);
+        WrapRow(this);
+    });
     */
+
+
+
+
+
+
+    WrapRow(px, rowClass);
     //display '+' in last row
     lastRow = $("." + addBtnClass).last().removeClass("hidden");
     // set id and onclick for each "+" btn
@@ -171,7 +191,7 @@ $(function () { // set name = field name in each cell;don't include id
             '<input name="Id" id="clients_0__Id" type="hidden" value="0" data-val-required="The Id field is required." data-val="true" data-val-number="The field Id must be a number.">' +
             '<input name="CompanyID" id="clients_0__CompanyID" type="hidden" value="" data-val="true" data-val-number="The field CompanyID must be a number.">' +
             '<div>' +
-            '   <input name="Name" class="form-control col-md-3 text-box single-line" id="clients_0__Name" type="text" value="" data-val-required="Name is required." data-val-length-max="50" data-val-length="The field Name must be a string with a maximum length of 50." data-val="true">' +
+            '   <input name="Name" class="form-control col-md-3 text-box single-line requiredifnotremoved" id="clients_0__Name" type="text" value="" data-val-length-max="50" data-val-length="The field Name must be a string with a maximum length of 50." data-val="true">' +
             '</div>' +
             '<div>' +
             '   <input name="JobTitle" class="form-control col-md-3 text-box single-line" id="clients_0__JobTitle" type="text" value="" data-val-length-max="50" data-val-length="The field Job Title must be a string with a maximum length of 50." data-val="true">' +
@@ -192,8 +212,22 @@ $(function () { // set name = field name in each cell;don't include id
             '</div> ',
         formName: 'CompaniesForm'
     });
-    //console.log("Ready done.");
+    
+    $.validator.addMethod("requiredifnotremoved", function (value, element) {
+        var state = $(element).parents(".ContactsTableRowContent").attr("state");
+        if (state === "Deleted" || state === "Unadded") {
+            return true;
+        }
+        return rt = $.validator.methods.required.call(this, value, element);
+    }, "Client name should not be blank.");
+
+
+
+    
+    console.log("Ready done.");
 });
+
+
 
 function resetValidation(px)
 {
@@ -202,7 +236,6 @@ function resetValidation(px)
     $(form).removeData("validator")             // Added by jQuery Validate
         .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
     $.validator.unobtrusive.parse(form);
-    console.log("resetValidation", form);
 }
 
 function AddBtnData(addBtnClass) {
@@ -216,3 +249,4 @@ function DelBtnData(delBtnClass) {
                             <span class="glyphicon glyphicon-remove"></span> \
                         </button>';
 }
+
