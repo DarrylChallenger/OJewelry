@@ -23,6 +23,7 @@ function AddRow(index) {
     var delBtnClass = px + "DelBtn";
     var valRowContent = px + "TableRowValidation";
     var contentRowClass = px + "TableRowContent";
+    var state = "." + px + "State";
 
     // hide the '+' btn
     $("." + addBtnClass).addClass("hidden");
@@ -35,7 +36,6 @@ function AddRow(index) {
    } else {
         // add after last row
         $("#" + tableClass).last().append(nr);
-        //$("#" + tableClass).last().append('<div class="row ContactsTableRowData">hello</div>');
     }
     
     // wrap it...
@@ -44,24 +44,30 @@ function AddRow(index) {
     WrapRow(px, newRow);
 
     // state = "Added"
-    $("."+contentRowClass).last().attr("state", "Added");
+    console.log("tlc=", tableRowClass);
+    $("." + tableRowClass).last().children("." + px + "State").val("Added");
 
     // Show the button
     $("." + addBtnClass).last().removeClass("hidden");
+
     // add id, onclick handler to btns
-    $("." + addBtnClass).last().attr("id", addBtnClass + "_" + (index + 1)).attr("onclick", "AddRow(" + (index + 1) + ")");
-    $("." + delBtnClass).last().attr("id", delBtnClass + "_" + (index + 1)).attr("onclick", "DelRow(" + (index + 1) + ")");
+    var newIndex = $("." + tableRowClass).length - 1;
+    console.log("newIndex:", newIndex);
+    $("." + addBtnClass).last().attr("id", addBtnClass + "_" + newIndex).attr("onclick", "AddRow(" + newIndex + ")");
+    $("." + delBtnClass).last().attr("id", delBtnClass + "_" + newIndex).attr("onclick", "DelRow(" + newIndex + ")");
     // Add correct name/id to each child in row
     $.each(newRow.find(":input"), function (i, value) {
         name = value.getAttribute("name");
-        value.setAttribute("name", ds + "[" + (index + 1) + "]." + name);
-        value.setAttribute("id", ds + "_" + (index + 1) + "__" + name);
+        value.setAttribute("name", ds + "[" + newIndex + "]." + name);
+        value.setAttribute("id", ds + "_" + newIndex + "__" + name);
     });
+    name = $(newRow.parents("." + tableRowClass)).find(state).attr("name");
+    $(newRow.parents("." + tableRowClass)).find(state).attr("name", ds + "[" + newIndex + "]." + name).attr("id", ds + "_" + newIndex + "__" + name);
     // add validation
     valRows = $("." + valRowContent).last().children();
     $.each(valRows, function (i, value) {
         name = value.getAttribute("name");
-        value.setAttribute("data-valmsg-for", ds + "[" + (index + 1) + "]." + name);
+        value.setAttribute("data-valmsg-for", ds + "[" + newIndex + "]." + name);
     });
     resetValidation(px);
     console.log("AddRow Done");
@@ -71,7 +77,34 @@ function AddRow(index) {
 function DelRow(index) {
     console.log("DelRow", index);
     var px = sessionStorage.getItem("DCTS.tablePrefix");
-    var ds = sessionStorage.getItem("DCTS." + px + ".dataStructName");
+    //var ds = sessionStorage.getItem("DCTS." + px + ".dataStructName");
+    //var contentRowClass = px + "TableRowContent";
+    var tableRowClass = px + "TableRowContainer";
+    var addBtnClass = px + "AddBtn";
+    var state = "." + px + "State";
+
+    console.log("old container:", $($(".ContactsTableRowContainer")[index]));
+    console.log("old children:", $($(".ContactsTableRowContainer")[index]).children());
+    console.log("old state:", $($(".ContactsTableRowContainer")[index]).children(state));
+    console.log("old state val:", $($(".ContactsTableRowContainer")[index]).children(state).val());
+    if ($($(".ContactsTableRowContainer")[index]).children(state).val() === "Added") {
+        $($(".ContactsTableRowContainer")[index]).children(state).val("Unadded");
+    } else {
+        $($(".ContactsTableRowContainer")[index]).children(state).val("Deleted");
+    }
+    console.log("new state:" + $($(".ContactsTableRowContainer")[index]).children(state).val());
+    // hide Container
+    var container = $($("." + tableRowClass)[index]);
+    container.addClass("hidden");
+
+    // Show the button (last btn not in hidden container)
+    //$("." + addBtnClass).parents($("." + tableRowClass))
+    if ($(".ContactsTableRowContainer:not(.hidden)").last().find(".ContactsAddBtn").removeClass("hidden").length === 0) {
+        $(".ContactsAddBtn").first().removeClass("hidden");
+    } else {
+        $(".ContactsTableRowContainer:not(.hidden)").last().find(".ContactsAddBtn").removeClass("hidden");
+    }
+
     console.log("DelRow Done");
 }
 
@@ -96,11 +129,9 @@ function WrapRow(px, rows) {
 
     var addBtn = AddBtnData(addBtnClass);
     var delBtn = DelBtnData(delBtnClass);
-    
-    console.log($(rows));
-    
-    $.each($(rows), function (i, value) {
-        console.log(i + " : ", value);
+
+    console.log("rows.length:", $(rows).length);
+    $.each($(rows), function () {
         var element = $(this);
         element.wrapAll('<div class="row ' + contentRowClass + '"></div>')
             .before('<div class="col-sm-1 ">' + addBtn + "</div>")
@@ -108,40 +139,21 @@ function WrapRow(px, rows) {
             .wrapAll('<div class="col-sm-10 ContactTableS2"></div>');
     });
     
-    /*
-    $(rows)
-        .wrapAll('<div class="row ' + contentRowClass + '"></div>')
-        .before('<div class="col-sm-1 ">' + addBtn + "</div>")
-        .after("<div class=col-sm-1>" + delBtn + "</div>")
-        .wrapAll('<div class="col-sm-10 ContactTableS2"></div>');
-    */
     console.log("WrapRow Done");
 }
 
 function WrapRows(px) {
-    console.log("WrapRows");
+    //console.log("WrapRows");
     var rowClass = "." + px + "TableRowData";
     var addBtnClass = px + "AddBtn";
     var delBtnClass = px + "DelBtn";
 
     console.log("rowClass b4 loop:", $(rowClass));
 
-    /*
-    $(".ContactsTableRowData").map(function(i, value) {
-    //$.each($(rowClass), function (i, value) {
-        console.log("rowClass in loop:", this);
-        WrapRow(this);
-    });
-    */
-
-
-
-
-
-
     WrapRow(px, rowClass);
     //display '+' in last row
     lastRow = $("." + addBtnClass).last().removeClass("hidden");
+    console.log($(".ContactsAddBtn").length);
     // set id and onclick for each "+" btn
     $.each($("." + addBtnClass), function (index, value) {
         this.setAttribute("id", px + "AddBtn_" + (index - 1));
@@ -183,47 +195,15 @@ function WrapRows(px) {
 
 $(function () { // set name = field name in each cell;don't include id
     console.log("Ready called.");
-    $("#ContactsTableHeader").SetRows({
-        tablePrefix : "Contacts",
-        dataStructName: "clients",
-        newRow: '<div class="form-group ContactsTableRowContainer">' +
-            '<div class="row XYZ ContactsTableRowData">' +
-            '<input name="Id" id="clients_0__Id" type="hidden" value="0" data-val-required="The Id field is required." data-val="true" data-val-number="The field Id must be a number.">' +
-            '<input name="CompanyID" id="clients_0__CompanyID" type="hidden" value="" data-val="true" data-val-number="The field CompanyID must be a number.">' +
-            '<div>' +
-            '   <input name="Name" class="form-control col-md-3 text-box single-line requiredifnotremoved" id="clients_0__Name" type="text" value="" data-val-length-max="50" data-val-length="The field Name must be a string with a maximum length of 50." data-val="true">' +
-            '</div>' +
-            '<div>' +
-            '   <input name="JobTitle" class="form-control col-md-3 text-box single-line" id="clients_0__JobTitle" type="text" value="" data-val-length-max="50" data-val-length="The field Job Title must be a string with a maximum length of 50." data-val="true">' +
-            '</div>' +
-            '<div>' +
-            '   <input name="Phone" class="form-control col-md-3 text-box single-line" id="clients_0__Phone" type="tel" value="" data-val-length-max="10" data-val-length="The field Phone must be a string with a maximum length of 10." data-val="true" data-val-regex-pattern="^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$" data-val-regex="Invalid Phone number" data-val-phone="The Phone field is not a valid phone number.">' +
-            '</div>' +
-            '<div>' +
-            '   <input name="Email" class="form-control col-md-3 text-box single-line" id="clients_0__Email" type="email" value="" data-val-length-max="50" data-val-length="The field Email must be a string with a maximum length of 50." data-val="true">' +
-            '</div>' +
-            '</div>' +
-            '</div>',
-        valRow: '<div class="row ContactsTableRowValidation">' +
-            '<span name="Name" class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="clients[0].Name"></span>' +
-            '<span name="Phone" class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="clients[0].Phone"></span>' +
-            '<span name="Email" class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="clients[0].Email"></span>' +
-            '<span name="JobTitle" class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="clients[0].JobTitle"></span>' +
-            '</div> ',
-        formName: 'CompaniesForm'
-    });
     
     $.validator.addMethod("requiredifnotremoved", function (value, element) {
-        var state = $(element).parents(".ContactsTableRowContent").attr("state");
+        //var state = $(element).parents(".ContactsTableRowContent").attr("state");
+        var state = $(element).parents(".ContactsTableRowContainer").children(".ContactsState").val();
         if (state === "Deleted" || state === "Unadded") {
             return true;
         }
         return rt = $.validator.methods.required.call(this, value, element);
     }, "Client name should not be blank.");
-
-
-
-    
     console.log("Ready done.");
 });
 

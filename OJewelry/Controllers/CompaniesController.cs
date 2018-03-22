@@ -58,28 +58,7 @@ namespace OJewelry.Controllers
             if (ModelState.IsValid)
             {
                 db.Companies.Add(cvm.company);
-                foreach (Client c in cvm.clients)
-                {
-                    if (c.Id == 0)
-                    {
-                        if (c.Name != null)
-                        {
-                            c.CompanyID = cvm.company.Id;
-                            db.Clients.Add(c);
-                        }
-                    }
-                    else
-                    {
-                        if (c.Name != null)
-                        {
-                            db.Entry(c).State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            db.Entry(c).State = EntityState.Deleted;
-                        }
-                    }
-                }
+                SaveClients(cvm.company.Id, cvm.clients);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -100,8 +79,12 @@ namespace OJewelry.Controllers
             }
             CompanyViewModel cvm = new CompanyViewModel();
             cvm.company = company;
-            cvm.clients = db.Clients.Where(x => x.CompanyID == cvm.company.Id).ToList();
-            cvm.clients.Add(new Client());
+            List<Client> clients = db.Clients.Where(x => x.CompanyID == cvm.company.Id).ToList();
+            foreach(Client c in clients)
+            {
+                CompanyViewClientModel cvcm =  new CompanyViewClientModel(c);
+                cvm.clients.Add(cvcm);
+            }
             return View(cvm);
         }
 
@@ -114,26 +97,11 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                Company company = db.Companies.Find(cvm.company.Id);
-                company.Name = cvm.company.Name;
-                foreach (Client c in cvm.clients)
-                {
-                    if (c.Id == 0)
-                    {
-                        if (c.Name != null)
-                        {
-                            c.CompanyID = cvm.company.Id;
-                            db.Clients.Add(c);
-                        }
-                    } else {
-                        if (c.Name != null)
-                        {
-                            db.Entry(c).State = EntityState.Modified;
-                        } else {
-                            db.Entry(c).State = EntityState.Deleted;
-                        }
-                    }
-                }
+                // Company company = db.Companies.Find(cvm.company.Id);
+                // company.Name = cvm.company.Name;
+                db.Entry(cvm.company).State = EntityState.Modified;
+                
+                SaveClients(cvm.company.Id, cvm.clients);
 
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -165,6 +133,38 @@ namespace OJewelry.Controllers
             db.Companies.Remove(company);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        void SaveClients(int companyId, List<CompanyViewClientModel> clients)
+        {
+            Client cli;
+            foreach (CompanyViewClientModel c in clients)
+            {
+                if (c.Name != null)
+                {
+                    c.CompanyID = companyId;
+                    switch (c.State)
+                    {
+                        case CVCMState.Added:
+                            db.Clients.Add(c.GetClient());
+                            break;
+                        case CVCMState.Deleted:
+                            cli = c.GetClient();
+                            db.Entry(cli).State = EntityState.Deleted;
+                            db.Clients.Remove(cli);
+                            break;
+                        case CVCMState.Dirty:
+                            cli = c.GetClient();
+                            db.Entry(cli).State = EntityState.Modified;
+                            break;
+                        case CVCMState.Unadded:
+                        case CVCMState.Clean:
+                        default:
+                            break;
+                    }
+                }
+            }
+
         }
 
         public ActionResult Inventory(int? CompanyId)
