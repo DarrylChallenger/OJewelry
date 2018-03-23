@@ -53,7 +53,7 @@
     <div id="ContactsTableData">
         @for (int i = 0; i < Model.clients.Count; i++)
         {
-            <div class="form-group ContactsTableRowContainer state=@Model.clients[i].State.ToString()">
+            <div class="form-group ContactsTableRowContainer">
                 @Html.HiddenFor(model => model.clients[i].State, new { @class = "ContactsState" })
                 <div class="row ContactsTableRowData">
                     @Html.HiddenFor(model => model.clients[i].Id)

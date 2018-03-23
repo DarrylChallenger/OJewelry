@@ -432,6 +432,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\RowManager.js" />
     <Content Include="Scripts\SetupContacts-Companies.js" />
+    <Content Include="Scripts\SetupContacts-Presenters.js" />
     <Content Include="Scripts\Style_ComponentMgt.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -535,6 +536,7 @@
     <Content Include="Views\Styles\_CostComponentLastCol.cshtml" />
     <Content Include="Views\Styles\_StyleCreateEditPartial.cshtml" />
     <Content Include="Views\Companies\_CompanyCreateEditInputs.cshtml" />
+    <Content Include="Views\Presenters\_PresenterCreateEditInputs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

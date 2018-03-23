@@ -81,29 +81,7 @@ namespace OJewelry.Controllers
             if (ModelState.IsValid)
             {
                 db.Presenters.Add(pvm.Location);
-                foreach (Contact c in pvm.contacts)
-                {
-                    if (c.Id == 0)
-                    {
-                        if (c.Name != null)
-                        {
-                            c.PresenterId = pvm.Location.Id;
-                            db.Contacts.Add(c);
-                        }
-                    }
-                    else
-                    {
-                        if (c.Name != null)
-                        {
-                            db.Entry(c).State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            db.Entry(c).State = EntityState.Deleted;
-                        }
-                    }
-                }
-
+                SavePresenters(pvm.Location.Id, pvm.contacts);
                 db.SaveChanges();
                 return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
             }
@@ -125,8 +103,12 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            pvm.contacts = db.Contacts.Where(c => c.PresenterId == id).ToList();
-            pvm.contacts.Add(new Contact());
+            List<Contact> contacts = db.Contacts.Where(x => x.Location.Id == pvm.Location.Id).ToList();
+            foreach (Contact c in contacts)
+            {
+                PresenterViewContactModel pvcm = new PresenterViewContactModel(c);
+                pvm.contacts.Add(pvcm);
+            }
             pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
 
             return View(pvm);
@@ -139,36 +121,14 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(PresenterViewModel pvm)
         {
+            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
             if (ModelState.IsValid)
             {
                 db.Entry(pvm.Location).State = EntityState.Modified;
-                foreach (Contact c in pvm.contacts)
-                {
-                    if (c.Id == 0)
-                    {
-                        if (c.Name != null)
-                        {
-                            c.PresenterId = pvm.Location.Id;
-                            db.Contacts.Add(c);
-                        }
-                    }
-                    else
-                    {
-                        if (c.Name != null)
-                        {
-                            db.Entry(c).State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            db.Entry(c).State = EntityState.Deleted;
-                        }
-                    }
-                }
-
+                SavePresenters(pvm.Location.Id, pvm.contacts);
                 db.SaveChanges();
                 return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
             }
-            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
             return View(pvm);
         }
 
@@ -198,6 +158,38 @@ namespace OJewelry.Controllers
             db.Presenters.Remove(presenter);
             db.SaveChanges();
             return RedirectToAction("Index", new { companyId = coid });
+        }
+
+        void SavePresenters(int presenterId, List<PresenterViewContactModel> contacts)
+        {
+            Contact con;
+            foreach (PresenterViewContactModel p in contacts)
+            {
+                if (p.Name != null)
+                {
+                    p.PresenterId = presenterId;
+                    switch (p.State)
+                    {
+                        case PVCMState.Added:
+                            db.Contacts.Add(p.GetContact());
+                            break;
+                        case PVCMState.Deleted:
+                            con = p.GetContact();
+                            db.Entry(con).State = EntityState.Deleted;
+                            db.Contacts.Remove(con);
+                            break;
+                        case PVCMState.Dirty:
+                            con = p.GetContact();
+                            db.Entry(con).State = EntityState.Modified;
+                            break;
+                        case PVCMState.Unadded:
+                        case PVCMState.Clean:
+                        default:
+                            break;
+                    }
+                }
+            }
+
         }
 
         protected override void Dispose(bool disposing)

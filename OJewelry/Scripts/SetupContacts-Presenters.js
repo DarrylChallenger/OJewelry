@@ -3,12 +3,12 @@ $(function () {
     console.log("Calling SetRows!");
     $("body").SetRows({
         tablePrefix: "Contacts",
-        dataStructName: "clients",
+        dataStructName: "contacts",
         newRow: '<div class="form-group ContactsTableRowContainer">' +
 
             '<input name="State" class="ContactsState" type="hidden" value="Dirty" data-val-required="The State field is required." data-val="true">' +
 
-            '<div class="row XYZ ContactsTableRowData">' +
+            '<div class="row ABC ContactsTableRowData">' +
             '<input name="Id" id="clients_0__Id" type="hidden" value="0" data-val-required="The Id field is required." data-val="true" data-val-number="The field Id must be a number.">' +
             '<input name="CompanyID" id="clients_0__CompanyID" type="hidden" value="" data-val="true" data-val-number="The field CompanyID must be a number.">' +
             '<div>' +
@@ -31,6 +31,6 @@ $(function () {
             '<span name="Phone" class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="clients[0].Phone"></span>' +
             '<span name="Email" class="field-validation-valid text-danger" data-valmsg-replace="true" data-valmsg-for="clients[0].Email"></span>' +
             '</div> ',
-        formName: 'CompaniesForm'
+        formName: 'LocationsForm'
     });
 });

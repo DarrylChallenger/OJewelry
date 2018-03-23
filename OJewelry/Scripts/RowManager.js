@@ -83,26 +83,26 @@ function DelRow(index) {
     var addBtnClass = px + "AddBtn";
     var state = "." + px + "State";
 
-    console.log("old container:", $($(".ContactsTableRowContainer")[index]));
-    console.log("old children:", $($(".ContactsTableRowContainer")[index]).children());
-    console.log("old state:", $($(".ContactsTableRowContainer")[index]).children(state));
-    console.log("old state val:", $($(".ContactsTableRowContainer")[index]).children(state).val());
-    if ($($(".ContactsTableRowContainer")[index]).children(state).val() === "Added") {
-        $($(".ContactsTableRowContainer")[index]).children(state).val("Unadded");
+    console.log("old container:", $($("." + tableRowClass)[index]));
+    console.log("old children:", $($("." + tableRowClass)[index]).children());
+    console.log("old state:", $($("." + tableRowClass)[index]).children(state));
+    console.log("old state val:", $($("." + tableRowClass)[index]).children(state).val());
+    if ($($("." + tableRowClass)[index]).children(state).val() === "Added") {
+        $($("." + tableRowClass)[index]).children(state).val("Unadded");
     } else {
-        $($(".ContactsTableRowContainer")[index]).children(state).val("Deleted");
+        $($("." + tableRowClass)[index]).children(state).val("Deleted");
     }
-    console.log("new state:" + $($(".ContactsTableRowContainer")[index]).children(state).val());
+    console.log("new state:" + $($("." + tableRowClass)[index]).children(state).val());
     // hide Container
     var container = $($("." + tableRowClass)[index]);
     container.addClass("hidden");
 
     // Show the button (last btn not in hidden container)
     //$("." + addBtnClass).parents($("." + tableRowClass))
-    if ($(".ContactsTableRowContainer:not(.hidden)").last().find(".ContactsAddBtn").removeClass("hidden").length === 0) {
-        $(".ContactsAddBtn").first().removeClass("hidden");
+    if ($("." + tableRowClass + ":not(.hidden)").last().find("." + addBtnClass).removeClass("hidden").length === 0) {
+        $("." + addBtnClass).first().removeClass("hidden");
     } else {
-        $(".ContactsTableRowContainer:not(.hidden)").last().find(".ContactsAddBtn").removeClass("hidden");
+        $("." + tableRowClass + ":not(.hidden)").last().find("." + addBtnClass).removeClass("hidden");
     }
 
     console.log("DelRow Done");
@@ -153,7 +153,7 @@ function WrapRows(px) {
     WrapRow(px, rowClass);
     //display '+' in last row
     lastRow = $("." + addBtnClass).last().removeClass("hidden");
-    console.log($(".ContactsAddBtn").length);
+    console.log($("." + addBtnClass).length);
     // set id and onclick for each "+" btn
     $.each($("." + addBtnClass), function (index, value) {
         this.setAttribute("id", px + "AddBtn_" + (index - 1));
@@ -195,10 +195,12 @@ function WrapRows(px) {
 
 $(function () { // set name = field name in each cell;don't include id
     console.log("Ready called.");
-    
+    var px = sessionStorage.getItem("DCTS.tablePrefix");
+    var tableRowClass = px + "TableRowContainer";
+    var stateClass = px + "State";
+
     $.validator.addMethod("requiredifnotremoved", function (value, element) {
-        //var state = $(element).parents(".ContactsTableRowContent").attr("state");
-        var state = $(element).parents(".ContactsTableRowContainer").children(".ContactsState").val();
+        var state = $(element).parents("." + tableRowClass).children("." + stateClass).val();
         if (state === "Deleted" || state === "Unadded") {
             return true;
         }
