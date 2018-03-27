@@ -3,19 +3,23 @@
 }
 <h2>@ViewBag.Title</h2>
 
-<h3>Pre-release Version</h3> 
+<h3>Pre-release Version</h3>
 <ul>
+    <li>
+        <a data-toggle="collapse" href="#v_57" role="button">0.57 Inventory cleanup, Contact Management</a>
+        <ul class="collapse in" id="v_57">
+            <li>Share auth and app DB</li>
+            <li>Add ability to log in</li>
+        </ul>
+    </li>
+
     <li>
         <a data-toggle="collapse" href="#v_56" role="button">0.56 Inventory cleanup, Contact Management, Component Sorting</a>
         <ul class="collapse" id="v_56">
             <li>Change labels for excel links on inventory page. </li>
             <li>Ignore blank rows when adding/moving inventory. Custom Validation summary on Style Create|Edit</li>
             <li>Don't allow new style with same name as existing style. Disallow changing Style name on Edit.</li>
-            <li>Improve interface for adding/removing contacts (Company pages)</li>
-        </ul>
-        <ul> TBD
             <li>Improve interface for adding/removing contacts (Company and Location pages)</li>
-            <li>Custom sorting (needs definition)</li>
         </ul>
     </li>
 
@@ -55,8 +59,7 @@
             <li>Populate qty and "remove memo'd" on Assortment page (Collection|Index)</li>
             <li>Add Desc and Collection to Inventory Report and Export</li>
         </ul>
-        <ul>
-        </ul>
+        <ul></ul>
     </li>
     <li>
         <a data-toggle="collapse" href="#v_51a" role="button">0.51a - Bug fixes </a>
@@ -68,8 +71,7 @@
             <li>add images</li>
             <li>adjust menu style</li>
         </ul>
-        <ul>
-        </ul>
+        <ul></ul>
     </li>
     <li>
         <a data-toggle="collapse" href="#v_51" role="button">0.51 - Add-Components-to-Style Update</a>
@@ -134,10 +136,17 @@
     <li>handle $ sign as input in excel files (can't reproduce error)</li>
     <li>Change error messages to refer to Castings/Labor/Miscs on Style Edit|Create pages</li>
 </ul>
+<ul>
+    TBD
+    <li>Custom sorting (needs definition)</li>
+</ul>
+
 
 <h3>Next Releases - O, please feel free to re-prioritize</h3>
 <ul>
-    <li>0.56 - Manage contacts, custom sorting, handle sheets with extra white space</li>
+    <li>0.56 - Manage contacts</li>
+    <li>0.57 - Add logon ids</li>
+    <li>0.58 - Handle sheets with extra white space</li>
     <li>0.6 - Other Reports|Exports</li>
     <li>0.65 - Handle cases where yellow error page appears (delete buttons)</li>
     <li>0.7 - Images</li>
