@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OJewelry.Models
 {
@@ -46,9 +47,22 @@ namespace OJewelry.Models
         public string Email { get; set; }
     }
 
+    public class UserListViewModel
+    {
+        public UserListViewModel()
+        {
+            Users = new List<ApplicationUser>();
+        }
+        public List<ApplicationUser> Users { get; set; }
+    }
+
     public class LoginViewModel
     {
         [Required]
+        //[Index(IsUnique = true)]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+
         [Display(Name = "Email")]
         [EmailAddress]
         public string Email { get; set; }
@@ -64,7 +78,18 @@ namespace OJewelry.Models
 
     public class RegisterViewModel
     {
+        public RegisterViewModel()
+        {
+            Companies = new List<CompanyAuthorizedUser>();
+        }
+
         [Required]
+        //[Index(IsUnique = true)]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+
+        [Required]
+        //[Index(IsUnique = true)]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -79,6 +104,26 @@ namespace OJewelry.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        public string RoleId { get; set; }
+
+        public List<CompanyAuthorizedUser> Companies { get; set; }
+    }
+
+    [NotMapped]
+    public class EditUserViewModel
+    {
+        public EditUserViewModel()
+        {
+            Companies = new List<CompanyAuthorizedUser>();
+        }
+
+        [Required]
+        public string RoleId { get; set; }
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public List<CompanyAuthorizedUser> Companies { get; set; }
     }
 
     public class ResetPasswordViewModel
@@ -108,5 +153,13 @@ namespace OJewelry.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+    }
+
+    [NotMapped]
+    public class CompanyAuthorizedUser
+    {
+        public bool bIncluded { get; set; }
+        public int CompanyId { get; set; }
+        public string CompanyName { get; set; }
     }
 }

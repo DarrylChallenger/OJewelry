@@ -18,6 +18,7 @@ namespace OJewelry.Models
         public virtual DbSet<Client> Clients { get; set; }
         public virtual DbSet<Collection> Collections { get; set; }
         public virtual DbSet<Company> Companies { get; set; }
+        public virtual DbSet<CompanyUser> CompaniesUsers { get; set; }
         public virtual DbSet<Component> Components { get; set; }
         public virtual DbSet<ComponentType> ComponentTypes { get; set; }
         public virtual DbSet<Contact> Contacts { get; set; }

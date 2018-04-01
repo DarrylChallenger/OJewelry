@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OJewelry.Models;
@@ -22,7 +24,7 @@ namespace OJewelry.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +36,9 @@ namespace OJewelry.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -75,7 +77,8 @@ namespace OJewelry.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
+
             switch (result)
             {
                 case SignInStatus.Success:
@@ -120,7 +123,7 @@ namespace OJewelry.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -134,35 +137,89 @@ namespace OJewelry.Controllers
             }
         }
 
-        //
         // GET: /Account/Register
-        [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            RegisterViewModel rvm = new RegisterViewModel();
+            ApplicationDbContext sec = new ApplicationDbContext();
+
+            OJewelryDB db = new OJewelryDB();
+            foreach (Company c in db.Companies) // should be company left outer joined to users by id, exclude Managers, admins
+            {
+                CompanyAuthorizedUser cau = new CompanyAuthorizedUser()
+                {
+                    bIncluded = false, // based on users for this company
+                    CompanyId = c.Id,
+                    CompanyName = c.Name
+                };
+                rvm.Companies.Add(cau);
+            }
+
+            return View(rvm);
         }
 
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    OJewelryDB db = new OJewelryDB();
+                    UpdateCompaniesUsers(user, db, model.Companies);
+                    /*{
+                        // Add companies for this user 
+                        List<CompanyUser> addComps = new List<CompanyUser>();
+                        List<CompanyUser> delComps = new List<CompanyUser>();
+                        {
+                            // add bIncluded users who are not in in company
+                            foreach (CompanyAuthorizedUser cau in model.Companies.Where(c => c.bIncluded == true))
+                            {
+                                CompanyUser cu = new CompanyUser()
+                                {
+                                    CompanyId = cau.CompanyId,
+                                    UserId = user.Id
+                                };
+                                if (db.CompaniesUsers.Where(x => x.CompanyId == cu.CompanyId && x.UserId == cu.UserId).Count() == 0)
+                                {
+                                    addComps.Add(cu);
+                                }
+                            }
+                            foreach (CompanyUser cu in addComps)
+                            {
+                                db.CompaniesUsers.Add(cu);
 
+                            }
+                            //    db.CompanyUsers.AddRange(addComps);
+                            // remove !bIncluded users who are in company
+                            foreach (CompanyAuthorizedUser cau in model.Companies.Where(c => c.bIncluded == false))
+                            {
+                                CompanyUser cu = new CompanyUser()
+                                {
+                                    CompanyId = cau.CompanyId,
+                                    UserId = user.Id
+                                };
+                                if (db.CompaniesUsers.Where(x => x.CompanyId == cu.CompanyId && x.UserId == cu.UserId).Count() != 0)
+                                {
+                                    delComps.Add(cu);
+                                }
+                            }
+                            db.CompaniesUsers.RemoveRange(delComps);
+                        }
+                    }*/
+                    db.SaveChanges();
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -170,6 +227,121 @@ namespace OJewelry.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        public ActionResult EditUser(string UserId)
+        {
+            EditUserViewModel evm = new EditUserViewModel();
+            ApplicationDbContext sec = new ApplicationDbContext();
+            ApplicationUser user = sec.Users.Find(UserId);
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            evm.UserName = user.UserName;
+            OJewelryDB db = new OJewelryDB();
+            foreach (Company c in db.Companies) // should be company left outer joined to users by id, exclude Managers, admins
+            {
+                CompanyAuthorizedUser cau = new CompanyAuthorizedUser()
+                {
+                    bIncluded = false, // based on users for this company
+                    CompanyId = c.Id,
+                    CompanyName = c.Name
+                };
+                evm.Companies.Add(cau);
+            }
+            List<CompanyUser> cus = db.CompaniesUsers.Where(x => x.UserId == UserId).ToList();
+            List<int> accessibleCompanyIds = evm.Companies.Select(s1 => s1.CompanyId).ToList().Intersect(cus.Select(s2 => s2.CompanyId).ToList()).ToList();
+            foreach (int i in accessibleCompanyIds)
+            {
+                CompanyAuthorizedUser c = evm.Companies.Find(x => x.CompanyId == i);
+                if (c != null)
+                {
+                    c.bIncluded = true;
+                }
+            }
+            ViewBag.Roles = sec.Roles.ToList();
+            return View(evm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditUser(EditUserViewModel evm)
+        {
+            OJewelryDB db = new OJewelryDB();
+            ApplicationDbContext sec = new ApplicationDbContext();
+            ApplicationUser user = sec.Users.Find(evm.UserId);
+            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(sec));
+
+            UpdateCompaniesUsers(user, db, evm.Companies);
+
+            if (ModelState.IsValid)
+            {
+                db.SaveChanges();
+                // Update Role
+
+                IdentityRole ir = sec.Roles.Find(evm.RoleId);
+                user.Roles.Clear(); // ensure user only has one role
+                UserManager.AddToRole(user.Id, ir.Name);
+                return RedirectToAction("EditUser");
+            }
+            ViewBag.Roles = sec.Roles.ToList();
+            return View(evm);
+        }
+
+        private void UpdateCompaniesUsers(ApplicationUser user, OJewelryDB db, List<CompanyAuthorizedUser> Companies)
+        {
+
+            /* Add companies for this user */
+            List<CompanyUser> addComps = new List<CompanyUser>();
+            List<CompanyUser> delComps = new List<CompanyUser>();
+            {
+                // add bIncluded users who are not in in company
+                foreach (CompanyAuthorizedUser cau in Companies.Where(c => c.bIncluded == true))
+                {
+                    CompanyUser cu = new CompanyUser()
+                    {
+                        CompanyId = cau.CompanyId,
+                        UserId = user.Id
+                    };
+                    if (db.CompaniesUsers.Where(x => x.CompanyId == cu.CompanyId && x.UserId == cu.UserId).Count() == 0)
+                    {
+                        addComps.Add(cu);
+                    }
+                }
+                /*
+                foreach (CompanyUser cu in addComps)
+                {
+                    db.CompaniesUsers.Add(cu);
+
+                }
+                */
+                db.CompaniesUsers.AddRange(addComps);
+                // remove !bIncluded users who are in company
+                foreach (CompanyAuthorizedUser cau in Companies.Where(c => c.bIncluded == false))
+                {
+                    CompanyUser cu = db.CompaniesUsers.Where(x => x.CompanyId == cau.CompanyId && x.UserId == user.Id).FirstOrDefault();
+                    if (cu != null)
+                    {
+                        delComps.Add(cu);
+                    }
+                }
+                db.CompaniesUsers.RemoveRange(delComps);
+            }
+        }
+
+        public ActionResult UserList()
+        {
+            ApplicationDbContext sec = new ApplicationDbContext();
+            UserListViewModel ulvm = new UserListViewModel();
+            ulvm.Users = sec.Users.OrderBy(n => n.UserName).ToList(); // filter out admins
+            return View(ulvm);
+        }
+
+        [HttpPost]
+        public ActionResult UserList(string UserId)
+        {
+            return RedirectToAction("EditUser", UserId);
         }
 
         //

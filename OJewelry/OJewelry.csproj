@@ -353,6 +353,18 @@
     <Compile Include="Migrations\201803131610578_v.55c.Designer.cs">
       <DependentUpon>201803131610578_v.55c.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803310100532_AddCompaniesToUsers.cs" />
+    <Compile Include="Migrations\201803310100532_AddCompaniesToUsers.Designer.cs">
+      <DependentUpon>201803310100532_AddCompaniesToUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803311613544_v.6_Security.cs" />
+    <Compile Include="Migrations\201803311613544_v.6_Security.Designer.cs">
+      <DependentUpon>201803311613544_v.6_Security.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803311628112_v.601.cs" />
+    <Compile Include="Migrations\201803311628112_v.601.Designer.cs">
+      <DependentUpon>201803311628112_v.601.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -363,6 +375,7 @@
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\CollectionViewModel.cs" />
     <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\CompanyUser.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\ComponentType.cs" />
@@ -396,6 +409,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="DBScripts\CreateOJDB.sql" />
+    <Content Include="DBScripts\CreateOJSecAspNet.sql" />
     <Content Include="DBScripts\InvReport.sql" />
     <Content Include="DBScripts\OJewelryDBTablesV0.2.sql" />
     <Content Include="favicon.ico" />
@@ -533,6 +547,8 @@
     <Content Include="Views\Styles\_CostComponentCol1.cshtml" />
     <Content Include="Views\Styles\_CostComponentLastCol.cshtml" />
     <Content Include="Views\Styles\_StyleCreateEditPartial.cshtml" />
+    <Content Include="Views\Account\EditUser.cshtml" />
+    <Content Include="Views\Account\UserList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -604,6 +620,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803131610578_v.55c.resx">
       <DependentUpon>201803131610578_v.55c.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803310100532_AddCompaniesToUsers.resx">
+      <DependentUpon>201803310100532_AddCompaniesToUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803311613544_v.6_Security.resx">
+      <DependentUpon>201803311613544_v.6_Security.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803311628112_v.601.resx">
+      <DependentUpon>201803311628112_v.601.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
