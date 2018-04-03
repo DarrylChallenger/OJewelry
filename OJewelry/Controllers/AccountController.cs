@@ -154,7 +154,7 @@ namespace OJewelry.Controllers
                 };
                 rvm.Companies.Add(cau);
             }
-
+            ViewBag.Roles = sec.Roles.ToList();
             return View(rvm);
         }
 
@@ -164,8 +164,10 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            ApplicationDbContext sec = new ApplicationDbContext();
             if (ModelState.IsValid)
             {
+
                 var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -179,53 +181,15 @@ namespace OJewelry.Controllers
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
                     OJewelryDB db = new OJewelryDB();
                     UpdateCompaniesUsers(user, db, model.Companies);
-                    /*{
-                        // Add companies for this user 
-                        List<CompanyUser> addComps = new List<CompanyUser>();
-                        List<CompanyUser> delComps = new List<CompanyUser>();
-                        {
-                            // add bIncluded users who are not in in company
-                            foreach (CompanyAuthorizedUser cau in model.Companies.Where(c => c.bIncluded == true))
-                            {
-                                CompanyUser cu = new CompanyUser()
-                                {
-                                    CompanyId = cau.CompanyId,
-                                    UserId = user.Id
-                                };
-                                if (db.CompaniesUsers.Where(x => x.CompanyId == cu.CompanyId && x.UserId == cu.UserId).Count() == 0)
-                                {
-                                    addComps.Add(cu);
-                                }
-                            }
-                            foreach (CompanyUser cu in addComps)
-                            {
-                                db.CompaniesUsers.Add(cu);
-
-                            }
-                            //    db.CompanyUsers.AddRange(addComps);
-                            // remove !bIncluded users who are in company
-                            foreach (CompanyAuthorizedUser cau in model.Companies.Where(c => c.bIncluded == false))
-                            {
-                                CompanyUser cu = new CompanyUser()
-                                {
-                                    CompanyId = cau.CompanyId,
-                                    UserId = user.Id
-                                };
-                                if (db.CompaniesUsers.Where(x => x.CompanyId == cu.CompanyId && x.UserId == cu.UserId).Count() != 0)
-                                {
-                                    delComps.Add(cu);
-                                }
-                            }
-                            db.CompaniesUsers.RemoveRange(delComps);
-                        }
-                    }*/
+                    UpdateRoles(sec, user, model.RoleId);
                     db.SaveChanges();
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("UserList", "Account");
                 }
                 AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
+            ViewBag.Roles = sec.Roles.ToList();
             return View(model);
         }
 
@@ -261,6 +225,14 @@ namespace OJewelry.Controllers
                 }
             }
             ViewBag.Roles = sec.Roles.ToList();
+            IdentityUserRole r = user.Roles.FirstOrDefault();
+            if (r != null)
+            {
+                evm.RoleId = r.RoleId;
+            } else
+            {
+                evm.RoleId = "";
+            }
             return View(evm);
         }
 
@@ -273,19 +245,30 @@ namespace OJewelry.Controllers
             ApplicationUser user = sec.Users.Find(evm.UserId);
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(sec));
 
-            UpdateCompaniesUsers(user, db, evm.Companies);
 
             if (ModelState.IsValid)
             {
-                db.SaveChanges();
+                // Update the companies user can access
+                UpdateCompaniesUsers(user, db, evm.Companies);
                 // Update Role
-
-                IdentityRole ir = sec.Roles.Find(evm.RoleId);
-                user.Roles.Clear(); // ensure user only has one role
-                UserManager.AddToRole(user.Id, ir.Name);
-                return RedirectToAction("EditUser");
+                UpdateRoles(sec, user, evm.RoleId);
+                db.SaveChanges();
+                //sec.SaveChanges();
+                return RedirectToAction("UserList");
             }
+            evm.UserName = user.UserName;
             ViewBag.Roles = sec.Roles.ToList();
+            evm.Companies.Clear();
+            foreach (Company c in db.Companies) // should be company left outer joined to users by id, exclude Managers, admins
+            {
+                CompanyAuthorizedUser cau = new CompanyAuthorizedUser()
+                {
+                    bIncluded = false, // based on users for this company
+                    CompanyId = c.Id,
+                    CompanyName = c.Name
+                };
+                evm.Companies.Add(cau);
+            }
             return View(evm);
         }
 
@@ -309,13 +292,7 @@ namespace OJewelry.Controllers
                         addComps.Add(cu);
                     }
                 }
-                /*
-                foreach (CompanyUser cu in addComps)
-                {
-                    db.CompaniesUsers.Add(cu);
 
-                }
-                */
                 db.CompaniesUsers.AddRange(addComps);
                 // remove !bIncluded users who are in company
                 foreach (CompanyAuthorizedUser cau in Companies.Where(c => c.bIncluded == false))
@@ -328,6 +305,16 @@ namespace OJewelry.Controllers
                 }
                 db.CompaniesUsers.RemoveRange(delComps);
             }
+        }
+
+        private void UpdateRoles(ApplicationDbContext sec, ApplicationUser user, string roleId)
+        {
+            IdentityRole ir = sec.Roles.Find(roleId);
+            // user.Roles.Clear(); // ensure user only has one role
+            UserManager.RemoveFromRole(user.Id, "Admin");
+            UserManager.RemoveFromRole(user.Id, "Manager");
+            UserManager.RemoveFromRole(user.Id, "User");
+            UserManager.AddToRole(user.Id, ir.Name);
         }
 
         public ActionResult UserList()

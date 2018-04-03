@@ -4,12 +4,68 @@ namespace OJewelry.Models
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using System.Collections.Generic;
+    using Microsoft.AspNet.Identity;
+    using System.Web;
+    using Microsoft.AspNet.Identity.EntityFramework;
 
     public partial class OJewelryDB : DbContext
     {
         public OJewelryDB()
             : base("name=OJewelryDB")
         {
+            loggedOnUserName = HttpContext.Current.User.Identity.GetUserName();
+            sec = new ApplicationDbContext();
+            ApplicationUser user = sec.Users.Where(x => x.UserName == loggedOnUserName).FirstOrDefault();
+            if (user != null)
+            {
+                userId = user.Id;
+            } else
+            {
+                userId = "";
+            }
+            IdentityRole role = sec.Roles.ToList().Where(x=>x.Name.ToString() == "Admin").FirstOrDefault();
+            bIsAdmin = false;
+            if (role != null && user != null)
+            {
+                IdentityUserRole ur = user.Roles.FirstOrDefault();
+                if (ur != null)
+                {
+                    bIsAdmin = role.Id == ur.RoleId;
+                }
+            }
+        }
+
+        private string loggedOnUserName;
+        string userId;
+        bool bIsAdmin;
+        private ApplicationDbContext sec;
+        public IEnumerable<Company> Companies
+        {
+            get {
+                // Get logged on user
+                //return _Companies;
+                if (bIsAdmin)
+                {
+                    return _Companies;
+                }
+                return _Companies.Join(CompaniesUsers.Where(x => x.UserId == userId), c => c.Id, cu => cu.CompanyId, (c, cu) => c);
+            }
+        }
+
+        public Company FindCompany(int? i)
+        {
+            return _Companies.Find(i);
+        }
+
+        public Company AddCompany(Company company)
+        {
+            return _Companies.Add(company);
+        }
+
+        public Company RemoveCompany(Company company)
+        {
+            return _Companies.Remove(company);
         }
 
         public virtual DbSet<ACL> ACLs { get; set; }
@@ -17,7 +73,7 @@ namespace OJewelry.Models
         public virtual DbSet<Casting> Castings { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
         public virtual DbSet<Collection> Collections { get; set; }
-        public virtual DbSet<Company> Companies { get; set; }
+        public virtual DbSet<Company> _Companies { get; set; }
         public virtual DbSet<CompanyUser> CompaniesUsers { get; set; }
         public virtual DbSet<Component> Components { get; set; }
         public virtual DbSet<ComponentType> ComponentTypes { get; set; }

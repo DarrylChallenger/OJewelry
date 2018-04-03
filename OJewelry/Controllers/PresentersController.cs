@@ -26,7 +26,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company co = db.Companies.Find(companyId);
+            Company co = db.FindCompany(companyId);
             if (co == null)
             {
                 return HttpNotFound();
@@ -45,7 +45,7 @@ namespace OJewelry.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Presenter presenter = db.Presenters.Find(id);
-            presenter.Company = db.Companies.Find(presenter.CompanyId);
+            presenter.Company = db.FindCompany(presenter.CompanyId);
             if (presenter == null)
             {
                 return HttpNotFound();
@@ -60,7 +60,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company co = db.Companies.Find(companyId);
+            Company co = db.FindCompany(companyId);
             if (co == null)
             {
                 return HttpNotFound();
@@ -108,7 +108,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
             }
 
-            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
+            pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
             return View(pvm);
         }
 
@@ -127,7 +127,7 @@ namespace OJewelry.Controllers
             }
             pvm.contacts = db.Contacts.Where(c => c.PresenterId == id).ToList();
             pvm.contacts.Add(new Contact());
-            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
+            pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
 
             return View(pvm);
         }
@@ -168,7 +168,7 @@ namespace OJewelry.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
             }
-            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
+            pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
             return View(pvm);
         }
 
@@ -180,7 +180,7 @@ namespace OJewelry.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Presenter presenter = db.Presenters.Find(id);
-            presenter.Company = db.Companies.Find(presenter.CompanyId);
+            presenter.Company = db.FindCompany(presenter.CompanyId);
             if (presenter == null)
             {
                 return HttpNotFound();
@@ -270,7 +270,7 @@ namespace OJewelry.Controllers
                     document.Close();
 
                     b = memStream.ToArray();
-                    Company company = db.Companies.Find(CompanyId);
+                    Company company = db.FindCompany(CompanyId);
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         company.Name + " Locations as of " + DateTime.Now.ToString() + ".xlsx");
                 }

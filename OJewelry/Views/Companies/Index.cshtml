@@ -4,7 +4,7 @@
     ViewBag.Title = "Companies";
 }
 
-<h2>Company List for <i>User</i></h2>
+<h2>Company List for <i>@ViewBag.UserName</i></h2>
 
 <p>
     @Html.ActionLink("Create New Company", "Create", new { @companyId = ViewBag.companyId })

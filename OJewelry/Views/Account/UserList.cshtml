@@ -1,24 +1,45 @@
 ﻿@model OJewelry.Models.UserListViewModel
 @using OJewelry.Models
+@{
+    /**/
+
+    ViewBag.Title = "User List";
+}
 
 <h3>Users</h3>
 
+@Html.ActionLink("Create new User", "Register")
+<hr />
 @if (Model != null & Model.Users != null)
 {
     <div class="row">
         @Html.Label("User Name", new { @class = "form-label col-md-3" })
         @Html.LabelFor(model => model.Users[0].Email, new { @class = "form-label col-md-3" })
+        @*Html.Label("Role", new { @class = "form-label col-md-3" })*@
     </div>
     <div>
+        <hr />
         @foreach (ApplicationUser u in Model.Users)
         {
-            <div class="row form-group">
+            <div class="form-group row ">
                 <div class="col-md-3">
                     @Html.DisplayFor(model => u.UserName)
                 </div>
                 <div class="col-md-3">
                     @Html.DisplayFor(model => u.Email)
                 </div>
+                @*
+                    <div class="col-md-3">
+                        @if (u.Roles.Count == 0)
+                        {
+                            <text>No Role</text>
+                        }
+                        else
+                        {
+                        @Html.DisplayFor(model => u.Roles.First().RoleId)
+                        }
+                    </div>
+                *@
                 <div class="col-md-1">
                     @Html.ActionLink("Edit", "EditUser", new { userId = u.Id })
                 </div>
@@ -30,5 +51,5 @@ else
 {
     <div class="text-danger">There are no users</div>
 }
-
+<hr />
 @Html.ActionLink("Home", "Index", "Home")

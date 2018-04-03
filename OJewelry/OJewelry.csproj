@@ -412,6 +412,7 @@
     <Content Include="DBScripts\CreateOJSecAspNet.sql" />
     <Content Include="DBScripts\InvReport.sql" />
     <Content Include="DBScripts\OJewelryDBTablesV0.2.sql" />
+    <Content Include="DBScripts\Roles.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

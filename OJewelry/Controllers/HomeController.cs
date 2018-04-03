@@ -59,7 +59,7 @@ namespace OJewelry.Controllers
 
             OJewelryDB dc = new OJewelryDB();
             CollectionViewModel m = new CollectionViewModel();
-            Company co = dc.Companies.Find(id);
+            Company co = dc.FindCompany(id);
             m.CompanyId = co.Id;
             m.CompanyName = co.Name;
             m.Collections = new List<CollectionModel>();

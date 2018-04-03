@@ -17,12 +17,21 @@ namespace OJewelry.Controllers
 {
     public class CompaniesController : Controller
     {
-        //private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext sec = new ApplicationDbContext();
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Companies
         public ActionResult Index()
         {
+
+            string loggedOnUserName = System.Web.HttpContext.Current.User.Identity.Name;
+            ViewBag.UserName = loggedOnUserName;
+            sec = new ApplicationDbContext();
+            ApplicationUser user = sec.Users.Where(x => x.UserName == loggedOnUserName).FirstOrDefault();
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View(db.Companies.OrderBy(c=>c.Name).ToList());
         }
 
@@ -33,7 +42,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company company = db.Companies.Find(id);
+            Company company = db.FindCompany(id);
             if (company == null)
             {
                 return HttpNotFound();
@@ -57,7 +66,16 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Companies.Add(cvm.company);
+                string loggedOnUserName = System.Web.HttpContext.Current.User.Identity.Name;
+                sec = new ApplicationDbContext();
+                ApplicationUser user = sec.Users.Where(x => x.UserName == loggedOnUserName).FirstOrDefault();
+                CompanyUser cu = new CompanyUser()
+                {
+                    CompanyId = cvm.company.Id,
+                    UserId = user.Id
+                };
+                db.AddCompany(cvm.company);
+                db.CompaniesUsers.Add(cu);
                 foreach (Client c in cvm.clients)
                 {
                     if (c.Id == 0)
@@ -81,6 +99,8 @@ namespace OJewelry.Controllers
                     }
                 }
                 db.SaveChanges();
+                cu.CompanyId = cvm.company.Id;
+
                 return RedirectToAction("Index");
             }
             return View(cvm.company);
@@ -93,7 +113,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company company = db.Companies.Find(id);
+            Company company = db.FindCompany(id);
             if (company == null)
             {
                 return HttpNotFound();
@@ -114,7 +134,7 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                Company company = db.Companies.Find(cvm.company.Id);
+                Company company = db.FindCompany(cvm.company.Id);
                 company.Name = cvm.company.Name;
                 foreach (Client c in cvm.clients)
                 {
@@ -148,7 +168,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company company = db.Companies.Find(id);
+            Company company = db.FindCompany(id);
             if (company == null)
             {
                 return HttpNotFound();
@@ -161,8 +181,8 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Company company = db.Companies.Find(id);
-            db.Companies.Remove(company);
+            Company company = db.FindCompany(id);
+            db.RemoveCompany(company);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -278,7 +298,7 @@ namespace OJewelry.Controllers
                                                     // add this row of this sheet to warning list
                                                     warning = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist; adding to default Collection";
                                                     ivm.Warnings.Add(warning);
-                                                    ivm.CompanyName = db.Companies.Find(ivm.CompanyId).Name;
+                                                    ivm.CompanyName = db.FindCompany(ivm.CompanyId).Name;
                                                     style.CollectionId = CreateCompanyCollection(ivm, colls);
                                                 }
                                                 else
@@ -865,7 +885,7 @@ namespace OJewelry.Controllers
                 }).
                 Distinct().OrderBy(x => x.LocationName).OrderBy(x => x.StyleNum).ToList();
             irm.CompanyId = CompanyId;
-            irm.CompanyName = db.Companies.Find(CompanyId).Name;
+            irm.CompanyName = db.FindCompany(CompanyId).Name;
 
             return irm;
         }
@@ -1074,7 +1094,7 @@ namespace OJewelry.Controllers
 
         InventoryViewModel SetPresentersLists(InventoryViewModel ivm)
         {
-            Company co = db.Companies.Find(ivm.CompanyId);
+            Company co = db.FindCompany(ivm.CompanyId);
             ivm.CompanyName = co.Name;
             List<Presenter> tpl = db.Presenters.Where(x => x.CompanyId == ivm.CompanyId).ToList();
             Presenter pSo = new Presenter();
