@@ -262,7 +262,13 @@ html input[disabled], locked {
     border-color: orange;
 }
 
+.AddBtn {
+    color:green;
+}
 
+.DelBtn {
+    color:red;
+}
 .red {
     color: red;
 }

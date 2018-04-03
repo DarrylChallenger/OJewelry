@@ -95,7 +95,7 @@ namespace OJewelry.Controllers
             if (i != 0) // is there a style with the same number for this company?
             {
                 ModelState.AddModelError("", "Style with this name already exists for "
-                    + db.Companies.Find(svm.CompanyId).Name + ".");
+                    + db.FindCompany(svm.CompanyId).Name + ".");
             }
             else {
                 svm.SVMState = SVMStateEnum.Added;

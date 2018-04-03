@@ -365,6 +365,10 @@
     <Compile Include="Migrations\201803311628112_v.601.Designer.cs">
       <DependentUpon>201803311628112_v.601.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804031737422_v.6-AddCUtoCompany.cs" />
+    <Compile Include="Migrations\201804031737422_v.6-AddCUtoCompany.Designer.cs">
+      <DependentUpon>201804031737422_v.6-AddCUtoCompany.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -553,6 +557,8 @@
     <Content Include="Views\Styles\_StyleCreateEditPartial.cshtml" />
     <Content Include="Views\Companies\_CompanyCreateEditInputs.cshtml" />
     <Content Include="Views\Presenters\_PresenterCreateEditInputs.cshtml" />
+    <Content Include="Views\Account\EditUser.cshtml" />
+    <Content Include="Views\Account\UserList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -633,6 +639,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803311628112_v.601.resx">
       <DependentUpon>201803311628112_v.601.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804031737422_v.6-AddCUtoCompany.resx">
+      <DependentUpon>201804031737422_v.6-AddCUtoCompany.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

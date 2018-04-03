@@ -14,9 +14,21 @@ namespace OJewelry.Models
         public OJewelryDB()
             : base("name=OJewelryDB")
         {
-            loggedOnUserName = HttpContext.Current.User.Identity.GetUserName();
+            
+            if (HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity != null) {
+                loggedOnUserName = HttpContext.Current.User.Identity.GetUserName();
+            } else
+            {
+                loggedOnUserName = "";
+            }
+            
             sec = new ApplicationDbContext();
-            ApplicationUser user = sec.Users.Where(x => x.UserName == loggedOnUserName).FirstOrDefault();
+            ApplicationUser user = null;
+            if (sec != null)
+            {
+                user = sec.Users.Where(x => x.UserName == loggedOnUserName).FirstOrDefault();
+            }
+
             if (user != null)
             {
                 userId = user.Id;
@@ -24,16 +36,21 @@ namespace OJewelry.Models
             {
                 userId = "";
             }
-            IdentityRole role = sec.Roles.ToList().Where(x=>x.Name.ToString() == "Admin").FirstOrDefault();
+
             bIsAdmin = false;
-            if (role != null && user != null)
+            if (sec.Roles != null)
             {
-                IdentityUserRole ur = user.Roles.FirstOrDefault();
-                if (ur != null)
+                IdentityRole role = sec.Roles.ToList().Where(x => x.Name.ToString() == "Admin").FirstOrDefault();
+                if (role != null && user != null)
                 {
-                    bIsAdmin = role.Id == ur.RoleId;
+                    IdentityUserRole ur = user.Roles.FirstOrDefault();
+                    if (ur != null)
+                    {
+                        bIsAdmin = role.Id == ur.RoleId;
+                    }
                 }
             }
+            
         }
 
         private string loggedOnUserName;

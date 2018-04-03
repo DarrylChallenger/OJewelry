@@ -74,16 +74,18 @@ namespace OJewelry.Controllers
                     CompanyId = cvm.company.Id,
                     UserId = user.Id
                 };
+                cvm.company.CompanyUsers.Add(cu);
                 db.AddCompany(cvm.company);
-                db.CompaniesUsers.Add(cu);
-                foreach (Client c in cvm.clients)
+                
+                foreach (CompanyViewClientModel c in cvm.clients)
                 {
                     if (c.Id == 0)
                     {
                         if (c.Name != null)
                         {
                             c.CompanyID = cvm.company.Id;
-                            db.Clients.Add(c);
+                            Client client = new Client(c);
+                            db.Clients.Add(client);
                         }
                     }
                     else
@@ -99,7 +101,6 @@ namespace OJewelry.Controllers
                     }
                 }
                 db.SaveChanges();
-                cu.CompanyId = cvm.company.Id;
 
                 return RedirectToAction("Index");
             }
@@ -140,14 +141,15 @@ namespace OJewelry.Controllers
             {
                 Company company = db.FindCompany(cvm.company.Id);
                 company.Name = cvm.company.Name;
-                foreach (Client c in cvm.clients)
+                foreach (CompanyViewClientModel c in cvm.clients)
                 {
                     if (c.Id == 0)
                     {
                         if (c.Name != null)
                         {
                             c.CompanyID = cvm.company.Id;
-                            db.Clients.Add(c);
+                            Client client = new Client(c);
+                            db.Clients.Add(client);
                         }
                     } else {
                         if (c.Name != null)

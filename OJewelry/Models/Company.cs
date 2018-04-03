@@ -16,6 +16,7 @@ namespace OJewelry.Models
             Collections = new HashSet<Collection>();
             Components = new HashSet<Component>();
             Presenters = new HashSet<Presenter>();
+            CompanyUsers = new HashSet<CompanyUser>();
         }
 
         public int Id { get; set; }
@@ -50,5 +51,8 @@ namespace OJewelry.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Presenter> Presenters { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CompanyUser> CompanyUsers { get; set; }
     }
 }

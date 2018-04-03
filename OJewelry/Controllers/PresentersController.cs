@@ -109,7 +109,7 @@ namespace OJewelry.Controllers
                 PresenterViewContactModel pvcm = new PresenterViewContactModel(c);
                 pvm.contacts.Add(pvcm);
             }
-            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
+            pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
 
             return View(pvm);
         }
@@ -121,7 +121,7 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(PresenterViewModel pvm)
         {
-            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
+            pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
             if (ModelState.IsValid)
             {
                 db.Entry(pvm.Location).State = EntityState.Modified;
