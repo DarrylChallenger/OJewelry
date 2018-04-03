@@ -6,7 +6,12 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-4">
+                @if (Model.SVMOp == OJewelry.Models.SVMOperation.Edit)
+                {
+                @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "locked", @disabled="disabled" } })
+                } else {
                 @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "" } })
+                }
             </div>
         </div>
         <div class="form-group">
@@ -134,6 +139,20 @@
         @Html.ValidationMessageFor(model => model.Style.RetailPrice, "", new { @class = "text-danger" })
         @Html.ValidationMessageFor(model => model.Style.Width, "", new { @class = "text-danger" })
         @Html.ValidationMessageFor(model => model.Style.ChainLength, "", new { @class = "text-danger" })
+        <span class="text-danger">
+            @foreach (KeyValuePair<string, ModelState> p in @ViewData.ModelState)
+        {
+            if (p.Value.Errors.Count != 0)
+            {
+                // display name and error
+                foreach (ModelError e in p.Value.Errors)
+                {
+                    <span>@e.ErrorMessage</span>
+            }
+        }
+    }
+        </span>
+
     </div>
 </div>
 

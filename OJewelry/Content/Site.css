@@ -100,8 +100,12 @@ textarea {
     border-color: #cccccc;
 }
 
-.red {
+.glyphicon-remove{
     color:red;
+}
+
+.red {
+    color: red;
 }
 
 .bold {

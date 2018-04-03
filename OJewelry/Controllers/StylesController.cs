@@ -63,6 +63,7 @@ namespace OJewelry.Controllers
             Collection co = db.Collections.Find(collectionId);
             StyleViewModel svm = new StyleViewModel();
             svm.CompanyId = co.CompanyId;
+            svm.SVMOp = SVMOperation.Create;
             svm.Populate(null, db);
             svm.Style.Collection = db.Collections.Find(collectionId);
             svm.Style.CollectionId = collectionId;
@@ -83,7 +84,22 @@ namespace OJewelry.Controllers
         //public ActionResult Create([Bind(Include = "Id,Name,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
         public ActionResult Create(StyleViewModel svm)
         {
-            svm.SVMState = SVMStateEnum.Added;
+            svm.SVMOp = SVMOperation.Create;
+            int i = db.Styles.
+                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
+                {
+                    StyleId = s.Id,
+                    StyleNum = s.StyleNum,
+                    CompanyId = c.CompanyId,
+                }).Where(x => x.CompanyId == svm.CompanyId  && x.StyleNum == svm.Style.StyleNum).Count();
+            if (i != 0) // is there a style with the same number for this company?
+            {
+                ModelState.AddModelError("", "Style with this name already exists for "
+                    + db.Companies.Find(svm.CompanyId).Name + ".");
+            }
+            else {
+                svm.SVMState = SVMStateEnum.Added;
+            }
             return Edit(svm);
         }
 
@@ -116,7 +132,7 @@ namespace OJewelry.Controllers
         {
             //ModelState.Clear();
             // Save the Style and all edited components; add the new ones and remove the deleted ones
-            db.Entry(svm.Style).State = EntityState.Modified;
+            if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
             // Iterate thru the components
             // Castings
             if (svm.Castings != null)
