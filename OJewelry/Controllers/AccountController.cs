@@ -138,6 +138,7 @@ namespace OJewelry.Controllers
         }
 
         // GET: /Account/Register
+        [Authorize(Roles ="Admin")]
         public ActionResult Register()
         {
             RegisterViewModel rvm = new RegisterViewModel();
@@ -162,6 +163,7 @@ namespace OJewelry.Controllers
         // POST: /Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             ApplicationDbContext sec = new ApplicationDbContext();
@@ -193,6 +195,34 @@ namespace OJewelry.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin, Manager")]
+        public ActionResult ManagerEditUser(string UserId)
+        {
+            ApplicationDbContext sec = new ApplicationDbContext();
+            ApplicationUser user = sec.Users.Find(UserId);
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // If the current user is an Admin do full function, otherwise dont populate roles data
+            string currUserId = User.Identity.GetUserId();
+            if (UserManager.IsInRole(currUserId, "Admin") == true)
+            {
+                return RedirectToAction("EditUser", new { UserId = UserId});
+            }
+            EditUserViewModel evm = new EditUserViewModel();
+            if (UserManager.IsInRole(UserId, "Guest") == true)
+            {
+                evm.bGuestUser = true;
+            }
+
+            ViewBag.Roles = new List<IdentityRole>();
+            PopulateEVMForUser(evm, user);
+            return View(evm);
+        }
+
+        [Authorize(Roles = "Admin")]
         public ActionResult EditUser(string UserId)
         {
             EditUserViewModel evm = new EditUserViewModel();
@@ -202,6 +232,14 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            PopulateEVMForUser(evm, user);
+            PopulateRoles(sec, evm, user);
+
+            return View(evm);
+        }
+
+        void PopulateEVMForUser(EditUserViewModel evm, ApplicationUser user)
+        {
             evm.UserName = user.UserName;
             OJewelryDB db = new OJewelryDB();
             foreach (Company c in db.Companies) // should be company left outer joined to users by id, exclude Managers, admins
@@ -214,7 +252,7 @@ namespace OJewelry.Controllers
                 };
                 evm.Companies.Add(cau);
             }
-            List<CompanyUser> cus = db.CompaniesUsers.Where(x => x.UserId == UserId).ToList();
+            List<CompanyUser> cus = db.CompaniesUsers.Where(x => x.UserId == user.Id).ToList();
             List<int> accessibleCompanyIds = evm.Companies.Select(s1 => s1.CompanyId).ToList().Intersect(cus.Select(s2 => s2.CompanyId).ToList()).ToList();
             foreach (int i in accessibleCompanyIds)
             {
@@ -224,20 +262,25 @@ namespace OJewelry.Controllers
                     c.bIncluded = true;
                 }
             }
+        }
+
+        void PopulateRoles(ApplicationDbContext sec, EditUserViewModel evm, ApplicationUser user)
+        {
             ViewBag.Roles = sec.Roles.ToList();
             IdentityUserRole r = user.Roles.FirstOrDefault();
             if (r != null)
             {
                 evm.RoleId = r.RoleId;
-            } else
+            }
+            else
             {
                 evm.RoleId = "";
             }
-            return View(evm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Manager")]
         public ActionResult EditUser(EditUserViewModel evm)
         {
             OJewelryDB db = new OJewelryDB();
@@ -311,12 +354,14 @@ namespace OJewelry.Controllers
         {
             IdentityRole ir = sec.Roles.Find(roleId);
             // user.Roles.Clear(); // ensure user only has one role
-            UserManager.RemoveFromRole(user.Id, "Admin");
-            UserManager.RemoveFromRole(user.Id, "Manager");
-            UserManager.RemoveFromRole(user.Id, "User");
+            foreach(IdentityRole r in sec.Roles)
+            {
+                UserManager.RemoveFromRole(user.Id, r.Name);
+            }
             UserManager.AddToRole(user.Id, ir.Name);
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult UserList()
         {
             ApplicationDbContext sec = new ApplicationDbContext();
@@ -325,6 +370,7 @@ namespace OJewelry.Controllers
             return View(ulvm);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult UserList(string UserId)
         {

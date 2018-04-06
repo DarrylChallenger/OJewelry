@@ -15,6 +15,7 @@ using DocumentFormat.OpenXml;
 
 namespace OJewelry.Controllers
 {
+    [Authorize]
     public class CompaniesController : Controller
     {
         private ApplicationDbContext sec = new ApplicationDbContext();

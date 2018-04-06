@@ -1,0 +1,22 @@
+﻿@model OJewelry.Models.EditUserViewModel
+@{
+    ViewBag.Title = "Edit " + Model.UserName;
+}
+
+<h3>Edit <i>@Model.UserName</i></h3>
+@if (Model != null && Model.Companies != null)
+{
+    using (Html.BeginForm("ManagerEditUser", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Partial("_EditUserPartial", Model)
+
+    }
+}
+else
+{
+    <div class="text-danger">There are no companies defined</div>
+}
+
+@Html.ActionLink("Home", "Index", "Home") |
+@Html.ActionLink("User List", "UserList", "Account")

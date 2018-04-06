@@ -414,6 +414,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="DBScripts\CreateOJDB.sql" />
     <Content Include="DBScripts\CreateOJSecAspNet.sql" />
+    <Content Include="DBScripts\DropCreateOJDatabase.sql" />
     <Content Include="DBScripts\InvReport.sql" />
     <Content Include="DBScripts\OJewelryDBTablesV0.2.sql" />
     <Content Include="DBScripts\Roles.sql" />
@@ -559,6 +560,8 @@
     <Content Include="Views\Presenters\_PresenterCreateEditInputs.cshtml" />
     <Content Include="Views\Account\EditUser.cshtml" />
     <Content Include="Views\Account\UserList.cshtml" />
+    <Content Include="Views\Account\ManagerEditUser.cshtml" />
+    <Content Include="Views\Account\_EditUserPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

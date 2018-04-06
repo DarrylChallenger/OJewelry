@@ -10,6 +10,7 @@ using OJewelry.Models;
 
 namespace OJewelry.Controllers
 {
+    [Authorize]
     public class MetalCodesController : Controller
     {
         private OJewelryDB db = new OJewelryDB();

@@ -55,6 +55,17 @@ textarea {
     color:darkgray;
 }
 
+.dropdown-menu > li > a {
+    color: darkgray;
+    width:100%;
+}
+
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+    color: darkgray;
+    background-color: #dddddd;
+
+}
+
 .container .banner {
     padding-left: 0;
     padding-right: 0;

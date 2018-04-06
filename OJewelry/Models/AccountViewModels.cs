@@ -117,6 +117,7 @@ namespace OJewelry.Models
         public EditUserViewModel()
         {
             Companies = new List<CompanyAuthorizedUser>();
+            bGuestUser = false;
         }
 
         [Required]
@@ -124,6 +125,8 @@ namespace OJewelry.Models
         public string UserId { get; set; }
         public string UserName { get; set; }
         public List<CompanyAuthorizedUser> Companies { get; set; }
+
+        public bool bGuestUser;
     }
 
     public class ResetPasswordViewModel

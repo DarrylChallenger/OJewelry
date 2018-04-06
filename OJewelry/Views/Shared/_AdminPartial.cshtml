@@ -1,17 +1,11 @@
 ﻿<li class="nav_item dropdown">
     @Html.ActionLink("Admin", "Index", "Home", new { @class = "dropdown-toggle", @role = "button", @data_toggle = "dropdown", @aria_haspopup = "true", @ariaa_xpanded = "false" })
-    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        @Html.ActionLink("Jewelry Types", "Index", "JewelryTypes")
-        <div class="dropdown-divider"></div>
-        @Html.ActionLink("Components", "Index", "ComponentTypes")
-        <div class="dropdown-divider"></div>
-        @Html.ActionLink("Vendors", "Index", "Vendors")
-        <div class="dropdown-divider"></div>
-        @Html.ActionLink("Metals", "Index", "MetalCodes")
-        <div class="dropdown-divider"></div>
-        @Html.ActionLink("New User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
-        <div class="dropdown-divider"></div>
-        @Html.ActionLink("Edit User", "UserList", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })
-
-    </div>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <li>@Html.ActionLink("Jewelry Types", "Index", "JewelryTypes")</li>
+        <li>@Html.ActionLink("Components", "Index", "ComponentTypes")</li>
+        <li>@Html.ActionLink("Vendors", "Index", "Vendors")</li>
+        <li>@Html.ActionLink("Metals", "Index", "MetalCodes")</li>
+        <li>@Html.ActionLink("Create User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Edit User", "UserList", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+    </ul>
 </li>

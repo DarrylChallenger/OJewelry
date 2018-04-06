@@ -76,6 +76,14 @@ namespace OJewelry
                 role.Name = "User";
                 roleManager.Create(role);
             }
+
+            // Creating Guest role    
+            if (!roleManager.RoleExists("Guest"))
+            {
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                role.Name = "Guest";
+                roleManager.Create(role);
+            }
         }
     }
 }

@@ -9,6 +9,7 @@
                 @if (Model.SVMOp == OJewelry.Models.SVMOperation.Edit)
                 {
                 @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "locked", @disabled="disabled" } })
+                    @Html.HiddenFor(model => model.Style.StyleNum)
                 } else {
                 @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "" } })
                 }

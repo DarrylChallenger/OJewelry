@@ -28,6 +28,7 @@ namespace OJewelry.Controllers
             return View();
         }
 
+        [Authorize]
         public ActionResult ClientList()
         {
             ViewBag.Message = "Client List";
@@ -53,6 +54,7 @@ namespace OJewelry.Controllers
                 ).ToList();
             return View("ClientList", aClient);
         }
+
         public ActionResult CollectionListByCompany(int id)
         {
             ViewBag.Message = "Collection List for company";
@@ -91,6 +93,7 @@ namespace OJewelry.Controllers
             return View(m);
         }
 
+        [Authorize]
         public ActionResult MemoStyle(int? Id)
         {
             if (Id == 0 || Id == null)
@@ -208,6 +211,7 @@ namespace OJewelry.Controllers
         */
 
 
+        [Authorize]
         [HttpPost]
         public ActionResult MemoStyle(MemoViewModel m)
         {
@@ -349,8 +353,9 @@ namespace OJewelry.Controllers
                 m.numPresentersWithStyle++;
             }
             return View(m);
-        }    
-        
+        }
+
+        [Authorize]
         void GetPresenters(OJewelryDB dc, MemoViewModel m, int CompanyId)
         {
             m.Presenters = new List<SelectListItem>();

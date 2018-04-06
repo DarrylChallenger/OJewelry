@@ -10,6 +10,7 @@ using OJewelry.Models;
 
 namespace OJewelry.Controllers
 {
+    [Authorize]
     public class CollectionsController : Controller
     {
         private OJewelryDB db = new OJewelryDB();

@@ -15,6 +15,7 @@ using OJewelry.Classes;
 
 namespace OJewelry.Controllers
 {
+    [Authorize]
     public class PresentersController : Controller
     {
         private OJewelryDB db = new OJewelryDB();

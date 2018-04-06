@@ -1,69 +1,35 @@
 ﻿@model OJewelry.Models.EditUserViewModel
 @{
-    /**/
-
     ViewBag.Title = "Edit " + Model.UserName;
 }
 
 <h3>Edit <i>@Model.UserName</i></h3>
 
-@using (Html.BeginForm("EditUser", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@if (Model != null && Model.Companies != null)
 {
-    @Html.AntiForgeryToken()
-
-
-    <h4>Select the roles</h4>
-    <div class="form-group">
-        @Html.LabelFor(model => model.RoleId, new { @class = "col-md-2" })
-        @Html.DropDownListFor(model => model.RoleId, new SelectList(ViewBag.Roles, "Id", "Name", Model.RoleId), "Select a Role", new { @class = "col-md-4 form-control" })
-    </div>
-    <div>
-        @Html.ValidationMessageFor(model => model.RoleId, null, new { @class = "text-danger" })
-    </div>
-
-    <h4>Select the companies user can access</h4>
-    @Html.HiddenFor(model => model.UserId)
-    if (Model != null && Model.Companies != null)
+    using (Html.BeginForm("EditUser", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
+        @Html.AntiForgeryToken()
+
+
+        <h4>Select the roles</h4>
         <div class="form-group">
-            <div class="col-md-1"></div>
-            <div class="col-md-3">
-                @Html.LabelFor(model => model.Companies[0].CompanyName)
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-3">
-                @Html.LabelFor(model => model.Companies[0].CompanyName)
-            </div>
-            <div class="col-md-1"></div>
-            <div class="col-md-3">
-                @Html.LabelFor(model => model.Companies[0].CompanyName)
-            </div>
+            @Html.LabelFor(model => model.RoleId, new { @class = "col-md-2" })
+            @Html.DropDownListFor(model => model.RoleId, new SelectList(ViewBag.Roles, "Id", "Name", Model.RoleId), "Select a Role", new { @class = "col-md-2 form-control" })
         </div>
-        <div class="form-group">
-            @for (int i = 0; i < Model.Companies.Count; i++)
-            {
-                <div>
-                    @Html.HiddenFor(model => model.Companies[i].CompanyId)
-                    <div>
-                        @Html.CheckBoxFor(model => model.Companies[i].bIncluded, new { @class = "col-md-1" })
-                    </div>
-                    <div class="col-md-3">
-                        @Html.DisplayFor(model => model.Companies[i].CompanyName)
-                    </div>
-                </div>
-            }
+        <div>
+            @Html.ValidationMessageFor(model => model.RoleId, null, new { @class = "text-danger" })
         </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" class="btn btn-default" value="Update" />
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="text-danger">There are no companies defined</div>
+
+        @Html.Partial("_EditUserPartial", Model)
+
     }
 }
+else
+{
+    <div class="text-danger">There are no companies defined</div>
+}
+
 
 @Html.ActionLink("Home", "Index", "Home") |
 @Html.ActionLink("User List", "UserList", "Account")
