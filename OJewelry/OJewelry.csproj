@@ -433,11 +433,11 @@
     </Content>
     <Content Include="Excel\MoveInv.xlsx" />
     <Content Include="Excel\NewInv.xlsx" />
-    <None Include="Properties\PublishProfiles\OJewelry - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy Debug.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy Release.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\OJewelryProd - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CreateEditComponents.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
