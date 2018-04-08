@@ -8,55 +8,42 @@ namespace OJewelry.Models
     using Microsoft.AspNet.Identity;
     using System.Web;
     using Microsoft.AspNet.Identity.EntityFramework;
+    using System.Security.Principal;
+    using System.Threading;
 
     public partial class OJewelryDB : DbContext
     {
         public OJewelryDB()
             : base("name=OJewelryDB")
         {
-            
-            if (HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity != null) {
-                loggedOnUserName = HttpContext.Current.User.Identity.GetUserName();
-            } else
-            {
-                loggedOnUserName = "";
-            }
-            
-            sec = new ApplicationDbContext();
-            ApplicationUser user = null;
-            if (sec != null)
-            {
-                user = sec.Users.Where(x => x.UserName == loggedOnUserName).FirstOrDefault();
-            }
 
-            if (user != null)
-            {
-                userId = user.Id;
-            } else
-            {
-                userId = "";
-            }
-
+            //string loggedOnUserName = User.Identity.GetUserId();
+            /*
+            System.Security.Principal.WindowsPrincipal principal = new WindowsPrincipal();
+            System.Security.Principal.WindowsIdentity p = new WindowsIdentity();
+            */
             bIsAdmin = false;
-            if (sec.Roles != null)
-            {
-                IdentityRole role = sec.Roles.ToList().Where(x => x.Name.ToString() == "Admin").FirstOrDefault();
-                if (role != null && user != null)
-                {
-                    IdentityUserRole ur = user.Roles.FirstOrDefault();
-                    if (ur != null)
-                    {
-                        bIsAdmin = role.Id == ur.RoleId;
-                    }
-                }
-            }
-            
-        }
+            bIsGuest = false;
 
-        private string loggedOnUserName;
+            AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+            //WindowsPrincipal MyPrincipal = (WindowsPrincipal)Thread.CurrentPrincipal;
+
+
+            if (Thread.CurrentPrincipal.IsInRole("Admin") == true)
+            {
+                bIsAdmin = true;
+            }
+            if (Thread.CurrentPrincipal.IsInRole("Guest") == true)
+            {
+                bIsGuest = true;
+            }
+            userId = Thread.CurrentPrincipal.Identity.GetUserId();
+         }
+
+        //private string loggedOnUserName;
         string userId;
         bool bIsAdmin;
-        private ApplicationDbContext sec;
+        bool bIsGuest;
         public IEnumerable<Company> Companies
         {
             get {
@@ -83,6 +70,16 @@ namespace OJewelry.Models
         public Company RemoveCompany(Company company)
         {
             return _Companies.Remove(company);
+        }
+
+        public bool bUserIsGuest()
+        {
+            return bIsGuest;
+        }
+
+        public bool bUserIsAdmin()
+        {
+            return bIsAdmin;
         }
 
         public virtual DbSet<ACL> ACLs { get; set; }

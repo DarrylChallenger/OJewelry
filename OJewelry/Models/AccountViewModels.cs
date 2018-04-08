@@ -123,6 +123,8 @@ namespace OJewelry.Models
         [Required]
         public string RoleId { get; set; }
         public string UserId { get; set; }
+
+        [Display(Name="User Name")]
         public string UserName { get; set; }
         public List<CompanyAuthorizedUser> Companies { get; set; }
 
@@ -132,6 +134,9 @@ namespace OJewelry.Models
     public class ResetPasswordViewModel
     {
         [Required]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }

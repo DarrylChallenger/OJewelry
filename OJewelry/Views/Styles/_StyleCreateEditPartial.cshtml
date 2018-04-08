@@ -97,7 +97,7 @@
             <div class="col-sm-8">
                 <div class="row">
                     @{ 
-                        var retailRatio = (Model.Total == 0) ? "N/A" : (Model.Style.RetailPrice / Model.Total).Value.ToString("F03");
+                        var retailRatio = (Model.Total == 0 || Model.Style.RetailPrice == null) ? "N/A" : (Model.Style.RetailPrice / Model.Total).Value.ToString("F03");
                     }
                     <label class="col-md-3 control-label">TARGET RETAIL</label>
                     <label class="col-md-2 control-label text-center">@retailRatio</label>

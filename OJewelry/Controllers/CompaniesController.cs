@@ -140,24 +140,24 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                Company company = db.FindCompany(cvm.company.Id);
-                company.Name = cvm.company.Name;
+                db.Entry(cvm.company).State = EntityState.Modified; 
+
                 foreach (CompanyViewClientModel c in cvm.clients)
                 {
+                    Client client = new Client(c);
                     if (c.Id == 0)
                     {
                         if (c.Name != null)
                         {
                             c.CompanyID = cvm.company.Id;
-                            Client client = new Client(c);
                             db.Clients.Add(client);
                         }
                     } else {
                         if (c.Name != null)
                         {
-                            db.Entry(c).State = EntityState.Modified;
+                            db.Entry(client).State = EntityState.Modified;
                         } else {
-                            db.Entry(c).State = EntityState.Deleted;
+                            db.Entry(client).State = EntityState.Deleted;
                         }
                     }
                 }
@@ -311,7 +311,10 @@ namespace OJewelry.Controllers
                                                 if (style.StyleName == "")
                                                 {
                                                     style.StyleName = style.StyleNum;
+                                                } else
+                                                {
                                                     bEmptyRow = false;
+
                                                 }
 
                                                 // Jewelry Type - find a jewelry type with the same name or reject
@@ -398,10 +401,9 @@ namespace OJewelry.Controllers
                                                 {
                                                     error = "Row [" + j + "] will be ignored - All fields are blank";
                                                     ivm.Warnings.Add(error);
-                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 5);
-                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
-                                                    if (ModelState.Remove("RetailPrice-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
-                                                    if (ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
+                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
+                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
+                                                    if (ModelState.Remove("RetailPrice-" + j) || ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
                                                 }
                                                 else

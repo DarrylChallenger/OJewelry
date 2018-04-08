@@ -273,6 +273,20 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[MetalCodes] (
+    [Id]   INT          IDENTITY (1, 1) NOT NULL,
+    [Code] NCHAR (6)    NULL,
+    [Desc] VARCHAR (50) NULL
+);
+GO
+
+CREATE TABLE [dbo].[MetalWeightUnits] (
+    [Id]   INT       IDENTITY (1, 1) NOT NULL,
+    [Unit] NCHAR (4) NULL
+	PRIMARY KEY CLUSTERED ([Id] ASC),
+);
+
 GO
 CREATE TABLE [dbo].[Memo](
 	[Id] [int] IDENTITY(1,1) NOT NULL,

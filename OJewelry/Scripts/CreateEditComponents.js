@@ -3,11 +3,10 @@
 // Show/gide controls based on dropdown value
 $(function () {
     resetControls();
-    console.log("Page is ready");
 });
 
 function resetControls() {
-    console.log("resetControls");
+    //console.log("resetControls");
     var sel = $("#ComponentTypeId option:selected").text();
     var ctl;
     if (sel === "Stones") {
@@ -20,7 +19,7 @@ function resetControls() {
         document.getElementById("ecCtwtGroup").style.display = "block";
         document.getElementById("ecStoneSizeGroup").style.display = "block";
         document.getElementById("ecStonePPCGroup").style.display = "block";
-        document.getElementById("ecFindingsMetalGroup").style.display = "none";
+        //document.getElementById("ecFindingsMetalGroup").style.display = "none";
     }
     if (sel === "Findings") {
         document.getElementById("ecVendorGroup").style.display = "block";
@@ -32,7 +31,7 @@ function resetControls() {
         document.getElementById("ecCtwtGroup").style.display = "none";
         document.getElementById("ecStoneSizeGroup").style.display = "none";
         document.getElementById("ecStonePPCGroup").style.display = "none";
-        document.getElementById("ecFindingsMetalGroup").style.display = "none";
+        //document.getElementById("ecFindingsMetalGroup").style.display = "none";
     }
     if (sel !== "Stones" && sel !== "Findings") {
         console.log("Illegal componentent type: " + sel);
@@ -45,7 +44,7 @@ function resetControls() {
         document.getElementById("ecCtwtGroup").style.display = "none";
         document.getElementById("ecStoneSizeGroup").style.display = "none";
         document.getElementById("ecStonePPCGroup").style.display = "none";
-        document.getElementById("ecFindingsMetalGroup").style.display = "none";
+        //document.getElementById("ecFindingsMetalGroup").style.display = "none";
     }
 }
 

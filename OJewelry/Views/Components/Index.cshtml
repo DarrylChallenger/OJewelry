@@ -27,10 +27,11 @@
         <th>
             @Html.DisplayNameFor(model => model.FindingsMetal)
         </th>
-        *@
+
         <th>
             @Html.DisplayName("Company")
         </th>
+        *@
         <th>
             @Html.DisplayName("Type")
         </th>
@@ -53,16 +54,24 @@
             @Html.DisplayFor(modelItem => item.StoneSize)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Price)
+            @if (item.ComponentType.Name == "Stones")
+        {
+            @Html.DisplayFor(modelItem => item.StonePPC)
+    }
+    else
+    {
+        @Html.DisplayFor(modelItem => item.Price)
+}
         </td>
         @*
         <td>
             @Html.DisplayFor(modelItem => item.FindingsMetal)
         </td>
-        *@
+
         <td>
             @Html.DisplayFor(modelItem => item.Company.Name)
         </td>
+        *@
         <td>
             @Html.DisplayFor(modelItem => item.ComponentType.Name)
         </td>

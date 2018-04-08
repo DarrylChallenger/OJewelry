@@ -111,6 +111,10 @@ textarea {
     border-color: #cccccc;
 }
 
+.ContactPageSpacing 
+{
+    padding-bottom:30em;
+}
 .glyphicon-remove{
     color:red;
 }
