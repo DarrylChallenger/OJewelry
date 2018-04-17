@@ -113,6 +113,10 @@ namespace OJewelry.Classes
                         str = strings.SharedStringTable.ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText;
                     }
                 }
+                if (cell.DataType == CellValues.String)
+                {
+                    str = cell.CellValue.Text;
+                }
             }
             catch
             {

@@ -1087,7 +1087,12 @@ namespace OJewelry.Controllers
                     {
                         str = strings.SharedStringTable.ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText;
                     }
-                } else
+                    if (cell.DataType == CellValues.String)
+                    {
+                        str = cell.CellValue.Text;
+                    }
+                }
+                else
                 {
                     str = cell.CellValue.Text;
                 }
