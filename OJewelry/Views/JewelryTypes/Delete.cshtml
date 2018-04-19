@@ -23,9 +23,14 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
+        <div>
+            @Html.ValidationSummary(null, new { @class = "text-danger" })
+        </div>
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Delete" class="btn btn-default" />
+        </div>
+        <div>
             @Html.ActionLink("Jewelry Types List", "Index")
         </div>
     }

@@ -111,6 +111,11 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             ComponentType componentType = db.ComponentTypes.Find(id);
+            if (db.Components.Where(c => c.ComponentTypeId == id).Count() != 0)
+            {
+                ModelState.AddModelError("ComponentType", componentType.Name + " is in use by at least one component.");
+                return View(componentType);
+            }
             db.ComponentTypes.Remove(componentType);
             db.SaveChanges();
             return RedirectToAction("Index");

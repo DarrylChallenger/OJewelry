@@ -28,12 +28,18 @@
 
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
+        <div>
+            @Html.ValidationSummary(null, new { @class = "text-danger" })
+        </div>
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index", new { CompanyId = Model.CompanyId })
+            <input type="submit" value="Delete" class="btn btn-default" />
+            <div>
+                @Html.ActionLink("Back to List", "Index", new { CompanyId = Model.CompanyId })
+            </div>
         </div>
     }
 </div>

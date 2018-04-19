@@ -84,7 +84,7 @@ namespace OJewelry.Models
 
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class RequiredIfNotRemoved : ValidationAttribute
-    {
+    { //This logic needs to be refactored. Needs to be in separate module and implementaion needs to be able to handle all cases
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             List<string> items = new List<string>();

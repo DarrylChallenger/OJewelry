@@ -116,6 +116,14 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Vendor vendor = db.Vendors.Find(id);
+            
+            if (db.Castings.Where(c => c.VendorId == id).Count() != 0 ||
+                db.Components.Where(s => s.VendorId == id).Count() != 0)
+            {
+                ModelState.AddModelError("Vendor", vendor.Name + " is in use by at least one casting, stone, or finding.");
+                return View(vendor);
+            }
+            
             db.Vendors.Remove(vendor);
             db.SaveChanges();
             return RedirectToAction("Index");

@@ -369,6 +369,10 @@
     <Compile Include="Migrations\201804031737422_v.6-AddCUtoCompany.Designer.cs">
       <DependentUpon>201804031737422_v.6-AddCUtoCompany.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804191525378_v.61-CascadeDeletes.cs" />
+    <Compile Include="Migrations\201804191525378_v.61-CascadeDeletes.Designer.cs">
+      <DependentUpon>201804191525378_v.61-CascadeDeletes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -412,6 +416,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="DBScripts\AddCascadingDeletes.sql" />
     <Content Include="DBScripts\CreateOJDB.sql" />
     <Content Include="DBScripts\CreateOJSecAspNet.sql" />
     <Content Include="DBScripts\DropCreateOJDatabase.sql" />
@@ -645,6 +650,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804031737422_v.6-AddCUtoCompany.resx">
       <DependentUpon>201804031737422_v.6-AddCUtoCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804191525378_v.61-CascadeDeletes.resx">
+      <DependentUpon>201804191525378_v.61-CascadeDeletes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

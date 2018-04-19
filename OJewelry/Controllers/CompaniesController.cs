@@ -189,6 +189,13 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Company company = db.FindCompany(id);
+            if (db.Collections.Where(col => col.CompanyId == id && col.Styles.Count() != 0).Count() != 0)
+            {
+                ModelState.AddModelError("Company", company.Name + " has at least one collection that is not empty.");
+                return View(company);
+            }
+            List<Collection> collections = db.Collections.Where(col => col.CompanyId == id).ToList();
+            db.Collections.RemoveRange(collections);
             db.RemoveCompany(company);
             db.SaveChanges();
             return RedirectToAction("Index");

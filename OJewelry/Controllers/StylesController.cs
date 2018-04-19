@@ -170,7 +170,8 @@ namespace OJewelry.Controllers
                             sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id).SingleOrDefault();
                             */
                             break;
-                        case SVMStateEnum.Clean: // No updates
+                        case SVMStateEnum.Unadded:
+                            break;
                         default:
                             break;
                     }
@@ -201,7 +202,7 @@ namespace OJewelry.Controllers
                             sc.ComponentId = c.Id;
                             sc.Quantity = c.Qty;
                             break;
-                        case SVMStateEnum.Clean:
+                        case SVMStateEnum.Unadded:
                         default:
                             break;
                     }
@@ -239,7 +240,7 @@ namespace OJewelry.Controllers
                             sc.ComponentId = c.Id;
                             sc.Quantity = c.Qty;
                             break;
-                        case SVMStateEnum.Clean: // No updates
+                        case SVMStateEnum.Unadded: // No updates
                         default:
                             break;
                     }
@@ -273,7 +274,7 @@ namespace OJewelry.Controllers
                             sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
                             */
                             break;
-                        case SVMStateEnum.Clean: // No updates
+                        case SVMStateEnum.Unadded: // No updates
                         default:
                             break;
                     }
@@ -307,7 +308,7 @@ namespace OJewelry.Controllers
                             sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
                             */
                             break;
-                        case SVMStateEnum.Clean: // No updates
+                        case SVMStateEnum.Unadded: // No updates
                         default:
                             break;
                     }

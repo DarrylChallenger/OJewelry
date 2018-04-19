@@ -101,7 +101,7 @@ namespace OJewelry.Models
         public StoneComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public StoneComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
 
-        [Required(ErrorMessage = "You must select a stone!")]
+        //[Required(ErrorMessage = "You must select a stone!")]
         public int Id { get; set; }
 
         public String VendorName { get; set; }
@@ -247,7 +247,7 @@ namespace OJewelry.Models
         public SVMStateEnum SVMState { get; set; }
     }
 
-    public enum SVMStateEnum { Clean, Dirty, Added, Deleted }
+    public enum SVMStateEnum { Dirty, Added, Deleted, Unadded }
     public enum SVMCCTypeEnum { Castings, Stones, Findings, Labors, Miscs }
     public enum SVMDelButtonPos { Left, Right }
     public enum SVMOperation { Create, Edit }
@@ -344,7 +344,7 @@ namespace OJewelry.Models
                         sc.SetStonesList(jsStonesWithDefault, -1);
                         //sc.Total = 0;
                         break;
-                    case SVMStateEnum.Clean:
+                    case SVMStateEnum.Unadded:
                         sc.VendorName = "";
                         sc.CtWt = 0;
                         sc.Size = "";
@@ -382,7 +382,7 @@ namespace OJewelry.Models
                         fc.Price = 0;
                         fc.SetFindingsList(jsFindingsWithDefault, -1);
                         break;
-                    case SVMStateEnum.Clean:
+                    case SVMStateEnum.Unadded:
                         fc.VendorName = "";
                         fc.Metal = "";
                         fc.Price = 0;
@@ -950,8 +950,12 @@ namespace OJewelry.Models
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
+            List<CastingComponent> ccl = value as List<CastingComponent>;
             List<StoneComponent> scl =  value as List<StoneComponent>;
             List<FindingsComponent> fcl = value as List<FindingsComponent>;
+            List<LaborComponent> lcl = value as List<LaborComponent>;
+            List<MiscComponent> mcl = value as List<MiscComponent>;
+
             List<string> items = new List<string>();
             if (validationContext.MemberName == "Stones" && scl != null)
             {
@@ -959,7 +963,7 @@ namespace OJewelry.Models
                 {
                     if (scl[i].Id == -1)
                     {
-                        if (scl[i].SVMState != SVMStateEnum.Clean)
+                        if (scl[i].SVMState != SVMStateEnum.Unadded)
                         {
                             items.Add("[" + i+ "].Id");
                         }
@@ -972,7 +976,7 @@ namespace OJewelry.Models
                 {
                     if (fcl[i].Id == -1)
                     {
-                        if (fcl[i].SVMState != SVMStateEnum.Clean)
+                        if (fcl[i].SVMState != SVMStateEnum.Unadded)
                         {
                             items.Add("[" + i + "].Id");
                         }

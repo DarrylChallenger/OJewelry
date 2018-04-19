@@ -141,7 +141,7 @@
         @Html.ValidationMessageFor(model => model.Style.Width, "", new { @class = "text-danger" })
         @Html.ValidationMessageFor(model => model.Style.ChainLength, "", new { @class = "text-danger" })
         <span class="text-danger">
-            @foreach (KeyValuePair<string, ModelState> p in @ViewData.ModelState)
+        @foreach (KeyValuePair<string, ModelState> p in @ViewData.ModelState)
         {
             if (p.Value.Errors.Count != 0)
             {
@@ -149,11 +149,10 @@
                 foreach (ModelError e in p.Value.Errors)
                 {
                     <span>@e.ErrorMessage</span>
+                }
             }
         }
-    }
         </span>
-
     </div>
 </div>
 

@@ -174,6 +174,11 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Collection collection = db.Collections.Find(id);
+            if (db.Styles.Where(s => s.CollectionId == id).Count() != 0)
+            {
+                ModelState.AddModelError("Collection", collection.Name + " contains at least one style.");
+                return View(collection);
+            }
             db.Collections.Remove(collection);
             db.SaveChanges();
             return RedirectToAction("Index", new { CompanyId = collection.CompanyId });

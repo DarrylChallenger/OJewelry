@@ -80,7 +80,7 @@
             Model.i = i;
             OJewelry.Models.StoneComponent c = Model.Stones[i];
             <div class="StonesState">@Html.HiddenFor(model => model.Stones[i].SVMState)</div>
-            var bHideRow = (Model.Stones[i].SVMState == SVMStateEnum.Clean || Model.Stones[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+            var bHideRow = (Model.Stones[i].SVMState == SVMStateEnum.Unadded || Model.Stones[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
             <div id="StonesRow_@i" class="StonesRow @bHideRow">
                 <div class="row ltbordered">
                     @Html.HiddenFor(model => model.Stones[i].scId)
@@ -143,7 +143,7 @@
             Model.i = i;
             OJewelry.Models.FindingsComponent c = Model.Findings[i];
             <div class="FindingsState">@Html.HiddenFor(model => model.Findings[i].SVMState)</div>
-            var bHideRow = (Model.Findings[i].SVMState == SVMStateEnum.Clean || Model.Findings[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+            var bHideRow = (Model.Findings[i].SVMState == SVMStateEnum.Unadded || Model.Findings[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
             <div id="FindingsRow_@i" class="FindingsRow @bHideRow">
                 <div class="row ltbordered">
                     @Html.HiddenFor(model => model.Findings[i].scId)
@@ -202,7 +202,8 @@
             Model.i = i;
             OJewelry.Models.LaborComponent c = Model.Labors[i];
             <div class="LaborsState">@Html.HiddenFor(model => model.Labors[i].SVMState)</div>
-            <div id="LaborsRow_@i" class="LaborsRow">
+            var bHideRow = (Model.Labors[i].SVMState == SVMStateEnum.Unadded || Model.Labors[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+            <div id="LaborsRow_@i" class="LaborsRow @bHideRow">
                 <div class="row ltbordered">
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Labors.Count - 1) { Model.CCLastRow = true; }

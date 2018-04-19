@@ -10,7 +10,7 @@
 
 /// OnAdd
 function AddRow(index) {
-    console.log("AddRow", index);
+    //console.log("AddRow", index);
     var px = sessionStorage.getItem("DCTS.tablePrefix");
     var ds = sessionStorage.getItem("DCTS." + px + ".dataStructName");
     var nr = sessionStorage.getItem("DCTS." + px + ".newRow");
@@ -44,7 +44,7 @@ function AddRow(index) {
     WrapRow(px, newRow);
 
     // state = "Added"
-    console.log("tlc=", tableRowClass);
+    //console.log("tlc=", tableRowClass);
     $("." + tableRowClass).last().children("." + px + "State").val("Added");
 
     // Show the button
@@ -52,7 +52,7 @@ function AddRow(index) {
 
     // add id, onclick handler to btns
     var newIndex = $("." + tableRowClass).length - 1;
-    console.log("newIndex:", newIndex);
+    //console.log("newIndex:", newIndex);
     $("." + addBtnClass).last().attr("id", addBtnClass + "_" + newIndex).attr("onclick", "AddRow(" + newIndex + ")");
     $("." + delBtnClass).last().attr("id", delBtnClass + "_" + newIndex).attr("onclick", "DelRow(" + newIndex + ")");
     // Add correct name/id to each child in row
@@ -70,12 +70,12 @@ function AddRow(index) {
         value.setAttribute("data-valmsg-for", ds + "[" + newIndex + "]." + name);
     });
     resetValidation(px);
-    console.log("AddRow Done");
+    //console.log("AddRow Done");
 }
 
 /// OnDel
 function DelRow(index) {
-    console.log("DelRow", index);
+    //console.log("DelRow", index);
     var px = sessionStorage.getItem("DCTS.tablePrefix");
     //var ds = sessionStorage.getItem("DCTS." + px + ".dataStructName");
     //var contentRowClass = px + "TableRowContent";
@@ -83,16 +83,16 @@ function DelRow(index) {
     var addBtnClass = px + "AddBtn";
     var state = "." + px + "State";
 
-    console.log("old container:", $($("." + tableRowClass)[index]));
-    console.log("old children:", $($("." + tableRowClass)[index]).children());
-    console.log("old state:", $($("." + tableRowClass)[index]).children(state));
-    console.log("old state val:", $($("." + tableRowClass)[index]).children(state).val());
+    //console.log("old container:", $($("." + tableRowClass)[index]));
+    //console.log("old children:", $($("." + tableRowClass)[index]).children());
+    //console.log("old state:", $($("." + tableRowClass)[index]).children(state));
+    //console.log("old state val:", $($("." + tableRowClass)[index]).children(state).val());
     if ($($("." + tableRowClass)[index]).children(state).val() === "Added") {
         $($("." + tableRowClass)[index]).children(state).val("Unadded");
     } else {
         $($("." + tableRowClass)[index]).children(state).val("Deleted");
     }
-    console.log("new state:" + $($("." + tableRowClass)[index]).children(state).val());
+    //console.log("new state:" + $($("." + tableRowClass)[index]).children(state).val());
     // hide Container
     var container = $($("." + tableRowClass)[index]);
     container.addClass("hidden");
@@ -105,7 +105,7 @@ function DelRow(index) {
         $("." + tableRowClass + ":not(.hidden)").last().find("." + addBtnClass).removeClass("hidden");
     }
 
-    console.log("DelRow Done");
+    //console.log("DelRow Done");
 }
 
 function WrapHeader(headerId) {
@@ -122,7 +122,7 @@ function WrapHeader(headerId) {
 }
 
 function WrapRow(px, rows) {
-    console.log("WrapRow", rows);
+    //console.log("WrapRow", rows);
     var addBtnClass = px + "AddBtn";
     var delBtnClass = px + "DelBtn";
     var contentRowClass = px + "TableRowContent";
@@ -130,7 +130,7 @@ function WrapRow(px, rows) {
     var addBtn = AddBtnData(addBtnClass);
     var delBtn = DelBtnData(delBtnClass);
 
-    console.log("rows.length:", $(rows).length);
+    //console.log("rows.length:", $(rows).length);
     $.each($(rows), function () {
         var element = $(this);
         element.wrapAll('<div class="row ' + contentRowClass + '"></div>')
@@ -139,7 +139,7 @@ function WrapRow(px, rows) {
             .wrapAll('<div class="col-sm-10 ContactTableS2"></div>');
     });
     
-    console.log("WrapRow Done");
+    //console.log("WrapRow Done");
 }
 
 function WrapRows(px) {
@@ -148,12 +148,12 @@ function WrapRows(px) {
     var addBtnClass = px + "AddBtn";
     var delBtnClass = px + "DelBtn";
 
-    console.log("rowClass b4 loop:", $(rowClass));
+    //console.log("rowClass b4 loop:", $(rowClass));
 
     WrapRow(px, rowClass);
     //display '+' in last row
     lastRow = $("." + addBtnClass).last().removeClass("hidden");
-    console.log($("." + addBtnClass).length);
+    //console.log($("." + addBtnClass).length);
     // set id and onclick for each "+" btn
     $.each($("." + addBtnClass), function (index, value) {
         this.setAttribute("id", px + "AddBtn_" + (index - 1));
@@ -194,7 +194,7 @@ function WrapRows(px) {
 })(jQuery);
 
 $(function () { // set name = field name in each cell;don't include id
-    console.log("Ready called.");
+    //console.log("Ready called.");
     var px = sessionStorage.getItem("DCTS.tablePrefix");
     var tableRowClass = px + "TableRowContainer";
     var stateClass = px + "State";
@@ -206,7 +206,7 @@ $(function () { // set name = field name in each cell;don't include id
         }
         return rt = $.validator.methods.required.call(this, value, element);
     }, "Client name should not be blank.");
-    console.log("Ready done.");
+    //console.log("Ready done.");
 });
 
 

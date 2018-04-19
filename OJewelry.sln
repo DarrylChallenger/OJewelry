@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OJewelry", "OJewelry\OJewelry.csproj", "{C2166AAB-8563-4726-9A6D-BA1892D8B0DF}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "OJewelryDB", "OJewelryDB\OJewelryDB.sqlproj", "{74D577E4-17DF-4247-AD24-E45448B0511F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +15,6 @@ Global
 		{C2166AAB-8563-4726-9A6D-BA1892D8B0DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2166AAB-8563-4726-9A6D-BA1892D8B0DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2166AAB-8563-4726-9A6D-BA1892D8B0DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74D577E4-17DF-4247-AD24-E45448B0511F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74D577E4-17DF-4247-AD24-E45448B0511F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74D577E4-17DF-4247-AD24-E45448B0511F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{74D577E4-17DF-4247-AD24-E45448B0511F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74D577E4-17DF-4247-AD24-E45448B0511F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74D577E4-17DF-4247-AD24-E45448B0511F}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -135,7 +135,7 @@ function RemoveComponentRow(type, i)
     curState = $(thisState).attr("value");
     if (curState === "Added") {
         // physically remove the row (added rows are not in DB, so don't mark them as deleted)
-        $(thisState).attr("value", "Clean");
+        $(thisState).attr("value", "Unadded");
     } else {
         // change the state to deleted
         $(thisState).attr("value", "Deleted");
@@ -424,3 +424,13 @@ function getMiscsHTML(type, len) {
     </div>';
 }
 
+$(function () { // set name = field name in each cell;don't include id
+
+    $.validator.addMethod("requiredifnotremoved", function (value, element) {
+        var state = $(element).parents("." + tableRowClass).children("." + stateClass).val();
+        if (state === "Deleted" || state === "Unadded") {
+            return true;
+        }
+        return rt = $.validator.methods.required.call(this, value, element);
+    }, "Client name should not be blank.");
+});

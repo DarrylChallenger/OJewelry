@@ -151,6 +151,11 @@ namespace OJewelry.Models
                 .WithRequired(e => e.Company)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Company>()
+                .HasMany(e => e.Clients)
+                .WithRequired(e => e.Company)
+                .WillCascadeOnDelete(true);
+
             modelBuilder.Entity<Component>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -316,18 +321,26 @@ namespace OJewelry.Models
             modelBuilder.Entity<Style>()
                 .HasMany(e => e.StyleComponents)
                 .WithRequired(e => e.Style)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(true); // delete links when deleting style
+/*
+            modelBuilder.Entity<Style>()
+                .HasMany(e => e.StyleCastings)
+                .WithRequired(e => e.Style)
+//                .Map(m=>m.MapKey("FK_StyleCasting_ToStyles"))
+                .WillCascadeOnDelete(true); // delete links when deleting style (need to modify databases directly with cascade delete - done)
 
             modelBuilder.Entity<Style>()
                 .HasMany(e => e.StyleLabors)
                 .WithRequired(e => e.Style)
-                .WillCascadeOnDelete(false);
+ //               .Map(m => m.MapKey("FK_StyleLabor_ToStyles"))
+                .WillCascadeOnDelete(true); // delete links when deleting style (need to modify databases directly with cascade delete)
 
             modelBuilder.Entity<Style>()
                 .HasMany(e => e.StyleMiscs)
                 .WithRequired(e => e.Style)
-                .WillCascadeOnDelete(false);
-
+  //              .Map(m => m.MapKey("FK_StyleMisc_ToStyles"))
+                .WillCascadeOnDelete(true); // delete links when deleting style (need to modify databases directly with cascade delete)
+*/
             modelBuilder.Entity<Vendor>()
                 .Property(e => e.Name)
                 .IsUnicode(false);

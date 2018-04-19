@@ -1,6 +1,6 @@
 ﻿
 $(function () {
-    console.log("Calling SetRows!");
+    //console.log("Calling SetRows!");
     $("body").SetRows({
         tablePrefix: "Contacts",
         dataStructName: "contacts",

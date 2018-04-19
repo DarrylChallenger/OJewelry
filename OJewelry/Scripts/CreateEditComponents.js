@@ -34,7 +34,7 @@ function resetControls() {
         //document.getElementById("ecFindingsMetalGroup").style.display = "none";
     }
     if (sel !== "Stones" && sel !== "Findings") {
-        console.log("Illegal componentent type: " + sel);
+        //console.log("Illegal componentent type: " + sel);
         document.getElementById("ecVendorGroup").style.display = "none";
         document.getElementById("ecPriceGroup").style.display = "none";
         document.getElementById("ecPPHGroup").style.display = "none";

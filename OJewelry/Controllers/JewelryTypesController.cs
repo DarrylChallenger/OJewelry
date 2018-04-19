@@ -112,6 +112,12 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             JewelryType jewelryType = db.JewelryTypes.Find(id);
+            // if type is in use return message
+            if (db.Styles.Where(s => s.JewelryTypeId == id).Count() != 0)
+            {
+                ModelState.AddModelError("JewelryType", jewelryType.Name + " is in use by at least one style.");
+                return View(jewelryType);
+            }
             db.JewelryTypes.Remove(jewelryType);
             db.SaveChanges();
             return RedirectToAction("Index");
