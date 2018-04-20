@@ -457,7 +457,7 @@ $(function () { // requiredifnotremoved validation
     
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
-        if ((elementId == "jssINDEX") || (elementId == "jsfINDEX")) {
+        if (elementId === "jssINDEX" || elementId === "jsfINDEX") {
             return true;
         }
         var target = $(element).parent().parent().prev().children();

@@ -103,7 +103,7 @@ namespace OJewelry.Models
         public StoneComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
 
         //[Required(ErrorMessage = "You must select a stone!")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public String VendorName { get; set; }
         public int? CtWt { get; set; }
@@ -139,8 +139,8 @@ namespace OJewelry.Models
         public FindingsComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
         public FindingsComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
 
-        [Required(ErrorMessage = "You must select a finding!")]
-        public int Id { get; set; }
+        //[Required(ErrorMessage = "You must select a finding!")]
+        public int? Id { get; set; }
 
         public String VendorName { get; set; }
         public String Metal { get; set; }
@@ -317,11 +317,11 @@ namespace OJewelry.Models
             }
             foreach (StoneComponent stscm in Stones)
             {
-                stscm.SetStonesList(jsStones, stscm.Id);
+                stscm.SetStonesList(jsStones, stscm.Id.Value);
             }
             foreach (FindingsComponent fiscm in Findings)
             {
-                fiscm.SetFindingsList(jsFindings, fiscm.Id);
+                fiscm.SetFindingsList(jsFindings, fiscm.Id.Value);
             }
         }
 
@@ -364,7 +364,7 @@ namespace OJewelry.Models
                         sc.Size = c.StoneSize;
                         sc.PPC = c.StonePPC;
                         sc.Qty = db.StyleComponents.Find(sc.scId).Quantity ?? 0;
-                        sc.SetStonesList(jsStones, sc.Id);
+                        sc.SetStonesList(jsStones, sc.Id.Value);
                         t = sc.PPC ?? 0;
                         sc.Total = sc.Qty * t;
                         StonesTotal += sc.Total;
@@ -402,7 +402,8 @@ namespace OJewelry.Models
                         fc.Total = fc.Qty * t;
                         FindingsTotal += fc.Total;
                         fc.Qty = db.StyleComponents.Find(fc.scId).Quantity ?? 0;
-                        fc.SetFindingsList(jsFindings, fc.scId);
+                        /* fc.SetFindingsList(jsFindings, fc.scId);*/
+                        fc.SetFindingsList(jsFindings, fc.Id.Value);
                         Total += fc.Total;
                         break;
                     default:

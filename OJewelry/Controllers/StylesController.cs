@@ -188,8 +188,8 @@ namespace OJewelry.Controllers
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = c.Id };
-                            sc.ComponentId = c.Id;
+                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = c.Id.Value };
+                            sc.ComponentId = c.Id.Value;
                             sc.Quantity = c.Qty;
                             db.StyleComponents.Add(sc);
                             break;
@@ -199,7 +199,7 @@ namespace OJewelry.Controllers
                             break;
                         case SVMStateEnum.Dirty:
                             sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
-                            sc.ComponentId = c.Id;
+                            sc.ComponentId = c.Id.Value;
                             sc.Quantity = c.Qty;
                             break;
                         case SVMStateEnum.Unadded:
@@ -222,8 +222,8 @@ namespace OJewelry.Controllers
                             component = new Component(c);
                             db.Components.Add(component);
                             */
-                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = c.Id };
-                            sc.ComponentId = c.Id;
+                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = c.Id.Value };
+                            sc.ComponentId = c.Id.Value;
                             sc.Quantity = c.Qty;
                             db.StyleComponents.Add(sc);
                             break;
@@ -237,7 +237,7 @@ namespace OJewelry.Controllers
                             component.Set(c);
                             */
                             sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
-                            sc.ComponentId = c.Id;
+                            sc.ComponentId = c.Id.Value;
                             sc.Quantity = c.Qty;
                             break;
                         case SVMStateEnum.Unadded: // No updates
