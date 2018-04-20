@@ -462,7 +462,7 @@ $(function () { // requiredifnotremoved validation
         }
         var target = $(element).parent().parent().prev().children();
         var state = $(target).val();
-        console.log($(element).attr("id") + " " + state);
+        // console.log($(element).attr("id") + " " + state);
         if (state === "Deleted" || state === "Unadded") {
             return true;
         }
