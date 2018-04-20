@@ -144,21 +144,25 @@ namespace OJewelry.Controllers
 
                 foreach (CompanyViewClientModel c in cvm.clients)
                 {
-                    Client client = new Client(c);
-                    if (c.Id == 0)
+                    Client client;
+                    switch (c.State)
                     {
-                        if (c.Name != null)
-                        {
-                            c.CompanyID = cvm.company.Id;
+                        case CVCMState.Added:
+                            client = new Client(c, cvm.company.Id);
                             db.Clients.Add(client);
-                        }
-                    } else {
-                        if (c.Name != null)
-                        {
-                            db.Entry(client).State = EntityState.Modified;
-                        } else {
+                            break;
+                        case CVCMState.Deleted:
+                            client = new Client(c, cvm.company.Id);
                             db.Entry(client).State = EntityState.Deleted;
-                        }
+                            //db.Clients.Remove(client);
+                            break;
+                        case CVCMState.Dirty:
+                            client = new Client(c, cvm.company.Id);
+                            db.Entry(client).State = EntityState.Modified; 
+                            break;
+                        case CVCMState.Unadded:
+                        case CVCMState.Clean:
+                            break;
                     }
                 }
 

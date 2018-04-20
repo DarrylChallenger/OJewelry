@@ -21,6 +21,7 @@ namespace OJewelry.Models
             Phone = client.Phone;
             Email = client.Email;
             State = CVCMState.Dirty;
+            JobTitle = client.JobTitle;
             CompanyID = client.CompanyID;
         }
         public Client GetClient() {
@@ -79,6 +80,16 @@ namespace OJewelry.Models
             JobTitle = cvcm.JobTitle;
             CompanyID = cvcm.CompanyID;
 
+        }
+
+        public Client(CompanyViewClientModel cvcm, int CompanyId)
+        {
+            Id = cvcm.Id;
+            Name = cvcm.Name;
+            Phone = cvcm.Phone;
+            Email = cvcm.Email;
+            JobTitle = cvcm.JobTitle;
+            CompanyID = CompanyId;
         }
     }
 

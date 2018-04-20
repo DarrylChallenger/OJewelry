@@ -72,9 +72,11 @@ function AddComponentRow(type, index)
         jsStones.find("#jssINDEX")
             .attr("name", 'Stones[' + len + '].Id')
             .attr("id", 'Stones_' + len + '__Id')
-            .attr("data-val", "true")
-            .attr("data-val-number", "The Id field must be a number.")
-            .attr("data-val-required", "Please select a stone.")
+
+            .attr("data-val", "")//"true")
+            .attr("data-val-number", "")//"The Id field must be a number.")
+            .attr("data-val-required", "XX")//"Please select a stone.")
+            
             .attr("onchange", "StoneChanged('" + len + "')");
         ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html());
     }
@@ -84,10 +86,11 @@ function AddComponentRow(type, index)
         jsFindings.find("#jsfINDEX")
             .attr("name", 'Findings[' + len + '].Id')
             .attr("id", 'Findings_' + len + '__Id')
+            /*
             .attr("data-val", "true")
             .attr("data-val-number", "The Id field must be a number.")
             .attr("data-val-required", "Please select a finding.")
-            .attr('data-val-range-min', "0")
+            */
          .attr("onchange", "FindingChanged('" + len + "')");
         ltbordered = findingsltbordered.replace("JSFINDINGS", jsFindings.html());
     }
@@ -140,11 +143,12 @@ function RemoveComponentRow(type, i)
         // change the state to deleted
         $(thisState).attr("value", "Deleted");
     }
-    // Put the '+' back, find last the !Deleted row. If none, show the header
+    // Put the '+' back, find last the !Deleted row. If none, show in the header
     // find the  visible rows with a visible add btn
     visibleRowCount = $(styleClass).find(rowClass).not(".hidden").length;
     str = $(styleClass).find(rowClass).not(".hidden").find(btnClass).not(".hidden");
     visibleBtnCount = $(rowClass).not(".hidden").last().length;
+    //console.log("visibleBtnCount", visibleBtnCount);
     // if there are none, put the '+' on the last visible btn
     if (visibleRowCount !== 0) {
         // set the last visible row, if any...
@@ -270,7 +274,7 @@ function getCastingsHTML(type, len) {
                 + leftDelBtn +
                 '</div> \
             </div>\
-            <input class="col-sm-2 text-box single-line" data-val="true" data-val-required="The Name field is required." id="Castings_' + len + '__Name" name="Castings[' + len + '].Name" type="text" value="" />\
+            <input class="col-sm-2 text-box single-line requiredifnotremoved" id="Castings_' + len + '__Name" name="Castings[' + len + '].Name" type="text" value="" />\
             <div class="col-sm-1">\
             </div >\
             JSVENDORS\
@@ -373,7 +377,7 @@ function getLaborsHTML(type, len) {
                 + leftDelBtn +
                 '</div>\
             </div>\
-            <input class="col-sm-2 text-box single-line" data-val="true" data-val-required="The Name field is required." id="Labors_' + len + '__Name" name="Labors[' + len + '].Name" type="text" value="" />\
+            <input class="col-sm-2 text-box single-line requiredifnotremoved" id="Labors_' + len + '__Name" name="Labors[' + len + '].Name" type="text" value="" />\
             <input class="col-sm-2 text-box single-line" id="Labors_' + len + '__Desc" name="Labors[' + len + '].Desc" type="text" value="" />\
             <div class="col-sm-2 "></div>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Hour must be a number." id="Labors_' + len + '__PPH" name="Labors[' + len + '].PPH" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
@@ -407,7 +411,7 @@ function getMiscsHTML(type, len) {
                 + leftDelBtn +
                 '</div>\
             </div>\
-            <input class="col-sm-2 text-box single-line" data-val="true" data-val-required="The Name field is required." id="Miscs_' + len + '__Name" name="Miscs[' + len + '].Name" type="text" value="" />\
+            <\input class="col-sm-2 text-box single-line requiredifnotremoved" id="Miscs_' + len + '__Name" name="Miscs[' + len + '].Name" type="text" value="" />\
             <input class="col-sm-2 text-box single-line" id="Miscs_' + len + '__Desc" name="Miscs[' + len + '].Desc" type="text" value="" />\
             <div class="col-sm-3 "></div>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Piece must be a number." id="Miscs_' + len + '__PPP" name="Miscs[' + len + '].PPP" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
@@ -424,13 +428,52 @@ function getMiscsHTML(type, len) {
     </div>';
 }
 
-$(function () { // set name = field name in each cell;don't include id
+function setAddBtn(type)
+{
+    var VisibleRows = $("." + type + "State :first-child[value|='Dirty'], ." + type + "State :first-child[value|='Added']");
+    var VisibleRowCount = VisibleRows.length;
+    if (VisibleRowCount === 0) {
+        // unhide the header '+' btn
+        $("." + type + "AddBtn").first().removeClass("hidden");
+    } else {
+        // unhide the last row unhidden header '+' btn
+        VisibleRows.last().parent().next().find("." + type + "AddBtn").removeClass("hidden");
+    }
+}
 
-    $.validator.addMethod("requiredifnotremoved", function (value, element) {
-        var state = $(element).parents("." + tableRowClass).children("." + stateClass).val();
+$(function () { // requiredifnotremoved validation 
+   /*
+    $('#StylesForm').validate({
+        ignore: [],
+        // any other options and/or rules
+    });
+    */
+    $("#StylesForm").data("validator").settings.ignore = "";
+    
+    var form = $("#StylesForm");
+    $(form).removeData("validator")             // Added by jQuery Validate
+        .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
+    $.validator.unobtrusive.parse(form);
+    
+    $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
+        var elementId = $(element).attr("id");
+        if ((elementId == "jssINDEX") || (elementId == "jsfINDEX")) {
+            return true;
+        }
+        var target = $(element).parent().parent().prev().children();
+        var state = $(target).val();
+        console.log($(element).attr("id") + " " + state);
         if (state === "Deleted" || state === "Unadded") {
             return true;
         }
         return rt = $.validator.methods.required.call(this, value, element);
-    }, "Client name should not be blank.");
+    }, "... name should not be blank.");
+}); // requiredifnotremoved validation
+
+$(function () { // 
+    setAddBtn("Castings");
+    setAddBtn("Stones");
+    setAddBtn("Findings");
+    setAddBtn("Labors");
+    setAddBtn("Miscs");
 });

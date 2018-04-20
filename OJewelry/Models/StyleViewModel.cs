@@ -24,7 +24,8 @@ namespace OJewelry.Models
         }
         public int Id { get { return casting.Id; } set { casting.Id = value; } }
 
-        [Required]
+        //[Required]
+        [RequiredIfNotRemoved]
         public String Name { get { return casting.Name; } set { casting.Name = value; } }
 
         [Display(Name = "Quantity")]
@@ -183,7 +184,8 @@ namespace OJewelry.Models
         
         public int Id { get { return labor.Id; } set { labor.Id = value; } }
 
-        [Required]
+        //[Required]
+        [RequiredIfNotRemoved]
         public String Name { get { return labor.Name; } set { labor.Name = value; } }
         public string Desc { get { return labor.Desc; } set { labor.Desc = value; } }
 
@@ -212,7 +214,7 @@ namespace OJewelry.Models
 
         public int Id { get { return misc.Id; } set { misc.Id = value; } }
 
-        [Required]
+        [RequiredIfNotRemoved]
         public String Name { get { return misc.Name; } set { misc.Name = value; } }
         public string Desc { get { return misc.Desc; } set { misc.Desc = value; } }
 

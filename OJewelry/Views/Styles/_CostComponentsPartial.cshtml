@@ -24,13 +24,14 @@
                 Model.i = i;
                 OJewelry.Models.CastingComponent c = Model.Castings[i];
                 <div class="CastingsState">@Html.HiddenFor(model => model.Castings[i].SVMState)</div>
-                <div id="CastingsRow_@i" class="CastingsRow">
+                var bHideRow = (Model.Stones[i].SVMState == SVMStateEnum.Unadded || Model.Stones[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+                <div id="CastingsRow_@i" class="CastingsRow @bHideRow">
                     <div class="row ltbordered">
                         @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                         @if (i == Model.Castings.Count - 1) { Model.CCLastRow = true; }
                         @Html.HiddenFor(model => model.Castings[i].Id)
                         @Html.Partial("_CostComponentCol1", Model)
-                        @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+                        @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2 requiredifnotremoved" } })
                         <div class="col-sm-1"></div>
                         @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-2" })
                         @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1" })
@@ -90,11 +91,11 @@
                     @*<div class="col-sm-2 ">@c.Name </div>*@
                     @if (Model.Stones[i].Id == 0)
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, "You must select a stone", new { @class = "col-sm-2 ", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, "You must select a stone", new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, new { @class = "col-sm-2 ", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
                     <div class="col-sm-1 "></div>
                     @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
@@ -152,10 +153,10 @@
                     @Html.Partial("_CostComponentCol1", Model)
                     @if (Model.Findings[i].Id == 0)
                     {
-                        @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, "You must select a finding", new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, "You must select a finding", new { @class = "col-sm-2 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
                     } else
                     {
-                        @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-2 ", onchange = "FindingChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-2 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
                     }
                     <div class="col-sm-2 "></div>
                     @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
@@ -209,7 +210,7 @@
                     @if (i == Model.Labors.Count - 1) { Model.CCLastRow = true; }
                     @Html.HiddenFor(model => model.Labors[i].Id)
                     @Html.Partial("_CostComponentCol1", Model)
-                    @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+                    @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2 requiredifnotremoved" } })
                     @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
                     <div class="col-sm-2 "></div>
                     @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
@@ -257,13 +258,14 @@
             Model.i = i;
             OJewelry.Models.MiscComponent c = Model.Miscs[i];
             <div class="MiscsState">@Html.HiddenFor(model => model.Miscs[i].SVMState)</div>
-            <div id="MiscsRow_@i" class="MiscsRow">
+            var bHideRow = (Model.Miscs[i].SVMState == SVMStateEnum.Unadded || Model.Miscs[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+            <div id="MiscsRow_@i" class="MiscsRow @bHideRow">
                 <div class="row ltbordered">
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Miscs.Count - 1) { Model.CCLastRow = true; Model.CCRowIndex = i; }
                     @Html.HiddenFor(model => model.Miscs[i].Id)
                     @Html.Partial("_CostComponentCol1", Model)
-                    @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+                    @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 requiredifnotremoved" } })
                     @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2" } })
                     <div class="col-sm-3 "></div>
                     @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
@@ -310,23 +312,23 @@
         <div id="jsStones">
             @if (Model.jsStones.Count == 0)
             {
-                @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name", 1), new { @class = "col-sm-2" })
+                @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name", 1), new { @class = "col-sm-2 requiredifnotremoved" })
             }
             else
             {
                 @*Model.jsStones.Insert(0, Model.DefStone);*@
-                @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name"), "Please select a stone", new { @class = "col-sm-2" })
+                @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name"), "Please select a stone", new { @class = "col-sm-2 requiredifnotremoved" })
             }
             </div>
         <div id="jsFindings">
             @if (Model.jsFindings.Count == 0)
             {
-            @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name"), new { @class = "col-sm-2" })
+            @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name"), new { @class = "col-sm-2 requiredifnotremoved" })
             }
             else
             {
                 @*Model.jsFindings.Insert(0, Model.DefFinding);*@
-                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name") , "Please select a finding", new { @class = "col-sm-2" })
+                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name") , "Please select a finding", new { @class = "col-sm-2 requiredifnotremoved" })
             }   
         </div>
         <div id="StonesData">
