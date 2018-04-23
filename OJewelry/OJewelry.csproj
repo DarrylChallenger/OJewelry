@@ -417,6 +417,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="DBScripts\AddCascadingDeletes.sql" />
+    <Content Include="DBScripts\AddStyleLinkTables.sql" />
     <Content Include="DBScripts\CreateOJDB.sql" />
     <Content Include="DBScripts\CreateOJSecAspNet.sql" />
     <Content Include="DBScripts\DropCreateOJDatabase.sql" />
@@ -441,7 +442,6 @@
     <None Include="Properties\PublishProfiles\OJewelryDev - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy Debug.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy Release.pubxml" />
-    <None Include="Properties\PublishProfiles\OJewelryDev - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryProd - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CreateEditComponents.js" />

@@ -59,7 +59,7 @@
 <hr />
 
 <div>
-    <span style="color:green">@ViewBag.Message</span>
+    <span id="InvSuccess">@ViewBag.Message</span>
 </div>
 
 
@@ -76,7 +76,7 @@
 
 </div>
 
-<div id="InventoryWarningss">
+<div id="InventoryWarnings">
     @if (Model.Warnings.Count() != 0)
     {
         <h3>Warnings</h3>

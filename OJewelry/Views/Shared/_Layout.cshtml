@@ -9,7 +9,13 @@
 
 </head>
 <body>
-    <div class="navbar navbar-fixed-top">
+    @{
+        string bgcolor = "";
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Staging") { bgcolor = "StagingBGcolor"; }
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development") { bgcolor = "DevBGcolor"; }
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == null) { bgcolor = "DevBGcolor"; }
+    }
+    <div class="navbar navbar-fixed-top @bgcolor ">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -17,7 +23,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-@*                <a class="navbar-brand" href="/"><img src="~/Images/logo.png" height="24"/></a>*@
+                @*                <a class="navbar-brand" href="/"><img src="~/Images/logo.png" height="24"/></a>*@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">

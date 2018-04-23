@@ -46,6 +46,17 @@ textarea {
 {
     background-color:white;
 }
+
+.StagingBGcolor {
+    background-color: yellow;
+}
+
+.DevBGcolor {
+    background-color: lightgrey;
+}
+
+
+
 .nav > li > a:hover, .nav > li > a:focus {
     color: darkgray;
     background-color: #dddddd;
@@ -186,6 +197,17 @@ html input[disabled], locked {
     max-height:2em;
     float:left;
     padding-right:1em;
+}
+
+#InvSuccess
+{
+    color:green;
+    font-weight:700;
+    font-size:1.4em;
+}
+
+#InventoryWarnings > .text-warning {
+    color:#e2ba75;
 }
 
 .ForPrinting {

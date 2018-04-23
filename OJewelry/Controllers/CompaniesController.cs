@@ -545,9 +545,8 @@ namespace OJewelry.Controllers
                                     int q = worksheet.Descendants<Column>().Count();
                                     if ((true) && //worksheet.Descendants<Column>().Count() >= 4) &&
                                         (CellMatches("A1", worksheet, stringtable, "Style") &&
-                                        CellMatches("B1", worksheet, stringtable, "Description") &&
-                                        CellMatches("C1", worksheet, stringtable, "Retail") &&
-                                        CellMatches("D1", worksheet, stringtable, "Qty")))
+                                        CellMatches("B1", worksheet, stringtable, "Qty") &&
+                                        CellMatches("C1", worksheet, stringtable, "Retail")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
@@ -571,16 +570,19 @@ namespace OJewelry.Controllers
                                                     bEmptyRow = false;
                                                 }
 
-                                                // Descrription
-                                                style.Desc = "";
+                                                // Quantity 
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    style.Desc = GetStringVal(cell, stringtable);
-                                                }
-                                                if (style.Desc != "")
-                                                {
+                                                    style.Quantity = GetIntVal(cell);
                                                     bEmptyRow = false;
+                                                }
+                                                else
+                                                {
+                                                    // error
+                                                    error = "The Quantity in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("Quantity-" + j, error);
+                                                    ivm.Errors.Add(error);
                                                 }
 
                                                 // Retail Can be ignored
@@ -590,18 +592,7 @@ namespace OJewelry.Controllers
                                                 if (cell != null) retail = GetStringVal(cell, stringtable);
                                                 */
 
-                                                // Quantity 
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
-                                                if (cell != null)
-                                                {
-                                                    style.Quantity = GetIntVal(cell);
-                                                    bEmptyRow = false;
-                                                } else {
-                                                    // error
-                                                    error = "The Quantity in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
-                                                    ModelState.AddModelError("Quantity-"+j, error);
-                                                    ivm.Errors.Add(error);
-                                                }
+
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
                                                 if (bEmptyRow)
                                                 {
