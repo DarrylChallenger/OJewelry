@@ -773,7 +773,7 @@ namespace OJewelry.Controllers
             return File("~/Excel/MoveInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
-        public FileResult ExportInventoryReport(int? CompanyId)
+        public FileResult ExportInventoryReport(int? CompanyId, DateTime dt)
         {
             if (CompanyId == null)
             {
@@ -802,7 +802,7 @@ namespace OJewelry.Controllers
                     {
                         Id = workbookPart.GetIdOfPart(worksheetPart),
                         SheetId = 1,
-                        Name = irm.CompanyName + " Inventory" // as of " + DateTime.Now.ToShortDateString()
+                        Name = irm.CompanyName + " Inventory" // as of " + dt.ToShortDateString()
                     };
                     sheets.Append(sheet);
 
@@ -870,7 +870,7 @@ namespace OJewelry.Controllers
                             }
                             else
                             {
-                                cell = SetCellVal(loc, "-");
+                                cell = SetCellVal(loc, 0);
                             }
                             row.Append(cell);
                            

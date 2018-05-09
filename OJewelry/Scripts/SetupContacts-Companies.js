@@ -8,7 +8,7 @@ $(function () {
 
             '<input name="State" class="ContactsState" type="hidden" value="Dirty" data-val-required="The State field is required." data-val="true">' +
 
-            '<div class="row XYZ ContactsTableRowData">' +
+            '<div class="row ContactsTableRowData">' +
             '<input name="Id" id="clients_0__Id" type="hidden" value="0" data-val-required="The Id field is required." data-val="true" data-val-number="The field Id must be a number.">' +
             '<input name="CompanyID" id="clients_0__CompanyID" type="hidden" value="" data-val="true" data-val-number="The field CompanyID must be a number.">' +
             '<div>' +
