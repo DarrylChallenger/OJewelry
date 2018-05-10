@@ -773,7 +773,7 @@ namespace OJewelry.Controllers
             return File("~/Excel/MoveInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
-        public FileResult ExportInventoryReport(int? CompanyId, DateTime dt)
+        public FileResult ExportInventoryReport(int? CompanyId, string currDate)
         {
             if (CompanyId == null)
             {
@@ -815,12 +815,13 @@ namespace OJewelry.Controllers
                     char ch;
                     string loc;
                     int rr;
+                    string docDate = currDate.Replace("_", ":");
 
                     // Date row
                     row = new Row();
                     cell = SetCellVal("A1", "Inventory Report");
                     row.Append(cell);
-                    cell = SetCellVal("B1", "Date: " + DateTime.Now.ToString()); 
+                    cell = SetCellVal("B1", "Date: " + docDate); 
                     row.Append(cell);
                     sd.Append(row);
                     // Header row
@@ -888,7 +889,7 @@ namespace OJewelry.Controllers
                 b = memStream.ToArray();
                 return File(b, 
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
-                    irm.CompanyName + " Inventory as of " + DateTime.Now.ToString() + ".xlsx");
+                    irm.CompanyName + " Inventory as of " + currDate + ".xlsx");
             }
 
         }
