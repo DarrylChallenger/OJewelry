@@ -362,6 +362,9 @@ namespace OJewelry.Controllers
         {
             Style style = db.Styles.Find(id);
             int collectionId = style.CollectionId;
+            // remove memos 
+            List<Memo> rmMemos = db.Memos.Where(m => m.StyleID == id).ToList();
+            db.Memos.RemoveRange(rmMemos);
             db.Styles.Remove(style);
             db.SaveChanges();
             return RedirectToAction("Index", new { CollectionID = collectionId });

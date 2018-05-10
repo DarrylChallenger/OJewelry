@@ -198,8 +198,13 @@ namespace OJewelry.Controllers
                 ModelState.AddModelError("Company", company.Name + " has at least one collection that is not empty.");
                 return View(company);
             }
-            List<Collection> collections = db.Collections.Where(col => col.CompanyId == id).ToList();
-            db.Collections.RemoveRange(collections);
+            // Remove collections, locations, clients, components
+//            List<Collection> collections = db.Collections.Where(col => col.CompanyId == id).ToList();
+  //          db.Collections.RemoveRange(collections);
+            db.Collections.RemoveRange(company.Collections);
+            db.Presenters.RemoveRange(company.Presenters);
+            db.Clients.RemoveRange(company.Clients);
+            db.Components.RemoveRange(company.Components);
             db.RemoveCompany(company);
             db.SaveChanges();
             return RedirectToAction("Index");

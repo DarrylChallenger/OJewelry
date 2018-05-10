@@ -3,8 +3,29 @@
 }
 <h2>@ViewBag.Title</h2>
 
+
 <h3>Pre-release Version</h3>
 <ul>
+    <li>
+        <a data-toggle="collapse" href="#v_614" role="button">0.614 </a>
+        <ul class="collapse in" id="v_614">
+            <li>Delete items in location on style delete</li>
+            <li>Delete dependent items on conpany delete</li>
+            <li>Add assortment | Companies to Inventory report links</li>
+            <li>Change "Home" menu item to match environmen</li>
+        </ul>
+    </li>
+
+    <li>
+        <a data-toggle="collapse" href="#v_613" role="button">0.613 </a>
+        <ul class="collapse in" id="v_613">
+            <li>Delete items in location on style delete</li>
+            <li>Delete dependent items on conpany delete</li>
+            <li>Add assortment | Companies to Inventory report links</li>
+            <li>Change "Home" menu item to match environmen</li>
+        </ul>
+    </li>
+
     <li>
         <a data-toggle="collapse" href="#v_612" role="button">0.612 </a>
         <ul class="collapse in" id="v_612">
@@ -194,12 +215,12 @@
 </ul>
 
 @*
-<h3></h3>
-<p>UserDomainName [@Environment.UserDomainName]</p>
-<h3>Variables</h3>
-@foreach (System.Collections.DictionaryEntry de in Environment.GetEnvironmentVariables())
-{
-    <p>@de.Key, @de.Value</p>
-}
+    <h3></h3>
+    <p>UserDomainName [@Environment.UserDomainName]</p>
+    <h3>Variables</h3>
+    @foreach (System.Collections.DictionaryEntry de in Environment.GetEnvironmentVariables())
+    {
+        <p>@de.Key, @de.Value</p>
+    }
 
 *@
