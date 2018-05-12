@@ -278,6 +278,7 @@ namespace OJewelry.Controllers
                             SharedStringTablePart stringtable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
                             List<Style> styles = new List<Style>();
                             List<Collection> colls = new List<Collection>();
+                            List<Memo> memos = new List<Memo>();
                             foreach (Sheet sheet in wb.Sheets)
                             {
                                 WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
@@ -291,7 +292,8 @@ namespace OJewelry.Controllers
                                     (CellMatches("D1", worksheet, stringtable, "Collection")) &&
                                     (CellMatches("E1", worksheet, stringtable, "Description")) &&
                                     (CellMatches("F1", worksheet, stringtable, "Retail")) &&
-                                    (CellMatches("G1", worksheet, stringtable, "Qty")))
+                                    (CellMatches("G1", worksheet, stringtable, "Qty")) &&
+                                    (CellMatches("H1", worksheet, stringtable, "Location")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
@@ -401,26 +403,70 @@ namespace OJewelry.Controllers
                                                 }
 
                                                 // Quantity 
+                                                int quantity = 0;
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    style.Quantity = GetIntVal(cell);
+                                                    quantity = GetIntVal(cell);
                                                     bEmptyRow = false;
                                                 }
                                                 else {
                                                     error = "Invalid Quantity in row " + j + " of sheet [" + sheet.Name + "].";
                                                     ModelState.AddModelError("Quantity-"+j, error);
                                                     ivm.Errors.Add(error);
-
                                                 }
+
+                                                // Location
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "H" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
+                                                {
+                                                    bEmptyRow = false;
+                                                    string presenter = GetStringVal(cell, stringtable);
+                                                    if (presenter == "")
+                                                    {
+                                                        // add to QOH
+                                                        style.Quantity = quantity;
+                                                    }
+                                                    else
+                                                    {
+                                                        // Is the Presenter in the sheet one of the companies presenters?
+                                                        Company company = db.FindCompany(ivm.CompanyId);
+                                                        Presenter companyPresenter = company.Presenters.Where(p => p.Name == presenter).SingleOrDefault();
+                                                        if (companyPresenter != null)
+                                                        {
+                                                            // yes, add the memo
+                                                            Memo memo = new Memo()
+                                                            {
+                                                                PresenterID = companyPresenter.Id,
+                                                                StyleID = style.Id,
+                                                                Date = DateTime.Now,
+                                                                Quantity = quantity,
+                                                            };
+                                                            memos.Add(memo);
+                                                        }
+                                                        else
+                                                        {
+                                                            // flag as error
+                                                            error = "Location [" + presenter + "] in row " + j + " of sheet [" + sheet.Name + "] not for " + company.Name + ".";
+                                                            ModelState.AddModelError("Location-" + j, error);
+                                                            ivm.Errors.Add(error);
+                                                        }
+                                                    }
+                                                } else {
+                                                    // add to QOH
+                                                    style.Quantity = quantity;
+                                                    bEmptyRow = false;
+                                                }
+
                                                 if (bEmptyRow)
                                                 {
                                                     error = "Row [" + j + "] will be ignored - All fields are blank";
                                                     ivm.Warnings.Add(error);
-                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
-                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
-                                                    if (ModelState.Remove("RetailPrice-" + j) || ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
-                                                    if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
+                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 5);
+                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
+                                                    if (ModelState.Remove("RetailPrice-" + j) || ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
+                                                    if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
+                                                    if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
                                                 }
                                                 else
                                                 {
@@ -490,6 +536,8 @@ namespace OJewelry.Controllers
                                         ivm.Errors.Add(error);
                                     }
                                 }
+                                // Memos
+                                db.Memos.AddRange(memos);
                                 // Done processing, update db
                                 if (ivm.Errors.Count() == 0)
                                 {
@@ -832,9 +880,10 @@ namespace OJewelry.Controllers
                     // Header row
                     // Save Col A for image
                     row = new Row();
-                    cell = SetCellVal("B2", "Style"); row.Append(cell);
-                    cell = SetCellVal("C2", "Name"); row.Append(cell);
-                    cell = SetCellVal("D2", "Description"); row.Append(cell);
+                    cell = SetCellVal("A2", "Style"); row.Append(cell);
+                    cell = SetCellVal("B2", "Name"); row.Append(cell);
+                    cell = SetCellVal("C2", "Description"); row.Append(cell);
+                    cell = SetCellVal("D2", "Jewelry Type"); row.Append(cell);
                     cell = SetCellVal("E2", "Collection"); row.Append(cell);
                     cell = SetCellVal("F2", "Retail"); row.Append(cell);
                     //cell = SetCellVal("G2", irm.CompanyName); row.Append(cell);
@@ -857,9 +906,10 @@ namespace OJewelry.Controllers
                     {
                         row = new Row();
                         rr = 3 + i;
-                        loc = "B" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleNum); row.Append(cell);
-                        loc = "C" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleName); row.Append(cell);
-                        loc = "D" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleDesc); row.Append(cell);
+                        loc = "A" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleNum); row.Append(cell);
+                        loc = "B" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleName); row.Append(cell);
+                        loc = "C" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleDesc); row.Append(cell);
+                        loc = "D" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].JewelryTypeName); row.Append(cell);
                         loc = "E" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleCollectionName); row.Append(cell);
                         loc = "F" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StylePrice); row.Append(cell);
                         loc = "G" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleQuantity); row.Append(cell);
@@ -915,6 +965,7 @@ namespace OJewelry.Controllers
                     StyleDesc = x.Desc,
                     StylePrice = x.RetailPrice,
                     StyleSold = x.UnitsSold,
+                    JewelryTypeName = x.JewelryType.Name,
                     x.CollectionId,
                     cl.CompanyId,
                     cl.Name,
@@ -932,6 +983,7 @@ namespace OJewelry.Controllers
                     StyleDesc = x.StyleDesc,
                     StylePrice = x.StylePrice ?? 0,
                     StyleQtySold = x.StyleSold,
+                    JewelryTypeName = x.JewelryTypeName,
                     StyleCollectionName = x.Name
                 }).Distinct().ToList();
 

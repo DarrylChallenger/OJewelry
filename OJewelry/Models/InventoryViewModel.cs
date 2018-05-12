@@ -54,6 +54,7 @@ namespace OJewelry.Models
         public int StyleQuantity { get; set; }
         public decimal StylePrice { get; set; }
         public int StyleQtySold { get; set; }
+        public string JewelryTypeName { get; set; }
         public string StyleCollectionName { get; set; }
     }
 
