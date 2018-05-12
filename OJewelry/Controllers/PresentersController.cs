@@ -156,10 +156,30 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Presenter presenter = db.Presenters.Find(id);
-            int coid = presenter.CompanyId.Value;
-            db.Presenters.Remove(presenter);
-            db.SaveChanges();
-            return RedirectToAction("Index", new { companyId = coid });
+            /*  
+            foreach (Memo m in db.Memos.Where(mm => mm.PresenterID == id))
+            {
+            }
+            */
+            int numMemos = db.Memos.Where(mm => mm.PresenterID == id).Count();
+            if (numMemos != 0)
+            {
+                ViewBag.Message = "There are items in this location; it cannot be deleted.";
+                return View(presenter);
+            }
+            else
+            {
+                int coid = presenter.CompanyId.Value;
+                List<Contact> contacts = new List<Contact>();
+                foreach (Contact c in db.Contacts.Where(c => c.PresenterId == id))
+                {
+                    contacts.Add(c);
+                }
+                db.Contacts.RemoveRange(contacts);
+                db.Presenters.Remove(presenter);
+                db.SaveChanges();
+                return RedirectToAction("Index", new { companyId = coid });
+            }
         }
 
         void SavePresenters(int presenterId, List<PresenterViewContactModel> contacts)

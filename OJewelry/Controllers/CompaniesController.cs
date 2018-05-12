@@ -343,6 +343,10 @@ namespace OJewelry.Controllers
                                                     JewelryTypeName = GetStringVal(cell, stringtable);
                                                 }
                                                 int JewelryTypeId = GetJewelryTypeId(JewelryTypeName);
+                                                if (JewelryTypeName != "")
+                                                {
+                                                    bEmptyRow = false;
+                                                }
                                                 if (JewelryTypeId == -1)
                                                 {
                                                     error = "The Jewelry Type [" + JewelryTypeName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
@@ -352,13 +356,16 @@ namespace OJewelry.Controllers
                                                 else
                                                 {
                                                     style.JewelryTypeId = JewelryTypeId;
-                                                    bEmptyRow = false;
                                                 }
                                                 // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
                                                 string CollectionName = "";
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
                                                 CollectionName = GetStringVal(cell, stringtable);
                                                 int CollectionId = GetCollectionId(CollectionName);
+                                                if (CollectionName != "")
+                                                {
+                                                    bEmptyRow = false;
+                                                }
                                                 if (CollectionId == -1)
                                                 {
                                                     // add this row of this sheet to warning list
@@ -370,7 +377,6 @@ namespace OJewelry.Controllers
                                                 else
                                                 {
                                                     style.CollectionId = CollectionId;
-                                                    bEmptyRow = false;
                                                 }
                                                 // Descrription
                                                 style.Desc = "";
@@ -442,7 +448,7 @@ namespace OJewelry.Controllers
                                                                 Date = DateTime.Now,
                                                                 Quantity = quantity,
                                                             };
-                                                            memos.Add(memo);
+                                                            style.Memos.Add(memo);
                                                         }
                                                         else
                                                         {
@@ -455,18 +461,18 @@ namespace OJewelry.Controllers
                                                 } else {
                                                     // add to QOH
                                                     style.Quantity = quantity;
-                                                    bEmptyRow = false;
+                                                    //bEmptyRow = false;
                                                 }
 
                                                 if (bEmptyRow)
                                                 {
                                                     error = "Row [" + j + "] will be ignored - All fields are blank";
                                                     ivm.Warnings.Add(error);
-                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 5);
-                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
-                                                    if (ModelState.Remove("RetailPrice-" + j) || ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
-                                                    if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
-                                                    if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
+                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
+                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
+                                                    if (ModelState.Remove("RetailPrice-" + j) || ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
+                                                    if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
+                                                    //if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
                                                 }
                                                 else
                                                 {
@@ -524,6 +530,10 @@ namespace OJewelry.Controllers
                                     {
                                         Style sty = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Single();
                                         sty.Quantity += s.Quantity;
+                                        foreach (Memo m in s.Memos)
+                                        {
+                                            sty.Memos.Add(m);
+                                        }
                                     }
                                     // new sytle
                                     if (count == 0)
@@ -536,8 +546,6 @@ namespace OJewelry.Controllers
                                         ivm.Errors.Add(error);
                                     }
                                 }
-                                // Memos
-                                db.Memos.AddRange(memos);
                                 // Done processing, update db
                                 if (ivm.Errors.Count() == 0)
                                 {
@@ -550,6 +558,7 @@ namespace OJewelry.Controllers
                     //blockBlob.DeleteIfExists();
                 }
             } catch (Exception e) {
+                ViewBag.Message += ("Error processing [" + ivm.AddPostedFile.FileName + "].     ");
                 ViewBag.Message += ("Exception[" +e.ToString()+ "] processing [" + ivm.AddPostedFile + "]");
             } finally {
                 ivm = SetPresentersLists(ivm);
@@ -988,6 +997,7 @@ namespace OJewelry.Controllers
                 }).Distinct().ToList();
 
             // irmStyle() { StyleId = s.Id, StyleNum = s.StyleNum, StyleQuantity = s.Quantity, StyleName = s.StyleName, StyleDesc = s.Desc, s.CollectionId }
+            /*
             irm.locations = db.Styles.Join(
                 db.Memos,
                 s => s.Id,
@@ -1002,6 +1012,9 @@ namespace OJewelry.Controllers
                 x => x.CompanyId,
                 c => c.Id,
                 (x, c) => new irmLocation() { PresenterId = x.PresenterId, PresenterName = x.PresenterName, ShortName = x.ShortName }).Distinct().ToList();
+            */
+            irm.locations = db.Presenters.Where(p => p.CompanyId == CompanyId).Select(p => new irmLocation()
+                { PresenterId = p.Id, PresenterName = p.Name, ShortName = p.ShortName }).ToList();
             irm.locationQuantsbystyle = db.Styles.Join(
                 db.Memos,
                 s => s.Id,
