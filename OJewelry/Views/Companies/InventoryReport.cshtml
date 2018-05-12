@@ -19,7 +19,6 @@
         {
             <th>@l.ShortName</th>
         }
-        <th>SOLD</th>
     </tr>
 
     @foreach (OJewelry.Models.irmStyle s in Model.styles)
@@ -38,7 +37,6 @@
                 if (cell != null) @qty = cell.MemoQty.ToString();
                 <td>@qty</td>
             }
-            <td>@s.StyleQtySold</td>
         </tr>
         <tr></tr>
     }

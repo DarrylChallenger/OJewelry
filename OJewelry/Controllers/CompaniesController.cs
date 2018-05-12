@@ -426,18 +426,22 @@ namespace OJewelry.Controllers
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "H" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    bEmptyRow = false;
                                                     string presenter = GetStringVal(cell, stringtable);
                                                     if (presenter == "")
                                                     {
                                                         // add to QOH
-                                                        style.Quantity = quantity;
+                                                        // flag as error
+                                                        error = "Location in row " + j + " of sheet [" + sheet.Name + "] is blank.";
+                                                        ModelState.AddModelError("Location-" + j, error);
+                                                        ivm.Errors.Add(error);
+                                                        //style.Quantity = quantity;
                                                     }
                                                     else
                                                     {
+                                                        bEmptyRow = false;
                                                         // Is the Presenter in the sheet one of the companies presenters?
                                                         Company company = db.FindCompany(ivm.CompanyId);
-                                                        Presenter companyPresenter = company.Presenters.Where(p => p.Name == presenter).SingleOrDefault();
+                                                        Presenter companyPresenter = company.Presenters.Where(p => p.ShortName == presenter).SingleOrDefault();
                                                         if (companyPresenter != null)
                                                         {
                                                             // yes, add the memo
@@ -460,7 +464,11 @@ namespace OJewelry.Controllers
                                                     }
                                                 } else {
                                                     // add to QOH
-                                                    style.Quantity = quantity;
+                                                    // flag as error
+                                                    error = "Location in row " + j + " of sheet [" + sheet.Name + "] is blank.";
+                                                    ModelState.AddModelError("Location-" + j, error);
+                                                    ivm.Errors.Add(error);
+                                                    //style.Quantity = quantity;
                                                     //bEmptyRow = false;
                                                 }
 
@@ -468,11 +476,11 @@ namespace OJewelry.Controllers
                                                 {
                                                     error = "Row [" + j + "] will be ignored - All fields are blank";
                                                     ivm.Warnings.Add(error);
-                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
-                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
-                                                    if (ModelState.Remove("RetailPrice-" + j) || ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
-                                                    if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
-                                                    //if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
+                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 5);
+                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
+                                                    if (ModelState.Remove("RetailPrice-" + j) || ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
+                                                    if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
+                                                    if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
                                                 }
                                                 else
                                                 {
@@ -904,9 +912,11 @@ namespace OJewelry.Controllers
                         cell = SetCellVal(loc, irm.locations[i].ShortName);
                         row.Append(cell);
                     }
+                    /* Ignore Sold
                     ch = (char)(((int)'G') + irm.locations.Count());
                     loc = ch + "2";
                     cell = SetCellVal(loc, "SOLD");
+                    */
                     row.Append(cell);
                     sd.Append(row);
 
@@ -940,9 +950,11 @@ namespace OJewelry.Controllers
                             row.Append(cell);
                            
                         }
+                        /* Ignore SOLD
                         ch = (char)(((int)'G') + irm.locations.Count());
                         loc = ch.ToString() + rr.ToString();
                         cell = SetCellVal(loc, irm.styles[i].StyleQtySold); row.Append(cell);
+                        */
                         sd.Append(row);
                      }
                      worksheet.Append(sd);
@@ -1264,16 +1276,20 @@ namespace OJewelry.Controllers
             Company co = db.FindCompany(ivm.CompanyId);
             ivm.CompanyName = co.Name;
             List<Presenter> tpl = db.Presenters.Where(x => x.CompanyId == ivm.CompanyId).ToList();
+            /* Don't use company name as a target 
             Presenter pSo = new Presenter();
             pSo.Id = 0;
             pSo.Name = ivm.CompanyName;
             tpl.Insert(0, pSo);
+            */
             List<Presenter> fpl = tpl.ToList();
             ivm.FromLocations = new SelectList(fpl, "Id", "Name");
+            /* Don't Use SOLD
             Presenter pCo = new Presenter();
             pCo.Id = -1;
             pCo.Name = "SOLD";
             tpl.Add(pCo);
+            */
             ivm.ToLocations = new SelectList(tpl, "Id", "Name");
             return ivm;
         }
