@@ -14,7 +14,6 @@
         <th>Jewelry Type</th>
         <th>Collection</th>
         <th>Retail</th>
-        <th>QOH</th>
         <!--Loop thru Memo locations-->
         @foreach (OJewelry.Models.irmLocation l in Model.locations)
         {
@@ -32,7 +31,6 @@
             <td>@s.JewelryTypeName</td>
             <td>@s.StyleCollectionName</td>
             <td>@s.StylePrice</td>
-            <td>@s.StyleQuantity</td>
             @foreach (OJewelry.Models.irmLocation l in Model.locations)
             {
                 OJewelry.Models.irmLS cell = @Model.locationQuantsbystyle.Where(x => x.StyleId == s.StyleId && x.PresenterId == l.PresenterId).SingleOrDefault();

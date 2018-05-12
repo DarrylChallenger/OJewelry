@@ -896,15 +896,15 @@ namespace OJewelry.Controllers
                     cell = SetCellVal("E2", "Collection"); row.Append(cell);
                     cell = SetCellVal("F2", "Retail"); row.Append(cell);
                     //cell = SetCellVal("G2", irm.CompanyName); row.Append(cell);
-                    cell = SetCellVal("G2", "QOH"); row.Append(cell);
+                    //cell = SetCellVal("G2", "QOH"); row.Append(cell);
                     for (int i = 0; i < irm.locations.Count(); i++)
                     {
-                        ch = (char)(((int)'H') + i);
+                        ch = (char)(((int)'G') + i);
                         loc = ch + "2";
-                        cell = SetCellVal(loc, irm.locations[i].PresenterName);
+                        cell = SetCellVal(loc, irm.locations[i].ShortName);
                         row.Append(cell);
                     }
-                    ch = (char)(((int)'H') + irm.locations.Count());
+                    ch = (char)(((int)'G') + irm.locations.Count());
                     loc = ch + "2";
                     cell = SetCellVal(loc, "SOLD");
                     row.Append(cell);
@@ -921,11 +921,11 @@ namespace OJewelry.Controllers
                         loc = "D" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].JewelryTypeName); row.Append(cell);
                         loc = "E" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleCollectionName); row.Append(cell);
                         loc = "F" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StylePrice); row.Append(cell);
-                        loc = "G" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleQuantity); row.Append(cell);
+                        //loc = "G" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleQuantity); row.Append(cell);
 
                         for (int j = 0; j < irm.locations.Count; j++)
                         {
-                            ch = (char)(((int)'H') + j);
+                            ch = (char)(((int)'G') + j);
                             loc = ch.ToString() + rr.ToString();
                             irmLS irmls = irm.locationQuantsbystyle.
                                 Where(x => x.StyleId == irm.styles[i].StyleId && x.PresenterId == irm.locations[j].PresenterId).SingleOrDefault();
@@ -940,7 +940,7 @@ namespace OJewelry.Controllers
                             row.Append(cell);
                            
                         }
-                        ch = (char)(((int)'H') + irm.locations.Count());
+                        ch = (char)(((int)'G') + irm.locations.Count());
                         loc = ch.ToString() + rr.ToString();
                         cell = SetCellVal(loc, irm.styles[i].StyleQtySold); row.Append(cell);
                         sd.Append(row);
