@@ -279,6 +279,7 @@ namespace OJewelry.Controllers
                             List<Style> styles = new List<Style>();
                             List<Collection> colls = new List<Collection>();
                             List<Memo> memos = new List<Memo>();
+                            Company company = db.FindCompany(ivm.CompanyId);
                             foreach (Sheet sheet in wb.Sheets)
                             {
                                 WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
@@ -361,7 +362,7 @@ namespace OJewelry.Controllers
                                                 string CollectionName = "";
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
                                                 CollectionName = GetStringVal(cell, stringtable);
-                                                int CollectionId = GetCollectionId(CollectionName);
+                                                int CollectionId = GetCollectionId(CollectionName, company.Id);
                                                 if (CollectionName != "")
                                                 {
                                                     bEmptyRow = false;
@@ -440,8 +441,7 @@ namespace OJewelry.Controllers
                                                     {
                                                         bEmptyRow = false;
                                                         // Is the Presenter in the sheet one of the companies presenters?
-                                                        Company company = db.FindCompany(ivm.CompanyId);
-                                                        Presenter companyPresenter = company.Presenters.Where(p => p.ShortName == presenter).SingleOrDefault();
+                                                        Presenter companyPresenter = company.Presenters.Where(p => p.ShortName.Trim() == presenter).SingleOrDefault();
                                                         if (companyPresenter != null)
                                                         {
                                                             // yes, add the memo
@@ -917,7 +917,7 @@ namespace OJewelry.Controllers
                     loc = ch + "2";
                     cell = SetCellVal(loc, "SOLD");
                     */
-                    row.Append(cell);
+                    //row.Append(cell);
                     sd.Append(row);
 
                     // Loop thru styles
@@ -1242,9 +1242,9 @@ namespace OJewelry.Controllers
             return jt.Id;
         }
 
-        int GetCollectionId(string CollectionName)
+        int GetCollectionId(string CollectionName, int companyId)
         {
-            Collection co = db.Collections.Where(c => c.Name == CollectionName).FirstOrDefault();
+            Collection co = db.Collections.Where(c => c.Name == CollectionName && c.CompanyId == companyId).FirstOrDefault();
             if (co == null)
             {
                 return -1;
@@ -1254,7 +1254,7 @@ namespace OJewelry.Controllers
 
         int CreateCompanyCollection(InventoryViewModel ivm, List<Collection> colls)
         {
-            int CollectionId = GetCollectionId(ivm.CompanyName);
+            int CollectionId = GetCollectionId(ivm.CompanyName, ivm.CompanyId);
             if (CollectionId == -1 && ivm.bCC_CompCollCreated == false)
             {
                 // Make new collection

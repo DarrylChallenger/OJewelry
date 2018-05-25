@@ -30,7 +30,7 @@ namespace OJewelry.Models
                     if (Name == null) return "";
                     return Name.PadRight(10).Substring(0, 10);
                 } else {
-                    return shortname;
+                    return shortname.Trim();
                 }
             }
             set {
