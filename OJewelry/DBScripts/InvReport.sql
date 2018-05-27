@@ -22,3 +22,9 @@ join memo as m on s.id = m.StyleID
 join Presenters as p on p.id = m.PresenterID
 order by p.Name, stylenum
 
+select  distinct cp.Name, cp.Id, m.PresenterID, c.Id as collection, s.Id as style, s.[Desc], s.StyleNum, m.Quantity from styles as s
+left outer join memo as m on s.id = m.StyleID
+join Collections as c on s.CollectionId = c.Id
+join Companies as cp on cp.Id = c.CompanyId
+
+order by s.StyleNum

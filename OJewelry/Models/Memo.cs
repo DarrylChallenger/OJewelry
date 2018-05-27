@@ -17,7 +17,7 @@ namespace OJewelry.Models
 
         public DateTime? Date { get; set; }
 
-        public int Quantity { get; set; }
+        public double Quantity { get; set; }
 
         [StringLength(255)]
         public string Notes { get; set; }

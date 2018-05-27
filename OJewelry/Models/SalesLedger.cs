@@ -17,7 +17,7 @@ namespace OJewelry.Models
         [StringLength(512)]
         public string StyleInfo { get; set; }
 
-        public int? UnitsSold { get; set; }
+        public double? UnitsSold { get; set; }
 
         public DateTime? Date { get; set; }
 

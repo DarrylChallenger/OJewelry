@@ -14,9 +14,9 @@ namespace OJewelry.Models
         [Display(Name = "Style No.")]
         public String Num { get; set; }
         [Display(Name = "Memo'd")]
-        public int Memod { get; set; }
+        public double Memod { get; set; }
         [Display(Name="Inventory")]
-        public int Qty { get; set; }
+        public double Qty { get; set; }
         [Display(Name = "Retial Price")]
         public decimal RetialPrice { get; set; }
         public decimal Cost { get; set; }

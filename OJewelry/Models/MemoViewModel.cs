@@ -24,7 +24,7 @@ namespace OJewelry.Models
         public String PresenterPhone { get; set; }
         public String PresenterEmail { get; set; }
         public DateTime? date { get; set; }
-        public int Quantity { get; set; }
+        public double Quantity { get; set; }
         public String Notes { get; set; }
         [Display(Name = "Return Qty")] public int ReturnQty { get; set; }
 

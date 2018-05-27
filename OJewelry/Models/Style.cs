@@ -58,9 +58,9 @@ namespace OJewelry.Models
 
         public decimal? RedlineRatio { get; set; }
 
-        public int Quantity { get; set; }
+        public double Quantity { get; set; }
 
-        public int UnitsSold { get; set; }
+        public double UnitsSold { get; set; }
 
         public virtual Collection Collection { get; set; }
 

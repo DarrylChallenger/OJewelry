@@ -410,14 +410,23 @@ namespace OJewelry.Controllers
                                                 }
 
                                                 // Quantity 
-                                                int quantity = 0;
+                                                double quantity = 0;
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    quantity = GetIntVal(cell);
-                                                    bEmptyRow = false;
+                                                    quantity = GetDoubleVal(cell);
+                                                    // Quality check for quantity
+                                                    if (isValidQuantity(JewelryTypeName, quantity)) // integral or integral + .5
+                                                    {
+                                                        bEmptyRow = false;
+                                                    } else {
+                                                        error = "Invalid Quantity/JewelryType[" + quantity + "/" + JewelryTypeName + "] in row " + j + " of sheet [" + sheet.Name + "]. Quantity must be whole number or half number for Earrrings";
+                                                        ModelState.AddModelError("Quantity-" + j, error);
+                                                        ivm.Errors.Add(error);
+                                                    }
                                                 }
-                                                else {
+                                                else
+                                                {
                                                     error = "Invalid Quantity in row " + j + " of sheet [" + sheet.Name + "].";
                                                     ModelState.AddModelError("Quantity-"+j, error);
                                                     ivm.Errors.Add(error);
@@ -444,7 +453,6 @@ namespace OJewelry.Controllers
                                                         Presenter companyPresenter = company.Presenters.Where(p => p.ShortName.Trim() == presenter).SingleOrDefault();
                                                         if (companyPresenter != null)
                                                         {
-                                                            // yes, add the memo
                                                             Memo memo = new Memo()
                                                             {
                                                                 PresenterID = companyPresenter.Id,
@@ -463,13 +471,10 @@ namespace OJewelry.Controllers
                                                         }
                                                     }
                                                 } else {
-                                                    // add to QOH
                                                     // flag as error
                                                     error = "Location in row " + j + " of sheet [" + sheet.Name + "] is blank.";
                                                     ModelState.AddModelError("Location-" + j, error);
                                                     ivm.Errors.Add(error);
-                                                    //style.Quantity = quantity;
-                                                    //bEmptyRow = false;
                                                 }
 
                                                 if (bEmptyRow)
@@ -540,7 +545,14 @@ namespace OJewelry.Controllers
                                         sty.Quantity += s.Quantity;
                                         foreach (Memo m in s.Memos)
                                         {
-                                            sty.Memos.Add(m);
+                                            Memo oldMemo = db.Memos.Where(x => x.PresenterID == m.PresenterID && x.StyleID == sty.Id).SingleOrDefault();
+                                            if (oldMemo == null)
+                                            {
+                                                sty.Memos.Add(m);
+                                            } else
+                                            {
+                                                oldMemo.Quantity += m.Quantity;
+                                            }
                                         }
                                     }
                                     // new sytle
@@ -644,7 +656,7 @@ namespace OJewelry.Controllers
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    style.Quantity = GetIntVal(cell);
+                                                    style.Quantity = GetDoubleVal(cell);
                                                     bEmptyRow = false;
                                                 }
                                                 else
@@ -704,7 +716,7 @@ namespace OJewelry.Controllers
                             foreach (Style s in styles)
                             {
                                 //List<Collection> colist = db.Collections.Where(x => x.CompanyId == ivm.CompanyId).Include("Styles").ToList();
-                                Style theStyle = db.Styles.Include("Collection").Where(x => x.StyleNum == s.StyleNum).Where(y => y.Collection.CompanyId == ivm.CompanyId).SingleOrDefault();
+                                Style theStyle = db.Styles.Include("Collection").Include("JewelryType").Where(x => x.StyleNum == s.StyleNum).Where(y => y.Collection.CompanyId == ivm.CompanyId).SingleOrDefault();
 
                                 if (theStyle == null)
                                 {
@@ -714,15 +726,20 @@ namespace OJewelry.Controllers
                                 }
                                 // update desc and retail if blank in DB
                                 if (theStyle.Desc == null || theStyle.Desc == "") theStyle.Desc = s.Desc;
-                                // should we always update retail?
-                                //if (theStyle.Retail == null) theStyle.Retail = s.Retail;  
-                                //// if moving from home
-                                int moveQty = s.Quantity;
 
+                                double moveQty = s.Quantity;
+                                if (!isValidQuantity(theStyle.JewelryType.Name, moveQty))
+                                {
+                                    error = "Invalid Quantity: Quantity must be whole number or half number for Earrrings";
+                                    ivm.Errors.Add(error);
+                                    continue;
+                                }
                                 // from -= qty, to += qty
                                 Memo fromMemo, toMemo;
                                 // if moving from home, create a memo. If moving to home, decrease memo qty/remove the memo
-                                if (ivm.FromLocationId == 0) // get the quant from syles
+                                
+                                //if (ivm.FromLocationId == 0) // get the quant from styles
+                                if (false) // 
                                 {
                                     if (moveQty <= theStyle.Quantity)
                                     {
@@ -757,7 +774,8 @@ namespace OJewelry.Controllers
                                     }
                                 }
                                 // if moving to home
-                                if (ivm.ToLocationId == 0)
+                                //if (ivm.ToLocationId == 0)
+                                if(false)
                                 {
                                     theStyle.Quantity += moveQty;
                                 }
@@ -935,12 +953,14 @@ namespace OJewelry.Controllers
 
                         for (int j = 0; j < irm.locations.Count; j++)
                         {
+                            string jewelrytype = irm.styles[i].JewelryTypeName.ToLower();
                             ch = (char)(((int)'G') + j);
                             loc = ch.ToString() + rr.ToString();
                             irmLS irmls = irm.locationQuantsbystyle.
                                 Where(x => x.StyleId == irm.styles[i].StyleId && x.PresenterId == irm.locations[j].PresenterId).SingleOrDefault();
                             if (irmls != null)
                             {
+                                double q = irmls.MemoQty;
                                 cell = SetCellVal(loc, irmls.MemoQty);
                             }
                             else
@@ -1207,16 +1227,38 @@ namespace OJewelry.Controllers
             return i;
         }
 
+        double GetDoubleVal(Cell cell)
+        {
+            double d = 0;
+            try
+            {
+                if (cell.DataType == null)
+                {
+                    d = double.Parse(cell.CellValue.InnerText);
+                }
+            }
+            catch
+            {
+                return 0;
+            }
+
+            return d;
+        }
+
         Cell SetCellVal(string loc, int val)
         {
-
             Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             return cell;
         }
 
         Cell SetCellVal(string loc, decimal val)
         {
+            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
+            return cell;
+        }
 
+        Cell SetCellVal(string loc, double val)
+        {
             Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             return cell;
         }
@@ -1332,6 +1374,17 @@ namespace OJewelry.Controllers
             return b;
         }
 
+        bool isValidQuantity(string jewelryType, double qty)
+        {
+            if (qty <= 0) return false;
+            int i = Convert.ToInt32(Math.Floor(qty));
+            if (i == qty) return true;
+            if (jewelryType.ToLower() == "earring" || jewelryType.ToLower() == "earrings")
+            {
+                if (i == qty-0.5) return true;
+            }
+            return false;
+        }
     }
 }
 

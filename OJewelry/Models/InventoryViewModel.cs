@@ -51,9 +51,9 @@ namespace OJewelry.Models
         public string StyleNum { get; set; }
         public string StyleName { get; set; }
         public string StyleDesc { get; set; }
-        public int StyleQuantity { get; set; }
+        public double StyleQuantity { get; set; }
         public decimal StylePrice { get; set; }
-        public int StyleQtySold { get; set; }
+        public double StyleQtySold { get; set; }
         public string JewelryTypeName { get; set; }
         public string StyleCollectionName { get; set; }
     }
@@ -83,9 +83,9 @@ namespace OJewelry.Models
         public int StyleId { get; set; }
         public int PresenterId { get; set; }
         public string StyleNum { get; set; }
-        public int StyleQuantity { get; set; }
+        public double StyleQuantity { get; set; }
         public string LocationName { get; set; }
-        public int MemoQty { get; set; }
+        public double MemoQty { get; set; }
     }
 }
 

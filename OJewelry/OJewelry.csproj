@@ -373,6 +373,10 @@
     <Compile Include="Migrations\201804191525378_v.61-CascadeDeletes.Designer.cs">
       <DependentUpon>201804191525378_v.61-CascadeDeletes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805260039404_v.652.cs" />
+    <Compile Include="Migrations\201805260039404_v.652.Designer.cs">
+      <DependentUpon>201805260039404_v.652.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -423,8 +427,10 @@
     <Content Include="DBScripts\DropCreateOJDatabase.sql" />
     <Content Include="DBScripts\InvReport.sql" />
     <Content Include="DBScripts\Locations.sql" />
+    <Content Include="DBScripts\Memo.sql" />
     <Content Include="DBScripts\OJewelryDBTablesV0.2.sql" />
     <Content Include="DBScripts\Roles.sql" />
+    <Content Include="DBScripts\v_652.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -440,6 +446,7 @@
     </Content>
     <Content Include="Excel\MoveInv.xlsx" />
     <Content Include="Excel\NewInv.xlsx" />
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Properties\PublishProfiles\OJewelry-Stag - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelry-Stag - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Debug Web Deploy.pubxml" />
@@ -656,6 +663,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804191525378_v.61-CascadeDeletes.resx">
       <DependentUpon>201804191525378_v.61-CascadeDeletes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805260039404_v.652.resx">
+      <DependentUpon>201805260039404_v.652.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
