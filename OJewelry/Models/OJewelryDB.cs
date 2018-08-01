@@ -11,17 +11,54 @@ namespace OJewelry.Models
     using System.Security.Principal;
     using System.Threading;
 
+    public class SecureCompanies : IDbSet<Company>
+    {
+        private bool bIsAdmin;
+        //private bool bIsGuest;
+        private string userId;
+        DbSet<Company> _company;
+
+        private SecureCompanies(DbSet<Company> co) : base()
+        {
+            _company = co;
+            bIsAdmin = false;
+            //bIsGuest = false;
+            AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+            if (Thread.CurrentPrincipal.IsInRole("Admin") == true)
+            {
+                bIsAdmin = true;
+            }
+            /*
+            if (Thread.CurrentPrincipal.IsInRole("Guest") == true)
+            {
+                bIsGuest = true;
+            }
+            */
+            userId = Thread.CurrentPrincipal.Identity.GetUserId();
+        }
+
+        public override Company Find(params object[] keyValues)
+        {
+            if (bIsAdmin)
+            {
+                return base.Find(keyValues);
+            }
+            //companyUsers = new DbSet<CompanyUser>();
+            Company t = this.Join(companyUsers.Where(x => x.UserId == userId), c => c.Id, cu => cu.CompanyId, (c, cu) => c).SingleOrDefault();
+            return t;
+        }
+    }
+    
     public partial class OJewelryDB : DbContext
     {
         public OJewelryDB()
             : base("name=OJewelryDB")
         {
-
-            //string loggedOnUserName = User.Identity.GetUserId();
+            #region
             /*
+            //string loggedOnUserName = User.Identity.GetUserId();
             System.Security.Principal.WindowsPrincipal principal = new WindowsPrincipal();
             System.Security.Principal.WindowsIdentity p = new WindowsIdentity();
-            */
             bIsAdmin = false;
             bIsGuest = false;
 
@@ -38,15 +75,20 @@ namespace OJewelry.Models
                 bIsGuest = true;
             }
             userId = Thread.CurrentPrincipal.Identity.GetUserId();
-         }
+            */
+        }
 
         //private string loggedOnUserName;
+        /*
         string userId;
         bool bIsAdmin;
         bool bIsGuest;
+        */
+        /*
         public IEnumerable<Company> Companies
         {
-            get {
+            get
+            {
                 // Get logged on user
                 //return _Companies;
                 if (bIsAdmin)
@@ -55,8 +97,9 @@ namespace OJewelry.Models
                 }
                 return _Companies.Join(CompaniesUsers.Where(x => x.UserId == userId), c => c.Id, cu => cu.CompanyId, (c, cu) => c);
             }
-        }
-
+        }       
+        */
+        /*
         public Company FindCompany(int? i)
         {
             return _Companies.Find(i);
@@ -81,13 +124,14 @@ namespace OJewelry.Models
         {
             return bIsAdmin;
         }
-
+*/
+        #endregion
         public virtual DbSet<ACL> ACLs { get; set; }
         public virtual DbSet<Buyer> Buyers { get; set; }
         public virtual DbSet<Casting> Castings { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
         public virtual DbSet<Collection> Collections { get; set; }
-        public virtual DbSet<Company> _Companies { get; set; }
+        public virtual SecureCompanies Companies { get; set; }
         public virtual DbSet<CompanyUser> CompaniesUsers { get; set; }
         public virtual DbSet<Component> Components { get; set; }
         public virtual DbSet<ComponentType> ComponentTypes { get; set; }

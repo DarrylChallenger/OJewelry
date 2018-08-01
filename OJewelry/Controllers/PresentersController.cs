@@ -27,7 +27,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company co = db.FindCompany(companyId);
+            Company co = db.Companies.Find(companyId);
             if (co == null)
             {
                 return HttpNotFound();
@@ -46,7 +46,7 @@ namespace OJewelry.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Presenter presenter = db.Presenters.Find(id);
-            presenter.Company = db.FindCompany(presenter.CompanyId);
+            presenter.Company = db.Companies.Find(presenter.CompanyId);
             if (presenter == null)
             {
                 return HttpNotFound();
@@ -61,7 +61,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company co = db.FindCompany(companyId);
+            Company co = db.Companies.Find(companyId);
             if (co == null)
             {
                 return HttpNotFound();
@@ -87,7 +87,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
             }
 
-            pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
+            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
             return View(pvm);
         }
 
@@ -110,7 +110,7 @@ namespace OJewelry.Controllers
                 PresenterViewContactModel pvcm = new PresenterViewContactModel(c);
                 pvm.contacts.Add(pvcm);
             }
-            pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
+            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
 
             return View(pvm);
         }
@@ -122,7 +122,7 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(PresenterViewModel pvm)
         {
-            pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
+            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
             if (ModelState.IsValid)
             {
                 db.Entry(pvm.Location).State = EntityState.Modified;
@@ -130,7 +130,7 @@ namespace OJewelry.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
             }
-            pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
+            pvm.Location.Company = db.Companies.Find(pvm.Location.CompanyId);
             return View(pvm);
         }
 
@@ -142,7 +142,7 @@ namespace OJewelry.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Presenter presenter = db.Presenters.Find(id);
-            presenter.Company = db.FindCompany(presenter.CompanyId);
+            presenter.Company = db.Companies.Find(presenter.CompanyId);
             if (presenter == null)
             {
                 return HttpNotFound();
@@ -284,7 +284,7 @@ namespace OJewelry.Controllers
                     document.Close();
 
                     b = memStream.ToArray();
-                    Company company = db.FindCompany(CompanyId);
+                    Company company = db.Companies.Find(CompanyId);
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         company.Name + " Locations as of " + DateTime.Now.ToString() + ".xlsx");
                 }

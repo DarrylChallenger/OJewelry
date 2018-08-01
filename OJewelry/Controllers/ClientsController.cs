@@ -22,7 +22,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company co = db.FindCompany(CompanyId);
+            Company co = db.Companies.Find(CompanyId);
             if (co == null)
             {
                 return HttpNotFound();
@@ -56,7 +56,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", "Home");
             }
             Client cl = new Client() { CompanyID = CompanyId };
-            cl.Company = db.FindCompany(CompanyId);
+            cl.Company = db.Companies.Find(CompanyId);
             if (cl.Company == null)
             {
                 return HttpNotFound();

@@ -22,7 +22,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            Company co = db.FindCompany(CompanyId);
+            Company co = db.Companies.Find(CompanyId);
             //co = db.Companies.Include("Collections").Include("Collections.Styles").Include("Collections.Styles.Memos").Where(c => c.Id == CompanyId).SingleOrDefault();
             if (co == null)
             {
@@ -75,7 +75,7 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            Company co = db.FindCompany(collection.CompanyId);
+            Company co = db.Companies.Find(collection.CompanyId);
 
             CollectionsDetailsModel cm = new CollectionsDetailsModel()
             {
@@ -98,7 +98,7 @@ namespace OJewelry.Controllers
             {
                 CompanyId = id.Value,
             };
-            ViewBag.CompanyName = db.FindCompany(id).Name;
+            ViewBag.CompanyName = db.Companies.Find(id).Name;
             return View(cm);
         }
 

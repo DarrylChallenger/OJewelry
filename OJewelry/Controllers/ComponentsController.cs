@@ -25,7 +25,7 @@ namespace OJewelry.Controllers
 
             var components = db.Components.Where(x => x.CompanyId == CompanyId).Include(c => c.Company).Include(c => c.ComponentType).OrderBy(c => c.ComponentType.Sequence).Include(c => c.Vendor);
             ViewBag.Id = CompanyId;
-            ViewBag.CompanyName = db.FindCompany(CompanyId).Name;
+            ViewBag.CompanyName = db.Companies.Find(CompanyId).Name;
 
             return View(components.ToList());
         }
@@ -53,7 +53,7 @@ namespace OJewelry.Controllers
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name");
             ViewBag.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code");
             ViewBag.Id = CompanyId;
-            ViewBag.CompanyName = db.FindCompany(CompanyId).Name;
+            ViewBag.CompanyName = db.Companies.Find(CompanyId).Name;
             Component comp = new Component();
             comp.Price = 0;
             comp.PricePerHour = 0;
@@ -98,7 +98,7 @@ namespace OJewelry.Controllers
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", component.CompanyId);
             ViewBag.ComponentTypeId = new SelectList(db.ComponentTypes, "Id", "Name", component.ComponentTypeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", component.VendorId);
-            Company co = db.FindCompany(component.CompanyId);
+            Company co = db.Companies.Find(component.CompanyId);
             ViewBag.CompanyName = co.Name;
             ViewBag.MetalCodes = new SelectList(db.MetalCodes, "Id", "Code", component.MetalCodeId);
             //ViewBag.ErrorMessage = "You cannot delete this component becuase it is still in use by a style.";

@@ -25,6 +25,13 @@ namespace OJewelry.Controllers
         public ActionResult Index()
         {
 
+            String s = typeof(IDbSet<>).FullName; // "System.Data.Entity.IDbSet`1"
+            s = typeof(Company).FullName; // "OJewelry.Models.Company"
+            s = typeof(SecureCompanies).FullName; // "OJewelry.Models.SecureCompanies"
+            bool b = typeof(IDbSet<>).IsAssignableFrom(typeof(DbSet));
+            s = typeof(SecureCompanies).BaseType.FullName;
+            s = typeof(SecureCompanies).BaseType.BaseType.FullName;
+            s = typeof(SecureCompanies).BaseType.BaseType.BaseType.FullName;
             string loggedOnUserName = System.Web.HttpContext.Current.User.Identity.Name;
             ViewBag.UserName = loggedOnUserName;
             sec = new ApplicationDbContext();
@@ -33,6 +40,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
+
             return View(db.Companies.OrderBy(c=>c.Name).ToList());
         }
 
@@ -43,7 +51,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company company = db.FindCompany(id);
+            Company company = db.Companies.Find(id);
             if (company == null)
             {
                 return HttpNotFound();
@@ -76,7 +84,7 @@ namespace OJewelry.Controllers
                     UserId = user.Id
                 };
                 cvm.company.CompanyUsers.Add(cu);
-                db.AddCompany(cvm.company);
+                db.Companies.Add(cvm.company);
                 
                 foreach (CompanyViewClientModel c in cvm.clients)
                 {
@@ -115,7 +123,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company company = db.FindCompany(id);
+            Company company = db.Companies.Find(id);
             if (company == null)
             {
                 return HttpNotFound();
@@ -179,7 +187,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Company company = db.FindCompany(id);
+            Company company = db.Companies.Find(id);
             if (company == null)
             {
                 return HttpNotFound();
@@ -192,7 +200,7 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Company company = db.FindCompany(id);
+            Company company = db.Companies.Find(id);
             if (db.Collections.Where(col => col.CompanyId == id && col.Styles.Count() != 0).Count() != 0)
             {
                 ModelState.AddModelError("Company", company.Name + " has at least one collection that is not empty.");
@@ -205,7 +213,7 @@ namespace OJewelry.Controllers
             db.Presenters.RemoveRange(company.Presenters);
             db.Clients.RemoveRange(company.Clients);
             db.Components.RemoveRange(company.Components);
-            db.RemoveCompany(company);
+            db.Companies.Remove(company);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -279,7 +287,7 @@ namespace OJewelry.Controllers
                             List<Style> styles = new List<Style>();
                             List<Collection> colls = new List<Collection>();
                             List<Memo> memos = new List<Memo>();
-                            Company company = db.FindCompany(ivm.CompanyId);
+                            Company company = db.Companies.Find(ivm.CompanyId);
                             foreach (Sheet sheet in wb.Sheets)
                             {
                                 WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
@@ -372,7 +380,7 @@ namespace OJewelry.Controllers
                                                     // add this row of this sheet to warning list
                                                     warning = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist; adding to default Collection";
                                                     ivm.Warnings.Add(warning);
-                                                    ivm.CompanyName = db.FindCompany(ivm.CompanyId).Name;
+                                                    ivm.CompanyName = db.Companies.Find(ivm.CompanyId).Name;
                                                     style.CollectionId = CreateCompanyCollection(ivm, colls);
                                                 }
                                                 else
@@ -1079,7 +1087,7 @@ namespace OJewelry.Controllers
                 }).
                 Distinct().OrderBy(x => x.LocationName).OrderBy(x => x.StyleNum).ToList();
             irm.CompanyId = CompanyId;
-            irm.CompanyName = db.FindCompany(CompanyId).Name;
+            irm.CompanyName = db.Companies.Find(CompanyId).Name;
 
             return irm;
         }
@@ -1315,7 +1323,7 @@ namespace OJewelry.Controllers
 
         InventoryViewModel SetPresentersLists(InventoryViewModel ivm)
         {
-            Company co = db.FindCompany(ivm.CompanyId);
+            Company co = db.Companies.Find(ivm.CompanyId);
             ivm.CompanyName = co.Name;
             List<Presenter> tpl = db.Presenters.Where(x => x.CompanyId == ivm.CompanyId).ToList();
             /* Don't use company name as a target 
