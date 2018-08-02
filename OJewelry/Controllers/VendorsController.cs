@@ -118,7 +118,8 @@ namespace OJewelry.Controllers
             Vendor vendor = db.Vendors.Find(id);
             
             if (db.Castings.Where(c => c.VendorId == id).Count() != 0 ||
-                db.Components.Where(s => s.VendorId == id).Count() != 0)
+                db.Stones.Where(s => s.VendorId == id).Count() != 0 ||
+                db.Findings.Where(s => s.VendorId == id).Count() != 0)
             {
                 ModelState.AddModelError("Vendor", vendor.Name + " is in use by at least one casting, stone, or finding.");
                 return View(vendor);

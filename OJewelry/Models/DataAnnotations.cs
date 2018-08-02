@@ -111,7 +111,7 @@ namespace OJewelry.Models
     }
 
     [MetadataType(typeof(ComponentMetaData))]   //component
-    public partial class Component
+    public partial class ComponentX
     {
     }
     public partial class ComponentMetaData
@@ -165,7 +165,7 @@ namespace OJewelry.Models
     }
 
     [MetadataType(typeof(ComponentTypeMetaData))]   // Component Type
-    public partial class ComponentType
+    public partial class ComponentTypeX
     {
     }
     public partial class ComponentTypeMetaData

@@ -11,7 +11,7 @@ namespace OJewelry.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Vendor()
         {
-            Components = new HashSet<Component>();
+            //Components = new HashSet<Component>();
         }
 
         public int Id { get; set; }
@@ -29,7 +29,10 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Type { get; set; }
 
+        /*
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Component> Components { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Component> Components { get; set; }*/
     }
 }

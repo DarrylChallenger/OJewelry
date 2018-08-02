@@ -111,7 +111,7 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             MetalCode metalCode = db.MetalCodes.Find(id);
-            if (db.Components.Where(c => c.MetalCodeId == id).Count() != 0 || db.Castings.Where(s => s.MetalCodeID == id).Count() != 0)
+            if (db.Findings.Where(c => c.MetalCodeId == id).Count() != 0 || db.Castings.Where(s => s.MetalCodeID == id).Count() != 0)
             {
                 ModelState.AddModelError("MetalCode", metalCode.Desc + " is in use by at least one casting or finding.");
                 return View(metalCode);

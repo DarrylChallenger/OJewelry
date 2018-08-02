@@ -204,7 +204,9 @@ namespace OJewelry.Controllers
             db.Collections.RemoveRange(company.Collections);
             db.Presenters.RemoveRange(company.Presenters);
             db.Clients.RemoveRange(company.Clients);
-            db.Components.RemoveRange(company.Components);
+            //db.Components.RemoveRange(company.Components);
+            db.Stones.RemoveRange(company.Stones);
+            db.Findings.RemoveRange(company.Findings);
             db.RemoveCompany(company);
             db.SaveChanges();
             return RedirectToAction("Index");

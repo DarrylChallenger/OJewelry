@@ -14,7 +14,9 @@ namespace OJewelry.Models
             ACLs = new HashSet<ACL>();
             Clients = new HashSet<Client>();
             Collections = new HashSet<Collection>();
-            Components = new HashSet<Component>();
+            //Components = new HashSet<Component>();
+            Stones = new HashSet<Stone>();
+            Findings = new HashSet<Finding>();
             Presenters = new HashSet<Presenter>();
             CompanyUsers = new HashSet<CompanyUser>();
         }
@@ -46,8 +48,14 @@ namespace OJewelry.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Collection> Collections { get; set; }
 
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        //public virtual ICollection<Component> Components { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Component> Components { get; set; }
+        public virtual ICollection<Stone> Stones { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Finding> Findings { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Presenter> Presenters { get; set; }

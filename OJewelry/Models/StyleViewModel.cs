@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Owin.Security.Facebook;
 
 namespace OJewelry.Models
 {
@@ -97,23 +99,97 @@ namespace OJewelry.Models
             MetalCodes = new SelectList(metals, "Id", "Code", defaultMetalSelection);
         }
     }
-    public class StoneComponent : StyleViewComponentModel, IValidatableObject
+    public class StoneComponent 
     {
-        public StoneComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
-        public StoneComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
+        private Stone _stone = new Stone();
+        public SVMStateEnum SVMState { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        public decimal Total { get; set; }
+
+        public SelectList CompList { get; set; }
+
+        public StoneComponent()
+        {
+            _stone = new Stone(); Init();
+        } // Comp.Vendor = new Vendor(); }
+
+        public StoneComponent(Stone s)
+        {
+            _stone = s;
+            Init();
+        }
+        void Init()
+        {
+            SVMState = SVMStateEnum.Dirty;
+        }
 
         //[Required(ErrorMessage = "You must select a stone!")]
-        public int? Id { get; set; }
+        public int Id
+        {
+            get { return _stone.Id; }
+            set { _stone.Id = value; }
+        }
 
-        public String VendorName { get; set; }
-        public int? CtWt { get; set; }
-        public String Size { get; set; }
-        
-        [Display(Name = "$/Piece")]
+        public int? CompanyId
+        {
+            get { return _stone.CompanyId; }
+            set { _stone.CompanyId = value; }
+        }
+
+        public int? VendorId
+        {
+            get { return _stone.VendorId; }
+            set { _stone.VendorId = value; }
+        }
+
+
+        public String VendorName
+        {
+            get { return _stone.Vendor.Name; }
+            set { _stone.Vendor.Name = value; }
+        }
+
+        public String Desc
+        {
+            get { return _stone.Desc; }
+            set { _stone.Desc = value; }
+        }
+
+        public int? CtWt
+        {
+            get { return _stone.CtWt; }
+            set { _stone.CtWt = value; }
+        }
+
+        public String Size
+        {
+            get { return _stone.StoneSize; }
+            set { _stone.StoneSize = value; }
+        }
+
+        public decimal? Price
+        {
+            get { return _stone.Price.Value; }
+            set { _stone.Price = value; }
+        }
+
+        [Display(Name = "Quantity")]
+        public int Qty
+        {
+            get { return _stone.Qty.Value; }
+            set { _stone.Qty = value; }
+        }
+
+        /*[Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? PPC { get; set; }
+        public decimal? PPC
+        {
+            get { return _stone.StonePPC; }
+            set { _stone.StonePPC = value; }
+        }*/
 
-        public void SetStonesList(List<Component> stones, int defaultSelection)
+        public void SetStonesList(List<Stone> stones, int defaultSelection)
         {
             if (defaultSelection == -1)
             {
@@ -134,22 +210,73 @@ namespace OJewelry.Models
             return results;
         }
     }
-    public class FindingsComponent : StyleViewComponentModel
+    public class FindingsComponent
     {
+        private Finding _finding = new Finding();
+        public SVMStateEnum SVMState { get; set; }
+
+        [Display(Name = "Quantity")]
+        public int Qty { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        public decimal Total { get; set; }
+
+        public SelectList CompList { get; set; }
+
+
         public FindingsComponent() { }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
-        public FindingsComponent(int StyleComponentId, int ComponentId, int ComponentQty) { Id = ComponentId; scId = StyleComponentId; Qty = ComponentQty; }
 
-        //[Required(ErrorMessage = "You must select a finding!")]
-        public int? Id { get; set; }
+        public FindingsComponent(Finding f)
+        {
+            _finding = f;
+            Init();
+        }
 
-        public String VendorName { get; set; }
-        public String Metal { get; set; }
+        void Init()
+        {
+            SVMState = SVMStateEnum.Dirty;
+        }
         
+        //[Required(ErrorMessage = "You must select a finding!")]
+        public int Id
+        {
+            get { return _finding.Id; }
+            set { _finding.Id = value; }
+        }
+
+        public int? CompanyId
+        {
+            get { return _finding.CompanyId; }
+            set { _finding.CompanyId = value; }
+        }
+
+        public int? VendorId
+        {
+            get { return _finding.VendorId; }
+            set { _finding.VendorId = value; }
+        }
+
+        public String VendorName
+        {
+            get { return _finding.Vendor.Name; }
+            set { _finding.Vendor.Name = value; }
+        }
+
+        public string Metal
+        {
+            get { return _finding.Metal.Code; }
+            set { _finding.Metal.Code = value; }
+        }
+
         [Display(Name = "Price")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? Price { get; set; }
+        public decimal? Price
+        {
+            get { return _finding.Price; }
+            set { _finding.Price = value; }
+        }
 
-        public void SetFindingsList(List<Component> findings, int defaultSelection)
+        public void SetFindingsList(List<Finding> findings, int defaultSelection)
         {
             if (defaultSelection == -1)
             {
@@ -159,8 +286,6 @@ namespace OJewelry.Models
                 CompList = new SelectList(findings, "Id", "Name", defaultSelection);
             }
         }
-
-
     }
     public class LaborComponent 
     {
@@ -232,7 +357,7 @@ namespace OJewelry.Models
             SVMState = SVMStateEnum.Dirty; // For now, update all records
         }
     
-        public int scId { get; set; }
+        //public int scId { get; set; }
         //public int CompanyId { get { return Comp.CompanyId ?? 0; } set { Comp.CompanyId = value; } }
         //public int ComponentTypeId { get { return Comp.ComponentTypeId; } set { Comp.ComponentTypeId = value; } }
         //public Component Comp { get; set; }
@@ -289,8 +414,8 @@ namespace OJewelry.Models
 
         public List<Vendor> jsVendors { get; set; }
         public List<MetalCode> jsMetals { get; set; }
-        public List<Component> jsStones { get; set; }
-        public List<Component> jsFindings { get; set; }
+        public List<Stone> jsStones { get; set; }
+        public List<Finding> jsFindings { get; set; }
 
         public bool CCLastRow { get; set; }
         public bool CCHeaderRow { get; set; }
@@ -303,8 +428,8 @@ namespace OJewelry.Models
         {
             jsVendors = db.Vendors.ToList();
             jsMetals = db.MetalCodes.ToList();
-            jsStones = db.Components.Include("ComponentType").Include("Vendor").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Stones").ToList();
-            jsFindings = db.Components.Include("ComponentType").Include("Vendor").Include("Metal").Where(x => x.CompanyId == CompanyId && x.ComponentType.Name == "Findings").ToList();
+            jsStones = db.Stones.Include("Vendor").Where(x => x.CompanyId == CompanyId).ToList();
+            jsFindings = db.Findings.Include("Vendor").Include("Metal").Where(x => x.CompanyId == CompanyId).ToList();
         }
 
         public void PopulateDropDowns(OJewelryDB db)
@@ -317,19 +442,19 @@ namespace OJewelry.Models
             }
             foreach (StoneComponent stscm in Stones)
             {
-                stscm.SetStonesList(jsStones, stscm.Id.Value);
+                stscm.SetStonesList(jsStones, stscm.Id);//stscm.SetStonesList(jsStones, stscm.Id.Value);
             }
             foreach (FindingsComponent fiscm in Findings)
             {
-                fiscm.SetFindingsList(jsFindings, fiscm.Id.Value);
+                fiscm.SetFindingsList(jsFindings, fiscm.Id); //fiscm.SetFindingsList(jsFindings, fiscm.Id.Value);
             }
         }
 
         public void RepopulateComponents(OJewelryDB db)
         {
             decimal t = 0;
-            List<Component> jsStonesWithDefault = new List<Component>();
-            List<Component> jsFindingsWithDefault = new List<Component>();
+            List<Stone> jsStonesWithDefault = new List<Stone>();
+            List<Finding> jsFindingsWithDefault = new List<Finding>();
             jsStonesWithDefault = jsStones.ToList();
             jsFindingsWithDefault=jsFindings.ToList();
 
@@ -341,31 +466,34 @@ namespace OJewelry.Models
                         sc.VendorName = "";
                         sc.CtWt = 0;
                         sc.Size = "";
-                        sc.PPC = 0;
-                        //sc.Qty = 0;
+                        sc.Qty = 0;
+                        sc.Price = 0;
                         sc.SetStonesList(jsStonesWithDefault, -1);
-                        //sc.Total = 0;
+                        sc.Total = 0;
+                        sc.Desc = "";
                         break;
                     case SVMStateEnum.Unadded:
                         sc.VendorName = "";
                         sc.CtWt = 0;
                         sc.Size = "";
-                        sc.PPC = 0;
                         sc.Qty = 0;
+                        sc.Price = 0;
                         sc.SetStonesList(jsStonesWithDefault, -1);
                         sc.Total = 0;
+                        sc.Desc = "";
+
                         //sc.SVMState = SVMStateEnum.Added;
                         break;
                     case SVMStateEnum.Dirty:
                     case SVMStateEnum.Deleted:
-                        Component c = db.Components.Find(sc.Id);
+                        Stone c = db.Stones.Find(sc.Id);
                         sc.VendorName = db.Vendors.Find(c.VendorId).Name;
-                        sc.CtWt = c.StonesCtWt;
+                        sc.CtWt = c.CtWt;
                         sc.Size = c.StoneSize;
-                        sc.PPC = c.StonePPC;
-                        sc.Qty = db.StyleComponents.Find(sc.scId).Quantity ?? 0;
-                        sc.SetStonesList(jsStones, sc.Id.Value);
-                        t = sc.PPC ?? 0;
+                        sc.Price = c.Price.Value;
+                        sc.Qty = c.Qty.Value;
+                        sc.SetStonesList(jsStones, sc.Id);
+                        t = sc.Price ?? 0;
                         sc.Total = sc.Qty * t;
                         StonesTotal += sc.Total;
                         Total += sc.Total;
@@ -394,16 +522,16 @@ namespace OJewelry.Models
                         break;
                     case SVMStateEnum.Dirty:
                     case SVMStateEnum.Deleted:
-                        Component c = db.Components.Find(fc.Id);
+                        Finding c = db.Findings.Find(fc.Id);
                         fc.VendorName = db.Vendors.Find(c.VendorId).Name;
                         fc.Metal = db.MetalCodes.Find(c.MetalCodeId).Code;
                         fc.Price = c.Price;
                         t = fc.Price ?? 0;
                         fc.Total = fc.Qty * t;
                         FindingsTotal += fc.Total;
-                        fc.Qty = db.StyleComponents.Find(fc.scId).Quantity ?? 0;
+                        fc.Qty = c.Qty ?? 0;
                         /* fc.SetFindingsList(jsFindings, fc.scId);*/
-                        fc.SetFindingsList(jsFindings, fc.Id.Value);
+                        fc.SetFindingsList(jsFindings, fc.Id);
                         Total += fc.Total;
                         break;
                     default:
@@ -411,55 +539,48 @@ namespace OJewelry.Models
                 }
             }
         }
-
+        
         public void PopulateComponents(OJewelryDB db)
         {
-            decimal t = 0;
-            foreach (StyleComponent sc in Style.StyleComponents)
+            decimal t;
+            // Stones
+            foreach (StyleStone ss in Style.StyleStones)
             {
-                Component Comp = db.Components.Find(sc.ComponentId); // Stones and Findings
-                switch (sc.Component.ComponentType.Id)
-                {
-                    case 1: // Metals (Castings)
-                        break;
-
-                    case 2: // Stones
-                        Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
-                        StoneComponent stscm = new StoneComponent(sc.Id, sc.ComponentId, sc.Quantity.GetValueOrDefault());
-                        stscm.VendorName = Comp.Vendor.Name;
-                        stscm.CtWt = Comp.StonesCtWt;
-                        stscm.Size = Comp.StoneSize;
-                        stscm.PPC = Comp.StonePPC;
-                        stscm.Qty = sc.Quantity ?? 0;
-                        stscm.SetStonesList(jsStones, sc.ComponentId);
-                        t = stscm.PPC ?? 0;
-                        stscm.Total = stscm.Qty * t;
-                        StonesTotal += stscm.Total;
-                        Stones.Add(stscm);
-                        Total += stscm.Total;
-                        break;
-                    case 3: // Findings
-                        Comp.Vendor = db.Vendors.Find(Comp.VendorId) ?? new Vendor();
-                        FindingsComponent fiscm = new FindingsComponent(sc.Id, sc.ComponentId, sc.Quantity.GetValueOrDefault());
-                        fiscm.VendorName = Comp.Vendor.Name;
-                        fiscm.Metal = db.MetalCodes.Find(Comp.MetalCodeId).Code;
-                        fiscm.Price = Comp.Price;
-                        t = fiscm.Price ?? 0;
-                        fiscm.Total = fiscm.Qty * t;
-                        FindingsTotal += fiscm.Total;
-                        fiscm.Qty = sc.Quantity ?? 0;
-                        fiscm.SetFindingsList(jsFindings, sc.ComponentId);
-                        Findings.Add(fiscm);
-                        Total += fiscm.Total;
-                        break;
-                    case 4:  // Labor
-                        break;
-                    default: // Misc
-                        break;
-                }
+                Stone stone = db.Stones.Find(ss.StoneId);
+                stone.Vendor = db.Vendors.Find(stone.VendorId) ?? new Vendor();
+                StoneComponent stscm = new StoneComponent(stone);
+                stscm.VendorName = stone.Vendor.Name;
+                stscm.CtWt = stone.CtWt;
+                stscm.Size = stone.StoneSize;
+                stscm.Price = stone.Price.Value;
+                stscm.Qty = stone.Qty ?? 0;
+                stscm.SetStonesList(jsStones, stone.Id);
+                t = stscm.Price ?? 0;
+                stscm.Total = stscm.Qty * t;
+                StonesTotal += stscm.Total;
+                Stones.Add(stscm);
+                Total += stscm.Total;
             }
 
+            // Findings
+            foreach (StyleFinding sf in Style.StyleFindings)
+            {
+                Finding finding = db.Findings.Find(sf.FindingId);
+                finding.Vendor = db.Vendors.Find(finding.VendorId) ?? new Vendor();
+                FindingsComponent fiscm = new FindingsComponent(finding);
+                fiscm.VendorName = finding.Vendor.Name;
+                fiscm.Metal = db.MetalCodes.Find(finding.MetalCodeId).Code;
+                fiscm.Price = finding.Price;
+                t = fiscm.Price ?? 0;
+                fiscm.Total = fiscm.Qty * t;
+                FindingsTotal += fiscm.Total;
+                fiscm.Qty = finding.Qty ?? 0;
+                fiscm.SetFindingsList(jsFindings, finding.Id);
+                Findings.Add(fiscm);
+                Total += fiscm.Total;
+            }
         }
+        
         public void Populate(int? id, OJewelryDB db)
         {
             decimal t = 0, t2 = 0;
@@ -480,7 +601,9 @@ namespace OJewelry.Models
                 // Get Casting Links
                 Style.StyleCastings = db.StyleCastings.Where(x => x.StyleId == Style.Id).ToList();
                 // Get component links
-                Style.StyleComponents = db.StyleComponents.Where(x => x.StyleId == Style.Id).ToList();
+                //Style.StyleComponents = db.StyleComponents.Where(x => x.StyleId == Style.Id).ToList();
+                Style.StyleStones = db.StyleStones.Where(x => x.StyleId == Style.Id).ToList();
+                Style.StyleFindings = db.StyleFindings.Where(x => x.StyleId == Style.Id).ToList();
                 // Get Labor Links
                 Style.StyleLabors = db.StyleLabors.Where(x => x.StyleId == Style.Id).ToList(); ;
                 // Get Misc Links
@@ -506,7 +629,8 @@ namespace OJewelry.Models
                     Castings.Add(cstc);
                     Total += cstc.Total;
                 }
-                // Stones and Findings
+
+
                 PopulateComponents(db);
                 // Labor
                 foreach (StyleLabor sl in Style.StyleLabors)
@@ -559,36 +683,29 @@ namespace OJewelry.Models
         }
     }
 
-    public partial class Component
+    public partial class Stone
     {
-        public Component(StoneComponent c)
-        {
-            Set(c);
-        }
-
-        public Component(FindingsComponent c)
-        {
-            Set(c);
-        }
-
         public void Set(StoneComponent c)
         {
-            //Id = c.Id;
-            //CompanyId = c.CompanyId;
-            //ComponentTypeId = c.ComponentTypeId;
-            //VendorId = c.VendorId;
-            //StonesCtWt = c.CtWt;
-            //StoneSize = c.Size;
-            //StonePPC = c.PPC;
+            Id = c.Id;
+            CompanyId = c.CompanyId;
+            VendorId = c.VendorId;
+            Name = c.VendorName;
+            CtWt = c.CtWt;
+            StoneSize = c.Size;
+            Price = c.Price;
+            Qty = c.Qty;
         }
+    }
 
+    public partial class Finding
+    {
         public void Set(FindingsComponent c)
         {
-            //Id = c.Id;
-            //CompanyId = c.CompanyId;
-            //ComponentTypeId = c.ComponentTypeId;
-            //VendorId = c.VendorId;
-            //Price = c.Price;
+            Id = c.Id;
+            CompanyId = c.CompanyId;
+            VendorId = c.VendorId;
+            Price = c.Price;
         }
     }
 

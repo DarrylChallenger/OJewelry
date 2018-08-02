@@ -152,7 +152,7 @@ namespace OJewelry.Controllers
                             sc = new StyleCasting()
                             {
                                 CastingId = casting.Id,
-                                StyleId = svm.Style.Id
+                                StyleId = svm.Style.Id,
                             };
                             db.StyleCastings.Add(sc);
                             break;
@@ -181,26 +181,31 @@ namespace OJewelry.Controllers
             // Stones
             if (svm.Stones != null)
             {
-                foreach (StoneComponent c in svm.Stones)
+                foreach (StoneComponent sc in svm.Stones)
                 {
-                    StyleComponent sc;
-
-                    switch (c.SVMState)
+                    Stone stone;
+                    StyleStone ss;
+                    switch (sc.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = c.Id.Value };
-                            sc.ComponentId = c.Id.Value;
-                            sc.Quantity = c.Qty;
-                            db.StyleComponents.Add(sc);
+                            stone = new Stone(sc);
+                            db.Stones.Add(stone);
+                            ss = new StyleStone()
+                            {
+                                StyleId = svm.Style.Id,
+                                StoneId = stone.Id,
+                            };
+                            db.StyleStones.Add(ss);
                             break;
                         case SVMStateEnum.Deleted:
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
-                            db.StyleComponents.Remove(sc);
+                            ss = db.StyleStones.Where(x => x.StyleId == svm.Style.Id && x.StoneId == sc.Id).SingleOrDefault();
+                            db.StyleStones.Remove(ss);
                             break;
                         case SVMStateEnum.Dirty:
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
-                            sc.ComponentId = c.Id.Value;
-                            sc.Quantity = c.Qty;
+                            stone = db.Stones.Find(sc.Id);
+                            stone.Set(sc);
+                            //ss = db.StyleStones.Where(x => x.StyleId == svm.Style.Id && x.Id == sc.Id).SingleOrDefault();
+                            //ss.Quantity = sc.Qty;
                             break;
                         case SVMStateEnum.Unadded:
                         default:
@@ -214,7 +219,8 @@ namespace OJewelry.Controllers
             {
                 foreach (FindingsComponent c in svm.Findings)
                 {
-                    StyleComponent sc;
+                    Finding finding;
+                    StyleFinding fc;
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
@@ -222,23 +228,29 @@ namespace OJewelry.Controllers
                             component = new Component(c);
                             db.Components.Add(component);
                             */
-                            sc = new StyleComponent() { StyleId = svm.Style.Id, ComponentId = c.Id.Value };
-                            sc.ComponentId = c.Id.Value;
-                            sc.Quantity = c.Qty;
-                            db.StyleComponents.Add(sc);
+                            finding=new Finding(c);
+                            fc = new StyleFinding()
+                            {
+                                StyleId = svm.Style.Id,
+                                FindingId = c.Id,
+                            };
+
+                            db.StyleFindings.Add(fc);
                             break;
                         case SVMStateEnum.Deleted:
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
-                            db.StyleComponents.Remove(sc);
+                            fc = db.StyleFindings.Where(x => x.StyleId == svm.Style.Id && x.Id == c.Id).SingleOrDefault();
+                            db.StyleFindings.Remove(fc);
                             break;
                         case SVMStateEnum.Dirty:
                             /*
                             component = db.Components.Find(c.Id);
                             component.Set(c);
                             */
-                            sc = db.StyleComponents.Where(x => x.StyleId == svm.Style.Id && x.Id == c.scId).SingleOrDefault();
-                            sc.ComponentId = c.Id.Value;
-                            sc.Quantity = c.Qty;
+                            finding = db.Findings.Find(c.Id);
+                            finding.Set(c);
+                            //fc = db.StyleFindings.Where(x => x.StyleId == svm.Style.Id && x.Id == c.Id).SingleOrDefault();
+                            //fc.Id = sc.Id;
+                            //sc.Quantity = c.Qty;
                             break;
                         case SVMStateEnum.Unadded: // No updates
                         default:
@@ -568,8 +580,8 @@ namespace OJewelry.Controllers
             // reusables
             svm.jsVendors = db.Vendors.ToList();
             svm.jsMetals = db.MetalCodes.ToList();
-            svm.jsStones = db.Components.Include("ComponentType").Where(x => x.CompanyId == svm.CompanyId && x.ComponentType.Name == "Stones").ToList();
-            svm.jsFindings = db.Components.Include("ComponentType").Where(x => x.CompanyId == svm.CompanyId && x.ComponentType.Name == "Findings").ToList();
+            svm.jsStones = db.Stones.Where(x => x.CompanyId == svm.CompanyId).ToList();
+            svm.jsFindings = db.Findings.Where(x => x.CompanyId == svm.CompanyId).ToList();
             // populate each cost component dropdown in model
         }
 

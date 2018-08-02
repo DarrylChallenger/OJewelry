@@ -89,8 +89,10 @@ namespace OJewelry.Models
         public virtual DbSet<Collection> Collections { get; set; }
         public virtual DbSet<Company> _Companies { get; set; }
         public virtual DbSet<CompanyUser> CompaniesUsers { get; set; }
-        public virtual DbSet<Component> Components { get; set; }
-        public virtual DbSet<ComponentType> ComponentTypes { get; set; }
+        //public virtual DbSet<Component> Components { get; set; }
+        public virtual DbSet<Stone> Stones { get; set; }
+        public virtual DbSet<Finding> Findings { get; set; }
+        //public virtual DbSet<ComponentType> ComponentTypes { get; set; }
         public virtual DbSet<Contact> Contacts { get; set; }
         public virtual DbSet<JewelryType> JewelryTypes { get; set; }
         public virtual DbSet<Labor> Labors { get; set; }
@@ -101,7 +103,9 @@ namespace OJewelry.Models
         public virtual DbSet<Presenter> Presenters { get; set; }
         public virtual DbSet<SalesLedger> SalesLedgers { get; set; }
         public virtual DbSet<StyleCasting> StyleCastings { get; set; }
-        public virtual DbSet<StyleComponent> StyleComponents { get; set; }
+        //public virtual DbSet<StyleComponent> StyleComponents { get; set; }
+        public virtual DbSet<StyleStone> StyleStones { get; set; }
+        public virtual DbSet<StyleFinding> StyleFindings { get; set; }
         public virtual DbSet<StyleLabor> StyleLabors { get; set; }
         public virtual DbSet<StyleMisc> StyleMiscs { get; set; }
         public virtual DbSet<Style> Styles { get; set; }
@@ -156,55 +160,50 @@ namespace OJewelry.Models
                 .WithRequired(e => e.Company)
                 .WillCascadeOnDelete(true);
 
-            modelBuilder.Entity<Component>()
+            modelBuilder.Entity<Stone>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Component>()
+            modelBuilder.Entity<Stone>()
                 .Property(e => e.Price)
                 .HasPrecision(19, 4);
 
-            modelBuilder.Entity<Component>()
-                .Property(e => e.PricePerHour)
+            modelBuilder.Entity<Stone>()
+                .Property(e => e.Price)
                 .HasPrecision(19, 4);
 
-            modelBuilder.Entity<Component>()
-                .Property(e => e.PricePerPiece)
-                .HasPrecision(19, 4);
-
-            modelBuilder.Entity<Component>()
-                .Property(e => e.MetalMetal)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<Component>()
-                .Property(e => e.MetalLabor)
-                .HasPrecision(19, 4);
-
-            modelBuilder.Entity<Component>()
+            modelBuilder.Entity<Stone>()
                 .Property(e => e.StoneSize)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Component>()
-                .Property(e => e.StonePPC)
+            modelBuilder.Entity<Finding>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Finding>()
+                .Property(e => e.Price)
                 .HasPrecision(19, 4);
 
-            modelBuilder.Entity<Component>()
+            modelBuilder.Entity<Finding>()
+                .Property(e => e.PricePerHour)
+                .HasPrecision(19, 4);
+
+            modelBuilder.Entity<Finding>()
+                .Property(e => e.PricePerPiece)
+                .HasPrecision(19, 4);
+
+            modelBuilder.Entity<Finding>()
                 .Property(e => e.FindingsMetal)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Component>()
-                .HasMany(e => e.StyleComponents)
-                .WithRequired(e => e.Component)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<ComponentType>()
+            /*modelBuilder.Entity<ComponentType>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
 
             modelBuilder.Entity<ComponentType>()
                 .HasMany(e => e.Components)
                 .WithRequired(e => e.ComponentType)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(false);*/
 
             modelBuilder.Entity<Contact>()
                 .Property(e => e.Name)
@@ -319,28 +318,40 @@ namespace OJewelry.Models
                 .HasPrecision(8, 5);
 
             modelBuilder.Entity<Style>()
-                .HasMany(e => e.StyleComponents)
+                .HasMany(e => e.StyleStones)
                 .WithRequired(e => e.Style)
                 .WillCascadeOnDelete(true); // delete links when deleting style
-/*
-            modelBuilder.Entity<Style>()
-                .HasMany(e => e.StyleCastings)
-                .WithRequired(e => e.Style)
-//                .Map(m=>m.MapKey("FK_StyleCasting_ToStyles"))
-                .WillCascadeOnDelete(true); // delete links when deleting style (need to modify databases directly with cascade delete - done)
 
             modelBuilder.Entity<Style>()
-                .HasMany(e => e.StyleLabors)
+                .HasMany(e => e.StyleFindings)
                 .WithRequired(e => e.Style)
- //               .Map(m => m.MapKey("FK_StyleLabor_ToStyles"))
-                .WillCascadeOnDelete(true); // delete links when deleting style (need to modify databases directly with cascade delete)
+                .WillCascadeOnDelete(true);
 
-            modelBuilder.Entity<Style>()
-                .HasMany(e => e.StyleMiscs)
-                .WithRequired(e => e.Style)
-  //              .Map(m => m.MapKey("FK_StyleMisc_ToStyles"))
-                .WillCascadeOnDelete(true); // delete links when deleting style (need to modify databases directly with cascade delete)
-*/
+            modelBuilder.Entity<Shape>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+
+            // delete links when deleting style
+            /*
+                                    modelBuilder.Entity<Style>()
+                                        .HasMany(e => e.StyleCastings)
+                                        .WithRequired(e => e.Style)
+                        //                .Map(m=>m.MapKey("FK_StyleCasting_ToStyles"))
+                                        .WillCascadeOnDelete(true); // delete links when deleting style (need to modify databases directly with cascade delete - done)
+
+                                    modelBuilder.Entity<Style>()
+                                        .HasMany(e => e.StyleLabors)
+                                        .WithRequired(e => e.Style)
+                         //               .Map(m => m.MapKey("FK_StyleLabor_ToStyles"))
+                                        .WillCascadeOnDelete(true); // delete links when deleting style (need to modify databases directly with cascade delete)
+
+                                    modelBuilder.Entity<Style>()
+                                        .HasMany(e => e.StyleMiscs)
+                                        .WithRequired(e => e.Style)
+                          //              .Map(m => m.MapKey("FK_StyleMisc_ToStyles"))
+                                        .WillCascadeOnDelete(true); // delete links when deleting style (need to modify databases directly with cascade delete)
+                        */
             modelBuilder.Entity<Vendor>()
                 .Property(e => e.Name)
                 .IsUnicode(false);

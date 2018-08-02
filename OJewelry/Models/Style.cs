@@ -13,7 +13,8 @@ namespace OJewelry.Models
         {
             Memos = new HashSet<Memo>();
             StyleCastings = new HashSet<StyleCasting>();
-            StyleComponents = new HashSet<StyleComponent>();
+            StyleStones = new HashSet<StyleStone>();
+            StyleFindings = new HashSet<StyleFinding>(); 
             StyleLabors = new HashSet<StyleLabor>();
             StyleMiscs = new HashSet<StyleMisc>();
         }
@@ -75,7 +76,10 @@ namespace OJewelry.Models
         public virtual ICollection<StyleCasting> StyleCastings { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StyleComponent> StyleComponents { get; set; }
+        public virtual ICollection<StyleStone> StyleStones { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StyleFinding> StyleFindings { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StyleLabor> StyleLabors { get; set; }

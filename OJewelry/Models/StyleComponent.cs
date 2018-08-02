@@ -6,7 +6,7 @@ namespace OJewelry.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class StyleComponent
+    public partial class StyleComponentX
     {
         public int Id { get; set; }
 
@@ -16,7 +16,7 @@ namespace OJewelry.Models
 
         public int? Quantity { get; set; }
 
-        public virtual Component Component { get; set; }
+        public virtual ComponentX Component { get; set; }
 
         public virtual Style Style { get; set; }
     }

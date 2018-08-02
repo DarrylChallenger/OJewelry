@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using OJewelry.Models;
 
+/*
 namespace OJewelry.Controllers
 {
     [Authorize(Roles = "Admin")]
@@ -131,3 +132,4 @@ namespace OJewelry.Controllers
         }
     }
 }
+*/

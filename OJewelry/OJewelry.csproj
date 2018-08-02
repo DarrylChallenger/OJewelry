@@ -393,6 +393,7 @@
     <Compile Include="Models\ComponentType.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\DataAnnotations.cs" />
+    <Compile Include="Models\Findings.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InventoryViewModel.cs" />
     <Compile Include="Models\JewelryType.cs" />
@@ -407,11 +408,15 @@
     <Compile Include="Models\Presenter.cs" />
     <Compile Include="Models\PresenterViewModel.cs" />
     <Compile Include="Models\SalesLedger.cs" />
+    <Compile Include="Models\Shape.cs" />
+    <Compile Include="Models\Stones.cs" />
     <Compile Include="Models\Style.cs" />
     <Compile Include="Models\StyleCasting.cs" />
     <Compile Include="Models\StyleComponent.cs" />
+    <Compile Include="Models\StyleFinding.cs" />
     <Compile Include="Models\StyleLabor.cs" />
     <Compile Include="Models\StyleMisc.cs" />
+    <Compile Include="Models\StyleStone.cs" />
     <Compile Include="Models\StyleViewModel.cs" />
     <Compile Include="Models\Vendor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
