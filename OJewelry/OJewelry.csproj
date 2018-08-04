@@ -380,6 +380,10 @@
     <Compile Include="Migrations\201805260039404_v.652.Designer.cs">
       <DependentUpon>201805260039404_v.652.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808041250151_v1.1_AddStones-Shapes-Findings.cs" />
+    <Compile Include="Migrations\201808041250151_v1.1_AddStones-Shapes-Findings.Designer.cs">
+      <DependentUpon>201808041250151_v1.1_AddStones-Shapes-Findings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -454,7 +458,6 @@
     </Content>
     <Content Include="Excel\MoveInv.xlsx" />
     <Content Include="Excel\NewInv.xlsx" />
-    <Content Include="ClassDiagram1.cd" />
     <None Include="Properties\PublishProfiles\OJewelry-Stag - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelry-Stag - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Debug Web Deploy.pubxml" />
@@ -689,6 +692,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201805260039404_v.652.resx">
       <DependentUpon>201805260039404_v.652.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808041250151_v1.1_AddStones-Shapes-Findings.resx">
+      <DependentUpon>201808041250151_v1.1_AddStones-Shapes-Findings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
