@@ -140,6 +140,10 @@ function RemoveComponentRow(type, i)
         // physically remove the row (added rows are not in DB, so don't mark them as deleted)
         $(thisState).attr("value", "Unadded");
     } else {
+        if (curState === "Fixed")
+        {
+            return;
+        }
         // change the state to deleted
         $(thisState).attr("value", "Deleted");
     }

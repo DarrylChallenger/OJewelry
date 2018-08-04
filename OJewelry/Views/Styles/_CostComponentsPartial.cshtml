@@ -84,7 +84,6 @@
             var bHideRow = (Model.Stones[i].SVMState == SVMStateEnum.Unadded || Model.Stones[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
             <div id="StonesRow_@i" class="StonesRow @bHideRow">
                 <div class="row ltbordered">
-                    @Html.HiddenFor(model => model.Stones[i].scId)
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Stones.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
@@ -101,7 +100,7 @@
                     @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
                     @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
                     @Html.EditorFor(model => model.Stones[i].Size, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
-                    @Html.EditorFor(model => model.Stones[i].PPC, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
                     @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     <div id="StonesRowTotalValue_@i" class="col-sm-1 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
                     <div class="col-sm-1">
@@ -147,7 +146,6 @@
             var bHideRow = (Model.Findings[i].SVMState == SVMStateEnum.Unadded || Model.Findings[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
             <div id="FindingsRow_@i" class="FindingsRow @bHideRow">
                 <div class="row ltbordered">
-                    @Html.HiddenFor(model => model.Findings[i].scId)
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Findings.Count - 1) { Model.CCLastRow = true; }
                     @Html.Partial("_CostComponentCol1", Model)
@@ -300,9 +298,12 @@
     <div class="hidden">
         <div id="jsMetals">
             @{
-            List<Component> emptyList = new List<Component>();
-            Component item = new Component() { Id = 1, Name = "" };
-            emptyList.Add(item);
+                List<Stone> emptyStoneList = new List<Stone>();
+                Stone stoneItem = new Stone() { Id = 1, Name = "" };
+                emptyStoneList.Add(stoneItem);
+                List<Finding> emptyFindingList = new List<Finding>();
+                Finding findingItem = new Finding() { Id = 1, Name = "" };
+                emptyFindingList.Add(findingItem);
             }
             @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault().Id), new { @class = "col-sm-1" })
         </div>
@@ -312,7 +313,7 @@
         <div id="jsStones">
             @if (Model.jsStones.Count == 0)
             {
-                @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name", 1), new { @class = "col-sm-2 requiredifnotremoved" })
+                @Html.DropDownList("jssINDEX", new SelectList(emptyStoneList, "Id", "Name", 1), new { @class = "col-sm-2 requiredifnotremoved" })
             }
             else
             {
@@ -323,7 +324,7 @@
         <div id="jsFindings">
             @if (Model.jsFindings.Count == 0)
             {
-            @Html.DropDownList("jssINDEX", new SelectList(emptyList, "Id", "Name"), new { @class = "col-sm-2 requiredifnotremoved" })
+            @Html.DropDownList("jsfINDEX", new SelectList(emptyFindingList, "Id", "Name"), new { @class = "col-sm-2 requiredifnotremoved" })
             }
             else
             {
@@ -332,18 +333,18 @@
             }   
         </div>
         <div id="StonesData">
-            @foreach (Component stone in Model.jsStones)
+            @foreach (Stone stone in Model.jsStones)
             {
             <div id="@stone.Id">
                 <span class="VendorName" value="@stone.Vendor.Name"></span>
-                <span class="CtWt" value="@stone.StonesCtWt"></span>
+                <span class="CtWt" value="@stone.CtWt"></span>
                 <span class="Size" value="@stone.StoneSize"></span>
-                <span class="PPC" value="@stone.StonePPC.Value.ToString("F02")"></span>
+                <span class="PPC" value="@stone.Price.Value.ToString("F02")"></span>
             </div>
             }
         </div>
         <div id="FindingsData">
-            @foreach (Component finding in Model.jsFindings)
+            @foreach (Finding finding in Model.jsFindings)
             {
             <div id="@finding.Id">
                 <span class="VendorName" value="@finding.Vendor.Name"></span>
