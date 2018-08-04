@@ -366,5 +366,7 @@ namespace OJewelry.Models
                 .IsOptional()
                 .IsUnicode(false);
         }
+
+        public System.Data.Entity.DbSet<OJewelry.Models.Shape> Shapes { get; set; }
     }
 }

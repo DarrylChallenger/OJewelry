@@ -275,11 +275,14 @@
     <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\ComponentsController.cs" />
     <Compile Include="Controllers\ComponentTypesController.cs" />
+    <Compile Include="Controllers\FindingsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JewelryTypesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MetalCodesController.cs" />
     <Compile Include="Controllers\PresentersController.cs" />
+    <Compile Include="Controllers\ShapesController.cs" />
+    <Compile Include="Controllers\StonesController.cs" />
     <Compile Include="Controllers\StylesController.cs" />
     <Compile Include="Controllers\VendorsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -582,6 +585,21 @@
     <Content Include="Views\Account\UserList.cshtml" />
     <Content Include="Views\Account\ManagerEditUser.cshtml" />
     <Content Include="Views\Account\_EditUserPartial.cshtml" />
+    <Content Include="Views\Stones\Create.cshtml" />
+    <Content Include="Views\Stones\Delete.cshtml" />
+    <Content Include="Views\Stones\Details.cshtml" />
+    <Content Include="Views\Stones\Edit.cshtml" />
+    <Content Include="Views\Stones\Index.cshtml" />
+    <Content Include="Views\Findings\Create.cshtml" />
+    <Content Include="Views\Findings\Delete.cshtml" />
+    <Content Include="Views\Findings\Details.cshtml" />
+    <Content Include="Views\Findings\Edit.cshtml" />
+    <Content Include="Views\Findings\Index.cshtml" />
+    <Content Include="Views\Shapes\Create.cshtml" />
+    <Content Include="Views\Shapes\Delete.cshtml" />
+    <Content Include="Views\Shapes\Details.cshtml" />
+    <Content Include="Views\Shapes\Edit.cshtml" />
+    <Content Include="Views\Shapes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
