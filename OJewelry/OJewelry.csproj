@@ -550,11 +550,6 @@
     <Content Include="Views\JewelryTypes\Index.cshtml" />
     <Content Include="Views\Styles\Print.cshtml" />
     <Content Include="Views\Shared\_PrintLayout.cshtml" />
-    <Content Include="Views\Components\Create.cshtml" />
-    <Content Include="Views\Components\Delete.cshtml" />
-    <Content Include="Views\Components\Details.cshtml" />
-    <Content Include="Views\Components\Edit.cshtml" />
-    <Content Include="Views\Components\Index.cshtml" />
     <Content Include="Views\Vendors\Create.cshtml" />
     <Content Include="Views\Vendors\Delete.cshtml" />
     <Content Include="Views\Vendors\Details.cshtml" />

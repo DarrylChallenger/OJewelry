@@ -163,6 +163,7 @@ namespace OJewelry.Controllers
                             db.Castings.Remove(casting);
                             break;
                         case SVMStateEnum.Dirty:
+                        case SVMStateEnum.Fixed:
                             casting = db.Castings.Find(c.Id);
                             casting.Set(c);
                             /*
@@ -202,6 +203,7 @@ namespace OJewelry.Controllers
                             db.StyleStones.Remove(ss);
                             break;
                         case SVMStateEnum.Dirty:
+                        case SVMStateEnum.Fixed:
                             stone = db.Stones.Find(sc.Id);
                             stone.Set(sc);
                             //ss = db.StyleStones.Where(x => x.StyleId == svm.Style.Id && x.Id == sc.Id).SingleOrDefault();
@@ -242,6 +244,7 @@ namespace OJewelry.Controllers
                             db.StyleFindings.Remove(fc);
                             break;
                         case SVMStateEnum.Dirty:
+                        case SVMStateEnum.Fixed:
                             /*
                             component = db.Components.Find(c.Id);
                             component.Set(c);
@@ -280,6 +283,7 @@ namespace OJewelry.Controllers
                             db.StyleLabors.Remove(sl);
                             break;
                         case SVMStateEnum.Dirty:
+                        case SVMStateEnum.Fixed:
                             labor = db.Labors.Find(c.Id);
                             labor.Set(c);
                             /*
@@ -313,7 +317,7 @@ namespace OJewelry.Controllers
                             db.StyleMiscs.Remove(sm);
                             break;
                         case SVMStateEnum.Dirty:
-                           
+                        case SVMStateEnum.Fixed:
                             misc = db.Miscs.Find(c.Id);
                             misc.Set(c);
                             /*

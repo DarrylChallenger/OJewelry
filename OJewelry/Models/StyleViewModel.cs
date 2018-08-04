@@ -374,7 +374,7 @@ namespace OJewelry.Models
         public SVMStateEnum SVMState { get; set; }
     }
 
-    public enum SVMStateEnum { Dirty, Added, Deleted, Unadded }
+    public enum SVMStateEnum { Dirty, Added, Deleted, Unadded, Fixed }
     public enum SVMCCTypeEnum { Castings, Stones, Findings, Labors, Miscs }
     public enum SVMDelButtonPos { Left, Right }
     public enum SVMOperation { Create, Edit }
@@ -485,6 +485,7 @@ namespace OJewelry.Models
                         //sc.SVMState = SVMStateEnum.Added;
                         break;
                     case SVMStateEnum.Dirty:
+                    case SVMStateEnum.Fixed:
                     case SVMStateEnum.Deleted:
                         Stone c = db.Stones.Find(sc.Id);
                         sc.VendorName = db.Vendors.Find(c.VendorId).Name;
@@ -521,6 +522,7 @@ namespace OJewelry.Models
                         fc.Total = 0;
                         break;
                     case SVMStateEnum.Dirty:
+                    case SVMStateEnum.Fixed:
                     case SVMStateEnum.Deleted:
                         Finding c = db.Findings.Find(fc.Id);
                         fc.VendorName = db.Vendors.Find(c.VendorId).Name;

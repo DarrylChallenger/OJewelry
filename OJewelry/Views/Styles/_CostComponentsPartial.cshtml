@@ -216,7 +216,10 @@
                     @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     <div id="LaborsRowTotalValue_@i" class="col-sm-1 LaborsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
                     <div class="col-sm-1">
-                        @Html.Partial("_CostComponentLastCol", Model)
+                        @if (Model.Labors[i].SVMState != SVMStateEnum.Fixed)
+                        {
+                            @Html.Partial("_CostComponentLastCol", Model)
+                        }
                     </div>
 
                 </div>
@@ -270,7 +273,10 @@
                     @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     <div id="MiscsRowTotalValue_@i" class="col-sm-1 MiscsRowTotal">@Model.Miscs[i].Total.ToString("F02")</div>
                     <div class="col-sm-1">
-                        @Html.Partial("_CostComponentLastCol", Model)
+                        @if (Model.Miscs[i].SVMState != SVMStateEnum.Fixed)
+                        {
+                            @Html.Partial("_CostComponentLastCol", Model)
+                        }
                     </div>
 
                 </div>
