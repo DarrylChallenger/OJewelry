@@ -2,9 +2,9 @@
     @Html.ActionLink("Admin", "Index", "Home", new { @class = "dropdown-toggle", @role = "button", @data_toggle = "dropdown", @aria_haspopup = "true", @ariaa_xpanded = "false" })
     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
         <li>@Html.ActionLink("Jewelry Types", "Index", "JewelryTypes")</li>
-            @Html.ActionLink("Stones", "Index", "Stones", new { CompanyId = item.Id }, null) |
-            @Html.ActionLink("Stone Shapes", "Index", "Shapes", new { CompanyId = item.Id }, null) |
-            @Html.ActionLink("Findings", "Index", "Findings", new { CompanyId = item.Id }, null) |
+        <li>@Html.ActionLink("Stones", "Index", "Stones")</li>
+        <li>@Html.ActionLink("Stone Shapes", "Index", "Shapes")</li>
+        <li>@Html.ActionLink("Findings", "Index", "Findings")</li>
         <li>@Html.ActionLink("Vendors", "Index", "Vendors")</li>
         <li>@Html.ActionLink("Metals", "Index", "MetalCodes")</li>
         <li>@Html.ActionLink("Create User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
