@@ -392,6 +392,10 @@
     <Compile Include="Migrations\201808051651266_v1.1-add-finding-weight.Designer.cs">
       <DependentUpon>201808051651266_v1.1-add-finding-weight.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808051759041_v1.2.cs" />
+    <Compile Include="Migrations\201808051759041_v1.2.Designer.cs">
+      <DependentUpon>201808051759041_v1.2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -699,6 +703,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808051651266_v1.1-add-finding-weight.resx">
       <DependentUpon>201808051651266_v1.1-add-finding-weight.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808051759041_v1.2.resx">
+      <DependentUpon>201808051759041_v1.2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
