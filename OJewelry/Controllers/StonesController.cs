@@ -18,7 +18,8 @@ namespace OJewelry.Controllers
         public ActionResult Index()
         {
             var stones = db.Stones.Include(s => s.Company).Include(s => s.Shape).Include(s => s.Vendor);
-            return View(stones.ToList());
+
+            return View(stones.OrderBy(f => f.Company.Name).ThenBy(g => g.Name).ThenBy(h=>h.Shape.Name).ThenBy(i=>i.StoneSize).ToList());
         }
 
         // GET: Stones/Details/5
@@ -35,13 +36,14 @@ namespace OJewelry.Controllers
             }
             return View(stone);
         }
-
+        
         // GET: Stones/Create
         public ActionResult Create()
         {
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name");
             ViewBag.ShapeId = new SelectList(db.Shapes, "Id", "Name");
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name");
+            //StoneComponent sc = new StoneComponent();
             return View();
         }
 
@@ -50,7 +52,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,Qty")] Stone stone)
+        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,CtWt,StoneSize,ShapeId,Price")] Stone stone)
         {
             if (ModelState.IsValid)
             {

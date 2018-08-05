@@ -17,8 +17,8 @@ namespace OJewelry.Controllers
         // GET: Findings
         public ActionResult Index()
         {
-            var findings = db.Findings.Include(f => f.Company).Include(f => f.Metal).Include(f => f.Vendor);
-            return View(findings.ToList());
+            var findings = db.Findings.Include(f => f.Company).Include(f => f.Vendor);
+            return View(findings.OrderBy(a=>a.Company.Name).ThenBy(b=>b.Name).ToList());
         }
 
         // GET: Findings/Details/5
@@ -50,7 +50,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,PricePerHour,PricePerPiece,MetalCodeId,Qty,FindingsMetal")] Finding finding)
+        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight")] Finding finding)
         {
             if (ModelState.IsValid)
             {
@@ -60,7 +60,7 @@ namespace OJewelry.Controllers
             }
 
             ViewBag.CompanyId = new SelectList(db._Companies, "Id", "Name", finding.CompanyId);
-            ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
+            //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", finding.VendorId);
             return View(finding);
         }
@@ -78,7 +78,7 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             ViewBag.CompanyId = new SelectList(db._Companies, "Id", "Name", finding.CompanyId);
-            ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
+            //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", finding.VendorId);
             return View(finding);
         }
@@ -88,7 +88,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,PricePerHour,PricePerPiece,MetalCodeId,Qty,FindingsMetal")] Finding finding)
+        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight")] Finding finding)
         {
             if (ModelState.IsValid)
             {
@@ -97,7 +97,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.CompanyId = new SelectList(db._Companies, "Id", "Name", finding.CompanyId);
-            ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
+            //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", finding.VendorId);
             return View(finding);
         }

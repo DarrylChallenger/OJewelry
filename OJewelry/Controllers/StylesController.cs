@@ -195,6 +195,7 @@ namespace OJewelry.Controllers
                             {
                                 StyleId = svm.Style.Id,
                                 StoneId = stone.Id,
+                                Qty = sc.Qty
                             };
                             db.StyleStones.Add(ss);
                             break;
@@ -235,6 +236,7 @@ namespace OJewelry.Controllers
                             {
                                 StyleId = svm.Style.Id,
                                 FindingId = c.Id,
+                                Qty = c.Qty
                             };
 
                             db.StyleFindings.Add(fc);

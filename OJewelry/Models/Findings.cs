@@ -1,4 +1,6 @@
-﻿namespace OJewelry.Models
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+
+namespace OJewelry.Models
 {
     using System;
     using System.Collections.Generic;
@@ -15,7 +17,10 @@
             StyleFinding = new HashSet<StyleFinding>();
         }
 
-        public int Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] public int Id { get; set; }
+
+        //roll db Back; include auto increments
 
         public int? CompanyId { get; set; }
         public int? VendorId { get; set; }
@@ -28,30 +33,13 @@
 
         public decimal? Price { get; set; }
 
-        public decimal? PricePerHour { get; set; }
-
-        public decimal? PricePerPiece { get; set; }
-
-        public int? MetalCodeId { get; set; }
-        
-        public int? Qty { get; set; }
-
-        public string FindingsMetal { get; set; }
+        public decimal? Weight { get; set; }
 
         public virtual Company Company { get; set; }
 
         public virtual Vendor Vendor { get; set; }
 
-        public virtual MetalCode Metal { get; set; }
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StyleFinding> StyleFinding { get; set; }
-
-        public Finding(FindingsComponent fc)
-        {
-            Set(fc);
-        }
-
-
     }
 }

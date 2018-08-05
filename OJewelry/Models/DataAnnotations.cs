@@ -31,7 +31,7 @@ namespace OJewelry.Models
 
     }
 
-    [MetadataType(typeof(CastingMetaData))]   // template
+    [MetadataType(typeof(CastingMetaData))]   // Casting
     public partial class Casting
     {
     }
@@ -164,21 +164,7 @@ namespace OJewelry.Models
 
     }
 
-    [MetadataType(typeof(ComponentTypeMetaData))]   // Component Type
-    public partial class ComponentTypeX
-    {
-    }
-    public partial class ComponentTypeMetaData
-    {
-        [Display(Name = "Name")]
-        [Required(ErrorMessage = "Name is required.")]
-        public String Name { get; set; }
-
-        [Display(Name = "Sequence")]
-        public int Sequence;
-    }
-
-    [MetadataType(typeof(ContactMetaData))]   // template
+    [MetadataType(typeof(ContactMetaData))]   // Contact
     public partial class Contact
     {
     }
@@ -202,6 +188,21 @@ namespace OJewelry.Models
         [Display(Name = "Job Title")]
         public string JobTitle { get; set; }
 
+    }
+
+    [MetadataType(typeof(FindingMetaData))]   // Finding
+    public partial class Finding
+    {
+    }
+    public partial class FindingMetaData
+    {
+
+        [Required]
+        [Display(Name = "Name")]
+        public String Name { get; set; }
+        
+        [Display(Name = "WT(dwt)")]
+        public decimal? Weight { get; set; }
     }
 
     [MetadataType(typeof(JewelryTypeMetaData))]   //Jewelry Type
@@ -254,6 +255,30 @@ namespace OJewelry.Models
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
     }
+
+    
+    [MetadataType(typeof(StoneMetaData))]   // Stone
+    public partial class Stone
+    {
+    }
+    public partial class StoneMetaData
+    {
+        [Required]
+        [Display(Name = "Name")]
+        public String Name { get; set; }
+
+        [Required]
+        [Display(Name = "Size")]
+        public string StoneSize { get; set; }
+
+        [Display(Name = "CT")]
+        public int? CtWt { get; set; }
+
+        [Required]
+        [Display(Name = "Price")]
+        public decimal Price { get; set; }
+    }
+
 
     [MetadataType(typeof(StyleMetaData))]   // Style
     public partial class Style

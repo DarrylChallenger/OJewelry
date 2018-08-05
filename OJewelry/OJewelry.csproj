@@ -380,9 +380,17 @@
     <Compile Include="Migrations\201805260039404_v.652.Designer.cs">
       <DependentUpon>201805260039404_v.652.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808041250151_v1.1_AddStones-Shapes-Findings.cs" />
-    <Compile Include="Migrations\201808041250151_v1.1_AddStones-Shapes-Findings.Designer.cs">
-      <DependentUpon>201808041250151_v1.1_AddStones-Shapes-Findings.cs</DependentUpon>
+    <Compile Include="Migrations\201808042352142_v11-addStonesShpesFindings.cs" />
+    <Compile Include="Migrations\201808042352142_v11-addStonesShpesFindings.Designer.cs">
+      <DependentUpon>201808042352142_v11-addStonesShpesFindings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808051253300_v1.1-make-price-mandatory.cs" />
+    <Compile Include="Migrations\201808051253300_v1.1-make-price-mandatory.Designer.cs">
+      <DependentUpon>201808051253300_v1.1-make-price-mandatory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808051651266_v1.1-add-finding-weight.cs" />
+    <Compile Include="Migrations\201808051651266_v1.1-add-finding-weight.Designer.cs">
+      <DependentUpon>201808051651266_v1.1-add-finding-weight.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -683,8 +691,14 @@
     <EmbeddedResource Include="Migrations\201805260039404_v.652.resx">
       <DependentUpon>201805260039404_v.652.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808041250151_v1.1_AddStones-Shapes-Findings.resx">
-      <DependentUpon>201808041250151_v1.1_AddStones-Shapes-Findings.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808042352142_v11-addStonesShpesFindings.resx">
+      <DependentUpon>201808042352142_v11-addStonesShpesFindings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808051253300_v1.1-make-price-mandatory.resx">
+      <DependentUpon>201808051253300_v1.1-make-price-mandatory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808051651266_v1.1-add-finding-weight.resx">
+      <DependentUpon>201808051651266_v1.1-add-finding-weight.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

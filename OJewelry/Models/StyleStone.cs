@@ -13,13 +13,14 @@ namespace OJewelry.Models
         public int Id { get; set; }
 
         public int StyleId { get; set; }
-
         public int StoneId { get; set; }
 
-        //public int? Quantity { get; set; }
-
-        public virtual Stone Stone { get; set; }
+        public int? Qty { get; set; }
 
         public virtual Style Style { get; set; }
+        public virtual Stone Stone { get; set; }
+        public virtual Company Company { get; set; }
+
+
     }
 }

@@ -3,7 +3,7 @@ namespace OJewelry.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class v11_AddStonesShapesFindings : DbMigration
+    public partial class v11addStonesShpesFindings : DbMigration
     {
         public override void Up()
         {
@@ -26,6 +26,7 @@ namespace OJewelry.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         StyleId = c.Int(nullable: false),
                         FindingId = c.Int(nullable: false),
+                        Qty = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Findings", t => t.FindingId, cascadeDelete: true)
@@ -43,19 +44,12 @@ namespace OJewelry.Migrations
                         Name = c.String(maxLength: 50, unicode: false),
                         Desc = c.String(maxLength: 50),
                         Price = c.Decimal(precision: 19, scale: 4),
-                        PricePerHour = c.Decimal(precision: 19, scale: 4),
-                        PricePerPiece = c.Decimal(precision: 19, scale: 4),
-                        MetalCodeId = c.Int(),
-                        Qty = c.Int(),
-                        FindingsMetal = c.String(unicode: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Companies", t => t.CompanyId)
-                .ForeignKey("dbo.MetalCodes", t => t.MetalCodeId)
                 .ForeignKey("dbo.Vendors", t => t.VendorId)
                 .Index(t => t.CompanyId)
-                .Index(t => t.VendorId)
-                .Index(t => t.MetalCodeId);
+                .Index(t => t.VendorId);
             
             CreateTable(
                 "dbo.StyleStone",
@@ -64,12 +58,16 @@ namespace OJewelry.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         StyleId = c.Int(nullable: false),
                         StoneId = c.Int(nullable: false),
+                        Qty = c.Int(),
+                        Company_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Companies", t => t.Company_Id)
                 .ForeignKey("dbo.Stones", t => t.StoneId, cascadeDelete: true)
                 .ForeignKey("dbo.Styles", t => t.StyleId, cascadeDelete: true)
                 .Index(t => t.StyleId)
-                .Index(t => t.StoneId);
+                .Index(t => t.StoneId)
+                .Index(t => t.Company_Id);
             
             CreateTable(
                 "dbo.Stones",
@@ -84,7 +82,6 @@ namespace OJewelry.Migrations
                         StoneSize = c.String(maxLength: 50, unicode: false),
                         ShapeId = c.Int(),
                         Price = c.Decimal(storeType: "money"),
-                        Qty = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Companies", t => t.CompanyId)
@@ -98,7 +95,7 @@ namespace OJewelry.Migrations
                 "dbo.Shapes",
                 c => new
                     {
-                        Id = c.Int(nullable: false),
+                        Id = c.Int(nullable: false, identity: true),
                         Name = c.String(nullable: false, maxLength: 10, unicode: false),
                     })
                 .PrimaryKey(t => t.Id);
@@ -106,23 +103,10 @@ namespace OJewelry.Migrations
             DropTable("dbo.StyleComponents");
             DropTable("dbo.Components");
             DropTable("dbo.ComponentTypes");
-            // part 2
-            DropForeignKey("dbo.Stones", "ShapeId", "dbo.Shapes");
-            DropPrimaryKey("dbo.Shapes");
-            AlterColumn("dbo.Shapes", "Id", c => c.Int(nullable: false, identity: true));
-            AddPrimaryKey("dbo.Shapes", "Id");
-            AddForeignKey("dbo.Stones", "ShapeId", "dbo.Shapes", "Id");
         }
         
         public override void Down()
         {
-            // part 2
-            DropForeignKey("dbo.Stones", "ShapeId", "dbo.Shapes");
-            DropPrimaryKey("dbo.Shapes");
-            AlterColumn("dbo.Shapes", "Id", c => c.Int(nullable: false));
-            AddPrimaryKey("dbo.Shapes", "Id");
-            AddForeignKey("dbo.Stones", "ShapeId", "dbo.Shapes", "Id");
-            // part 1
             CreateTable(
                 "dbo.ComponentTypes",
                 c => new
@@ -171,17 +155,17 @@ namespace OJewelry.Migrations
             DropForeignKey("dbo.StyleStone", "StoneId", "dbo.Stones");
             DropForeignKey("dbo.Stones", "ShapeId", "dbo.Shapes");
             DropForeignKey("dbo.Stones", "CompanyId", "dbo.Companies");
+            DropForeignKey("dbo.StyleStone", "Company_Id", "dbo.Companies");
             DropForeignKey("dbo.StyleFinding", "StyleId", "dbo.Styles");
             DropForeignKey("dbo.Findings", "VendorId", "dbo.Vendors");
             DropForeignKey("dbo.StyleFinding", "FindingId", "dbo.Findings");
-            DropForeignKey("dbo.Findings", "MetalCodeId", "dbo.MetalCodes");
             DropForeignKey("dbo.Findings", "CompanyId", "dbo.Companies");
             DropIndex("dbo.Stones", new[] { "ShapeId" });
             DropIndex("dbo.Stones", new[] { "VendorId" });
             DropIndex("dbo.Stones", new[] { "CompanyId" });
+            DropIndex("dbo.StyleStone", new[] { "Company_Id" });
             DropIndex("dbo.StyleStone", new[] { "StoneId" });
             DropIndex("dbo.StyleStone", new[] { "StyleId" });
-            DropIndex("dbo.Findings", new[] { "MetalCodeId" });
             DropIndex("dbo.Findings", new[] { "VendorId" });
             DropIndex("dbo.Findings", new[] { "CompanyId" });
             DropIndex("dbo.StyleFinding", new[] { "FindingId" });

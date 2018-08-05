@@ -11,12 +11,11 @@ namespace OJewelry.Models
     public partial class StyleFinding
     {
         public int Id { get; set; }
-
         public int StyleId { get; set; }
 
         public int FindingId { get; set; }
 
-        //public int? Quantity { get; set; }
+        public int? Qty { get; set; }
 
         public virtual Finding Finding { get; set; }
 
