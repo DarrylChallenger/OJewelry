@@ -90,11 +90,11 @@
                     @*<div class="col-sm-2 ">@c.Name </div>*@
                     @if (Model.Stones[i].Id == 0)
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, "You must select a stone", new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].StoneList, "You must select a stone", new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].CompList, new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].StoneList, new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
                     <div class="col-sm-1 "></div>
                     @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
@@ -343,7 +343,7 @@
                 <span class="VendorName" value="@stone.Vendor.Name"></span>
                 <span class="CtWt" value="@stone.CtWt"></span>
                 <span class="Size" value="@stone.StoneSize"></span>
-                <span class="PPC" value="@stone.Price.Value.ToString("F02")"></span>
+                <span class="PPC" value="@stone.Price.ToString("F02")"></span>
             </div>
             }
         </div>
