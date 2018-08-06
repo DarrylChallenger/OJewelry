@@ -134,6 +134,8 @@ namespace OJewelry.Models
             set { _stone.Id = value; }
         }
 
+        public int linkId { get; set; }
+
         public int? CompanyId
         {
             get { return _stone.CompanyId; }
@@ -274,6 +276,8 @@ namespace OJewelry.Models
             set { _finding.Id = value; }
         }
 
+        public int linkId { get; set; }
+
         public int? CompanyId
         {
             get { return _finding.CompanyId; }
@@ -292,8 +296,11 @@ namespace OJewelry.Models
             set { _finding.Vendor.Name = value; }
         }
 
-
-
+        public decimal? Weight
+        {
+            get { return _finding.Weight; }
+            set { _finding.Weight = value; }
+        }
         [Display(Name = "Price")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? Price
@@ -550,6 +557,7 @@ namespace OJewelry.Models
                     case SVMStateEnum.Deleted:
                         Finding c = db.Findings.Find(fc.Id);
                         fc.VendorName = db.Vendors.Find(c.VendorId).Name;
+                        fc.linkId = c.Id;
                         fc.Price = c.Price;
                         t = fc.Price ?? 0;
                         fc.Total = fc.Qty * t;
@@ -575,6 +583,7 @@ namespace OJewelry.Models
                 stone.Vendor = db.Vendors.Find(stone.VendorId) ?? new Vendor();
                 StoneComponent stscm = new StoneComponent(stone);
                 stscm.VendorName = stone.Vendor.Name;
+                stscm.linkId = ss.Id;
                 stscm.CtWt = stone.CtWt.Value;
                 stscm.Size = stone.StoneSize;
                 stscm.Price = stone.Price;
@@ -594,11 +603,12 @@ namespace OJewelry.Models
                 finding.Vendor = db.Vendors.Find(finding.VendorId) ?? new Vendor();
                 FindingsComponent fiscm = new FindingsComponent(finding);
                 fiscm.VendorName = finding.Vendor.Name;
+                fiscm.linkId = sf.Id;
                 fiscm.Price = finding.Price;
                 t = fiscm.Price ?? 0;
+                fiscm.Qty = sf.Qty ?? 0;
                 fiscm.Total = fiscm.Qty * t;
                 FindingsTotal += fiscm.Total;
-                //fiscm.Qty = finding.Qty ?? 0;
                 fiscm.SetFindingsList(jsFindings, finding.Id);
                 Findings.Add(fiscm);
                 Total += fiscm.Total;
@@ -879,6 +889,12 @@ namespace OJewelry.Models
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int id);
                     m.Stones[i].Id = id;
+
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].linkId", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int linkid);
+                    m.Stones[i].linkId = linkid;
                     /*
                     m.Stones[i].CompanyId = coID;
 
@@ -947,6 +963,13 @@ namespace OJewelry.Models
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int id);
                     m.Findings[i].Id = id;
+
+                    sb.Clear();
+                    sb.AppendFormat("Findings[{0}].linkId", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int linkid);
+                    m.Findings[i].linkId = linkid;
+
                     //m.Findings[i].CompanyId = coID;
                     /*
                     sb.Clear();

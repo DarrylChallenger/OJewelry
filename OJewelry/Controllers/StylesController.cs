@@ -200,15 +200,16 @@ namespace OJewelry.Controllers
                             db.StyleStones.Add(ss);
                             break;
                         case SVMStateEnum.Deleted:
-                            ss = db.StyleStones.Where(x => x.StyleId == svm.Style.Id && x.StoneId == sc.Id).SingleOrDefault();
+                            ss = db.StyleStones.Where(x =>  x.Id == sc.linkId).SingleOrDefault();
                             db.StyleStones.Remove(ss);
                             break;
                         case SVMStateEnum.Dirty:
                         case SVMStateEnum.Fixed:
                             stone = db.Stones.Find(sc.Id);
-                            stone.Set(sc);
+                            //stone.Set(sc);
+                            ss = db.StyleStones.Where(x => x.Id == sc.linkId).SingleOrDefault();
                             //ss = db.StyleStones.Where(x => x.StyleId == svm.Style.Id && x.Id == sc.Id).SingleOrDefault();
-                            //ss.Quantity = sc.Qty;
+                            ss.Qty = sc.Qty;
                             break;
                         case SVMStateEnum.Unadded:
                         default:
@@ -242,7 +243,7 @@ namespace OJewelry.Controllers
                             db.StyleFindings.Add(fc);
                             break;
                         case SVMStateEnum.Deleted:
-                            fc = db.StyleFindings.Where(x => x.StyleId == svm.Style.Id && x.Id == c.Id).SingleOrDefault();
+                            fc = db.StyleFindings.Where(x => x.Id == c.linkId).SingleOrDefault();
                             db.StyleFindings.Remove(fc);
                             break;
                         case SVMStateEnum.Dirty:
@@ -252,10 +253,10 @@ namespace OJewelry.Controllers
                             component.Set(c);
                             */
                             finding = db.Findings.Find(c.Id);
-                            finding.Set(c);
-                            //fc = db.StyleFindings.Where(x => x.StyleId == svm.Style.Id && x.Id == c.Id).SingleOrDefault();
-                            //fc.Id = sc.Id;
-                            //sc.Quantity = c.Qty;
+                            //finding.Set(c); // Dont change the finding, just the link!!!
+                            fc = db.StyleFindings.Where(x => x.Id == c.linkId).SingleOrDefault();
+                            fc.Id = c.Id;
+                            fc.Qty = c.Qty;
                             break;
                         case SVMStateEnum.Unadded: // No updates
                         default:
