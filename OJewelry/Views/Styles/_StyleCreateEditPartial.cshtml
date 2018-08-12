@@ -24,6 +24,12 @@
             </div>
         </div>
         <div class="form-group">
+            @Html.LabelFor(model => model.Style.Desc, htmlAttributes: new { @class = "control-label col-sm-2" })
+            <div class="col-sm-4">
+                @Html.EditorFor(model => model.Style.Desc, new { htmlAttributes = new { @class = "" } })
+            </div>
+        </div>
+        <div class="form-group">
             @Html.LabelFor(model => model.Style.JewelryTypeId, htmlAttributes: new { @class = "control-label col-sm-2" })
             <div class="col-sm-4">
                 @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "" })

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using OJewelry.Models;
 
 namespace OJewelry.Models
 {
@@ -54,4 +55,15 @@ namespace OJewelry.Models
         public Collection Collection { get; set; }
         public List<Style> Styles { get; set; }
     }
+
+    public partial class Collection
+    {
+        public Collection(CollectionModel cm)
+        {
+            CompanyId = cm.CompanyId;
+            Name = cm.Name;
+            Notes = cm.Notes;
+        }
+    }
 }
+

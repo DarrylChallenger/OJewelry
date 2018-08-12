@@ -107,8 +107,9 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyId,Name,CompanyId")] Collection collection)
+        public ActionResult Create(CollectionModel cm)
         {
+            Collection collection = new Collection(cm);
             if (ModelState.IsValid)
             {
                 db.Collections.Add(collection);
@@ -117,7 +118,7 @@ namespace OJewelry.Controllers
             }
 
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", collection.CompanyId);
-            return View(collection);
+            return View(cm);
         }
 
         // GET: Collections/Edit/5
