@@ -2,21 +2,21 @@
 @using OJewelry.Models
 
 <div>
-    <h2><b>COST</b></h2>
+    COST
     <div class="styleCastings">
         <!-- Castings -->
         <div class="row StyleComponentsRowHeader">
             @{Model.CCLastRow = false; Model.CCHeaderRow = true; Model.CCRowIndex = -1; Model.SVMCCType = SVMCCTypeEnum.Castings;}
             @if (Model.Castings.Count == 0) { Model.CCLastRow = true; }
             @Html.Partial("_CostComponentCol1", Model)
-            <div class="col-sm-2">Casting</div>
+            <div class="col-sm-2">METAL STYLE</div>
             <div class="col-sm-1"></div>
-            <div class="col-sm-2">Vendor</div>
-            <div class="col-sm-1">Metal</div>
-            <div class="col-sm-1">Price</div>
-            <div class="col-sm-1">Labor</div>
-            <div class="col-sm-1">Qty</div>
-            <div class="col-sm-2">Total</div>
+            <div class="col-sm-2">VENDOR</div>
+            <div class="col-sm-1">METAL</div>
+            <div class="col-sm-1">PRICE</div>
+            <div class="col-sm-1">LABOR</div>
+            <div class="col-sm-1">QTY</div>
+            <div class="col-sm-2">TOTAL COST</div>
         </div>
         <div>
             @for (int i = 0; i < Model.Castings.Count; i++) // where state != deleted
@@ -53,8 +53,8 @@
                 </div>
                             }
             <div id="CastingsTotal">
-                <div class="row h4 StyleComponentsRowFooter">
-                    <div class="col-sm-2"><b>Total Castings</b></div>
+                <div class="row StyleComponentsRowFooter">
+                    <div class="col-sm-2"><b>TOTAL CASTINGS</b></div>
                     <div class="col-sm-8"></div>
                     <div id="CastingsTotalValue" class="col-sm-2">@Model.MetalsTotal.ToString("F02")</div>
                 </div>
@@ -67,14 +67,14 @@
             @{Model.CCLastRow = false; Model.CCHeaderRow = true; Model.CCRowIndex = -1; Model.SVMCCType = SVMCCTypeEnum.Stones;}
             @if (Model.Stones.Count == 0) { Model.CCLastRow = true; }
             @Html.Partial("_CostComponentCol1", Model)
-            <div class="col-sm-2">Stones</div>
-            <div class="col-sm-1">Shape</div>
-            <div class="col-sm-1">Size</div>
-            <div class="col-sm-1">Ct Wt</div>
+            <div class="col-sm-2">STONES</div>
+            <div class="col-sm-1">SHAPE</div>
+            <div class="col-sm-1">SIZE</div>
+            <div class="col-sm-1">CT</div>
             <div class="col-sm-2">Vendor</div>
-            <div class="col-sm-1">Price</div>
-            <div class="col-sm-1">Qty</div>
-            <div class="col-sm-2">Total</div>
+            <div class="col-sm-1">VENDOR</div>
+            <div class="col-sm-1">QTY</div>
+            <div class="col-sm-2">TOTAL COST</div>
         </div>
         @for (int i = 0; i < Model.Stones.Count; i++)
         {
@@ -131,8 +131,8 @@
             </div>
                         }
         <div id="StonesTotal">
-            <div class="row h4 StyleComponentsRowFooter">
-                <div class="col-sm-2"><b>Total Stones</b></div>
+            <div class="row StyleComponentsRowFooter">
+                <div class="col-sm-2"><b>TOTAL STONES</b></div>
                 <div class="col-sm-8"></div>
                 <div id="StonesTotalValue" class="col-sm-2">@Model.StonesTotal.ToString("F02")</div>
             </div>
@@ -145,13 +145,13 @@
             @{Model.CCLastRow = false; Model.CCHeaderRow = true; Model.CCRowIndex = -1; Model.SVMCCType = SVMCCTypeEnum.Findings; }
             @if (Model.Findings.Count == 0) { Model.CCLastRow = true; }
             @Html.Partial("_CostComponentCol1", Model)
-            <div class="col-sm-2">Findings</div>
+            <div class="col-sm-2">FINDINGS</div>
             <div class="col-sm-2 "></div>
-            <div class="col-sm-2">Vendor</div>
+            <div class="col-sm-2">VENDOR</div>
             <div class="col-sm-1">WT</div>
-            <div class="col-sm-1">Price</div>
-            <div class="col-sm-1">Qty</div>
-            <div class="col-sm-2">Total</div>
+            <div class="col-sm-1">PRICE</div>
+            <div class="col-sm-1">QTY</div>
+            <div class="col-sm-2">TOTAL</div>
         </div>
         @for (int i = 0; i < Model.Findings.Count; i++)
         {
@@ -191,8 +191,8 @@
             </div>
                         }
         <div id="FindingsTotal">
-            <div class="row h4 StyleComponentsRowFooter">
-                <div class="col-sm-2"><b>Total Findings</b></div>
+            <div class="row StyleComponentsRowFooter">
+                <div class="col-sm-2"><b>TOTAL FINDINGS</b></div>
                 <div class="col-sm-8"></div>
                 <div id="FindingsTotalValue" class="col-sm-2">@Model.FindingsTotal.ToString("F02")</div>
             </div>
@@ -205,13 +205,13 @@
             @{Model.CCLastRow = false; Model.CCHeaderRow = true; Model.CCRowIndex = -1; Model.SVMCCType = SVMCCTypeEnum.Labors; }
             @if (Model.Labors.Count == 0) { Model.CCLastRow = true; }
             @Html.Partial("_CostComponentCol1")
-            <div class="col-sm-2">Labor</div>
+            <div class="col-sm-2">LABOR</div>
             <div class="col-sm-2 ">Desc</div>
             <div class="col-sm-2"></div>
-            <div class="col-sm-1">Price/PPH</div>
-            <div class="col-sm-1">Price/PPC</div>
-            <div class="col-sm-1">Qty</div>
-            <div class="col-sm-2">Total</div>
+            <div class="col-sm-1">PRICE/HR</div>
+            <div class="col-sm-1">PRICE/PC</div>
+            <div class="col-sm-1">QTY</div>
+            <div class="col-sm-2">TOTAL</div>
         </div>
         @for (int i = 0; i < Model.Labors.Count; i++)
         {
@@ -249,8 +249,8 @@
             </div>
                         }
         <div id="LaborsTotal">
-            <div class="row h4 StyleComponentsRowFooter">
-                <div class="col-sm-2"><b>Total Labor</b></div>
+            <div class="row StyleComponentsRowFooter">
+                <div class="col-sm-2"><b>TOTAL LABOR</b></div>
                 <div class="col-sm-8"></div>
                 <div id="LaborsTotalValue" class="col-sm-2">@Model.LaborsTotal.ToString("F02")</div>
             </div>
@@ -264,12 +264,12 @@
             @{Model.CCLastRow = false; Model.CCHeaderRow = true; Model.CCRowIndex = -1; Model.SVMCCType = SVMCCTypeEnum.Miscs; }
             @if (Model.Miscs.Count == 0) { Model.CCLastRow = true; }
             @Html.Partial("_CostComponentCol1")
-            <div class="col-sm-2">Misc</div>
+            <div class="col-sm-2">MISC</div>
             <div class="col-sm-2">Desc</div>
             <div class="col-sm-3"></div>
-            <div class="col-sm-1">Price</div>
-            <div class="col-sm-1">Qty</div>
-            <div class="col-sm-2">Total</div>
+            <div class="col-sm-1">PRICE/PC</div>
+            <div class="col-sm-1">QTY</div>
+            <div class="col-sm-2">TOTAL</div>
         </div>
         @for (int i = 0; i < Model.Miscs.Count; i++)
         {
@@ -305,8 +305,8 @@
             </div>
                         }
         <div id="MiscsTotal">
-            <div class="row h4 StyleComponentsRowFooter">
-                <div class="col-sm-2"><b>Total Misc</b></div>
+            <div class="row StyleComponentsRowFooter">
+                <div class="col-sm-2">TOTAL MISC</div>
                 <div class="col-sm-8"></div>
                 <div id="MiscsTotalValue" class="col-sm-2">@Model.MiscsTotal.ToString("F02")</div>
             </div>
@@ -314,7 +314,7 @@
     </div> <!-- Misc -->
 
     <div class="row h3 StyleComponentsFooter">
-        <div class="col-sm-2"><b>Total Cost</b></div>
+        <div class="col-sm-2"><b>TOTAL COST</b></div>
         <div class="col-sm-8"></div>
         <div id="GrandTotal" class="col-sm-2">@Model.Total.ToString("F02")</div>
     </div>

@@ -292,30 +292,30 @@ namespace OJewelry.Models
     public partial class StyleMetaData
     {
 
-        [Display(Name = "Style No.")]
+        [Display(Name = "STYLE #")]
         [Required(ErrorMessage = "Style Number is required.")]
         public string StyleNum { get; set; }
 
-        [Display(Name = "Name")]
+        [Display(Name = "STYLE NAME")]
         [Required(ErrorMessage = "Name is required.")]
         public string StyleName { get; set; }
 
         [Display(Name = "Desc")]
         public string Desc { get; set; }
 
-        [Display(Name = "Metal Weight")]
+        [Display(Name = "METAL WT")]
         public Nullable<decimal> MetalWeight { get; set; }
 
-        [Display(Name = "Intro Date")]
+        [Display(Name = "INTRO DATE")]
         public Nullable<System.DateTime> IntroDate { get; set; }
 
-        [Display(Name = "Width")]
+        [Display(Name = "W")]
         public Nullable<decimal> Width { get; set; }
 
-        [Display(Name = "Length")]
+        [Display(Name = "L")]
         public Nullable<decimal> Length { get; set; }
 
-        [Display(Name = "Chain Length")]
+        [Display(Name = "CHAIN LENGTH")]
         public Nullable<decimal> ChainLength { get; set; }
 
         [Display(Name = "Retail Ratio")]
@@ -328,10 +328,10 @@ namespace OJewelry.Models
         [Required(ErrorMessage = "Quantity is required.")]
         public int Quantity { get; set; }
 
-        [Display(Name = "Jewelry Types")]
+        [Display(Name = "JEWELRY TYPE")]
         public Nullable<int> JewelryTypeId { get; set; }
 
-        [Display(Name = "Collections")]
+        [Display(Name = "COLLECTION")]
         public int CollectionId { get; set; }
     }
 

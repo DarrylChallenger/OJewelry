@@ -143,6 +143,11 @@ html input[disabled], locked {
     cursor: not-allowed;
 }
 
+.StyleCostSheet {
+    font-family: 'Calibri','sans-serif';
+    font-weight: 700;
+
+}
 .StyleHeader 
 {
     border-color:mediumpurple;
@@ -228,6 +233,7 @@ html input[disabled], locked {
 }
 
 .ForPrinting {
+    font-family: 'Calibri','sans-serif';
     font-size: 12px;
 }
 
@@ -258,7 +264,7 @@ html input[disabled], locked {
 }
 
 .StyleComponentsRowFooter {
-    font-weight: 700;
+    font-size: larger;
     padding-top: .25em;
     padding-bottom: .25em;
 }

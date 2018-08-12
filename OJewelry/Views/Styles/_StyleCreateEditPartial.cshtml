@@ -67,7 +67,7 @@
         </div>
         <div class="form-group">
             <div class="col-sm-3">
-                @Html.LabelFor(model => model.Style.MetalWeight, "Metal Weight", htmlAttributes: new { @class = "control-label col-sm-4" })
+                @Html.LabelFor(model => model.Style.MetalWeight, null, htmlAttributes: new { @class = "control-label" })
             </div>
             <div class="col-sm-3">
                 @Html.EditorFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
@@ -79,7 +79,7 @@
 
     </div> <!--  left side bottom -->
     <div class="col-sm-4  floatright">
-        <div class="row MeasIntroDate">
+        <div class="row">
             <div class="col-sm-4">
                 @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label col-sm-4" })
             </div>
@@ -101,7 +101,8 @@
     @Html.ValidationMessageFor(model => model.Style.RetailPrice, "", new { @class = "text-danger" })
     @Html.ValidationMessageFor(model => model.Style.Width, "", new { @class = "text-danger" })
     @Html.ValidationMessageFor(model => model.Style.ChainLength, "", new { @class = "text-danger" })
-    <span class="text-danger">
+    
+    <span class="text-danger hidden">
         @foreach (KeyValuePair<string, ModelState> p in @ViewData.ModelState)
         {
             if (p.Value.Errors.Count != 0)
