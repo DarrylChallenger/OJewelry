@@ -196,6 +196,8 @@ namespace OJewelry.Models
     }
     public partial class FindingMetaData
     {
+        [Required(ErrorMessage = "You must select a finding.")]
+        public int Id { get; set; }
 
         [Required]
         [Display(Name = "Name")]
@@ -263,6 +265,9 @@ namespace OJewelry.Models
     }
     public partial class StoneMetaData
     {
+        [Required(ErrorMessage = "You must select a stone.")]
+        public int Id { get; set; }
+
         [Required]
         [Display(Name = "Name")]
         public String Name { get; set; }

@@ -69,6 +69,7 @@ namespace OJewelry.Controllers
             svm.Style.Collection = db.Collections.Find(collectionId);
             svm.Style.CollectionId = collectionId;
             svm.CompanyId = svm.Style.Collection.CompanyId;
+            //svm.Stones.Add(new StoneComponent(new Stone()));
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit");
@@ -132,6 +133,7 @@ namespace OJewelry.Controllers
         public ActionResult Edit(StyleViewModel svm)
         {
             //ModelState.Clear();
+            int i;
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
             // Iterate thru the components
@@ -182,19 +184,25 @@ namespace OJewelry.Controllers
             // Stones
             if (svm.Stones != null)
             {
+                i = -1;
                 foreach (StoneComponent sc in svm.Stones)
                 {
-                    Stone stone;
+                    i++;
+                    //Stone stone;
                     StyleStone ss;
+                    if (!ValidStone(sc, i))
+                    {
+                        continue;
+                    }
                     switch (sc.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            stone = new Stone(sc);
-                            db.Stones.Add(stone);
+                            //stone = new Stone(sc);
+                            //db.Stones.Add(stone);
                             ss = new StyleStone()
                             {
                                 StyleId = svm.Style.Id,
-                                StoneId = stone.Id,
+                                StoneId = sc.Id.Value,
                                 Qty = sc.Qty
                             };
                             db.StyleStones.Add(ss);
@@ -205,11 +213,12 @@ namespace OJewelry.Controllers
                             break;
                         case SVMStateEnum.Dirty:
                         case SVMStateEnum.Fixed:
-                            stone = db.Stones.Find(sc.Id);
+                            //stone = db.Stones.Find(sc.Id);
                             //stone.Set(sc);
                             ss = db.StyleStones.Where(x => x.Id == sc.linkId).SingleOrDefault();
                             //ss = db.StyleStones.Where(x => x.StyleId == svm.Style.Id && x.Id == sc.Id).SingleOrDefault();
                             ss.Qty = sc.Qty;
+                            ss.StoneId = sc.Id.Value;
                             break;
                         case SVMStateEnum.Unadded:
                         default:
@@ -221,10 +230,16 @@ namespace OJewelry.Controllers
             // Findings
             if (svm.Findings != null)
             {
+                i = -1;
                 foreach (FindingsComponent c in svm.Findings)
                 {
-                    Finding finding;
+                    i++;
                     StyleFinding fc;
+                    if (!ValidFinding(c, i))
+                    {
+                        continue;
+                    }
+
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
@@ -232,11 +247,10 @@ namespace OJewelry.Controllers
                             component = new Component(c);
                             db.Components.Add(component);
                             */
-                            finding=new Finding(c);
                             fc = new StyleFinding()
                             {
                                 StyleId = svm.Style.Id,
-                                FindingId = c.Id,
+                                FindingId = c.Id ?? 0,
                                 Qty = c.Qty
                             };
 
@@ -252,10 +266,9 @@ namespace OJewelry.Controllers
                             component = db.Components.Find(c.Id);
                             component.Set(c);
                             */
-                            finding = db.Findings.Find(c.Id);
                             //finding.Set(c); // Dont change the finding, just the link!!!
                             fc = db.StyleFindings.Where(x => x.Id == c.linkId).SingleOrDefault();
-                            fc.Id = c.Id;
+                            fc.FindingId = c.Id ?? 0;
                             fc.Qty = c.Qty;
                             break;
                         case SVMStateEnum.Unadded: // No updates
@@ -387,6 +400,29 @@ namespace OJewelry.Controllers
             db.Styles.Remove(style);
             db.SaveChanges();
             return RedirectToAction("Index", new { CollectionID = collectionId });
+        }
+
+        public bool ValidStone(StoneComponent sc, int i)
+        {
+            // Make sure a stone was selected in the dropdown
+            if (sc.Id == 0)
+            {
+                ModelState.AddModelError("Stones[" + i + "].Id", "You must choose a Stone!");
+                return false;
+            }
+            // Ensure combo of stone, shape, size is valid (db.stone.where...)
+            return true;
+        }
+
+        public bool ValidFinding(FindingsComponent fc, int i)
+        {
+            // Make sure a stone was selected in the dropdown
+            if (fc.Id == 0)
+            {
+                ModelState.AddModelError("Findings[" + i + "].Id", "You must choose a Finding!");
+                return false;
+            }
+            return true;
         }
 
         public ActionResult Memo(int? id)
@@ -582,12 +618,15 @@ namespace OJewelry.Controllers
             return View(m);
         }
 
+        /*
         void xPopulateStyleViewModelDropDowns(StyleViewModel svm)
         {
             // reusables
             svm.jsVendors = db.Vendors.ToList();
             svm.jsMetals = db.MetalCodes.ToList();
             svm.jsStones = db.Stones.Where(x => x.CompanyId == svm.CompanyId).ToList();
+            svm.jsShapes = svm.jsStones.Select(x=> x.).ToList();
+            svm.jsSizes = db.Sizes.Where(x => x.CompanyId == svm.CompanyId).ToList();
             svm.jsFindings = db.Findings.Where(x => x.CompanyId == svm.CompanyId).ToList();
             // populate each cost component dropdown in model
         }
@@ -605,6 +644,7 @@ namespace OJewelry.Controllers
                 m.Presenters.Add(sli);
             }
         }
+        */
 
         protected override void Dispose(bool disposing)
         {

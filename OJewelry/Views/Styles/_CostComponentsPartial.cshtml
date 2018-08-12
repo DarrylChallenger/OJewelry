@@ -15,7 +15,7 @@
             <div class="col-sm-1">Metal</div>
             <div class="col-sm-1">Price</div>
             <div class="col-sm-1">Labor</div>
-            <div class="col-sm-1">Quantity</div>
+            <div class="col-sm-1">Qty</div>
             <div class="col-sm-2">Total</div>
         </div>
         <div>
@@ -68,11 +68,11 @@
             @if (Model.Stones.Count == 0) { Model.CCLastRow = true; }
             @Html.Partial("_CostComponentCol1", Model)
             <div class="col-sm-2">Stones</div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-2">Vendor</div>
-            <div class="col-sm-1">Ct Wt</div>
+            <div class="col-sm-1">Shape</div>
             <div class="col-sm-1">Size</div>
-            <div class="col-sm-1">PPC/$</div>
+            <div class="col-sm-1">Ct Wt</div>
+            <div class="col-sm-2">Vendor</div>
+            <div class="col-sm-1">Price</div>
             <div class="col-sm-1">Qty</div>
             <div class="col-sm-2">Total</div>
         </div>
@@ -86,9 +86,10 @@
                 <div class="row ltbordered">
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Stones.Count - 1) { Model.CCLastRow = true; }
+                    @Html.HiddenFor(model => model.Stones[i].linkId)
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
-                    @if (Model.Stones[i].Id == 0)
+                    @if (Model.Stones[i].Id == 0) 
                     {
                         @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].StoneList, "You must select a stone", new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
@@ -96,16 +97,30 @@
                     {
                         @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].StoneList, new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
-                    <div class="col-sm-1 "></div>
-                    @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
-                    @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
-                    @Html.EditorFor(model => model.Stones[i].Size, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
-                    @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
-                    @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    <div id="StonesRowTotalValue_@i" class="col-sm-1 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
-                    <div class="col-sm-1">
-                        @Html.Partial("_CostComponentLastCol", Model)
-                    </div>
+                    @if (Model.Stones[i].ShapeId == 0) 
+                    {
+                        @Html.DropDownListFor(model => model.Stones[i].ShapeId, Model.Stones[i].ShapeList, "You must select a shape", new { @class = "col-sm-1 requiredifnotremoved" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.Stones[i].ShapeId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 requiredifnotremoved" })
+                    }
+                    @if (Model.Stones[i].Size == "")
+                    {
+                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, "You must select a size", new { @class = "col-sm-1 requiredifnotremoved" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new { @class = "col-sm-1 requiredifnotremoved" })
+                    }
+                @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
+                @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
+                @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
+                @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                <div id="StonesRowTotalValue_@i" class="col-sm-1 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
+                <div class="col-sm-1">
+                    @Html.Partial("_CostComponentLastCol", Model)
+                </div>
 
                 </div>
 
@@ -131,7 +146,7 @@
             @if (Model.Findings.Count == 0) { Model.CCLastRow = true; }
             @Html.Partial("_CostComponentCol1", Model)
             <div class="col-sm-2">Findings</div>
-            <div class="col-sm-2"></div>
+            <div class="col-sm-2 "></div>
             <div class="col-sm-2">Vendor</div>
             <div class="col-sm-1">WT</div>
             <div class="col-sm-1">Price</div>
@@ -345,8 +360,6 @@
             {
             <div id="@stone.Id">
                 <span class="VendorName" value="@stone.Vendor.Name"></span>
-                <span class="CtWt" value="@stone.CtWt"></span>
-                <span class="Size" value="@stone.StoneSize"></span>
                 <span class="PPC" value="@stone.Price.ToString("F02")"></span>
             </div>
             }
