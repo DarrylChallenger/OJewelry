@@ -9,5 +9,8 @@ select * from styles s
 join StyleStone ss on s.id = ss.StyleId
 join Stones st on st.id = ss.StoneId
 
+select * from stylestone
 select * from stylefinding
 select * from Findings
+
+select * from shapes

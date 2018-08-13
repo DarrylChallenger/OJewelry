@@ -71,8 +71,8 @@
             <div class="col-sm-1">SHAPE</div>
             <div class="col-sm-1">SIZE</div>
             <div class="col-sm-1">CT</div>
-            <div class="col-sm-2">Vendor</div>
-            <div class="col-sm-1">VENDOR</div>
+            <div class="col-sm-2">VENDOR</div>
+            <div class="col-sm-1">PRICE</div>
             <div class="col-sm-1">QTY</div>
             <div class="col-sm-2">TOTAL COST</div>
         </div>
@@ -86,24 +86,25 @@
                 <div class="row ltbordered">
                     @{Model.CCLastRow = false; Model.CCHeaderRow = false; Model.CCRowIndex = i;}
                     @if (i == Model.Stones.Count - 1) { Model.CCLastRow = true; }
+                    @Html.HiddenFor(model => model.Stones[i].Id)
                     @Html.HiddenFor(model => model.Stones[i].linkId)
                     @Html.Partial("_CostComponentCol1", Model)
                     @*<div class="col-sm-2 ">@c.Name </div>*@
-                    @if (Model.Stones[i].Id == 0) 
+                    @if (Model.Stones[i].Id == 0)
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].StoneList, "You must select a stone", new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, "You must select a stone", new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].Id, Model.Stones[i].StoneList, new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, new { @class = "col-sm-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
-                    @if (Model.Stones[i].ShapeId == 0) 
+                    @if (Model.Stones[i].ShapeId == 0)
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].ShapeId, Model.Stones[i].ShapeList, "You must select a shape", new { @class = "col-sm-1 requiredifnotremoved" })
+                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new { @class = "col-sm-1 requiredifnotremoved" })
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].ShapeId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 requiredifnotremoved" })
+                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 requiredifnotremoved" })
                     }
                     @if (Model.Stones[i].Size == "")
                     {
@@ -113,14 +114,14 @@
                     {
                         @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new { @class = "col-sm-1 requiredifnotremoved" })
                     }
-                @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
-                @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
-                @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
-                @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                <div id="StonesRowTotalValue_@i" class="col-sm-1 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
-                <div class="col-sm-1">
-                    @Html.Partial("_CostComponentLastCol", Model)
-                </div>
+                    @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 locked", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 locked", @disabled = "disabled" } })
+                    @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                    <div id="StonesRowTotalValue_@i" class="col-sm-1 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
+                    <div class="col-sm-1">
+                        @Html.Partial("_CostComponentLastCol", Model)
+                    </div>
 
                 </div>
 
@@ -343,39 +344,63 @@
                 @*Model.jsStones.Insert(0, Model.DefStone);*@
                 @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name"), "Please select a stone", new { @class = "col-sm-2 requiredifnotremoved" })
             }
-            </div>
+        </div>
+        <div id="jsShapes">
+            @if (Model.jsShapes.Count == 0)
+            {
+                @Html.DropDownList("jsshINDEX", new SelectList(emptyStoneList, "Id", "Name", 1), new { @class = "col-sm-1 requiredifnotremoved" })
+            }
+            else
+            {
+                @*Model.jsShapes.Insert(0, Model.DefStone);*@
+                @Html.DropDownList("jsshINDEX", new SelectList(Model.jsShapes, "Id", "Name"), "Please select a shape", new { @class = "col-sm-1 requiredifnotremoved" })
+            }
+        </div>
+        <div id="jsSizes">
+            @if (Model.jsSizes.Count == 0)
+            {
+                @Html.DropDownList("jsszINDEX", new SelectList(emptyStoneList, "Id", "Name", 1), new { @class = "col-sm-1 requiredifnotremoved" })
+            }
+            else
+            {
+                @*Model.jsSizs.Insert(0, Model.DefStone);*@
+                @Html.DropDownList("jsszINDEX", new SelectList(Model.jsSizes, "Id", "Name"), "Please select a size", new { @class = "col-sm-1 requiredifnotremoved" })
+            }
+        </div>
         <div id="jsFindings">
             @if (Model.jsFindings.Count == 0)
             {
-            @Html.DropDownList("jsfINDEX", new SelectList(emptyFindingList, "Id", "Name"), new { @class = "col-sm-2 requiredifnotremoved" })
+                @Html.DropDownList("jsfINDEX", new SelectList(emptyFindingList, "Id", "Name"), new { @class = "col-sm-2 requiredifnotremoved" })
             }
             else
             {
                 @*Model.jsFindings.Insert(0, Model.DefFinding);*@
-                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name") , "Please select a finding", new { @class = "col-sm-2 requiredifnotremoved" })
-            }   
+                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name"), "Please select a finding", new { @class = "col-sm-2 requiredifnotremoved" })
+            }
         </div>
         <div id="StonesData">
-            @foreach (Stone stone in Model.jsStones)
+            @foreach (StoneListItem stone in Model.jsStones)
             {
-            <div id="@stone.Id">
-                <span class="VendorName" value="@stone.Vendor.Name"></span>
-                <span class="PPC" value="@stone.Price.ToString("F02")"></span>
-            </div>
+                <div id="@stone.Id">
+                    @*
+                    <span class="VendorName" value="@stone.Vendor.Name"></span>
+                    <span class="PPC" value="@stone.Price.ToString("F02")"></span>
+                    *@
+                </div>
             }
         </div>
         <div id="FindingsData">
             @foreach (Finding finding in Model.jsFindings)
             {
-            <div id="@finding.Id">
-                <span class="VendorName" value="@finding.Vendor.Name"></span>
-                <span class ="Weight" value="@finding.Weight"></span>
-                <span class="Price" value="@finding.Price.Value.ToString("F02")"></span>
-            </div>
+                <div id="@finding.Id">
+                    <span class="VendorName" value="@finding.Vendor.Name"></span>
+                    <span class="Weight" value="@finding.Weight"></span>
+                    <span class="Price" value="@finding.Price.Value.ToString("F02")"></span>
+                </div>
             }
         </div>
         <div id="DelBtnPos" BtnPos=@Model.DelBtnPos>
-            
+
         </div>
     </div>
 </div>

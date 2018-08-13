@@ -300,7 +300,7 @@ namespace OJewelry.Models
         [Required(ErrorMessage = "Name is required.")]
         public string StyleName { get; set; }
 
-        [Display(Name = "Desc")]
+        [Display(Name = "DESC")]
         public string Desc { get; set; }
 
         [Display(Name = "METAL WT")]

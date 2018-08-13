@@ -185,13 +185,16 @@ namespace OJewelry.Controllers
             if (svm.Stones != null)
             {
                 i = -1;
+                int stoneId;
                 foreach (StoneComponent sc in svm.Stones)
                 {
                     i++;
                     //Stone stone;
                     StyleStone ss;
-                    if (!ValidStone(sc, i))
+                    try
                     {
+                        stoneId = ValidStone(sc, i); // put in try, 
+                    } catch (Exception e) {
                         continue;
                     }
                     switch (sc.SVMState)
@@ -202,7 +205,7 @@ namespace OJewelry.Controllers
                             ss = new StyleStone()
                             {
                                 StyleId = svm.Style.Id,
-                                StoneId = sc.Id.Value,
+                                StoneId = stoneId,
                                 Qty = sc.Qty
                             };
                             db.StyleStones.Add(ss);
@@ -218,7 +221,7 @@ namespace OJewelry.Controllers
                             ss = db.StyleStones.Where(x => x.Id == sc.linkId).SingleOrDefault();
                             //ss = db.StyleStones.Where(x => x.StyleId == svm.Style.Id && x.Id == sc.Id).SingleOrDefault();
                             ss.Qty = sc.Qty;
-                            ss.StoneId = sc.Id.Value;
+                            ss.StoneId = stoneId;
                             break;
                         case SVMStateEnum.Unadded:
                         default:
@@ -402,16 +405,22 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", new { CollectionID = collectionId });
         }
 
-        public bool ValidStone(StoneComponent sc, int i)
+        public int ValidStone(StoneComponent sc, int i)
         {
             // Make sure a stone was selected in the dropdown
-            if (sc.Id == 0)
+            if (sc.Name == null)
             {
                 ModelState.AddModelError("Stones[" + i + "].Id", "You must choose a Stone!");
-                return false;
+                throw new Exception("You must choose a Stone!");
             }
             // Ensure combo of stone, shape, size is valid (db.stone.where...)
-            return true;
+            Stone stone = db.Stones.Where(st => st.Name == sc.Name && st.Shape.Name == sc.ShId && st.StoneSize == sc.SzId).FirstOrDefault();
+            if (stone == null)
+            {
+                ModelState.AddModelError("Stones[" + i + "].Id", "Invalid Stone combination!");
+                throw new Exception("Invalid Stone combination!");
+            }
+            return stone.Id;
         }
 
         public bool ValidFinding(FindingsComponent fc, int i)
