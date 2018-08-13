@@ -69,8 +69,7 @@ namespace OJewelry.Controllers
             svm.Style.Collection = db.Collections.Find(collectionId);
             svm.Style.CollectionId = collectionId;
             svm.CompanyId = svm.Style.Collection.CompanyId;
-            //svm.Stones.Add(new StoneComponent(new Stone()));
-
+            AddDefaultEntries(svm);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit");
             //ViewBag.JewelryTypes = new SelectList(db.JewelryTypes);
@@ -121,6 +120,7 @@ namespace OJewelry.Controllers
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
             svm.Populate(id, db);
+            MarkDefaultEntriesAsFixed(svm);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
@@ -185,12 +185,12 @@ namespace OJewelry.Controllers
             if (svm.Stones != null)
             {
                 i = -1;
-                int stoneId;
                 foreach (StoneComponent sc in svm.Stones)
                 {
                     i++;
                     //Stone stone;
                     StyleStone ss;
+                    int stoneId;
                     try
                     {
                         stoneId = ValidStone(sc, i); // put in try, 
@@ -292,10 +292,7 @@ namespace OJewelry.Controllers
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            labor = new Labor(c);
-                            db.Labors.Add(labor);
-                            sl = new StyleLabor() { StyleId = svm.Style.Id, LaborId = labor.Id };
-                            db.StyleLabors.Add(sl);
+                            AddLabor(c, svm);
                             break;
                         case SVMStateEnum.Deleted:
                             sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
@@ -303,8 +300,16 @@ namespace OJewelry.Controllers
                             break;
                         case SVMStateEnum.Dirty:
                         case SVMStateEnum.Fixed:
-                            labor = db.Labors.Find(c.Id);
-                            labor.Set(c);
+                            if (c.Id < 0)
+                            {
+                                AddLabor(c, svm);
+                            }
+                            else
+                            {
+                                labor = db.Labors.Find(c.Id);
+                                labor.Set(c);
+                            }
+
                             /*
                             sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
                             */
@@ -326,10 +331,7 @@ namespace OJewelry.Controllers
                     switch (c.SVMState)
                     {
                         case SVMStateEnum.Added:
-                            misc = new Misc(c);
-                            db.Miscs.Add(misc);
-                            sm = new StyleMisc() { StyleId = svm.Style.Id, MiscId = misc.Id };
-                            db.StyleMiscs.Add(sm);
+                            AddMisc(c, svm);
                             break;
                         case SVMStateEnum.Deleted:
                             sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
@@ -337,8 +339,16 @@ namespace OJewelry.Controllers
                             break;
                         case SVMStateEnum.Dirty:
                         case SVMStateEnum.Fixed:
-                            misc = db.Miscs.Find(c.Id);
-                            misc.Set(c);
+                            if (c.Id == 0)
+                            {
+                                AddMisc(c, svm);
+                            }
+                            else
+                            {
+                                misc = db.Miscs.Find(c.Id);
+                                misc.Set(c);
+                            }
+
                             /*
                             sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
                             */
@@ -434,6 +444,52 @@ namespace OJewelry.Controllers
             return true;
         }
 
+        public void AddDefaultEntries(StyleViewModel svm)
+        {
+            // Add 2 Fixed Labor entries and 1 Fixed Misc entry
+            LaborComponent lc = new LaborComponent
+            {
+                Id = -1,
+                Name = "FINISHING LABOR",
+                SVMState = SVMStateEnum.Fixed
+            };
+            svm.Labors.Add(lc);
+            lc = new LaborComponent
+            {
+                Id = -2,
+                Name = "SETTING LABOR",
+                SVMState = SVMStateEnum.Fixed
+            };
+            svm.Labors.Add(lc);//svm.Stones.Add(new StoneComponent(new Stone()));
+            MiscComponent mc = new MiscComponent
+            {
+                Name = "PACKAGING",
+                SVMState = SVMStateEnum.Fixed,
+                Qty = 1
+            };
+            svm.Miscs.Add(mc);
+        }
+
+        public void MarkDefaultEntriesAsFixed(StyleViewModel svm)
+        {
+            if (svm.Labors != null && svm.Labors.Count > 1)
+            {
+                if (svm.Labors[0].Name == "FINISHING LABOR")
+                {
+                    svm.Labors[0].SVMState = SVMStateEnum.Fixed;
+                    svm.Labors[1].SVMState = SVMStateEnum.Fixed;
+                }
+            }
+
+            if (svm.Miscs != null && svm.Miscs.Count > 0)
+            {
+                if (svm.Miscs[0].Name == "PACKAGING")
+                {
+                    svm.Miscs[0].SVMState = SVMStateEnum.Fixed;
+                }
+            }
+
+        }
         public ActionResult Memo(int? id)
         {
             if (id == null)
@@ -654,6 +710,23 @@ namespace OJewelry.Controllers
             }
         }
         */
+
+        void AddLabor(LaborComponent c, StyleViewModel svm)
+        {
+            Labor labor = new Labor(c);
+            labor.Id = c.Id;
+            db.Labors.Add(labor);
+            StyleLabor sl = new StyleLabor() { StyleId = svm.Style.Id, LaborId = labor.Id };
+            db.StyleLabors.Add(sl);
+        }
+
+        void AddMisc(MiscComponent m, StyleViewModel svm)
+        {
+            Misc misc = new Misc(m);
+            db.Miscs.Add(misc);
+            StyleMisc sm = new StyleMisc() { StyleId = svm.Style.Id, MiscId = misc.Id };
+            db.StyleMiscs.Add(sm);
+        }
 
         protected override void Dispose(bool disposing)
         {

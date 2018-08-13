@@ -14,3 +14,6 @@ select * from stylefinding
 select * from Findings
 
 select * from shapes
+
+select * from Labor
+select * from StyleLabor
