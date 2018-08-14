@@ -17,3 +17,6 @@ select * from shapes
 
 select * from Labor
 select * from StyleLabor
+
+select * from Companies
+update stones set CompanyId =1
