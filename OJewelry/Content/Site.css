@@ -143,15 +143,20 @@ html input[disabled], locked {
     cursor: not-allowed;
 }
 
+.StyleCostSheet {
+    font-family: 'Calibri','sans-serif';
+    font-weight: 700;
+
+}
 .StyleHeader 
 {
     border-color:mediumpurple;
 }
 
 .StyleRightHeader {
-    border-color: green;
+    border-color: lightgray;
     float: right;
-    height: 15em;
+    height: 16em;
 }
 
 .StyleLeftHeader {
@@ -160,18 +165,35 @@ html input[disabled], locked {
     height: 16em;
 }
 
+.centerImage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .StyleImage 
 {
     border-style:solid;
     border-color:black;
     border-width:2px;
     height:100%;
-    float:right;
+}
+
+.StyleBodyBoundingBox {
+    padding-top: .5em;
+}
+
+.floatleft {
+    float: left;
+}
+
+.floatright {
+    float: right;
 }
 
 .MetalIntroDate {
-    padding-top:2em;
-    padding-bottom:.5em;
+    padding-top: 2em;
+    padding-bottom: .5em;
 }
 
 .PricingMeasHead {
@@ -211,6 +233,7 @@ html input[disabled], locked {
 }
 
 .ForPrinting {
+    font-family: 'Calibri','sans-serif';
     font-size: 12px;
 }
 
@@ -241,7 +264,7 @@ html input[disabled], locked {
 }
 
 .StyleComponentsRowFooter {
-    font-weight: 700;
+    font-size: larger;
     padding-top: .25em;
     padding-bottom: .25em;
 }

@@ -67,18 +67,42 @@ function AddComponentRow(type, index)
         ltbordered = castingsltbordered.replace("JSVENDORS", jsVendors.html()).replace("JSMETALS", jsMetals.html());
     }
     if (type === "Stones") { 
+        // Stone
         stonesltbordered = getStonesHTML(type, len);
         var jsStones = $("#jsStones").clone();
         jsStones.find("#jssINDEX")
-            .attr("name", 'Stones[' + len + '].Id')
-            .attr("id", 'Stones_' + len + '__Id')
+            .attr("name", 'Stones[' + len + '].Name')
+            .attr("id", 'Stones_' + len + '__Name')
 
             .attr("data-val", "")//"true")
             .attr("data-val-number", "")//"The Id field must be a number.")
-            .attr("data-val-required", "XX")//"Please select a stone.")
-            
+            //.attr("data-val-required", "XX")//"Please select a stone.")
             .attr("onchange", "StoneChanged('" + len + "')");
-        ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html());
+
+        //Shape
+        var jsShapes = $("#jsShapes").clone();
+        jsShapes.find("#jsshINDEX")
+            .attr("name", 'Stones[' + len + '].ShId')
+            .attr("id", 'Stones_' + len + '__ShId')
+            .attr("data-val", "")//"true")
+            .attr("data-val-number", "")//"The Id field must be a number.")
+            .attr("data-val-required", "XX")//"Please select a stone.")
+            //.attr("onchange", "StoneChanged('" + len + "')")
+            ;
+
+        // Size
+        var jsSizes = $("#jsSizes").clone();
+        jsSizes.find("#jsszINDEX")
+            .attr("name", 'Stones[' + len + '].SzId')
+            .attr("id", 'Stones_' + len + '__SzId')
+
+            .attr("data-val", "true")
+            .attr("data-val-number", "")//"The Id field must be a number.")
+            .attr("data-val-required", "Please select a stone.")
+
+            .attr("onchange", "StoneChanged('" + len + "')");
+        
+        ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html()+jsShapes.html()+jsSizes.html());
     }
     if (type === "Findings") { 
         findingsltbordered = getFindingsHTML(type, len);
@@ -256,7 +280,7 @@ function FindingChanged(i) {
     if (oldval !== "") {
         dataRow = $("#FindingsData").find("#" + oldval);
         $("#Findings_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
-        $("#Findings_" + i + "__Metal").val(dataRow.find(".Metal").attr("value"));
+        $("#Findings_" + i + "__Weight").val(dataRow.find(".Weight").attr("value"));
         $("#Findings_" + i + "__Price").val(dataRow.find(".Price").attr("value"));
         $("#" + "Findings" + "_" + i + "__Id option[value='']").attr("disabled", "disabled");
     }
@@ -301,9 +325,9 @@ function getCastingsHTML(type, len) {
 
 function getStonesHTML(type, len) {
     return '\
-    <div id="StonesRow_' + len + '"  class="StonesRow">\
+    <div id="StonesRow_' + len + '"  class="StonesRow ">\
         <div class="row ltbordered">\
-            <input data-val="true" data-val-number="The field scId must be a number." data-val-required="The scId field is required." id= "Stones_' + len + '__scId" name= "Stones[' + len + '].scId" type= "hidden" value= "-1" />\
+            <input data-val="true" data-val-number="The field Id must be a number." id= "Stones_' + len + '__Id" name= "Stones[' + len + '].Id" type= "hidden" />\
             <div class="col-sm-1 ">\
                 <div class="row StyleComponentsRowHeaderBtn ">\
                     <div class="col-sm-6 ">\
@@ -315,11 +339,9 @@ function getStonesHTML(type, len) {
                 '</div>\
             </div>\
             JSSTONES\
-            <div class="col-sm-1 "></div>\
+            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Caret Weight must be a number." id="Stones_' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="" \"/>\
             <input class="col-sm-2 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The Vendor field is required." id="Stones_' + len + '__VendorName" name="Stones[' + len + '].VendorName" type="text" value="" />\
-            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Caret Weight must be a number." id="Stones_' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="0" \"/>\
-            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Size must be a number." id="Stones_' + len + '__Size" name="Stones[' + len + '].Size" type="text" value="0" \"/>\
-            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Price/Piece must be a number." id="Stones_' + len + '__PPC" name="Stones[' + len + '].PPC" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
+            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Price field must be a number." id="Stones_' + len + '__Price" name="Stones[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="StonesRowTotalValue_' + len + '" class="col-sm-1 StonesRowTotal ">0.00</div>\
             ' + rightDelBtn + '\
@@ -327,6 +349,7 @@ function getStonesHTML(type, len) {
            <div class="row">\
            <!--Validations Here-->\
                <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Id" data-valmsg-replace="true"></span>\
+               <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Name" data-valmsg-replace="true"></span>\
                <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Qty" data-valmsg-replace="true"></span>\
            </div>\
         </div>\
@@ -351,7 +374,7 @@ function getFindingsHTML(type, len) {
             JSFINDINGS\
             <div class="col-sm-2 "></div>\
             <input class="col-sm-2 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The Vendor field is required." id="Findings_' + len + '__VendorName" name="Findings[' + len + '].VendorName" type="text" value="" />\
-            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The Metal is required." id="Findings_' + len + '__Metal" name="Findings[' + len + '].Metal" type="text" value="" />\
+            <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The field Weight must be a number." id="Findings_' + len + '__Weight" name="Findings[' + len + '].Weight" type="text" value="" />\
             <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Price must be a number." id="Findings_' + len + '__Price" name="Findings[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Findings_' + len + '__Qty" name="Findings[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="FindingsRowTotalValue_' + len + '" class="col-sm-1 FindingsRowTotal ">0.00</div>\
@@ -370,7 +393,7 @@ function getLaborsHTML(type, len) {
     return '\
     <div id="LaborsRow_' + len + '" class="LaborsRow">\
         <div class="row ltbordered">\
-            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Labors_' + len + '__Id" name= "Labors[' + len + '].Id" type= "hidden" value= "1" />\
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Labors_' + len + '__Id" name= "Labors[' + len + '].Id" type= "hidden" value= "0" />\
             <div class="col-sm-1 ">\
                 <div class="row StyleComponentsRowHeaderBtn ">\
                     <div class="col-sm-6 ">\
@@ -404,7 +427,7 @@ function getMiscsHTML(type, len) {
     return '\
     <div id="MiscsRow_' + len + '"  class="MiscsRow">\
         <div class="row ltbordered">\
-            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Miscs_' + len + '__Id" name= "Miscs[' + len + '].Id" type= "hidden" value= "1" />\
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Miscs_' + len + '__Id" name= "Miscs[' + len + '].Id" type= "hidden" value= "0" />\
             <div class="col-sm-1 ">\
                 <div class="row StyleComponentsRowHeaderBtn ">\
                     <div class="col-sm-6 ">\
