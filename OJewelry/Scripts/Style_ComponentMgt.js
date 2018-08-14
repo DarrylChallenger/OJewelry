@@ -71,35 +71,34 @@ function AddComponentRow(type, index)
         stonesltbordered = getStonesHTML(type, len);
         var jsStones = $("#jsStones").clone();
         jsStones.find("#jssINDEX")
-            .attr("name", 'Stones[' + len + '].Id')
-            .attr("id", 'Stones_' + len + '__Id')
+            .attr("name", 'Stones[' + len + '].Name')
+            .attr("id", 'Stones_' + len + '__Name')
 
             .attr("data-val", "")//"true")
             .attr("data-val-number", "")//"The Id field must be a number.")
-            .attr("data-val-required", "XX")//"Please select a stone.")
-            
+            //.attr("data-val-required", "XX")//"Please select a stone.")
             .attr("onchange", "StoneChanged('" + len + "')");
+
         //Shape
         var jsShapes = $("#jsShapes").clone();
         jsShapes.find("#jsshINDEX")
-            .attr("name", 'Stones[' + len + '].ShapeId')
-            .attr("id", 'Stones_' + len + '__ShapeIdId')
-
+            .attr("name", 'Stones[' + len + '].ShId')
+            .attr("id", 'Stones_' + len + '__ShId')
             .attr("data-val", "")//"true")
             .attr("data-val-number", "")//"The Id field must be a number.")
             .attr("data-val-required", "XX")//"Please select a stone.")
+            //.attr("onchange", "StoneChanged('" + len + "')")
+            ;
 
-            .attr("onchange", "StoneChanged('" + len + "')");
-
-         // Size
+        // Size
         var jsSizes = $("#jsSizes").clone();
         jsSizes.find("#jsszINDEX")
             .attr("name", 'Stones[' + len + '].SzId')
             .attr("id", 'Stones_' + len + '__SzId')
 
-            .attr("data-val", "")//"true")
+            .attr("data-val", "true")
             .attr("data-val-number", "")//"The Id field must be a number.")
-            .attr("data-val-required", "XX")//"Please select a stone.")
+            .attr("data-val-required", "Please select a stone.")
 
             .attr("onchange", "StoneChanged('" + len + "')");
         
@@ -326,7 +325,7 @@ function getCastingsHTML(type, len) {
 
 function getStonesHTML(type, len) {
     return '\
-    <div id="StonesRow_' + len + '"  class="StonesRow">\
+    <div id="StonesRow_' + len + '"  class="StonesRow ">\
         <div class="row ltbordered">\
             <input data-val="true" data-val-number="The field Id must be a number." id= "Stones_' + len + '__Id" name= "Stones[' + len + '].Id" type= "hidden" />\
             <div class="col-sm-1 ">\
@@ -350,6 +349,7 @@ function getStonesHTML(type, len) {
            <div class="row">\
            <!--Validations Here-->\
                <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Id" data-valmsg-replace="true"></span>\
+               <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Name" data-valmsg-replace="true"></span>\
                <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Qty" data-valmsg-replace="true"></span>\
            </div>\
         </div>\
@@ -393,7 +393,7 @@ function getLaborsHTML(type, len) {
     return '\
     <div id="LaborsRow_' + len + '" class="LaborsRow">\
         <div class="row ltbordered">\
-            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Labors_' + len + '__Id" name= "Labors[' + len + '].Id" type= "hidden" value= "1" />\
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Labors_' + len + '__Id" name= "Labors[' + len + '].Id" type= "hidden" value= "0" />\
             <div class="col-sm-1 ">\
                 <div class="row StyleComponentsRowHeaderBtn ">\
                     <div class="col-sm-6 ">\
@@ -427,7 +427,7 @@ function getMiscsHTML(type, len) {
     return '\
     <div id="MiscsRow_' + len + '"  class="MiscsRow">\
         <div class="row ltbordered">\
-            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Miscs_' + len + '__Id" name= "Miscs[' + len + '].Id" type= "hidden" value= "1" />\
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "Miscs_' + len + '__Id" name= "Miscs[' + len + '].Id" type= "hidden" value= "0" />\
             <div class="col-sm-1 ">\
                 <div class="row StyleComponentsRowHeaderBtn ">\
                     <div class="col-sm-6 ">\

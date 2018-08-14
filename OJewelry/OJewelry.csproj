@@ -269,6 +269,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Classes\DCTOpenXML.cs" />
+    <Compile Include="Classes\OJExceptions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\CollectionsController.cs" />

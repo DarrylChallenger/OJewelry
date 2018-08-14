@@ -161,8 +161,7 @@ namespace OJewelry.Models
         }
 
         /*[Required]
-        [Display(Name = "Stone Name")]
-        */
+        [Display(Name = "Stone Name")]*/
         public String Name { get; set; }
 
         public String Desc
@@ -984,6 +983,23 @@ namespace OJewelry.Models
                     Int32.TryParse(s, out int linkid);
                     m.Stones[i].linkId = linkid;
                     /*
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].Name", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Stones[i].Name = s;
+
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].ShId", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Stones[i].ShId = s;
+
+                    sb.Clear();
+                    sb.AppendFormat("Stones[{0}].SzId", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Stones[i].SzId = s;
+                    */
+
+                    /*
                     m.Stones[i].CompanyId = coID;
 
                     sb.Clear();
@@ -992,10 +1008,6 @@ namespace OJewelry.Models
                     Int32.TryParse(s, out int ctid);
                     m.Stones[i].ComponentTypeId = ctid;
 
-                    sb.Clear();
-                    sb.AppendFormat("Stones[{0}].Name", i);
-                    s = request.Form.Get(sb.ToString());
-                    m.Stones[i].Name = s;
                     */
                     /*
                     sb.Clear();

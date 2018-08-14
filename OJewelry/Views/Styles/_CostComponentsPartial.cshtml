@@ -127,6 +127,7 @@
 
                 <div class="row">
                     @Html.ValidationMessageFor(model => model.Stones[i].Id, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Stones[i].Name, "", new { @class = "text-danger" })
                     @Html.ValidationMessageFor(model => model.Stones[i].Qty, "", new { @class = "text-danger" })
                 </div>
             </div>
