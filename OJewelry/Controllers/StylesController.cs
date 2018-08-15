@@ -56,6 +56,7 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             sm.Populate(id, db);
+            sm.SVMOp = SVMOperation.Print;
             return View(sm);
         }
 
@@ -120,6 +121,10 @@ namespace OJewelry.Controllers
             }
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
+            svm.Style.MetalWeightUnit = new MetalWeightUnit
+            {
+                Unit = "DWT"
+            };
             svm.Populate(id, db);
             MarkDefaultEntriesAsFixed(svm);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);

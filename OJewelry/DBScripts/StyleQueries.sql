@@ -20,3 +20,7 @@ select * from StyleLabor
 
 select * from Companies
 update stones set CompanyId =1
+
+select * from styles sty
+where sty.id = 21079
+

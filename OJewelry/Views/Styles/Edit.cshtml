@@ -6,21 +6,6 @@
 
 <h2>The <i>@Model.Style.StyleName</i> Stylesheet</h2>
 
-@*
-    <h6 class="text-danger">
-        @foreach(KeyValuePair<string,ModelState> p in @ViewData.ModelState)
-        {
-            if (p.Value.Errors.Count != 0)
-            {
-                // display name and error
-                foreach (ModelError e in p.Value.Errors)
-                {
-                    <text>@p.Key, @e.ErrorMessage</text>
-                }
-            }
-        }
-    </h6>
-*@
 
 @using (Html.BeginForm("Edit", "Styles", FormMethod.Post, new { id = "StylesForm" }))
 {

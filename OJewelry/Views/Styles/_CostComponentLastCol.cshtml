@@ -1,14 +1,17 @@
 ﻿@model OJewelry.Models.StyleViewModel
 @using OJewelry.Models
 
-@if (Model.DelBtnPos == SVMDelButtonPos.Right)
-{
-<div class="row">
-    <div style="float:right">
-        <button type="button" class="btn btn-default" onclick="RemoveComponentRow('@Model.SVMCCType', @Model.i)">
-            <span class="glyphicon glyphicon-remove"></span>
-        </button>
-    </div>
-</div>
-    }
 
+@if (Model.SVMOp != SVMOperation.Print)
+{
+    if (Model.DelBtnPos == SVMDelButtonPos.Right)
+    {
+        <div class="row">
+            <div style="float: right">
+                <button type="button" class="btn btn-default" onclick="RemoveComponentRow('@Model.SVMCCType', @Model.i)">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </div>
+        </div>
+    }
+}

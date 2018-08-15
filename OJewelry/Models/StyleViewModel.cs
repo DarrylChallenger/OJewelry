@@ -430,7 +430,7 @@ namespace OJewelry.Models
     public enum SVMStateEnum { Dirty, Added, Deleted, Unadded, Fixed }
     public enum SVMCCTypeEnum { Castings, Stones, Findings, Labors, Miscs }
     public enum SVMDelButtonPos { Left, Right }
-    public enum SVMOperation { Create, Edit }
+    public enum SVMOperation { Create, Edit, Print }
 
     public class StoneListItem
     {
