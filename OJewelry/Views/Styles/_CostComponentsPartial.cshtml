@@ -47,16 +47,13 @@
                             @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                             @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                             @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                       }
-                        else
-                        {
-                            <div class="col-sm-2 col-xs-2" style="color:red">@Model.Castings[i].VendorId</div>
+                       } else {
+                            <div class="col-sm-2 col-xs-2">@Model.Castings[i].Name</div>
                             <div class="col-sm-1 col-xs-1">@Model.Castings[i].MetalCode</div>
                             <div class="col-sm-1 col-xs-1">@Model.Castings[i].Price</div>
                             <div class="col-sm-1 col-xs-1">@Model.Castings[i].Labor</div>
                             <div class="col-sm-1 col-xs-1">@Model.Castings[i].Qty</div>
-
-                                }
+                       }
                         <div id="CastingsRowTotalValue_@i" class="col-sm-1 col-xs-1 CastingsRowTotal ">@Model.Castings[i].Total.ToString("F02")</div>
                         <div class="col-sm-1 col-xs-1">
                             @Html.Partial("_CostComponentLastCol", Model)
@@ -208,8 +205,7 @@
             @{Model.CCLastRow = false; Model.CCHeaderRow = true; Model.CCRowIndex = -1; Model.SVMCCType = SVMCCTypeEnum.Findings; }
             @if (Model.Findings.Count == 0) { Model.CCLastRow = true; }
             @Html.Partial("_CostComponentCol1", Model)
-            <div class="col-sm-2 col-xs-2">FINDINGS</div>
-            <div class="col-sm-2 col-xs-2 "></div>
+            <div class="col-sm-4 col-xs-4">FINDINGS</div>
             <div class="col-sm-2 col-xs-2">VENDOR</div>
             <div class="col-sm-1 col-xs-1">WT</div>
             <div class="col-sm-1 col-xs-1">PRICE</div>
@@ -232,19 +228,18 @@
                     {
                         if (Model.Findings[i].Id == 0)
                         {
-                            @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, "You must select a finding", new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
+                            @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, "You must select a finding", new { @class = "col-sm-4 col-xs-4 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
                         }
                         else
                         {
-                            @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
+                            @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-4 col-xs-4 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
                         }
                     }
                     else
                     {
-                        <div class="col-sm-2 col-xs-2" style="color: red">@Model.Findings[i].Id</div>
+                        <div class="col-sm-4 col-xs-4">@Model.Findings[i].Name</div>
                     }
 
-                    <div class="col-sm-2 col-xs-2 "></div>
                     @if (Model.SVMOp != SVMOperation.Print)
                     {
                         @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 locked", @disabled = "disabled" } })

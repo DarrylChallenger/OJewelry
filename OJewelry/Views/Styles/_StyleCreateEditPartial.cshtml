@@ -158,7 +158,7 @@
             <div class="col-sm-8 col-xs-8">
                 @if (@Model.SVMOp == SVMOperation.Print)
                 {
-                    @Html.DisplayFor(model => model.Style.IntroDate.Value, new { htmlAttributes = new { @class = "" } })
+                    @Model.Style.IntroDate.Value.ToShortDateString()
                 }
                 else
                 {

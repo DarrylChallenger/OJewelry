@@ -310,6 +310,11 @@ namespace OJewelry.Models
             set { _finding.VendorId = value; }
         }
 
+        public string Name
+        {
+            get { return _finding.Name; }
+            set { _finding.Name = value; }
+        }
         public String VendorName
         {
             get { return _finding.Vendor.Name; }
