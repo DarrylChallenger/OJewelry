@@ -184,6 +184,10 @@ namespace OJewelry.Models
                 .Property(e => e.Price)
                 .HasPrecision(19, 4);
 
+            modelBuilder.Entity<Finding>()
+                .Property(e => e.Weight)
+                .HasPrecision(19, 4);
+
             /*modelBuilder.Entity<ComponentType>()
                 .Property(e => e.Name)
                 .IsUnicode(false);

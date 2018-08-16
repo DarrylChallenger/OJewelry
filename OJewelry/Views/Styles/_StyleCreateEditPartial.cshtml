@@ -1,96 +1,172 @@
-﻿@model OJewelry.Models.StyleViewModel
+﻿@using OJewelry.Models
+@model OJewelry.Models.StyleViewModel
     
 <div class="row StyleHeader ">
-    <div class="col-sm-8 StyleLeftHeader">
+    <div class="col-sm-7 col-xs-7 StyleLeftHeader">
         <!-- style left header-->
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-sm-2" })
-            <div class="col-sm-5">
+        <div class="row">
+            @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
+            <div class="col-sm-5 col-xs-5">
                 @if (Model.SVMOp == OJewelry.Models.SVMOperation.Edit)
                 {
                     @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "locked", @disabled = "disabled" } })
                     @Html.HiddenFor(model => model.Style.StyleNum)
                 }
-                else
+                @if(Model.SVMOp == OJewelry.Models.SVMOperation.Create)
                 {
                     @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "" } })
                 }
+                @if (Model.SVMOp == OJewelry.Models.SVMOperation.Print)
+                { 
+                    @Html.DisplayFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "" } })
+                }
             </div>
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.StyleName, htmlAttributes: new { @class = "control-label col-sm-2" })
-            <div class="col-sm-4">
-                @Html.EditorFor(model => model.Style.StyleName, new { htmlAttributes = new { @class = "" } })
+        <div class="row">
+            @Html.LabelFor(model => model.Style.StyleName, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
+            <div class="col-sm-4 col-xs-4">
+                @if (@Model.SVMOp == SVMOperation.Print)
+                {
+                    @Html.DisplayFor(model => model.Style.StyleName, new { @class = "control-label col-sm-2 col-xs-2" })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Style.StyleName, new { htmlAttributes = new { @class = "" } })
+                }
             </div>
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.Desc, htmlAttributes: new { @class = "control-label col-sm-2" })
-            <div class="col-sm-4">
-                @Html.EditorFor(model => model.Style.Desc, new { htmlAttributes = new { @class = "" } })
+        <div class="row">
+            @Html.LabelFor(model => model.Style.Desc, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
+            <div class="col-sm-4 col-xs-4">
+                @if (@Model.SVMOp == SVMOperation.Print)
+                {                     
+                    @Html.DisplayFor(model => model.Style.Desc, new {htmlAttributes = new {@class = ""}})
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Style.Desc, new {htmlAttributes = new {@class = ""}})
+                }
             </div>
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.JewelryTypeId, htmlAttributes: new { @class = "control-label col-sm-2" })
-            <div class="col-sm-4">
-                @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "" })
+        <div class="row">
+            @Html.LabelFor(model => model.Style.JewelryTypeId, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
+            <div class="col-sm-4 col-xs-4">
+                @if (@Model.SVMOp == SVMOperation.Print)
+                {
+                    @Model.Style.JewelryType.Name
+                }
+                else
+                {
+                    @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new {@class = ""})
+                }
             </div>
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.Style.CollectionId, htmlAttributes: new { @class = "control-label col-sm-2" })
-            <div class="col-sm-4">
-                @Html.DropDownList("CollectionId", null, htmlAttributes: new { @class = "" })
+        <div class="row">
+            @Html.LabelFor(model => model.Style.CollectionId, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
+            <div class="col-sm-4 col-xs-4">
+                @if (@Model.SVMOp == SVMOperation.Print)
+                {
+                    @Model.Style.Collection.Name
+                }
+                else
+                {
+                    @Html.DropDownList("CollectionId", null, htmlAttributes: new { @class = "" })
+                }
             </div>
         </div>
     </div>
-    <div class="col-sm-4 StyleRightHeader ">
+    <div class="col-sm-5 col-xs-5 StyleRightHeader ">
         <!-- style right header-->
         @{var imgurl = (Model.Style != null && Model.Style.Image != null) ? Model.Style.Image : "/Images/logo.png"; }
         <img src="@imgurl" class="StyleImage centerImage" />
     </div> <!-- style right header-->
 </div>
 <div class="row StyleBodyBoundingBox">
-    <div class="col-sm-8 floatleft">
-        <div class="form-group">
-            <div class="col-sm-6 bold">
+    <div class="col-sm-7 col-xs-7 floatleft">
+        <div class="row">
+            <div class="col-sm-6 col-xs-6 bold">
                 <p>MEASUREMENTS:</p>
             </div>
         </div>
-        <div class="form-group bold">
-            <div class="col-sm-3">L</div>
-            <div class="col-sm-3">W</div>
-            <div class="col-sm-3">CHAIN LENGTH</div>
+        <div class="row bold">
+            <div class="col-sm-3 col-xs-3">L</div>
+            <div class="col-sm-3 col-xs-3">W</div>
+            <div class="col-sm-3 col-xs-5">CHAIN LENGTH</div>
         </div>
-        <div class="form-group">
-            <div class="col-sm-3">                
-                @Html.EditorFor(model => model.Style.Length, new { htmlAttributes = new { @class = "" } })
+        <div class="row">
+            <div class="col-sm-3 col-xs-3">
+                @if (@Model.SVMOp == SVMOperation.Print)
+                {
+                    @Html.DisplayFor(model => model.Style.Length, new { htmlAttributes = new { @class = "" } })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Style.Length, new { htmlAttributes = new { @class = "" } })
+                }
             </div>
-            <div class="col-sm-3">
-                @Html.EditorFor(model => model.Style.Width, new { htmlAttributes = new { @class = "" } })
+            <div class="col-sm-3 col-xs-3">
+                @if (@Model.SVMOp == SVMOperation.Print)
+                {
+                    @Html.DisplayFor(model => model.Style.Width, new { htmlAttributes = new { @class = "" } })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Style.Width, new { htmlAttributes = new { @class = "" } })
+                }
             </div>
-            <div class="col-sm-3">                
-                @Html.EditorFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "" } })
+            <div class="col-sm-3 col-xs-5">                
+                @if (@Model.SVMOp == SVMOperation.Print)
+                {
+                    @Html.DisplayFor(model => model.Style.ChainLength, new {htmlAttributes = new {@class = ""}})
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Style.ChainLength, new {htmlAttributes = new {@class = ""}})
+                }
             </div>
         </div>
-        <div class="form-group">
-            <div class="col-sm-3">
+        <div class="row">
+            <div class="col-sm-3 col-xs-3">
                 @Html.LabelFor(model => model.Style.MetalWeight, null, htmlAttributes: new { @class = "control-label" })
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3 col-xs-3">
+                @if (@Model.SVMOp == SVMOperation.Print)
+                {
+                    @Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
+                    <text>&nbsp;</text>
+                    @Model.Style.MetalWeightUnit.Unit
+                }
+                else
+                {
                 @Html.EditorFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
-            </div>
-            <div class="col-sm-3">
-                @Html.DropDownList("MetalWtUnitId", null, htmlAttributes: new { @class = "" })
+                }
+</div>
+            <div class="col-sm-3 col-xs-3">
+                @if (@Model.SVMOp != SVMOperation.Print)
+                {
+                    @Html.DropDownList("MetalWtUnitId", null, htmlAttributes: new {@class = ""})
+                }
             </div>
         </div>
 
     </div> <!--  left side bottom -->
-    <div class="col-sm-4  floatright">
+    <div class="col-sm-5 col-xs-5  floatright">
         <div class="row">
-            <div class="col-sm-4">
-                @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label col-sm-4" })
+            <div class="col-sm-4 col-xs-4">
+                @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
             </div>
-            <div class="col-sm-8">
-                @Html.EditorFor(model => model.Style.IntroDate, new { htmlAttributes = new { @class = "" } })
+            <div class="col-sm-8 col-xs-8">
+                @if (Model.Style.IntroDate.HasValue)
+                {
+                    if (@Model.SVMOp == SVMOperation.Print)
+                     {
+                         @Model.Style.IntroDate.Value.ToShortDateString()
+                     }
+                     else
+                     {
+                         @Html.EditorFor(model => model.Style.IntroDate.Value.ToShortDateString(), new {htmlAttributes = new {@class = ""}})
+                     }
+                }
             </div>
         </div>
     </div> <!--  right side bottom -->

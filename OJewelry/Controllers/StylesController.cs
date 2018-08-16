@@ -56,6 +56,7 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             sm.Populate(id, db);
+            sm.SVMOp = SVMOperation.Print;
             return View(sm);
         }
 
@@ -67,15 +68,44 @@ namespace OJewelry.Controllers
             svm.CompanyId = co.CompanyId;
             svm.SVMOp = SVMOperation.Create;
             svm.Populate(null, db);
+            AddDefaultEntries(svm);
+            return CreateNew(svm.CompanyId, collectionId, svm);
+        }
+
+        public ActionResult CreateNew(int companyId, int collectionId, StyleViewModel svm)
+        {
             svm.Style.Collection = db.Collections.Find(collectionId);
             svm.Style.CollectionId = collectionId;
             svm.CompanyId = svm.Style.Collection.CompanyId;
-            AddDefaultEntries(svm);
-            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
-            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit");
-            //ViewBag.JewelryTypes = new SelectList(db.JewelryTypes);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name");
-            return View(svm);
+
+            svm.PopulateDropDownData(db);
+            svm.PopulateDropDowns(db);
+            svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == svm.CompanyId), "Id", "Name", svm.Style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
+            return View("Create", svm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Copy(StyleViewModel svm)
+        {
+            ModelState.Clear();
+            StyleViewModel newsvm = new StyleViewModel(svm);
+            newsvm.SVMOp = SVMOperation.Create;
+            newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
+            newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
+
+            newsvm.PopulateDropDownData(db);
+            newsvm.PopulateDropDowns(db);
+            //newsvm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", newsvm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", newsvm.Style.MetalWtUnitId);
+            return View(newsvm);
         }
 
         // POST: Styles/Create
@@ -92,11 +122,12 @@ namespace OJewelry.Controllers
                 {
                     StyleId = s.Id,
                     StyleNum = s.StyleNum,
+                    StyleName = s.StyleName,
                     CompanyId = c.CompanyId,
-                }).Where(x => x.CompanyId == svm.CompanyId  && x.StyleNum == svm.Style.StyleNum).Count();
+                }).Where(x => x.CompanyId == svm.CompanyId  && (x.StyleNum == svm.Style.StyleNum || x.StyleName == svm.Style.StyleName)).Count();
             if (i != 0) // is there a style with the same number for this company?
             {
-                ModelState.AddModelError("", "Style with this name already exists for "
+                ModelState.AddModelError("Style.StyleNum", "Style with this number/name already exists for "
                     + db.FindCompany(svm.CompanyId).Name + ".");
             }
             else {
@@ -120,6 +151,10 @@ namespace OJewelry.Controllers
             }
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
+            svm.Style.MetalWeightUnit = new MetalWeightUnit
+            {
+                Unit = "DWT"
+            };
             svm.Populate(id, db);
             MarkDefaultEntriesAsFixed(svm);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
@@ -467,6 +502,7 @@ namespace OJewelry.Controllers
 
         public bool ValidCasting(CastingComponent cc)
         {
+            if (cc.SVMState == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(cc.Name))
             {
                 throw new OjMissingCastingException("You must enter a Name!");
@@ -477,23 +513,32 @@ namespace OJewelry.Controllers
 
         public int ValidStone(StoneComponent sc)
         {
-            // Make sure a stone was selected in the dropdown
-            if (sc.Name == null)
+            if (sc.SVMState != SVMStateEnum.Unadded)
             {
-                throw new OjMissingStoneException("You must select a stone!");
+                // Make sure a stone was selected in the dropdown
+                if (sc.Name == null)
+                {
+                    throw new OjMissingStoneException("You must select a stone!");
+                }
+
+                // Ensure combo of stone, shape, size is valid (db.stone.where...)
+                Stone stone = db.Stones
+                    .Where(st => st.Name == sc.Name && st.Shape.Name == sc.ShId && st.StoneSize == sc.SzId)
+                    .FirstOrDefault();
+                if (stone == null)
+                {
+                    throw new OjInvalidStoneComboException("Invalid Stone combination!");
+                }
+
+                return stone.Id;
             }
-            // Ensure combo of stone, shape, size is valid (db.stone.where...)
-            Stone stone = db.Stones.Where(st => st.Name == sc.Name && st.Shape.Name == sc.ShId && st.StoneSize == sc.SzId).FirstOrDefault();
-            if (stone == null)
-            {
-                throw new OjInvalidStoneComboException("Invalid Stone combination!");
-            }
-            return stone.Id;
+            return 0;
         }
 
         public bool ValidFinding(FindingsComponent fc, int i)
         {
             // Make sure a stone was selected in the dropdown
+            if (fc.SVMState == SVMStateEnum.Unadded) return true;
             if (fc.Id == 0)
             {
                 throw new OjMissingFindingException("You must enter a Name!");
@@ -503,6 +548,7 @@ namespace OJewelry.Controllers
 
         public bool ValidLabor(LaborComponent lc)
         {
+            if (lc.SVMState == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(lc.Name))
             {
                 throw new OjMissingLaborException("You must enter a Name!");
@@ -513,6 +559,7 @@ namespace OJewelry.Controllers
 
         public bool ValidMisc(MiscComponent mc)
         {
+            if (mc.SVMState == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(mc.Name))
             {
                 throw new OjMissingMiscException("You must enter a Name!");
