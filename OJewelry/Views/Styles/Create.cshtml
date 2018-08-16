@@ -6,22 +6,6 @@
 
 <h2>Create style for the <i>@Model.Style.Collection.Name</i> collection</h2>
 
-@*
-<h6 class="text-danger">
-    @foreach (KeyValuePair<string, ModelState> p in @ViewData.ModelState)
-    {
-        if (p.Value.Errors.Count != 0)
-        {
-            // display name and error
-            foreach (ModelError e in p.Value.Errors)
-            {
-                <text>@p.Key, @e.ErrorMessage</text>
-            }
-        }
-    }
-</h6>
-*@
-
 @using (Html.BeginForm("Create", "Styles", FormMethod.Post, new { id = "StylesForm" }))
 {
     @Html.AntiForgeryToken()
@@ -49,7 +33,7 @@
 
     <div>
         @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
-        @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = @Model.Style.Collection.CompanyId }, null) |
+        @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = @Model.CompanyId }, null) |
         @Html.ActionLink("Companies", "Index", "Companies")
     </div>
 

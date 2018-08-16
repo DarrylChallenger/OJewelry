@@ -68,15 +68,44 @@ namespace OJewelry.Controllers
             svm.CompanyId = co.CompanyId;
             svm.SVMOp = SVMOperation.Create;
             svm.Populate(null, db);
+            AddDefaultEntries(svm);
+            return CreateNew(svm.CompanyId, collectionId, svm);
+        }
+
+        public ActionResult CreateNew(int companyId, int collectionId, StyleViewModel svm)
+        {
             svm.Style.Collection = db.Collections.Find(collectionId);
             svm.Style.CollectionId = collectionId;
             svm.CompanyId = svm.Style.Collection.CompanyId;
-            AddDefaultEntries(svm);
-            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name");
-            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit");
-            //ViewBag.JewelryTypes = new SelectList(db.JewelryTypes);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name");
-            return View(svm);
+
+            svm.PopulateDropDownData(db);
+            svm.PopulateDropDowns(db);
+            svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == svm.CompanyId), "Id", "Name", svm.Style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
+            return View("Create", svm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Copy(StyleViewModel svm)
+        {
+            ModelState.Clear();
+            StyleViewModel newsvm = new StyleViewModel(svm);
+            newsvm.SVMOp = SVMOperation.Create;
+            newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
+            newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
+
+            newsvm.PopulateDropDownData(db);
+            newsvm.PopulateDropDowns(db);
+            //newsvm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+
+            ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.CollectionId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", newsvm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", newsvm.Style.MetalWtUnitId);
+            return View(newsvm);
         }
 
         // POST: Styles/Create
@@ -93,11 +122,12 @@ namespace OJewelry.Controllers
                 {
                     StyleId = s.Id,
                     StyleNum = s.StyleNum,
+                    StyleName = s.StyleName,
                     CompanyId = c.CompanyId,
-                }).Where(x => x.CompanyId == svm.CompanyId  && x.StyleNum == svm.Style.StyleNum).Count();
+                }).Where(x => x.CompanyId == svm.CompanyId  && (x.StyleNum == svm.Style.StyleNum || x.StyleName == svm.Style.StyleName)).Count();
             if (i != 0) // is there a style with the same number for this company?
             {
-                ModelState.AddModelError("", "Style with this name already exists for "
+                ModelState.AddModelError("Style.StyleNum", "Style with this number/name already exists for "
                     + db.FindCompany(svm.CompanyId).Name + ".");
             }
             else {

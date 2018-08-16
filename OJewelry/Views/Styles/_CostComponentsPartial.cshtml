@@ -382,7 +382,11 @@
                     @if (i == Model.Miscs.Count - 1) { Model.CCLastRow = true; Model.CCRowIndex = i; }
                     @Html.HiddenFor(model => model.Miscs[i].Id)
                     @Html.Partial("_CostComponentCol1", Model)
-
+                    
+                    @if (Model.Miscs[i].SVMState == SVMStateEnum.Fixed)
+                    {
+                        @Html.HiddenFor(model => model.Miscs[i].Qty)
+                    }
                     @if (Model.SVMOp != SVMOperation.Print)
                     {
                         string disabled = Model.Miscs[i].SVMState == SVMStateEnum.Fixed ? "disabled" : "";

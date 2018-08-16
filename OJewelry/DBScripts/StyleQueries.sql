@@ -24,3 +24,12 @@ update stones set CompanyId =1
 select * from styles sty
 where sty.id = 21079
 
+select * from styles sty
+join StyleMisc as sm on sty.id = sm.StyleId
+join Misc as m on m.id = sm.MiscId
+where sty.id = 25081 -- Copy Test
+
+select * from misc where id = 9016
+update misc set Qty = 1 where id = 9016
+
+

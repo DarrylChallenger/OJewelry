@@ -12,25 +12,41 @@ using Microsoft.Owin.Security.Facebook;
 
 namespace OJewelry.Models
 {
-
     public class CastingComponent
     {
-        private Casting casting { get; set; }
+        private Casting _casting = new Casting();
         public CastingComponent()
         {
-            casting = new Casting();
             Init();
-        } // Comp.Vendor = new Vendor(); }
-        public CastingComponent(Casting c) { casting = c; Init(); }
+        }
+
+        public CastingComponent(CastingComponent cc)
+        {
+            Init();
+            Name = cc.Name;
+            Qty = cc.Qty;
+            Price = cc.Price;
+            Labor = cc.Labor;
+            VendorId = cc.VendorId;
+            MetalCodeId = cc.MetalCodeId;
+            MetalCode = cc.MetalCode;
+            Total = cc.Total;
+        }
+
+        public CastingComponent(Casting c)
+        {
+            _casting = c;
+            Init();
+        }
         void Init()
         {
             SVMState = SVMStateEnum.Dirty;
         }
-        public int Id { get { return casting.Id; } set { casting.Id = value; } }
+        public int Id { get { return _casting.Id; } set { _casting.Id = value; } }
 
         //[Required]
         [RequiredIfNotRemoved]
-        public String Name { get { return casting.Name; } set { casting.Name = value; } }
+        public String Name { get { return _casting.Name; } set { _casting.Name = value; } }
 
         [Display(Name = "Quantity")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N0}")]
@@ -42,10 +58,10 @@ namespace OJewelry.Models
         [DataType(DataType.Currency)]
         public decimal? Price {
             get {
-                return casting.Price ?? 0;
+                return _casting.Price ?? 0;
             }
             set {
-                casting.Price = value;
+                _casting.Price = value;
             }
         }
 
@@ -57,23 +73,23 @@ namespace OJewelry.Models
         {
             get
             {
-                return casting.Labor ?? 0;
+                return _casting.Labor ?? 0;
             }
             set
             {
-                casting.Labor = value;
+                _casting.Labor = value;
             }
         }
 
         public int VendorId
         {
-            get { return casting.VendorId ?? 0; }
-            set { casting.VendorId = value; }
+            get { return _casting.VendorId ?? 0; }
+            set { _casting.VendorId = value; }
         }
         public int MetalCodeId
         {
-            get { return casting.MetalCodeID ?? 0; }
-            set { casting.MetalCodeID = value; }
+            get { return _casting.MetalCodeID ?? 0; }
+            set { _casting.MetalCodeID = value; }
         }
 
         public SVMStateEnum SVMState { get; set; }
@@ -101,7 +117,6 @@ namespace OJewelry.Models
             MetalCodes = new SelectList(metals, "Id", "Code", defaultMetalSelection);
         }
     }
-
     public class StoneComponent 
     {
         private Stone _stone = new Stone();
@@ -119,6 +134,24 @@ namespace OJewelry.Models
             _stone.Vendor = new Vendor();
             Init();
         } // Comp.Vendor = new Vendor(); }
+
+        public StoneComponent(StoneComponent sc)
+        {
+            _stone.Vendor = new Vendor();
+            Init();
+            CompanyId = sc.CompanyId;
+            VendorId = sc.VendorId;
+            VendorName = sc.VendorName ?? "";
+            Name = sc.Name;
+            Desc = sc.Desc;
+            CtWt = sc.CtWt;
+            Size = sc.Size;
+            Price = sc.Price;
+            ShapeId = sc.ShapeId;
+            ShId = sc.ShId;
+            SzId = sc.SzId;
+            Qty = sc.Qty;
+        }
 
         public StoneComponent(Stone s)
         {
@@ -184,6 +217,7 @@ namespace OJewelry.Models
         public virtual int ShapeId
         {
             get { return _stone.ShapeId ?? 0; }
+            set { _stone.ShapeId = value; }
         }
 
         public virtual string ShId { get; set; }
@@ -256,7 +290,6 @@ namespace OJewelry.Models
             return results;
         }
     }
-
     public class FindingsComponent
     {
         private Finding _finding = new Finding();
@@ -275,7 +308,22 @@ namespace OJewelry.Models
         {
             _finding.Vendor = new Vendor();
             Init();
-        }// { Comp = new Component(); Init(); } // Comp.Vendor = new Vendor(); }
+        }
+
+        public FindingsComponent(FindingsComponent fc)
+        {
+            _finding.Vendor = new Vendor();
+            Init();
+            Id = fc.Id;
+            Qty = fc.Qty;
+            Total = fc.Total;
+            CompanyId = fc.CompanyId;
+            VendorId = fc.VendorId;
+            Name = fc.Name;
+            VendorName = fc.VendorName;
+            Weight = fc.Weight;
+            Price = fc.Price;
+        }
 
         public FindingsComponent(Finding f)
         {
@@ -345,12 +393,23 @@ namespace OJewelry.Models
             }
         }
     }
-    public class LaborComponent 
+    public class LaborComponent
     {
-        private Labor labor { get; set; }
+        private Labor _labor = new Labor();
         public SVMStateEnum SVMState { get; set; }
-        public LaborComponent() { labor = new Labor(); Init(); } // Comp.Vendor = new Vendor(); }
-        public LaborComponent(Labor l) { labor = l; Init(); }
+        public LaborComponent() { Init(); }
+
+        public LaborComponent(LaborComponent lc)
+        {
+            Init();
+            PPH = lc.PPH;
+            PPP = lc.PPP;
+            Name = lc.Name;
+            Desc = lc.Desc;
+            Qty = lc.Qty;
+            Total = lc.Total;
+        }
+        public LaborComponent(Labor l) { _labor = l; Init(); }
         void Init()
         {
             SVMState = SVMStateEnum.Dirty;
@@ -359,18 +418,18 @@ namespace OJewelry.Models
 
         [Display(Name = "$/Hour")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? PPH { get { return labor.PricePerHour ?? 0; } set { labor.PricePerHour = value; } }
+        public decimal? PPH { get { return _labor.PricePerHour ?? 0; } set { _labor.PricePerHour = value; } }
 
         [Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? PPP { get { return labor.PricePerPiece ?? 0; } set { labor.PricePerPiece = value; } }
+        public decimal? PPP { get { return _labor.PricePerPiece ?? 0; } set { _labor.PricePerPiece = value; } }
         
-        public int Id { get { return labor.Id; } set { labor.Id = value; } }
+        public int Id { get { return _labor.Id; } set { _labor.Id = value; } }
 
         //[Required]
         [RequiredIfNotRemoved]
-        public String Name { get { return labor.Name; } set { labor.Name = value; } }
-        public string Desc { get { return labor.Desc; } set { labor.Desc = value; } }
+        public String Name { get { return _labor.Name; } set { _labor.Name = value; } }
+        public string Desc { get { return _labor.Desc; } set { _labor.Desc = value; } }
 
         [Display(Name = "Quantity")]
         public int? Qty { get; set; }
@@ -381,25 +440,36 @@ namespace OJewelry.Models
     }
     public class MiscComponent
     {
-        private Misc misc { get; set; }
-        public MiscComponent() { misc = new Misc(); Init(); }
+        private Misc _misc = new Misc();
+        public MiscComponent() {  Init(); }
         public SVMStateEnum SVMState { get; set; }
         void Init()
         {
             SVMState = SVMStateEnum.Dirty;
         }
-        public MiscComponent(Misc m) { misc = m; Init(); }
+
+        public MiscComponent(MiscComponent mc)
+        {
+            Init();
+            PPP = mc.PPP;
+            Name = mc.Name;
+            Desc = mc.Desc;
+            Qty = mc.Qty;
+            Total = mc.Total;
+        }
+
+        public MiscComponent(Misc m) { _misc = m; Init(); }
         // PRICE/PC
 
         [Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? PPP { get { return misc.PricePerPiece ?? 0; } set { misc.PricePerPiece = value; } }
+        public decimal? PPP { get { return _misc.PricePerPiece ?? 0; } set { _misc.PricePerPiece = value; } }
 
-        public int Id { get { return misc.Id; } set { misc.Id = value; } }
+        public int Id { get { return _misc.Id; } set { _misc.Id = value; } }
 
         [RequiredIfNotRemoved]
-        public String Name { get { return misc.Name; } set { misc.Name = value; } }
-        public string Desc { get { return misc.Desc; } set { misc.Desc = value; } }
+        public String Name { get { return _misc.Name; } set { _misc.Name = value; } }
+        public string Desc { get { return _misc.Desc; } set { _misc.Desc = value; } }
 
         [Display(Name = "Quantity")]
         public int? Qty { get; set; }
@@ -457,10 +527,63 @@ namespace OJewelry.Models
     {
         public StyleViewModel()
         {
-            SVMState = SVMStateEnum.Dirty;
+            SVMState = SVMStateEnum.Dirty; // For now, update all records
             DelBtnPos = SVMDelButtonPos.Right;
             SVMOp = SVMOperation.Edit;
-        } // For now, update all records
+        }
+
+        public StyleViewModel(StyleViewModel oldModel)
+        {
+            SVMState = SVMStateEnum.Dirty; // For now, update all records
+            DelBtnPos = SVMDelButtonPos.Right;
+            SVMOp = SVMOperation.Edit;
+            Style = new Style();
+            Style.CreateNewFrom(oldModel.Style);
+            Style.Collection = oldModel.Style.Collection;
+            // Lists
+            //Castings = new List<CastingComponent>();
+            Castings = oldModel.Castings.ConvertAll(x =>
+            {
+                CastingComponent c = new CastingComponent(x)
+                {
+                    SVMState = SVMStateEnum.Added
+                };
+                return c;
+            }).ToList();
+            Stones = oldModel.Stones.ConvertAll((x =>
+            {
+                StoneComponent s = new StoneComponent(x)
+                {
+                    SVMState = SVMStateEnum.Added
+                };
+                return s;
+            })).ToList();
+            Findings = oldModel.Findings.ConvertAll((x =>
+            {
+                FindingsComponent f = new FindingsComponent(x)
+                {
+                    SVMState = SVMStateEnum.Added
+                };
+                return f;
+            })).ToList();
+            Labors = oldModel.Labors.ConvertAll((x =>
+            {
+                LaborComponent l = new LaborComponent(x)
+                {
+                    SVMState = x.SVMState == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : SVMStateEnum.Added
+                };
+                return l;
+            })).ToList();
+            Miscs = oldModel.Miscs.ConvertAll((x =>
+            {
+                MiscComponent m = new MiscComponent(x)
+                {
+                    SVMState = x.SVMState == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : SVMStateEnum.Added
+                };
+                return m;
+            })).ToList();
+        }
+
         public Style Style { get; set; }
         public List<CastingComponent> Castings { get; set; }
 
@@ -758,7 +881,6 @@ namespace OJewelry.Models
                     Total += cstc.Total;
                 }
 
-
                 PopulateComponents(db);
                 // Labor
                 foreach (StyleLabor sl in Style.StyleLabors)
@@ -788,8 +910,6 @@ namespace OJewelry.Models
                 PopulateDropDowns(db);
             }
         }
-
-
     }
 
     public partial class Casting
@@ -1271,6 +1391,34 @@ namespace OJewelry.Models
             }
             // Everything OK.
             return ValidationResult.Success;
+        }
+    }
+
+    public partial class Style
+    {
+        public void CreateNewFrom(Style oldStyle)
+        {
+            // clear out key values
+            StyleName = "";
+            StyleNum = "";
+            Desc = "";
+            Id = 0;
+            Quantity = 0;
+            UnitsSold = 0;
+            // members
+            JewelryTypeId = oldStyle.JewelryTypeId;
+            CollectionId = oldStyle.CollectionId;
+            MetalWeight = oldStyle.MetalWeight;
+            MetalWtUnitId = oldStyle.MetalWtUnitId;
+            IntroDate = oldStyle.IntroDate;
+            Image = oldStyle.Image;
+            Width = oldStyle.Width;
+            Length = oldStyle.Length;
+            ChainLength = oldStyle.ChainLength;
+            RetailPrice = oldStyle.RetailPrice;
+            RetailRatio = oldStyle.RetailRatio;
+            RedlineRatio = oldStyle.RedlineRatio;
+            MetalWeightUnit = oldStyle.MetalWeightUnit;
         }
     }
 }

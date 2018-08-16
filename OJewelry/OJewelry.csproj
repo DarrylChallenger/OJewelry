@@ -610,6 +610,7 @@
     <Content Include="Views\Shapes\Details.cshtml" />
     <Content Include="Views\Shapes\Edit.cshtml" />
     <Content Include="Views\Shapes\Index.cshtml" />
+    <Content Include="Views\Styles\Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

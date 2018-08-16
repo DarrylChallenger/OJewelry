@@ -1,22 +1,19 @@
 ﻿@model OJewelry.Models.StyleViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Copy";
 }
 
-<h2>The <i>@Model.Style.StyleName</i> Stylesheet</h2>
+<h2>Create (copy) style for the <i>@Model.Style.Collection.Name</i> collection</h2>
 
-
-@using (Html.BeginForm("Edit", "Styles", FormMethod.Post, new { id = "StylesForm" }))
+@using (Html.BeginForm("Create", "Styles", FormMethod.Post, new { id = "StylesForm" }))
 {
     @Html.AntiForgeryToken()
 
     <div class="StyleCostSheet form-horizontal">
+        <h4>Style</h4>
         <hr />
-        @Html.HiddenFor(model => model.Style.Id)
         @Html.HiddenFor(model => model.Style.CollectionId)
-        @Html.HiddenFor(model => model.Style.JewelryTypeId)
-        @Html.HiddenFor(model => model.Style.MetalWtUnitId)
         @Html.HiddenFor(model => model.CompanyId)
 
         @Html.Partial("_StyleCreateEditPartial", Model)
@@ -25,25 +22,23 @@
             @Html.Partial("_CostComponentsPartial", Model)
         </div>
 
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-                <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn btn-default" />
-                <input type="submit" value="Delete" formaction="../Delete/@Model.Style.Id" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Print", "Print", new { id = Model.Style.Id }, new { target = "_blank" }) |
     @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
     @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = @Model.CompanyId }, null) |
     @Html.ActionLink("Companies", "Index", "Companies")
-
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/Style_ComponentMgt.js")
 }
+
