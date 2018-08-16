@@ -310,12 +310,19 @@
 
                     @if (Model.SVMOp != SVMOperation.Print)
                     {
-                        string disabled = Model.Labors[i].SVMState == SVMStateEnum.Fixed ? "disabled" : "";
+                        bool bDisabled = Model.Labors[i].SVMState == SVMStateEnum.Fixed;
                         @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved" } })
                         @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                         <div class="col-sm-2 col-xs-2 "></div>
                         @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", disabled, onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                        if (bDisabled)
+                        {
+                            @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", @disabled="disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                        }
+                        else
+                        {
+                            @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                        }
                         @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" }) }
                     else
                     {
@@ -382,19 +389,27 @@
                     @if (i == Model.Miscs.Count - 1) { Model.CCLastRow = true; Model.CCRowIndex = i; }
                     @Html.HiddenFor(model => model.Miscs[i].Id)
                     @Html.Partial("_CostComponentCol1", Model)
-                    
+
                     @if (Model.Miscs[i].SVMState == SVMStateEnum.Fixed)
                     {
                         @Html.HiddenFor(model => model.Miscs[i].Qty)
                     }
                     @if (Model.SVMOp != SVMOperation.Print)
                     {
-                        string disabled = Model.Miscs[i].SVMState == SVMStateEnum.Fixed ? "disabled" : "";
+                        bool bDisabled = Model.Miscs[i].SVMState == SVMStateEnum.Fixed;
                         @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved" } })
                         @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                         <div class="col-sm-3 col-xs-3 "></div>
-                        @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", disabled, onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1 col-xs-1", disabled, onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                        if (bDisabled)
+                        {
+                            @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", @disabled="disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                            @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1 col-xs-1", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                        }
+                        else
+                        {
+                            @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                            @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                        }
                     }
                     else
                     {

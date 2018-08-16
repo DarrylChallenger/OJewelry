@@ -502,6 +502,7 @@ namespace OJewelry.Controllers
 
         public bool ValidCasting(CastingComponent cc)
         {
+            if (cc.SVMState == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(cc.Name))
             {
                 throw new OjMissingCastingException("You must enter a Name!");
@@ -512,23 +513,32 @@ namespace OJewelry.Controllers
 
         public int ValidStone(StoneComponent sc)
         {
-            // Make sure a stone was selected in the dropdown
-            if (sc.Name == null)
+            if (sc.SVMState != SVMStateEnum.Unadded)
             {
-                throw new OjMissingStoneException("You must select a stone!");
+                // Make sure a stone was selected in the dropdown
+                if (sc.Name == null)
+                {
+                    throw new OjMissingStoneException("You must select a stone!");
+                }
+
+                // Ensure combo of stone, shape, size is valid (db.stone.where...)
+                Stone stone = db.Stones
+                    .Where(st => st.Name == sc.Name && st.Shape.Name == sc.ShId && st.StoneSize == sc.SzId)
+                    .FirstOrDefault();
+                if (stone == null)
+                {
+                    throw new OjInvalidStoneComboException("Invalid Stone combination!");
+                }
+
+                return stone.Id;
             }
-            // Ensure combo of stone, shape, size is valid (db.stone.where...)
-            Stone stone = db.Stones.Where(st => st.Name == sc.Name && st.Shape.Name == sc.ShId && st.StoneSize == sc.SzId).FirstOrDefault();
-            if (stone == null)
-            {
-                throw new OjInvalidStoneComboException("Invalid Stone combination!");
-            }
-            return stone.Id;
+            return 0;
         }
 
         public bool ValidFinding(FindingsComponent fc, int i)
         {
             // Make sure a stone was selected in the dropdown
+            if (fc.SVMState == SVMStateEnum.Unadded) return true;
             if (fc.Id == 0)
             {
                 throw new OjMissingFindingException("You must enter a Name!");
@@ -538,6 +548,7 @@ namespace OJewelry.Controllers
 
         public bool ValidLabor(LaborComponent lc)
         {
+            if (lc.SVMState == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(lc.Name))
             {
                 throw new OjMissingLaborException("You must enter a Name!");
@@ -548,6 +559,7 @@ namespace OJewelry.Controllers
 
         public bool ValidMisc(MiscComponent mc)
         {
+            if (mc.SVMState == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(mc.Name))
             {
                 throw new OjMissingMiscException("You must enter a Name!");
