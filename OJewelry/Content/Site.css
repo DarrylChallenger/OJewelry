@@ -154,9 +154,13 @@ html input[disabled], locked {
 }
 
 .StyleRightHeader {
-    border-color: lightgray;
+    border-color: #e8e8e8;
+    border-style: solid;
+    border-width: .5px;
     float: right;
     height: 16em;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .StyleLeftHeader {
@@ -181,6 +185,14 @@ html input[disabled], locked {
     border-color:black;
     border-width:2px;
     height:100%;
+}
+
+.StyleLoadBtn {
+    opacity: 0.0;
+    width: 100%;
+    height: 100%;
+    transform: translateY(-100%);
+    cursor: pointer;
 }
 
 .StyleBodyBoundingBox {
@@ -242,8 +254,18 @@ html input[disabled], locked {
     font-size: 12px;
 }
 
+.ForPrinting .StyleLoadBtn {
+    cursor: default;
+    display: none;
+}
+
 .ForPrinting .ltbordered {
     border-style: none;
+    border-color: red;
+}
+
+.ForPrinting .StyleLoadBtn {
+    border-style: solid;
     border-color: red;
 }
 
@@ -257,6 +279,7 @@ html input[disabled], locked {
 
 .ForPrinting .StyleRightHeader {
     height: 10em;
+    border-style: none;
 }
 
 .ForPrinting .StyleComponentsFooter {

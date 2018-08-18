@@ -268,6 +268,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Classes\AzureBlobStorageContainer.cs" />
     <Compile Include="Classes\DCTOpenXML.cs" />
     <Compile Include="Classes\OJExceptions.cs" />
     <Compile Include="Controllers\AccountController.cs" />

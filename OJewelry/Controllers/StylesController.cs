@@ -448,7 +448,7 @@ namespace OJewelry.Controllers
                     }
                 } // false
             }
-
+            SaveImageInStorage(svm);
             if (ModelState.IsValid)
             {
                 if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
@@ -851,6 +851,12 @@ namespace OJewelry.Controllers
             db.Miscs.Add(misc);
             StyleMisc sm = new StyleMisc() { StyleId = svm.Style.Id, MiscId = misc.Id };
             db.StyleMiscs.Add(sm);
+        }
+
+        bool SaveImageInStorage(StyleViewModel smv)
+        {
+            // 
+            return true;
         }
 
         protected override void Dispose(bool disposing)
