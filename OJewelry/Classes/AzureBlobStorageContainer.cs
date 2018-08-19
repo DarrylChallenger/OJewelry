@@ -27,11 +27,10 @@ namespace OJewelry.Classes
             container.SetPermissions(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
         }
 
-        public async Task<string> Upload(HttpPostedFileBase fb)
+        public async Task<string> Upload(HttpPostedFileBase fb, string fn)
         {
             // check bInitialized
-            string filename = Path.GetFileNameWithoutExtension(fb.FileName) + "_" + Guid.NewGuid() + Path.GetExtension(fb.FileName);
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(filename);
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fn);
             blockBlob.Properties.ContentType = fb.ContentType;
             await blockBlob.UploadFromStreamAsync(fb.InputStream);
             // Make sure file is accessible as URL

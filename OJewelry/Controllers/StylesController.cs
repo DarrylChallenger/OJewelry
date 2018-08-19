@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -863,7 +864,8 @@ namespace OJewelry.Controllers
             //await container.Init(ojStoreConnStr, "ojewelry");
             if (svm.PostedImageFile != null)
             {
-                svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile);
+                string filename = "StyleImg" + svm.CompanyId + "_" + svm.Style.Id.ToString() + Path.GetExtension(svm.PostedImageFile.FileName);
+                svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
             }
 
             return true;
