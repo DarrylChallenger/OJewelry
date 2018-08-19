@@ -864,7 +864,9 @@ namespace OJewelry.Controllers
             //await container.Init(ojStoreConnStr, "ojewelry");
             if (svm.PostedImageFile != null)
             {
-                string filename = "StyleImg" + svm.CompanyId + "_" + svm.Style.Id.ToString() + Path.GetExtension(svm.PostedImageFile.FileName);
+                string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+                env = (env == "Production") ? "" : env + "_";
+                string filename = env + "StyleImg" + svm.CompanyId + "_" + svm.Style.Id.ToString() + Path.GetExtension(svm.PostedImageFile.FileName);
                 svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
             }
 

@@ -1406,7 +1406,7 @@ namespace OJewelry.Models
             Id = 0;
             Quantity = 0;
             UnitsSold = 0;
-            Image = "";
+            Image = null;
             // members
             JewelryTypeId = oldStyle.JewelryTypeId;
             CollectionId = oldStyle.CollectionId;
