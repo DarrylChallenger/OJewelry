@@ -1406,13 +1406,13 @@ namespace OJewelry.Models
             Id = 0;
             Quantity = 0;
             UnitsSold = 0;
+            Image = "";
             // members
             JewelryTypeId = oldStyle.JewelryTypeId;
             CollectionId = oldStyle.CollectionId;
             MetalWeight = oldStyle.MetalWeight;
             MetalWtUnitId = oldStyle.MetalWtUnitId;
             IntroDate = oldStyle.IntroDate;
-            Image = oldStyle.Image;
             Width = oldStyle.Width;
             Length = oldStyle.Length;
             ChainLength = oldStyle.ChainLength;

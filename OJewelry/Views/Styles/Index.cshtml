@@ -37,7 +37,9 @@
     <tr>
         <td>
             @{ var imgName = item.Image ?? "/Images/logo.png";}
-            <img src="@imgName" class="StyleThumbImage" />
+            <a href='@Url.Action("Edit", new { id=item.Id })'>
+                <img src="@imgName" class="StyleThumbImage" />
+            </a>
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.StyleNum)
