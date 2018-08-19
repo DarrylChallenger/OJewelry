@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Configuration;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
 using OJewelry.Models;
+using OJewelry.Classes;
 using Owin;
 
 [assembly: OwinStartupAttribute(typeof(OJewelry.Startup))]
@@ -13,6 +16,7 @@ namespace OJewelry
         {
             ConfigureAuth(app);
             createRolesandUsers();
+            ConfigureStorage();
         }
 
         // In this method we will create default User roles and Admin user for login   
@@ -84,6 +88,12 @@ namespace OJewelry
                 role.Name = "Guest";
                 roleManager.Create(role);
             }
+        }
+
+        private void ConfigureStorage()
+        {
+            string ojStoreConnStr = ConfigurationManager.AppSettings["StorageConnectionString"];
+            Singletons.azureBlobStorage.Init(ojStoreConnStr, "ojewelry");
         }
     }
 }

@@ -77,10 +77,11 @@
     </div>
     <div class="col-sm-5 col-xs-5 StyleRightHeader">
         <!-- style right header-->
+        @Html.HiddenFor((model => model.Style.Image))
         @{var imgurl = (Model.Style != null && Model.Style.Image != null) ? Model.Style.Image : "/Images/logo.png"; }
         <img src="@imgurl" class="StyleImage centerImage" />
         @*<input class="StyleLoadBtn " type="file"  />*@
-        @Html.TextBoxFor(model => model.Style.Image, new { @class = "StyleLoadBtn", type = "file", accept = "image/*" })
+        @Html.TextBoxFor(model => model.PostedImageFile, new { @class = "StyleLoadBtn", type = "file" })
 
     </div> <!-- style right header-->
 

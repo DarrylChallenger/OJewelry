@@ -16,6 +16,6 @@ function readURL(input) {
     };
 }
 
-$("#Style_Image").change(function () {
+$("#PostedImageFile").change(function () {
     readURL(this);
 });

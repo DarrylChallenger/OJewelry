@@ -36,7 +36,8 @@
     {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Image)
+            @{ var imgName = item.Image ?? "/Images/logo.png";}
+            <img src="@imgName" class="StyleThumbImage" />
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.StyleNum)
