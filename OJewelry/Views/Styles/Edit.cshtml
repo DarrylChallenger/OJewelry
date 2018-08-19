@@ -7,7 +7,7 @@
 <h2>The <i>@Model.Style.StyleName</i> Stylesheet</h2>
 
 
-@using (Html.BeginForm("Edit", "Styles", FormMethod.Post, new { id = "StylesForm" }))
+@using (Html.BeginForm("Edit", "Styles", FormMethod.Post, new { id = "StylesForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -46,4 +46,9 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/Style_ComponentMgt.js")
+    @Scripts.Render("~/Scripts/CreateEditComponents.js")
+
 }
+
+
+

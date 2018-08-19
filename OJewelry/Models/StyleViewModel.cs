@@ -608,6 +608,7 @@ namespace OJewelry.Models
         public SVMCCTypeEnum SVMCCType { get; set; }
         public SVMOperation SVMOp { get; set; }
         public int CompanyId { get; set; }
+        public HttpPostedFileBase PostedImageFile { get; set; }
 
         public List<Vendor> jsVendors { get; set; }
         public List<MetalCode> jsMetals { get; set; }

@@ -12,12 +12,12 @@
                     @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "locked", @disabled = "disabled" } })
                     @Html.HiddenFor(model => model.Style.StyleNum)
                 }
-                @if(Model.SVMOp == OJewelry.Models.SVMOperation.Create)
+                @if (Model.SVMOp == OJewelry.Models.SVMOperation.Create)
                 {
                     @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "" } })
                 }
                 @if (Model.SVMOp == OJewelry.Models.SVMOperation.Print)
-                { 
+                {
                     @Html.DisplayFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "" } })
                 }
             </div>
@@ -39,12 +39,12 @@
             @Html.LabelFor(model => model.Style.Desc, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
             <div class="col-sm-4 col-xs-4">
                 @if (@Model.SVMOp == SVMOperation.Print)
-                {                     
-                    @Html.DisplayFor(model => model.Style.Desc, new {htmlAttributes = new {@class = ""}})
+                {
+                    @Html.DisplayFor(model => model.Style.Desc, new { htmlAttributes = new { @class = "" } })
                 }
                 else
                 {
-                    @Html.EditorFor(model => model.Style.Desc, new {htmlAttributes = new {@class = ""}})
+                    @Html.EditorFor(model => model.Style.Desc, new { htmlAttributes = new { @class = "" } })
                 }
             </div>
         </div>
@@ -57,7 +57,7 @@
                 }
                 else
                 {
-                    @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new {@class = ""})
+                    @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "" })
                 }
             </div>
         </div>
@@ -75,11 +75,16 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-5 col-xs-5 StyleRightHeader ">
+    <div class="col-sm-5 col-xs-5 StyleRightHeader">
         <!-- style right header-->
+        @Html.HiddenFor((model => model.Style.Image))
         @{var imgurl = (Model.Style != null && Model.Style.Image != null) ? Model.Style.Image : "/Images/logo.png"; }
         <img src="@imgurl" class="StyleImage centerImage" />
+        @*<input class="StyleLoadBtn " type="file"  />*@
+        @Html.TextBoxFor(model => model.PostedImageFile, new { @class = "StyleLoadBtn", type = "file" })
+
     </div> <!-- style right header-->
+
 </div>
 <div class="row StyleBodyBoundingBox">
     <div class="col-sm-7 col-xs-7 floatleft">
@@ -140,7 +145,7 @@
                 {
                 @Html.EditorFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
                 }
-</div>
+            </div>
             <div class="col-sm-3 col-xs-3">
                 @if (@Model.SVMOp != SVMOperation.Print)
                 {

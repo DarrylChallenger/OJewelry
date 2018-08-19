@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.WindowsAzure.Storage.Blob;
 using OJewelry.Classes;
 using OJewelry.Models;
 
@@ -114,7 +118,7 @@ namespace OJewelry.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Create([Bind(Include = "Id,Name,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
-        public ActionResult Create(StyleViewModel svm)
+        public Task <ActionResult> Create(StyleViewModel svm)
         {
             svm.SVMOp = SVMOperation.Create;
             int i = db.Styles.
@@ -166,7 +170,7 @@ namespace OJewelry.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(StyleViewModel svm)
+        public async Task<ActionResult> Edit(StyleViewModel svm)
         {
             //ModelState.Clear();
             int i;
@@ -448,7 +452,7 @@ namespace OJewelry.Controllers
                     }
                 } // false
             }
-
+            await SaveImageInStorage(svm);
             if (ModelState.IsValid)
             {
                 if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
@@ -852,6 +856,25 @@ namespace OJewelry.Controllers
             StyleMisc sm = new StyleMisc() { StyleId = svm.Style.Id, MiscId = misc.Id };
             db.StyleMiscs.Add(sm);
         }
+
+        private async Task<bool> SaveImageInStorage(StyleViewModel svm)
+        {
+            //AzureBlobStorageContainer container = new AzureBlobStorageContainer();
+            //await container.Init(ojStoreConnStr, "ojewelry");
+            if (svm.PostedImageFile != null)
+            {
+                svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile);
+            }
+
+            return true;
+        }
+
+        /*
+        private async Task<bool> RetrieveImageFromStorage(StyleViewModel svm)
+        {
+            return true;
+        }
+        */
 
         protected override void Dispose(bool disposing)
         {
