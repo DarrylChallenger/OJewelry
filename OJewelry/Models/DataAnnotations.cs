@@ -307,6 +307,9 @@ namespace OJewelry.Models
         public Nullable<decimal> MetalWeight { get; set; }
 
         [Display(Name = "INTRO DATE")]
+        /*[DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        */
         public Nullable<System.DateTime> IntroDate { get; set; }
 
         [Display(Name = "W")]

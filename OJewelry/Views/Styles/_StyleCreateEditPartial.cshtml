@@ -164,13 +164,14 @@
                 @if (Model.Style.IntroDate.HasValue)
                 {
                     if (@Model.SVMOp == SVMOperation.Print)
-                     {
-                         @Model.Style.IntroDate.Value.ToShortDateString()
-                     }
-                     else
-                     {
-                         @Html.EditorFor(model => model.Style.IntroDate.Value.ToShortDateString(), new {htmlAttributes = new {@class = ""}})
-                     }
+                    {
+                        @Model.Style.IntroDate.Value.ToShortDateString()
+                    }
+                    else
+                    {
+                        @*@Html.EditorFor(model => model.Style.IntroDate.Value, new { htmlAttributes = new { @class = "datepicker input-datepicker" } })*@
+                        @Html.TextBoxFor(m => m.Style.IntroDate.Value, new { @type = "", @class = "" })
+                    }
                 }
             </div>
         </div>
