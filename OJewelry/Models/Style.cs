@@ -36,9 +36,12 @@ namespace OJewelry.Models
 
         public int CollectionId { get; set; }
 
-        public int? MetalWeight { get; set; }
+        public decimal? MetalWeight { get; set; }
 
         public int? MetalWtUnitId { get; set; }
+
+        [StringLength(50)]
+        public string MetalWtNote { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime? IntroDate { get; set; }

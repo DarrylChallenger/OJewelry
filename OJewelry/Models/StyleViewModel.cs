@@ -1420,6 +1420,7 @@ namespace OJewelry.Models
             RetailRatio = oldStyle.RetailRatio;
             RedlineRatio = oldStyle.RedlineRatio;
             MetalWeightUnit = oldStyle.MetalWeightUnit;
+            MetalWtNote = oldStyle.MetalWtNote;
         }
     }
 }

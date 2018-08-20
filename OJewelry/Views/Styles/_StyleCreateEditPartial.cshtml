@@ -119,7 +119,7 @@
                     @Html.EditorFor(model => model.Style.Width, new { htmlAttributes = new { @class = "" } })
                 }
             </div>
-            <div class="col-sm-3 col-xs-5">                
+            <div class="col-sm-3 col-xs-3">                
                 @if (@Model.SVMOp == SVMOperation.Print)
                 {
                     @Html.DisplayFor(model => model.Style.ChainLength, new {htmlAttributes = new {@class = ""}})
@@ -146,10 +146,20 @@
                 @Html.EditorFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
                 }
             </div>
-            <div class="col-sm-3 col-xs-3">
+            <div class="col-sm-2 col-xs-2">
                 @if (@Model.SVMOp != SVMOperation.Print)
                 {
                     @Html.DropDownList("MetalWtUnitId", null, htmlAttributes: new {@class = ""})
+                }
+            </div>
+            <div>
+                @if (@Model.SVMOp == SVMOperation.Print)
+                {
+                    @Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })
+                }
+                else
+                {
+                    @Html.EditorFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })
                 }
             </div>
         </div>
@@ -157,22 +167,29 @@
     </div> <!--  left side bottom -->
     <div class="col-sm-5 col-xs-5  floatright">
         <div class="row">
-            <div class="col-sm-4 col-xs-4">
+            <div class="col-sm-3 col-xs-3">
                 @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
             </div>
             <div class="col-sm-8 col-xs-8">
-                @if (Model.Style.IntroDate.HasValue)
+                @if (@Model.SVMOp == SVMOperation.Print)
                 {
-                    if (@Model.SVMOp == SVMOperation.Print)
+                    if (Model.Style.IntroDate.HasValue)
                     {
+
                         @Model.Style.IntroDate.Value.ToShortDateString()
                     }
-                    else
-                    {
-                        @*@Html.EditorFor(model => model.Style.IntroDate.Value, new { htmlAttributes = new { @class = "datepicker input-datepicker" } })*@
-                        @Html.TextBoxFor(m => m.Style.IntroDate.Value, new { @type = "", @class = "" })
-                    }
                 }
+                else
+                {
+                    {
+                        var dateyr = Model.Style.IntroDate.GetValueOrDefault().Year;
+                        var datemo = Model.Style.IntroDate.GetValueOrDefault().Month.ToString("D2");
+                        var datedt = Model.Style.IntroDate.GetValueOrDefault().Day.ToString("D2");
+                        <input name="Style.IntroDate" class="text-box single-line" id="Style_IntroDate" type="date" data-val-date="The field INTRO DATE must be a date."
+                               value="@dateyr-@datemo-@datedt"/>
+                    }
+                }                   
+
             </div>
         </div>
     </div> <!--  right side bottom -->
