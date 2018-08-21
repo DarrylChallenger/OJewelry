@@ -496,7 +496,9 @@
     <None Include="Properties\PublishProfiles\OJewelryDev - Debug Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Release Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\OJewelryProd - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryProd - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\OldOJewelryProd - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CreateEditComponents.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
