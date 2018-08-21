@@ -142,10 +142,14 @@ html input[disabled], locked {
     cursor: not-allowed;
 }
 
+.StyleSheetPartial input {
+    font-weight: 700;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .StyleCostSheet {
     font-family: 'Calibri','sans-serif';
     font-weight: 700;
-
 }
 .StyleHeader 
 {
