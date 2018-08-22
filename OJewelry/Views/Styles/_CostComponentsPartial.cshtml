@@ -155,11 +155,11 @@ COST:
                 {
                     if (Model.Stones[i].ShapeId == 0)
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved"})
+                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new {@class = "col-sm-1 col-xs-1 requiredifnotremoved"})
+                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
                 }
                 else
@@ -171,11 +171,11 @@ COST:
                 {
                     if (Model.Stones[i].Size == "")
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, "You must select a size", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved"})
+                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, "You must select a size", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new {@class = "col-sm-1 col-xs-1 requiredifnotremoved"})
+                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
                     }
                 }
                 else
