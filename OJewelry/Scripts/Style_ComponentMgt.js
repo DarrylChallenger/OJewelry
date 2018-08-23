@@ -87,7 +87,7 @@ function AddComponentRow(type, index)
             .attr("data-val", "")//"true")
             .attr("data-val-number", "")//"The Id field must be a number.")
             .attr("data-val-required", "XX")//"Please select a stone.")
-            //.attr("onchange", "StoneChanged('" + len + "')")
+            .attr("onchange", "StoneChanged('" + len + "')")
             ;
 
         // Size
@@ -95,11 +95,9 @@ function AddComponentRow(type, index)
         jsSizes.find("#jsszINDEX")
             .attr("name", 'Stones[' + len + '].SzId')
             .attr("id", 'Stones_' + len + '__SzId')
-
             .attr("data-val", "true")
             .attr("data-val-number", "")//"The Id field must be a number.")
             .attr("data-val-required", "Please select a stone.")
-
             .attr("onchange", "StoneChanged('" + len + "')");
         
         ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html()+jsShapes.html()+jsSizes.html());
@@ -202,7 +200,7 @@ function CalcRowTotal(type, rowId)
     if (type === "Stones")
     {
         // (PPC * qty)
-        total = +$("#" + type + "_" + rowId + "__PPC").val();
+        total = +$("#" + type + "_" + rowId + "__Price").val();
         qty = total * $("#" + type + "_" + rowId + "__Qty").val();
         rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
     }
@@ -260,18 +258,25 @@ function CalcTotals()
 }
 
 function StoneChanged(i) {
-    selected = $("#Stones_" + i + "__Id > option:selected");
-    oldval = selected.val();
-    if (oldval !== "")
-    {
-        dataRow = $("#StonesData").find("#" + oldval);
-        $("#Stones_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
-        $("#Stones_" + i + "__CtWt").val(dataRow.find(".CtWt").attr("value"));
-        $("#Stones_" + i + "__Size").val(dataRow.find(".Size").attr("value"));
-        $("#Stones_" + i + "__PPC").val(dataRow.find(".PPC").attr("value"));
-        $("#" + "Stones" + "_" + i + "__Id option[value='']").attr("disabled", "disabled");
-    }
-    CalcRowTotal("Stones", i);
+    // pass the stone, shape, and size to StoneMantchingController. Process the result or handle not found 
+    var stone =  $("#Stones_" + i + "__Name > option:selected").val();
+    var shape = $("#Stones_" + i + "__ShId > option:selected").val();
+    var size = $("#Stones_" + i + "__SzId > option:selected").val();
+    var companyid = $("#CompanyId").val();
+    fetch('/api/StoneMatching?companyId=' + companyid + '&stone=' + stone + '&shape=' + shape + '&size=' + size)
+        .then(function (response) {
+                return response.json();
+        })
+        .then(function(stonedata) {
+            // unpack stonedata
+            // pack the ctwt, vwndor, and price fields
+            var stn = JSON.parse(stonedata);
+            //console.log(stn.Price);
+            $("#Stones_" + i + "__CtWt").val(stn.CtWt);
+            $("#Stones_" + i + "__VendorName").val(stn.VendorName);
+            $("#Stones_" + i + "__Price").val(stn.Price.toFixed(2));
+            CalcRowTotal("Stones", i);
+        });
 }
 
 function FindingChanged(i) {
@@ -489,7 +494,7 @@ $(function () { // requiredifnotremoved validation
         }
         var target = $(element).parent().parent().prev().children();
         var state = $(target).val();
-        // console.log($(element).attr("id") + " " + state);
+        //console.log($(element).attr("id") + " " + state);
         if (state === "Deleted" || state === "Unadded") {
             return true;
         }
