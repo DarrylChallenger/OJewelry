@@ -15,10 +15,11 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Stones
-        public ActionResult Index()
+        public ActionResult Index(int companyId)
         {
-            var stones = db.Stones.Include(s => s.Company).Include(s => s.Shape).Include(s => s.Vendor);
-
+            var stones = db.Stones.Where(st => st.CompanyId == companyId).Include(s => s.Company).Include(s => s.Shape).Include(s => s.Vendor);
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
             return View(stones.OrderBy(f => f.Company.Name).ThenBy(g => g.Name).ThenBy(h=>h.Shape.Name).ThenBy(i=>i.StoneSize).ToList());
         }
 
@@ -34,17 +35,22 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
             return View(stone);
         }
         
         // GET: Stones/Create
-        public ActionResult Create()
+        public ActionResult Create(int companyId)
         {
-            ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name");
+            ViewBag.CompanyId = companyId;
             ViewBag.ShapeId = new SelectList(db.Shapes, "Id", "Name");
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name");
-            //StoneComponent sc = new StoneComponent();
-            return View();
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+            Stone stone = new Stone
+            {
+                CompanyId = companyId
+            };
+            return View(stone);
         }
 
         // POST: Stones/Create
@@ -58,12 +64,13 @@ namespace OJewelry.Controllers
             {
                 db.Stones.Add(stone);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new {companyId = stone.CompanyId});
             }
 
-            ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", stone.CompanyId);
+            ViewBag.CompanyId = stone.CompanyId;
             ViewBag.ShapeId = new SelectList(db.Shapes, "Id", "Name", stone.ShapeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", stone.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
             return View(stone);
         }
 
@@ -79,9 +86,9 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", stone.CompanyId);
             ViewBag.ShapeId = new SelectList(db.Shapes, "Id", "Name", stone.ShapeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", stone.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
             return View(stone);
         }
 
@@ -96,11 +103,13 @@ namespace OJewelry.Controllers
             {
                 db.Entry(stone).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { companyId = stone.CompanyId });
             }
-            ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", stone.CompanyId);
+            ViewBag.CompanyId = stone.CompanyId;
             ViewBag.ShapeId = new SelectList(db.Shapes, "Id", "Name", stone.ShapeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", stone.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
+
             return View(stone);
         }
 
@@ -125,9 +134,10 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Stone stone = db.Stones.Find(id);
+            int companyId = stone.CompanyId.Value;
             db.Stones.Remove(stone);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { companyId = companyId});
         }
 
         protected override void Dispose(bool disposing)

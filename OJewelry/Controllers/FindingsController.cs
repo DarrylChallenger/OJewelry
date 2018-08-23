@@ -15,9 +15,11 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Findings
-        public ActionResult Index()
+        public ActionResult Index(int companyId)
         {
-            var findings = db.Findings.Include(f => f.Company).Include(f => f.Vendor);
+            var findings = db.Findings.Where(st => st.CompanyId == companyId).Include(f => f.Company).Include(f => f.Vendor);
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
             return View(findings.OrderBy(a=>a.Company.Name).ThenBy(b=>b.Name).ToList());
         }
 
@@ -37,12 +39,15 @@ namespace OJewelry.Controllers
         }
 
         // GET: Findings/Create
-        public ActionResult Create()
+        public ActionResult Create(int companyId)
         {
-            ViewBag.CompanyId = new SelectList(db._Companies, "Id", "Name");
-            ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code");
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name");
-            return View();
+            Finding finding = new Finding
+            {
+                CompanyId = companyId
+            };
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+            return View(finding);
         }
 
         // POST: Findings/Create
@@ -56,12 +61,11 @@ namespace OJewelry.Controllers
             {
                 db.Findings.Add(finding);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new {companyId = finding.CompanyId});
             }
 
-            ViewBag.CompanyId = new SelectList(db._Companies, "Id", "Name", finding.CompanyId);
-            //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", finding.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }
 
@@ -77,9 +81,9 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CompanyId = new SelectList(db._Companies, "Id", "Name", finding.CompanyId);
             //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", finding.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }
 
@@ -94,11 +98,11 @@ namespace OJewelry.Controllers
             {
                 db.Entry(finding).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { companyId = finding.CompanyId });
             }
-            ViewBag.CompanyId = new SelectList(db._Companies, "Id", "Name", finding.CompanyId);
             //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
             ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", finding.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }
 
@@ -123,9 +127,10 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Finding finding = db.Findings.Find(id);
+            int companyId = finding.Id;
             db.Findings.Remove(finding);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { companyId = companyId });
         }
 
         protected override void Dispose(bool disposing)

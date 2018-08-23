@@ -376,7 +376,7 @@ namespace OJewelry.Models
         }
         [Display(Name = "Price")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? Price
+        public decimal Price
         {
             get { return _finding.Price; }
             set { _finding.Price = value; }
@@ -771,7 +771,7 @@ namespace OJewelry.Models
                         Finding c = db.Findings.Find(fc.Id);
                         fc.VendorName = db.Vendors.Find(c.VendorId).Name;
                         fc.Price = c.Price;
-                        t = fc.Price ?? 0;
+                        t = fc.Price;
                         fc.Total = fc.Qty * t;
                         FindingsTotal += fc.Total;
                         //fc.Qty = c.Qty ?? 0;
@@ -823,7 +823,7 @@ namespace OJewelry.Models
                 fiscm.VendorName = finding.Vendor.Name;
                 fiscm.linkId = sf.Id;
                 fiscm.Price = finding.Price;
-                t = fiscm.Price ?? 0;
+                t = fiscm.Price;
                 fiscm.Qty = sf.Qty ?? 0;
                 fiscm.Total = fiscm.Qty * t;
                 FindingsTotal += fiscm.Total;
