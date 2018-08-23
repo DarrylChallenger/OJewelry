@@ -417,6 +417,10 @@
     <Compile Include="Migrations\201808201923030_v1.2Add-MetalWtNote.Designer.cs">
       <DependentUpon>201808201923030_v1.2Add-MetalWtNote.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808232012331_v1.3MakeFindingsPriceMndatory.cs" />
+    <Compile Include="Migrations\201808232012331_v1.3MakeFindingsPriceMndatory.Designer.cs">
+      <DependentUpon>201808232012331_v1.3MakeFindingsPriceMndatory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -741,6 +745,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808201923030_v1.2Add-MetalWtNote.resx">
       <DependentUpon>201808201923030_v1.2Add-MetalWtNote.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808232012331_v1.3MakeFindingsPriceMndatory.resx">
+      <DependentUpon>201808232012331_v1.3MakeFindingsPriceMndatory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create a stone</h2>
+<h2>Create a Stone for the <i>@ViewBag.CompanyName</i> company</h2>
 
 @using (Html.BeginForm())
 {
@@ -14,15 +14,7 @@
         <h4>Stone</h4>
         <hr />
  
-        <div class="form-group">
-            @Html.LabelFor(model => model.CompanyId, "Company", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CompanyId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CompanyId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
+        @Html.HiddenFor(model => model.CompanyId)
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -80,7 +72,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", new { companyId = Model.CompanyId })
 </div>
 
 @section Scripts {

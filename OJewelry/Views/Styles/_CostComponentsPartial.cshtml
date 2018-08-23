@@ -288,7 +288,7 @@ COST:
                 {
                     <div class="col-sm-2 col-xs-2">@Model.Findings[i].VendorName</div>
                     <div class="col-sm-1 col-xs-1">@Model.Findings[i].Weight</div>
-                    <div class="col-sm-1 col-xs-1">@Model.Findings[i].Price.Value.ToString("F02")</div>
+                    <div class="col-sm-1 col-xs-1">@Model.Findings[i].Price.ToString("F02")</div>
                     <div class="col-sm-1 col-xs-1">@Model.Findings[i].Qty</div>
                 }
 
@@ -597,7 +597,7 @@ COST:
             <div id="@finding.Id">
                 <span class="VendorName" value="@finding.Vendor.Name"></span>
                 <span class="Weight" value="@finding.Weight"></span>
-                <span class="Price" value="@finding.Price.Value.ToString("F02")"></span>
+                <span class="Price" value="@finding.Price.ToString("F02")"></span>
             </div>
             }
         </div>

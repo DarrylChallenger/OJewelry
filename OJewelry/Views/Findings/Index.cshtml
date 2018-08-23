@@ -4,18 +4,15 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Findings</h2>
+<h2>Findings for the <i>@ViewBag.CompanyName</i> company</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New Finding", "Create", new { companyId = ViewBag.CompanyId })
 </p>
 <table class="table">
     <tr>
         <th>
             Finding
-        </th>
-        <th>
-            Company
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Weight)
@@ -36,9 +33,6 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Company.Name)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.Weight)
         </td>
         <td>
@@ -56,5 +50,6 @@
 
 </table>
 <p>
+    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = ViewBag.CompanyId }, null) |
     @Html.ActionLink("Companies", "Index", "Companies")
 </p>

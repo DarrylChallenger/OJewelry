@@ -51,7 +51,7 @@
                 <td>@Html.DisplayFor(modelItem => sty.RetialPrice)</td>
                 <td>@Html.DisplayFor(modelItem => sty.Qty)</td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "Styles", new { id = sty.Id }, null) |
+                    @Html.ActionLink("Edit", "Edit", "Styles", new { id = sty.Id }, null) @*|
                     @Html.ActionLink("Sell", "Sell", "Styles", new { id = sty.Id }, null) 
                     @* @Html.ActionLink("Memo", "Memo", "Styles", new { id = sty.Id }, null) *@
                 </td>
@@ -60,6 +60,7 @@
     }
 
 </table>
-<p>        
-    @Html.ActionLink("Companies", "Index", "Companies")
+<p>
+    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = Model.CompanyId }, null) |
+    @Html.ActionLink("Companies", "Index", "Companies")    
 </p>

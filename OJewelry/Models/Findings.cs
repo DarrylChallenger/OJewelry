@@ -32,7 +32,7 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Desc { get; set; }
 
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
 
         public decimal? Weight { get; set; }
 
