@@ -11,12 +11,12 @@
                 <div class="col-sm-5 col-xs-5">
                     @if (Model.SVMOp == OJewelry.Models.SVMOperation.Edit)
                     {
-                        @Html.EditorFor(model => model.Style.StyleNum, new {htmlAttributes = new {@class = "locked", @disabled = "disabled"}})
+                        @Html.EditorFor(model => model.Style.StyleNum, new {htmlAttributes = new {@class = "locked", @disabled = "disabled", placeholder="Style Number"}})
                         @Html.HiddenFor(model => model.Style.StyleNum)
                     }
                     @if (Model.SVMOp == OJewelry.Models.SVMOperation.Create)
                     {
-                        @Html.EditorFor(model => model.Style.StyleNum, new {htmlAttributes = new {@class = ""}})
+                        @Html.EditorFor(model => model.Style.StyleNum, new {htmlAttributes = new {@class = "", placeholder = "Style Number" } })
                     }
                     @if (Model.SVMOp == OJewelry.Models.SVMOperation.Print)
                     {
@@ -33,7 +33,7 @@
                     }
                     else
                     {
-                        @Html.EditorFor(model => model.Style.StyleName, new {htmlAttributes = new {@class = ""}})
+                        @Html.EditorFor(model => model.Style.StyleName, new {htmlAttributes = new {@class = "", placeholder = "Style Name" } })
                     }
                 </div>
             </div>

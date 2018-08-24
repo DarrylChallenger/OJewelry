@@ -209,6 +209,14 @@ html input[disabled], locked {
     height: 3em;
 }
 
+.StyleSheetPartial ::-ms-input-placeholder {
+    color: lightsteelblue;
+}
+
+.StyleSheetPartial ::placeholder {
+    color: lightsteelblue;
+}
+
 .floatleft {
     float: left;
 }
