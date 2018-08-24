@@ -88,7 +88,7 @@ COST:
         <div id="CastingsTotal">
             <div class="row StyleComponentsRowFooter">
                 <div class="col-sm-1 col-xs-1"></div>
-                <div class="col-sm-4 col-xs-4"><b>TOTAL METAL</div>
+                <div class="col-sm-4 col-xs-4"><b>TOTAL METAL</b></div>
                 <div class="col-sm-5 col-xs-5"></div>
                 <div id="CastingsTotalValue" class="col-sm-2 col-xs-2">@Model.MetalsTotal.ToString("F02")</div>
             </div>
@@ -479,7 +479,7 @@ COST:
                     <div class="col-sm-2 col-xs-2">@Model.Miscs[i].Name</div>
                     <div class="col-sm-2 col-xs-2">@Model.Miscs[i].Desc</div>
                     <div class="col-sm-3 col-xs-3 "></div>
-                    <div class="col-sm-1 col-xs-1">@Model.Miscs[i].PPP.Value.ToString("F02")</div>
+                    <div class="col-sm-1 col-xs-1">@Model.Miscs[i].PPP.ToString("F02")</div>
                     <div class="col-sm-1 col-xs-1">@Model.Miscs[i].Qty</div>
                 }
 

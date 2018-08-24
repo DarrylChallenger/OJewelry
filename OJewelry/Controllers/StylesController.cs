@@ -102,10 +102,11 @@ namespace OJewelry.Controllers
             newsvm.SVMOp = SVMOperation.Create;
             newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
             newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
+            newsvm.CopiedStyleName = svm.Style.StyleName;
 
             newsvm.PopulateDropDownData(db);
             newsvm.PopulateDropDowns(db);
-            //newsvm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.CollectionId);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", newsvm.Style.JewelryTypeId);

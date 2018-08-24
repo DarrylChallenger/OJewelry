@@ -473,20 +473,31 @@ function setAddBtn(type)
     }
 }
 
+$(function () { // 
+    setAddBtn("Castings");
+    setAddBtn("Stones");
+    setAddBtn("Findings");
+    setAddBtn("Labors");
+    setAddBtn("Miscs");
+    CalcTotals();
+});
+
 $(function () { // requiredifnotremoved validation 
-   /*
-    $('#StylesForm').validate({
-        ignore: [],
-        // any other options and/or rules
-    });
-    */
+    console.log("###");
+    /*
+     $('#StylesForm').validate({
+         ignore: [],
+         // any other options and/or rules
+     });
+     */
     $("#StylesForm").data("validator").settings.ignore = "";
-    
+
     var form = $("#StylesForm");
     $(form).removeData("validator")             // Added by jQuery Validate
         .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
     $.validator.unobtrusive.parse(form);
-    
+    console.log("###2");
+
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
         if (elementId === "jssINDEX" || elementId === "jsfINDEX") {
@@ -500,12 +511,7 @@ $(function () { // requiredifnotremoved validation
         }
         return rt = $.validator.methods.required.call(this, value, element);
     }, "... name should not be blank.");
+    console.log("###3");
+
 }); // requiredifnotremoved validation
 
-$(function () { // 
-    setAddBtn("Castings");
-    setAddBtn("Stones");
-    setAddBtn("Findings");
-    setAddBtn("Labors");
-    setAddBtn("Miscs");
-});
