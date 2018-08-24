@@ -473,14 +473,23 @@ function setAddBtn(type)
     }
 }
 
+function JewelryTypeChanged() {
+
+}
+
 $(function () { // 
     setAddBtn("Castings");
     setAddBtn("Stones");
     setAddBtn("Findings");
     setAddBtn("Labors");
     setAddBtn("Miscs");
+    CalcSubtotals("Castings");
+    CalcSubtotals("Stones");
+    CalcSubtotals("Findings");
+    CalcSubtotals("Labors");
+    CalcSubtotals("Miscs");
     CalcTotals();
-});
+}); // Set button, subtotals
 
 $(function () { // requiredifnotremoved validation 
     console.log("###");
@@ -493,9 +502,10 @@ $(function () { // requiredifnotremoved validation
     $("#StylesForm").data("validator").settings.ignore = "";
 
     var form = $("#StylesForm");
-    $(form).removeData("validator")             // Added by jQuery Validate
-        .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
-    $.validator.unobtrusive.parse(form);
+    $(form).removeData("validator").removeData("unobtrusiveValidation");    // Added by jQuery Validate
+    console.log("form");
+    console.log(form);
+    $.validator.unobtrusive.parse(form);                                    // Added by jQuery Unobtrusive Validation
     console.log("###2");
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
