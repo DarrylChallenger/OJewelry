@@ -30,7 +30,7 @@ namespace OJewelry.Models
             VendorId = cc.VendorId;
             MetalCodeId = cc.MetalCodeId;
             MetalCode = cc.MetalCode;
-            Total = cc.Total;
+            Total = Price.GetValueOrDefault() * Qty;
         }
 
         public CastingComponent(Casting c)
@@ -148,9 +148,11 @@ namespace OJewelry.Models
             Size = sc.Size;
             Price = sc.Price;
             ShapeId = sc.ShapeId;
+            Id = sc.Id;
             ShId = sc.ShId;
             SzId = sc.SzId;
             Qty = sc.Qty;
+            Total = Price * Qty;
         }
 
         public StoneComponent(Stone s)
@@ -316,13 +318,13 @@ namespace OJewelry.Models
             Init();
             Id = fc.Id;
             Qty = fc.Qty;
-            Total = fc.Total;
             CompanyId = fc.CompanyId;
             VendorId = fc.VendorId;
             Name = fc.Name;
             VendorName = fc.VendorName;
             Weight = fc.Weight;
             Price = fc.Price;
+            Total = Price * Qty;
         }
 
         public FindingsComponent(Finding f)
@@ -407,7 +409,7 @@ namespace OJewelry.Models
             Name = lc.Name;
             Desc = lc.Desc;
             Qty = lc.Qty;
-            Total = lc.Total;
+            Total = (PPP.GetValueOrDefault() + PPH.GetValueOrDefault()) * Qty.GetValueOrDefault();
         }
         public LaborComponent(Labor l) { _labor = l; Init(); }
         void Init()
@@ -455,7 +457,7 @@ namespace OJewelry.Models
             Name = mc.Name;
             Desc = mc.Desc;
             Qty = mc.Qty;
-            Total = mc.Total;
+            Total = PPP * Qty.GetValueOrDefault();
         }
 
         public MiscComponent(Misc m) { _misc = m; Init(); }
@@ -463,7 +465,7 @@ namespace OJewelry.Models
 
         [Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? PPP { get { return _misc.PricePerPiece ?? 0; } set { _misc.PricePerPiece = value; } }
+        public decimal PPP { get { return _misc.PricePerPiece ?? 0; } set { _misc.PricePerPiece = value; } }
 
         public int Id { get { return _misc.Id; } set { _misc.Id = value; } }
 
@@ -600,7 +602,7 @@ namespace OJewelry.Models
         public decimal FindingsTotal { get; set; }
         public decimal LaborsTotal { get; set; }
         public decimal MiscsTotal { get; set; }
-
+        public string CopiedStyleName { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
 
@@ -832,7 +834,38 @@ namespace OJewelry.Models
                 Total += fiscm.Total;
             }
         }
-        
+
+        public void LookupComponents(OJewelryDB db) // call only for copy
+        {
+
+            List<Stone> stoneSet = db.Stones.Where(st => st.CompanyId == this.CompanyId).Include(st => st.Shape).Include(st => st.Vendor).ToList();
+            List<Finding> findingSet = db.Findings.Where(st => st.CompanyId == this.CompanyId).ToList();
+
+            foreach (StoneComponent s in Stones)
+            {
+                Stone matchingStone = stoneSet.FirstOrDefault(sc => sc.Name == s.Name && sc.Shape.Name == s.ShId && sc.StoneSize == s.SzId);
+                if (matchingStone != null)
+                {
+                    s.CtWt = matchingStone.CtWt;
+                    s.VendorName = matchingStone.Vendor?.Name;
+                    s.Price = matchingStone.Price;
+                    s.Total = s.Price * s.Qty;
+                }
+            }
+
+            foreach (FindingsComponent f in Findings)
+            {
+                Finding matchingFinding = findingSet.FirstOrDefault(fc => fc.Id == f.Id);
+                if (matchingFinding != null)
+                {
+                    f.VendorName = matchingFinding.Vendor?.Name;
+                    f.Weight = matchingFinding.Weight;
+                    f.Price = matchingFinding.Price;
+                    f.Total = f.Price * f.Qty;
+                }
+            }
+        }
+
         public void Populate(int? id, OJewelryDB db)
         {
             decimal t = 0, t2 = 0;
@@ -902,7 +935,7 @@ namespace OJewelry.Models
                     Misc misc = db.Miscs.Find(sms.MiscId); // Stones and Findings
                     MiscComponent miscm = new MiscComponent(misc);
                     miscm.Qty = sms.Misc.Qty ?? 0;
-                    t = miscm.PPP ?? 0;
+                    t = miscm.PPP;
                     miscm.Total = miscm.Qty.Value * t;
                     MiscsTotal += miscm.Total;
                     Miscs.Add(miscm);
