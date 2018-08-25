@@ -51,6 +51,7 @@ namespace OJewelry.Models
         [Display(Name = "Quantity")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N0}")]
         [DataType(DataType.Currency)]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
         public int Qty { get; set; }
 
         [Display(Name = "Price")]
@@ -236,6 +237,7 @@ namespace OJewelry.Models
         }
 
         [Display(Name = "Quantity")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
         public int Qty { get; set; }
 
         /*[Display(Name = "$/Piece")]
@@ -298,6 +300,7 @@ namespace OJewelry.Models
         public SVMStateEnum SVMState { get; set; }
 
         [Display(Name = "Quantity")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
         public int Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
@@ -434,6 +437,7 @@ namespace OJewelry.Models
         public string Desc { get { return _labor.Desc; } set { _labor.Desc = value; } }
 
         [Display(Name = "Quantity")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
         public int? Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
@@ -474,15 +478,16 @@ namespace OJewelry.Models
         public string Desc { get { return _misc.Desc; } set { _misc.Desc = value; } }
 
         [Display(Name = "Quantity")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
         public int? Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
     }
 
-    public class StyleViewComponentModel
+    public class StyleViewComponentModelX
     { //Components should be a componentID and a qty
-        public StyleViewComponentModel()
+        public StyleViewComponentModelX()
         {
             SVMState = SVMStateEnum.Dirty; // For now, update all records
         }

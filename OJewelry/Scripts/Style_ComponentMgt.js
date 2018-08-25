@@ -496,7 +496,6 @@ $(function () { // requiredifnotremoved validation
      });
      */
     $("#StylesForm").data("validator").settings.ignore = "";
-
     var form = $("#StylesForm");
     $(form).removeData("validator")             // Added by jQuery Validate
         .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation 
@@ -519,6 +518,7 @@ $(function () { // requiredifnotremoved validation
         var rt = $.validator.methods.required.call(this, value, element);
 
         return rt;
-    },$("#vMsg").attr("data-msg"));
+    }, $("#vMsg").attr("data-msg"));
+
 }); // requiredifnotremoved validation
 
