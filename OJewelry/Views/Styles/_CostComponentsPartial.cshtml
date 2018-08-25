@@ -4,6 +4,7 @@
 <div class="StyleSheetPartial">
 
 COST:
+<div id="vMsg"></div>
 <div class="styleCastings">
     <!-- Castings -->
     <div class="row StyleComponentsRowHeader">
@@ -139,11 +140,11 @@ COST:
                 {
                     if (Model.Stones[i].Id == 0)
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, "You must select a stone", new {@class = "col-sm-2 col-xs-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')"})
+                        @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, "You must select a stone", new {@class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone. ", onchange = "StoneChanged('" + i + "')"})
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, new {@class = "col-sm-2 col-xs-2 requiredifnotremoved", onchange = "StoneChanged('" + i + "')"})
+                        @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, new {@class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone. ", onchange = "StoneChanged('" + i + "')"})
                     }
                 }
                 else
@@ -155,11 +156,11 @@ COST:
                 {
                     if (Model.Stones[i].ShapeId == 0)
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required= "Please select a stone shape. ", onchange = "StoneChanged('" + i + "')" })
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone shape.", onchange = "StoneChanged('" + i + "')" })
                     }
                 }
                 else
@@ -171,11 +172,11 @@ COST:
                 {
                     if (Model.Stones[i].Size == "")
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, "You must select a size", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, "You must select a size", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneChanged('" + i + "')" })
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new {@class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val="true", @data_val_required = "Please select a stone size. ", onchange = "StoneChanged('" + i + "')" })
                     }
                 }
                 else
@@ -206,11 +207,13 @@ COST:
             </div>
             @if (Model.SVMOp != SVMOperation.Print)
             {
-                <div class="row">
-                    @Html.ValidationMessageFor(model => model.Stones[i].Id, "", new {@class = "text-danger"})
-                    @Html.ValidationMessageFor(model => model.Stones[i].Name, "", new {@class = "text-danger"})
-                    @Html.ValidationMessageFor(model => model.Stones[i].Qty, "", new {@class = "text-danger"})
-                </div>
+            <div class="row">
+                @Html.ValidationMessageFor(model => model.Stones[i].Id, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Stones[i].Name, "", new {@class = "text-danger"})
+                @Html.ValidationMessageFor(model => model.Stones[i].ShId, "", new {@class = "text-danger"})
+                @Html.ValidationMessageFor(model => model.Stones[i].SzId, "", new {@class = "text-danger"})
+                @Html.ValidationMessageFor(model => model.Stones[i].Qty, "", new { @class = "text-danger" })
+            </div>
             }
         </div>
     }

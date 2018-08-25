@@ -143,6 +143,8 @@
                         @Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
                         <text>&nbsp;</text>
                         @Model.Style.MetalWeightUnit.Unit
+                        <text>&nbsp;</text>
+                        @Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })
                     }
                     else
                     {
@@ -156,11 +158,7 @@
                     }
                 </div>
                 <div>
-                    @if (@Model.SVMOp == SVMOperation.Print)
-                    {
-                        @Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })
-                    }
-                    else
+                    @if (@Model.SVMOp != SVMOperation.Print)
                     {
                         @Html.EditorFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })
                     }

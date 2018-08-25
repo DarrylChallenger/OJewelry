@@ -54,7 +54,7 @@ function AddComponentRow(type, index)
             .attr("id", 'Castings_' + len + '__VendorId')
             .attr("data-val", "true")
             .attr("data-val-number", "The field VendorId must be a number.")
-            .attr("data-val-required", "The VendorId field is required.");
+            .attr("data-val-required", "Please choose a Vendor.");
         //  < select class="col-sm-1" data- val="true" data- val - number="The field MetalCodeId must be a number." data- val - required="The MetalCodeId field is required." id= "Castings_' + len + '__MetalCodeId" name= "Castings[' + len + '].MetalCodeId" >\
 
         var jsMetals = $("#jsMetals").clone();
@@ -73,10 +73,9 @@ function AddComponentRow(type, index)
         jsStones.find("#jssINDEX")
             .attr("name", 'Stones[' + len + '].Name')
             .attr("id", 'Stones_' + len + '__Name')
-
-            .attr("data-val", "")//"true")
-            .attr("data-val-number", "")//"The Id field must be a number.")
-            //.attr("data-val-required", "XX")//"Please select a stone.")
+            .attr("data-val", "true")
+            //.attr("data-val-number", "")//"The Id field must be a number.")
+            .attr("data-val-required", "Please select a stone. ")
             .attr("onchange", "StoneChanged('" + len + "')");
 
         //Shape
@@ -84,9 +83,8 @@ function AddComponentRow(type, index)
         jsShapes.find("#jsshINDEX")
             .attr("name", 'Stones[' + len + '].ShId')
             .attr("id", 'Stones_' + len + '__ShId')
-            .attr("data-val", "")//"true")
-            .attr("data-val-number", "")//"The Id field must be a number.")
-            .attr("data-val-required", "XX")//"Please select a stone.")
+            .attr("data-val", "true")
+            .attr("data-val-required", "Please select a stone shape. ")
             .attr("onchange", "StoneChanged('" + len + "')")
             ;
 
@@ -96,8 +94,7 @@ function AddComponentRow(type, index)
             .attr("name", 'Stones[' + len + '].SzId')
             .attr("id", 'Stones_' + len + '__SzId')
             .attr("data-val", "true")
-            .attr("data-val-number", "")//"The Id field must be a number.")
-            .attr("data-val-required", "Please select a stone.")
+            .attr("data-val-required", "Please select a stone size. ")
             .attr("onchange", "StoneChanged('" + len + "')");
         
         ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html()+jsShapes.html()+jsSizes.html());
@@ -108,12 +105,10 @@ function AddComponentRow(type, index)
         jsFindings.find("#jsfINDEX")
             .attr("name", 'Findings[' + len + '].Id')
             .attr("id", 'Findings_' + len + '__Id')
-            /*
             .attr("data-val", "true")
-            .attr("data-val-number", "The Id field must be a number.")
+            //.attr("data-val-number", "The Id field must be a number.")
             .attr("data-val-required", "Please select a finding.")
-            */
-         .attr("onchange", "FindingChanged('" + len + "')");
+            .attr("onchange", "FindingChanged('" + len + "')");
         ltbordered = findingsltbordered.replace("JSFINDINGS", jsFindings.html());
     }
     if (type === "Labors") {
@@ -307,7 +302,7 @@ function getCastingsHTML(type, len) {
                 + leftDelBtn +
                 '</div> \
             </div>\
-            <input class="col-sm-2 text-box single-line requiredifnotremoved" id="Castings_' + len + '__Name" name="Castings[' + len + '].Name" type="text" value="" />\
+            <input class="col-sm-2 text-box single-line requiredifnotremoved"  placeholder="Name" data-val-required="The Metal Style name field is required." id="Castings_' + len + '__Name" name="Castings[' + len + '].Name" type="text" value="" />\
             <div class="col-sm-1">\
             </div >\
             JSVENDORS\
@@ -355,6 +350,8 @@ function getStonesHTML(type, len) {
            <!--Validations Here-->\
                <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Id" data-valmsg-replace="true"></span>\
                <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Name" data-valmsg-replace="true"></span>\
+               <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].ShId" data-valmsg-replace="true"></span>\
+               <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].SzId" data-valmsg-replace="true"></span>\
                <span class="field-validation-valid text-danger" data-valmsg-for="Stones[' + len + '].Qty" data-valmsg-replace="true"></span>\
            </div>\
         </div>\
@@ -409,7 +406,7 @@ function getLaborsHTML(type, len) {
                 + leftDelBtn +
                 '</div>\
             </div>\
-            <input class="col-sm-2 text-box single-line requiredifnotremoved" id="Labors_' + len + '__Name" name="Labors[' + len + '].Name" type="text" value="" />\
+            <input class="col-sm-2 text-box single-line requiredifnotremoved" placeholder="Name"  id="Labors_' + len + '__Name" name="Labors[' + len + '].Name" type="text" value="" />\
             <input class="col-sm-2 text-box single-line" id="Labors_' + len + '__Desc" name="Labors[' + len + '].Desc" type="text" value="" />\
             <div class="col-sm-2 "></div>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Hour must be a number." id="Labors_' + len + '__PPH" name="Labors[' + len + '].PPH" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
@@ -443,7 +440,7 @@ function getMiscsHTML(type, len) {
                 + leftDelBtn +
                 '</div>\
             </div>\
-            <\input class="col-sm-2 text-box single-line requiredifnotremoved" id="Miscs_' + len + '__Name" name="Miscs[' + len + '].Name" type="text" value="" />\
+            <\input class="col-sm-2 text-box single-line requiredifnotremoved" placeholder="Name"  id="Miscs_' + len + '__Name" name="Miscs[' + len + '].Name" type="text" value="" />\
             <input class="col-sm-2 text-box single-line" id="Miscs_' + len + '__Desc" name="Miscs[' + len + '].Desc" type="text" value="" />\
             <div class="col-sm-3 "></div>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Piece must be a number." id="Miscs_' + len + '__PPP" name="Miscs[' + len + '].PPP" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
@@ -492,7 +489,6 @@ $(function () { //
 }); // Set button, subtotals
 
 $(function () { // requiredifnotremoved validation 
-    console.log("###");
     /*
      $('#StylesForm').validate({
          ignore: [],
@@ -502,16 +498,17 @@ $(function () { // requiredifnotremoved validation
     $("#StylesForm").data("validator").settings.ignore = "";
 
     var form = $("#StylesForm");
-    $(form).removeData("validator").removeData("unobtrusiveValidation");    // Added by jQuery Validate
-    console.log("form");
-    console.log(form);
-    $.validator.unobtrusive.parse(form);                                    // Added by jQuery Unobtrusive Validation
-    console.log("###2");
+    $(form).removeData("validator")             // Added by jQuery Validate
+        .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation 
+    $.validator.unobtrusive.parse(form);
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
-        if (elementId === "jssINDEX" || elementId === "jsfINDEX") {
+        if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX" ) {
             return true;
+        }
+        if ($(element).hasClass("input-validation-error")) {
+            $("#vMsg").attr("data-msg", $(element).attr(""));
         }
         var target = $(element).parent().parent().prev().children();
         var state = $(target).val();
@@ -519,9 +516,9 @@ $(function () { // requiredifnotremoved validation
         if (state === "Deleted" || state === "Unadded") {
             return true;
         }
-        return rt = $.validator.methods.required.call(this, value, element);
-    }, "... name should not be blank.");
-    console.log("###3");
+        var rt = $.validator.methods.required.call(this, value, element);
 
+        return rt;
+    },$("#vMsg").attr("data-msg"));
 }); // requiredifnotremoved validation
 

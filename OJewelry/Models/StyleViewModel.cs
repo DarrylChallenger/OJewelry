@@ -699,22 +699,27 @@ namespace OJewelry.Models
             List<ShapeListItem> jsShapesWithDefault = jsShapes.ToList();
             List<StoneSizeListItem> jsSizesWithDefault = jsSizes.ToList();
             List<Finding> jsFindingsWithDefault = jsFindings.ToList();
+            List<Stone> stoneSet = db.Stones.Where(st => st.CompanyId == this.CompanyId).Include(st => st.Shape).Include(st => st.Vendor).ToList();
+            List<Finding> findingSet = db.Findings.Where(st => st.CompanyId == this.CompanyId).ToList();
 
+
+            int i = -1;
             foreach (StoneComponent sc in Stones)
             {
+                i++;
                 switch (sc.SVMState)
                 {
                     case SVMStateEnum.Added:
-                        sc.VendorName = "";
-                        sc.CtWt = 0;
-                        sc.Size = "";
-                        sc.Qty = 0;
-                        sc.Price = 0;
+                        sc.VendorName = Stones[i].VendorName;
+                        sc.CtWt = Stones[i].CtWt;
+                        sc.Size = Stones[i].SzId;
+                        sc.Qty = Stones[i].Qty;
+                        sc.Price = Stones[i].Price;
                         sc.SetStonesList(jsStonesWithDefault, null);
                         sc.SetShapesList(jsShapesWithDefault, null);
                         sc.SetSizesList(jsSizesWithDefault, null);
-                        sc.Total = 0;
-                        sc.Desc = "";
+                        sc.Total = Stones[i].Total;
+                        sc.Desc = Stones[i].Desc;
                         break;
                     case SVMStateEnum.Unadded:
                         sc.VendorName = "";
@@ -734,10 +739,11 @@ namespace OJewelry.Models
                     case SVMStateEnum.Fixed:
                     case SVMStateEnum.Deleted:
                         Stone c = db.Stones.Find(sc.Id);
-                        sc.VendorName = db.Vendors.Find(c.VendorId).Name;
+                        //Stone q = stoneSet.FirstOrDefault(x => x.Id== sc.Id);
+                        sc.VendorName = db.Vendors.Find(c.VendorId)?.Name;
                         //sc.CtWt = c.CtWt.Value;
                         sc.Size = c.StoneSize;
-                        //sc.Price = c.Price;
+                        sc.Price = c.Price;
                         //sc.Qty = c.StyleStone.w;
                         sc.SetStonesList(jsStones, sc.Name);
                         sc.SetShapesList(jsShapes, sc.ShId);
@@ -751,13 +757,18 @@ namespace OJewelry.Models
                         break;
                 }
             }
+
+            i = -1;
             foreach (FindingsComponent fc in Findings)
             {
+                i++;
                 switch (fc.SVMState)
                 {
                     case SVMStateEnum.Added:
-                        fc.VendorName = "";
-                        fc.Price = 0;
+                        fc.VendorName = Findings[i].VendorName;
+                        fc.Price = Findings[i].Price;
+                        fc.Qty = Findings[i].Qty;
+                        fc.Total = Findings[i].Total;
                         fc.SetFindingsList(jsFindingsWithDefault, -1);
                         break;
                     case SVMStateEnum.Unadded:
@@ -771,7 +782,7 @@ namespace OJewelry.Models
                     case SVMStateEnum.Fixed:
                     case SVMStateEnum.Deleted:
                         Finding c = db.Findings.Find(fc.Id);
-                        fc.VendorName = db.Vendors.Find(c.VendorId).Name;
+                        fc.VendorName = db.Vendors.Find(c.VendorId)?.Name;
                         fc.Price = c.Price;
                         t = fc.Price;
                         fc.Total = fc.Qty * t;

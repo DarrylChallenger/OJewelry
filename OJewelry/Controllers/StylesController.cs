@@ -250,6 +250,7 @@ namespace OJewelry.Controllers
                         try
                         {
                             stoneId = ValidStone(sc);
+                            sc.Id = stoneId;
                         }
                         catch (OjInvalidStoneComboException e)
                         {
@@ -258,7 +259,9 @@ namespace OJewelry.Controllers
                         }
                         catch (OjMissingStoneException e)
                         {
-                            ModelState.AddModelError("Stones[" + i + "].Name", e.Message);
+                            if (sc.Name == null) ModelState.AddModelError("Stones[" + i + "].Name", "You must enter a stone!! ");
+                            if (sc.ShId == null) ModelState.AddModelError("Stones[" + i + "].ShId", "You must enter a shape!! ");
+                            if (sc.SzId == null) ModelState.AddModelError("Stones[" + i + "].SzId", "You must enter a size!! ");
                             continue;
                         }
 
@@ -522,7 +525,7 @@ namespace OJewelry.Controllers
             if (sc.SVMState != SVMStateEnum.Unadded)
             {
                 // Make sure a stone was selected in the dropdown
-                if (sc.Name == null)
+                if (sc.Name == null || sc.ShId == null || sc.SzId == null)
                 {
                     throw new OjMissingStoneException("You must select a stone!");
                 }
