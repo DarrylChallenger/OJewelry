@@ -47,6 +47,7 @@ namespace OJewelry.Controllers
                     StyleModel styM = new StyleModel()
                     {
                         Id = sty.Id,
+                        Image = sty.Image,
                         Name = sty.StyleName,
                         Num = sty.StyleNum,
                         Memod = sty.Memos.Sum(s => s.Quantity),

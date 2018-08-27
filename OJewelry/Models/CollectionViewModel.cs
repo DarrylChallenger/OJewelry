@@ -21,6 +21,7 @@ namespace OJewelry.Models
         [Display(Name = "Retial Price")]
         public decimal RetialPrice { get; set; }
         public decimal Cost { get; set; }
+        public string Image { get; set; }
     }
 
     public class CollectionModel

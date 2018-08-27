@@ -79,6 +79,7 @@ namespace OJewelry.Controllers
                     StyleModel styM = new StyleModel()
                     {
                         Id = sty.Id,
+                        Image = sty.Image,
                         Name = sty.StyleName,
                         Num = sty.StyleNum,
                         Qty = sty.Quantity,
@@ -108,6 +109,7 @@ namespace OJewelry.Controllers
             m.style = new StyleModel()
             {
                 Id = style.Id,
+                Image = style.Image,
                 Name = style.StyleName,
                 Num = style.StyleNum,
                 Qty = style.Quantity,
