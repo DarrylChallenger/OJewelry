@@ -12,11 +12,6 @@ namespace OJewelry
     public class StoneMatchingController : ApiController
     {
         private OJewelryDB db = new OJewelryDB();
-        // GET api/<controller>
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
         // GET api/<controller>/5
         public string Get(int companyId, string stone, string shape, string size)
@@ -38,21 +33,6 @@ namespace OJewelry
                 result = JsonConvert.SerializeObject(new { CtWt = CtWt, VendorName = VendorName, Price = stn.Price});
             }
             return result;
-        }
-
-        // POST api/<controller>
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
         }
     }
 }

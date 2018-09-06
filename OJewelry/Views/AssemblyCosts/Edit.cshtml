@@ -1,0 +1,94 @@
+﻿@model OJewelry.Models.CostData
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Assembly Costs for the <i>@ViewBag.CompanyName</i> Company</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.companyId)
+
+        <div>
+
+        </div>
+        <div>
+            <p class="h4"><b>MetalCosts metalCosts</b></p>
+            <hr />
+            <p class="h4"><b>Finishing Costs</b></p>
+            <div>
+                @*
+                @for (int i = 0; i < @Model.finishingCosts.Count; i++)
+                {
+                    <div class="row">
+                        @Html.HiddenFor(model => model.finishingCosts[""])
+                        <div class="col-sm-2 col-xs-2">
+                            @{
+                                string s = "finishingCosts_" + i + "__Value";
+                            }
+                            <label for="@s">@Model.finishingCosts[i].Key</label>
+                        </div>
+                        <div class="col-sm-2 col-xs-2">
+                            @Html.EditorFor(model => model.finishingCosts.Values[i])
+                        </div>
+                    </div>
+                }
+                *@
+                @{  int i = 0; }
+                @foreach (var fc in @Model.finishingCosts)
+                {
+                    string sv = "finishingCosts_" + i + "__Value";
+                    string sk = "finishingCosts_" + i + "__Key";
+                    <div class="row">
+                        <div class="col-sm-2 col-xs-2">
+                            <input type="hidden" id="@sk" name="finishingCosts[@i].Key" value="@fc.Key" />
+                            <label for="@sv">@i:@fc.Key</label>
+                        </div>
+                        <div class="col-sm-2 col-xs-2">
+                            <input id="@sv" name="finishingCosts[@i].Value" type="number" value="@fc.Value.ToString("F02")" />
+                        </div>
+                    </div>
+                    i++;
+                }
+                </div>
+            <hr />
+            <p class="h4"><b>SettingsCosts settingsCosts</b></p>
+            <hr />
+            <p class="h4"><b>Packaging Costs</b></p>
+            <div>
+                @{ i = 0; }
+                @foreach (var fc in @Model.packagingCosts)
+                {
+                    string sv = "packagingCosts" + i + "__Value";
+                    string sk = "packagingCosts" + i + "__Key";
+                    <div class="row">
+                        <div class="col-sm-2 col-xs-2">
+                            <input type="hidden" id="@sk" name="packagingCosts[@i].Key" value="@fc.Key" />
+                            <label for="@sv">@i:@fc.Key</label>
+                        </div>
+                        <div class="col-sm-2 col-xs-2">
+                            <input id="@sv" name="packagingCosts[@i].Value" type="number" value="@fc.Value.ToString("F02")" />
+                        </div>
+                    </div>
+                    i++;
+                }
+            </div>
+        </div>
+        <br />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+    <div>
+        @Html.ActionLink("Companies", "Index", "Companies")
+    </div>
