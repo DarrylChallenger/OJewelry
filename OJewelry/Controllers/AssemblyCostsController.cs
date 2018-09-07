@@ -15,50 +15,6 @@ namespace OJewelry.Controllers
     {
         private OJewelryDB db = new OJewelryDB();
 
-        // GET: AssemblyCosts
-        public ActionResult Index(int companyId)
-        {
-            return View(db.AssemblyCosts.ToList());
-        }
-
-        // GET: AssemblyCosts/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            AssemblyCost assemblyCost = db.AssemblyCosts.Find(id);
-            if (assemblyCost == null)
-            {
-                return HttpNotFound();
-            }
-            return View(assemblyCost);
-        }
-
-        // GET: AssemblyCosts/Create
-        public ActionResult Create(int companyId)
-        {
-            return View();
-        }
-
-        // POST: AssemblyCosts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,costDataJSON")] AssemblyCost assemblyCost)
-        {
-            if (ModelState.IsValid)
-            {
-                db.AssemblyCosts.Add(assemblyCost);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(assemblyCost);
-        }
-
         // GET: AssemblyCosts/Edit/5
         public ActionResult Edit(int? companyId)
         {
@@ -131,32 +87,6 @@ namespace OJewelry.Controllers
                 //return RedirectToAction("Index", "");
             }
             return View(costData);
-        }
-
-        // GET: AssemblyCosts/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            AssemblyCost assemblyCost = db.AssemblyCosts.Find(id);
-            if (assemblyCost == null)
-            {
-                return HttpNotFound();
-            }
-            return View(assemblyCost);
-        }
-
-        // POST: AssemblyCosts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            AssemblyCost assemblyCost = db.AssemblyCosts.Find(id);
-            db.AssemblyCosts.Remove(assemblyCost);
-            db.SaveChanges();
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

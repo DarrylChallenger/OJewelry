@@ -252,13 +252,44 @@ function CalcTotals()
     // Iterate thru each total to get the grand total
 }
 
+function SetFinishingCost(finishingVal) {
+    if ($("#Labors_0__Name").val() === "FINISHING LABOR" && $("#Labors_0__SVMState").val() === "Fixed") {
+        $("#Labors_0__PPP").val(finishingVal);
+        CalcRowTotal("Labors", 0);
+    }
+}
+
+function SetPackagingCost(packagingVal) {
+    console.log("In SPC");
+    if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__SVMState").val() === "Fixed") {
+        $("#Miscs_0__PPP").val(packagingVal);
+        CalcRowTotal("Miscs", 0);
+    }}
+
+function JewelryTypeChanged(companyId) {
+    fetch('/api/AssemblyCostsApi?companyId=' + companyId)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (cdJSON) {
+            // unpack CostData
+            var jt = $("#JewelryTypeId :selected").text();
+            var costData = JSON.parse(cdJSON);
+            var finishingVal = costData.finishingCosts[jt];
+            var packagingVal = costData.packagingCosts[jt];
+            SetFinishingCost(finishingVal);
+            SetPackagingCost(packagingVal);
+            console.log("Out of JTC");
+        });
+}
+
 function StoneChanged(i) {
     // pass the stone, shape, and size to StoneMantchingController. Process the result or handle not found 
     var stone =  $("#Stones_" + i + "__Name > option:selected").val();
     var shape = $("#Stones_" + i + "__ShId > option:selected").val();
     var size = $("#Stones_" + i + "__SzId > option:selected").val();
     var companyid = $("#CompanyId").val();
-    fetch('/api/StoneMatching?companyId=' + companyid + '&stone=' + stone + '&shape=' + shape + '&size=' + size)
+    fetch('/api/StoneMatchingApi?companyId=' + companyid + '&stone=' + stone + '&shape=' + shape + '&size=' + size)
         .then(function (response) {
                 return response.json();
         })
@@ -468,10 +499,6 @@ function setAddBtn(type)
         // unhide the last row unhidden header '+' btn
         VisibleRows.last().parent().next().find("." + type + "AddBtn").removeClass("hidden");
     }
-}
-
-function JewelryTypeChanged() {
-
 }
 
 $(function () { // 

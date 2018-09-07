@@ -9,7 +9,7 @@ using OJewelry.Models;
 
 namespace OJewelry
 {
-    public class StoneMatchingController : ApiController
+    public class StoneMatchingApiController : ApiController
     {
         private OJewelryDB db = new OJewelryDB();
 
