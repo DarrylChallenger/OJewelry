@@ -935,7 +935,7 @@ namespace OJewelry.Models
                 // Labor
                 foreach (StyleLabor sl in Style.StyleLabors)
                 {
-                    Labor lb = db.Labors.Find(sl.LaborId); // Stones and Findings
+                    Labor lb = db.Labors.Find(sl.LaborId); 
                     LaborComponent liscm = new LaborComponent(lb);
                     liscm.Qty = sl.Labor.Qty ?? 0;
                     t = liscm.PPH ?? 0;
@@ -948,7 +948,7 @@ namespace OJewelry.Models
                 // Misc
                 foreach (StyleMisc sms in Style.StyleMiscs)
                 {
-                    Misc misc = db.Miscs.Find(sms.MiscId); // Stones and Findings
+                    Misc misc = db.Miscs.Find(sms.MiscId); 
                     MiscComponent miscm = new MiscComponent(misc);
                     miscm.Qty = sms.Misc.Qty ?? 0;
                     t = miscm.PPP;

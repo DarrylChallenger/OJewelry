@@ -254,15 +254,14 @@ function CalcTotals()
 
 function SetFinishingCost(finishingVal) {
     if ($("#Labors_0__Name").val() === "FINISHING LABOR" && $("#Labors_0__SVMState").val() === "Fixed") {
-        $("#Labors_0__PPP").val(finishingVal);
+        $(".finishingPPP").val(finishingVal);
         CalcRowTotal("Labors", 0);
     }
 }
 
 function SetPackagingCost(packagingVal) {
-    console.log("In SPC");
     if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__SVMState").val() === "Fixed") {
-        $("#Miscs_0__PPP").val(packagingVal);
+        $(".miscsPPP").val(packagingVal);
         CalcRowTotal("Miscs", 0);
     }}
 
@@ -279,7 +278,6 @@ function JewelryTypeChanged(companyId) {
             var packagingVal = costData.packagingCosts[jt];
             SetFinishingCost(finishingVal);
             SetPackagingCost(packagingVal);
-            console.log("Out of JTC");
         });
 }
 

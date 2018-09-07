@@ -584,14 +584,16 @@ namespace OJewelry.Controllers
             {
                 Id = -1,
                 Name = "FINISHING LABOR",
-                SVMState = SVMStateEnum.Fixed
+                SVMState = SVMStateEnum.Fixed,
+                Qty = 1
             };
             svm.Labors.Add(lc);
             lc = new LaborComponent
             {
                 Id = -2,
                 Name = "SETTING LABOR",
-                SVMState = SVMStateEnum.Fixed
+                SVMState = SVMStateEnum.Fixed,
+                Qty = 1
             };
             svm.Labors.Add(lc);//svm.Stones.Add(new StoneComponent(new Stone()));
             MiscComponent mc = new MiscComponent
