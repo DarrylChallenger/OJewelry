@@ -58,12 +58,12 @@ namespace OJewelry.Controllers
                 // Finishing Costs: per Jewelry Type
                 if (cd.finishingCosts.Where(k => k.Key == jt.Name).Count() == 0)
                 {
-                    cd.finishingCosts.Add(jt.Name, i++);
+                    cd.finishingCosts.Add(jt.Name, 0);
                 }
                 // Packaging Costs: per Jewelry Type
                 if (cd.packagingCosts.Where(k => k.Key == jt.Name).Count() == 0)
                 {
-                    cd.packagingCosts.Add(jt.Name, i++);
+                    cd.packagingCosts.Add(jt.Name, 0);
                 }
             }
             // Settings Costs 
