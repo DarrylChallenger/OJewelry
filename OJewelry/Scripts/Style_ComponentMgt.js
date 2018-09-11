@@ -519,12 +519,14 @@ $(function () { // requiredifnotremoved validation
          ignore: [],
          // any other options and/or rules
      });
-     */
+     
+    // Don't need to do this when the form first loads
     $("#StylesForm").data("validator").settings.ignore = "";
     var form = $("#StylesForm");
     $(form).removeData("validator")             // Added by jQuery Validate
         .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation 
     $.validator.unobtrusive.parse(form);
+    */
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
