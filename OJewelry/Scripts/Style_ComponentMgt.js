@@ -254,14 +254,14 @@ function CalcTotals()
 
 function SetFinishingCost(finishingVal) {
     if ($("#Labors_0__Name").val() === "FINISHING LABOR" && $("#Labors_0__SVMState").val() === "Fixed") {
-        $(".finishingPPP").val(finishingVal);
+        $(".finishingPPP").val(finishingVal.toFixed(2));
         CalcRowTotal("Labors", 0);
     }
 }
 
 function SetPackagingCost(packagingVal) {
     if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__SVMState").val() === "Fixed") {
-        $(".miscsPPP").val(packagingVal);
+        $(".miscsPPP").val(packagingVal.toFixed(2));
         CalcRowTotal("Miscs", 0);
     }}
 
