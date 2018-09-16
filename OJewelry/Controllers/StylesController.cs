@@ -162,7 +162,6 @@ namespace OJewelry.Controllers
                 Unit = "DWT"
             };
             svm.Populate(id, db);
-            MarkDefaultEntriesAsFixed(svm);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
@@ -583,7 +582,7 @@ namespace OJewelry.Controllers
             LaborComponent lc = new LaborComponent
             {
                 Id = -1,
-                Name = "FINISHING LABOR",
+                Name = StyleViewModel.FinishingLaborName,
                 SVMState = SVMStateEnum.Fixed,
                 Qty = 1
             };
@@ -591,40 +590,20 @@ namespace OJewelry.Controllers
             lc = new LaborComponent
             {
                 Id = -2,
-                Name = "SETTING LABOR",
+                Name = StyleViewModel.SettingLaborName,
                 SVMState = SVMStateEnum.Fixed,
                 Qty = 1
             };
             svm.Labors.Add(lc);//svm.Stones.Add(new StoneComponent(new Stone()));
             MiscComponent mc = new MiscComponent
             {
-                Name = "PACKAGING",
+                Name = StyleViewModel.PackagingName,
                 SVMState = SVMStateEnum.Fixed,
                 Qty = 1
             };
             svm.Miscs.Add(mc);
         }
 
-        public void MarkDefaultEntriesAsFixed(StyleViewModel svm)
-        {
-            if (svm.Labors != null && svm.Labors.Count > 1)
-            {
-                if (svm.Labors[0].Name == "FINISHING LABOR")
-                {
-                    svm.Labors[0].SVMState = SVMStateEnum.Fixed;
-                    svm.Labors[1].SVMState = SVMStateEnum.Fixed;
-                }
-            }
-
-            if (svm.Miscs != null && svm.Miscs.Count > 0)
-            {
-                if (svm.Miscs[0].Name == "PACKAGING")
-                {
-                    svm.Miscs[0].SVMState = SVMStateEnum.Fixed;
-                }
-            }
-
-        }
         public ActionResult Memo(int? id)
         {
             if (id == null)

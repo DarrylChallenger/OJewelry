@@ -401,3 +401,8 @@ html input[disabled], locked {
     color: red;
 }
 
+.AssemblyCostsForm label {
+    text-align:right;
+    display:block;
+}
+

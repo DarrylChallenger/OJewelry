@@ -42,7 +42,7 @@ namespace OJewelry.Controllers
                 db.AssemblyCosts.Add(assemblyCost);
                 db.SaveChanges();
             }
-            CostData cd = JsonConvert.DeserializeObject<CostData>(assemblyCost.costDataJSON);
+            CostData cd = assemblyCost.GetCostDataFromJSON();
             if (cd == null)
             {
                 cd = new CostData
@@ -67,6 +67,13 @@ namespace OJewelry.Controllers
                 }
             }
             // Settings Costs 
+            foreach (Stone st in db.Stones)
+            {
+                if (cd.settingsCosts.Where(k => k.Key == st.StoneSize).Count() == 0)
+                {
+                    cd.settingsCosts.Add(st.StoneSize, 1);
+                }
+            }
             ViewBag.CompanyName = company.Name;
             return View(cd);
         }
@@ -81,7 +88,7 @@ namespace OJewelry.Controllers
             if (ModelState.IsValid)
             {
                 AssemblyCost assemblyCost = db.AssemblyCosts.Find(costData.companyId);
-                assemblyCost.costDataJSON = JsonConvert.SerializeObject(costData);
+                assemblyCost.costDataJSON = costData.GetJSON();
                 db.Entry(assemblyCost).State = EntityState.Modified;
                 db.SaveChanges();
                 //return RedirectToAction("Index", "");

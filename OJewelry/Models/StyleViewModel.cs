@@ -117,6 +117,11 @@ namespace OJewelry.Models
         {
             MetalCodes = new SelectList(metals, "Id", "Code", defaultMetalSelection);
         }
+
+        public decimal ComputePrice() // use formula based on metal and multipliers
+        {
+            return 0;
+        }
     }
     public class StoneComponent 
     {
@@ -442,7 +447,6 @@ namespace OJewelry.Models
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
-
     }
     public class MiscComponent
     {
@@ -483,30 +487,6 @@ namespace OJewelry.Models
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
-    }
-
-    public class StyleViewComponentModelX
-    { //Components should be a componentID and a qty
-        public StyleViewComponentModelX()
-        {
-            SVMState = SVMStateEnum.Dirty; // For now, update all records
-        }
-    
-        //public int scId { get; set; }
-        //public int CompanyId { get { return Comp.CompanyId ?? 0; } set { Comp.CompanyId = value; } }
-        //public int ComponentTypeId { get { return Comp.ComponentTypeId; } set { Comp.ComponentTypeId = value; } }
-        //public Component Comp { get; set; }
- 
-        //public String Name { get { return Comp.Name; } set { Comp.Name = value; } }
-        [Display(Name = "Quantity")]
-        public int Qty { get; set; }
-
-        public SelectList CompList { get; set; }
-
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
-        public decimal Total { get; set; }
-
-        public SVMStateEnum SVMState { get; set; }
     }
 
     public enum SVMStateEnum { Dirty, Added, Deleted, Unadded, Fixed }
@@ -630,6 +610,46 @@ namespace OJewelry.Models
         public int CCRowIndex { get; set; }
         public int i { get; set; }
         public SVMDelButtonPos DelBtnPos { get; set; }
+        public static string FinishingLaborName = "FINISHING LABOR";
+        public static string SettingLaborName = "SETTING LABOR";
+        public static string PackagingName = "PACKAGING";
+
+        public void MarkDefaultEntriesAsFixed()
+        {
+            if (Labors != null && Labors.Count > 1)
+            {
+                if (Labors[0].Name == StyleViewModel.FinishingLaborName)
+                {
+                    Labors[0].SVMState = SVMStateEnum.Fixed;
+                    Labors[1].SVMState = SVMStateEnum.Fixed;
+                }
+            }
+
+            if (Miscs != null && Miscs.Count > 0)
+            {
+                if (Miscs[0].Name == StyleViewModel.PackagingName)
+                {
+                    Miscs[0].SVMState = SVMStateEnum.Fixed;
+                }
+            }
+
+        }
+
+        public void AddStoneCosts() // add a stone setting cost for each stone
+        {
+            return;
+        }
+
+        public void ComputePackaging(List<MiscComponent> miscs, CostData cd)
+        {
+
+            if (Miscs.Count > 0 && Miscs[0].SVMState == SVMStateEnum.Fixed && Miscs[0].Name == PackagingName) // is there a packaging entry?
+            {
+                Miscs[0].PPP = cd.packagingCosts[Style.JewelryType.Name];
+            }
+            return;
+        }
+
 
         public void PopulateDropDownData(OJewelryDB db)
         {
@@ -923,7 +943,7 @@ namespace OJewelry.Models
                     //cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
                     cstc.MetalCode = db.MetalCodes.Find(casting.MetalCodeID).Code; // Metal Code
                     cstc.Qty = casting.Qty.Value;
-                    t = cstc.Price ?? 0;
+                    t = cstc.ComputePrice();
                     t2 = cstc.Labor ?? 0;
                     cstc.Total = cstc.Qty * (t + t2);
                     MetalsTotal += cstc.Total;
@@ -945,6 +965,7 @@ namespace OJewelry.Models
                     Labors.Add(liscm);
                     Total += liscm.Total;
                 }
+                AddStoneCosts();
                 // Misc
                 foreach (StyleMisc sms in Style.StyleMiscs)
                 {
@@ -956,6 +977,12 @@ namespace OJewelry.Models
                     MiscsTotal += miscm.Total;
                     Miscs.Add(miscm);
                     Total += miscm.Total;
+                }
+                MarkDefaultEntriesAsFixed();
+                AssemblyCost cost = db.AssemblyCosts.Where(x => x.companyId == CompanyId).FirstOrDefault();
+                if (cost != null)
+                {
+                    ComputePackaging(Miscs, cost.GetCostDataFromJSON());
                 }
                 PopulateDropDowns(db);
             }

@@ -362,7 +362,7 @@ COST:
 
                 @if (Model.SVMOp != SVMOperation.Print)
                 {
-                    bool bDisabled = (Model.Labors[i].SVMState == SVMStateEnum.Fixed && Model.Labors[i].Name == "FINISHING LABOR");
+                    bool bDisabled = (Model.Labors[i].SVMState == SVMStateEnum.Fixed && Model.Labors[i].Name == StyleViewModel.FinishingLaborName);
                     @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved" } })
                     @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                     <div class="col-sm-2 col-xs-2 "></div>
