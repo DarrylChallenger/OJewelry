@@ -635,7 +635,7 @@ namespace OJewelry.Models
 
         }
 
-        public void AddStoneCosts() // add a stone setting cost for each stone
+        public void AddStoneCosts(List<StoneComponent> stones, CostData cd) // add a stone setting cost for each stone
         {
             return;
         }
@@ -643,14 +643,21 @@ namespace OJewelry.Models
         public void ComputePackaging(List<MiscComponent> miscs, CostData cd)
         {
 
-            if (Miscs.Count > 0 && Miscs[0].SVMState == SVMStateEnum.Fixed && Miscs[0].Name == PackagingName) // is there a packaging entry?
+            if (miscs.Count > 0 && miscs[0].SVMState == SVMStateEnum.Fixed && miscs[0].Name == PackagingName) // is there a packaging entry?
             {
-                Miscs[0].PPP = cd.packagingCosts[Style.JewelryType.Name];
+                miscs[0].PPP = cd.packagingCosts[Style.JewelryType.Name];
             }
             return;
         }
 
-
+        public void ComputeFinishing(List<LaborComponent> labors, CostData cd)
+        {
+            if (labors.Count > 0 && labors[0].SVMState == SVMStateEnum.Fixed && labors[0].Name == FinishingLaborName)
+            {
+                labors[0].PPP = cd.finishingCosts[Style.JewelryType.Name];
+            }
+        }
+        
         public void PopulateDropDownData(OJewelryDB db)
         {
 
@@ -965,7 +972,6 @@ namespace OJewelry.Models
                     Labors.Add(liscm);
                     Total += liscm.Total;
                 }
-                AddStoneCosts();
                 // Misc
                 foreach (StyleMisc sms in Style.StyleMiscs)
                 {
@@ -982,7 +988,10 @@ namespace OJewelry.Models
                 AssemblyCost cost = db.AssemblyCosts.Where(x => x.companyId == CompanyId).FirstOrDefault();
                 if (cost != null)
                 {
-                    ComputePackaging(Miscs, cost.GetCostDataFromJSON());
+                    CostData cd = cost.GetCostDataFromJSON();
+                    AddStoneCosts(Stones, cd);
+                    ComputeFinishing(Labors, cd);
+                    ComputePackaging(Miscs, cd);
                 }
                 PopulateDropDowns(db);
             }
