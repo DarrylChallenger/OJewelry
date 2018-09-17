@@ -1485,9 +1485,9 @@ namespace OJewelry.Models
         public void CreateNewFrom(Style oldStyle)
         {
             // clear out key values
-            StyleName = "";
+            StyleName = oldStyle.StyleName;
             StyleNum = "";
-            Desc = "";
+            Desc = oldStyle.Desc;
             Id = 0;
             Quantity = 0;
             UnitsSold = 0;
