@@ -49,7 +49,7 @@ namespace OJewelry.Models
     }
 
     [Table("Cost")]
-    public class AssemblyCost
+    public partial class AssemblyCost
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

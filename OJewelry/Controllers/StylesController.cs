@@ -587,14 +587,7 @@ namespace OJewelry.Controllers
                 Qty = 1
             };
             svm.Labors.Add(lc);
-            lc = new LaborComponent
-            {
-                Id = -2,
-                Name = StyleViewModel.SettingLaborName,
-                SVMState = SVMStateEnum.Fixed,
-                Qty = 1
-            };
-            svm.Labors.Add(lc);//svm.Stones.Add(new StoneComponent(new Stone()));
+
             MiscComponent mc = new MiscComponent
             {
                 Name = StyleViewModel.PackagingName,

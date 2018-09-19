@@ -17,13 +17,15 @@ function AddComponentRow(type, index)
     stateClassName = type + "State";
     stateClass = "." + stateClassName;
     len = $(stateClass).length;
-
+    //len = index;
+    console.log(type);
+    console.log(len);
     // reset components values on select; totals
     // move ltbordered values into function
     // fix ltbordered values to match CostComponentPartial
 
-    idTotalName = type + "Total";
-    idTotal = "#" + idTotalName;
+    idBreakName = type + "Break";
+    idBreak = "#" + idBreakName;
 
     btnPos = $("#DelBtnPos").attr("BtnPos");
     leftDelBtn = '';
@@ -66,7 +68,7 @@ function AddComponentRow(type, index)
             .attr("data-val-required", "The MetalCodeId field is required.");
         ltbordered = castingsltbordered.replace("JSVENDORS", jsVendors.html()).replace("JSMETALS", jsMetals.html());
     }
-    if (type === "Stones") { 
+    if (type === "Stones") { // also add a labor setting with the stone row #
         // Stone
         stonesltbordered = getStonesHTML(type, len);
         var jsStones = $("#jsStones").clone();
@@ -121,12 +123,9 @@ function AddComponentRow(type, index)
     }
     //console.log(ltbordered)
     var str = newState.add(ltbordered);
-    $(idTotal).before(str);
-    // update the stones|finding dropdown
-    if (type === "Stones" || type === "Findings")
-    {
-        //$("#" + type + "_" + (index+1) + "__Id option[value='']").attr("value", "-1");
-    }
+    // add after last row or header
+    $(idBreak).before(str);
+
     /* reset validation */
     var form = $("#StylesForm");
     $(form).removeData("validator")             // Added by jQuery Validate
@@ -177,6 +176,9 @@ function RemoveComponentRow(type, i)
     } else {
         // ... otherwise show the header
         $("#" + idHeaderBtn).removeClass("hidden");
+    }
+    if (type === "Stone") {
+        RemoveStoneSettingRow(i);
     }
 }
 
@@ -301,6 +303,7 @@ function StoneChanged(i) {
             $("#Stones_" + i + "__Price").val(stn.Price.toFixed(2));
             CalcRowTotal("Stones", i);
         });
+    UpdateStoneSettingRow(i);
 }
 
 function FindingChanged(i) {
@@ -313,7 +316,27 @@ function FindingChanged(i) {
         $("#Findings_" + i + "__Price").val(dataRow.find(".Price").attr("value"));
         $("#" + "Findings" + "_" + i + "__Id option[value='']").attr("disabled", "disabled");
     }
-CalcRowTotal("Findings", i);
+    CalcRowTotal("Findings", i);
+}
+
+function UpdateStoneSettingRow(stoneRow) {
+    // find labor with data-stonerow = stonerow
+    // if it dowsn't exist, create it
+    // state = fixed
+    // remove Id or Name or both?
+
+    // updates
+    // data-stonerow
+    // Name
+    // blank Desc
+    // PPH
+    // PPP - get from API
+    // Qty = stone QTY
+}
+
+function RemoveStoneSettingRow(stoneRow) {
+    // find labor with data-stonerow = stonerow
+    // hide it
 }
 
 function getCastingsHTML(type, len) {
@@ -488,7 +511,9 @@ function getMiscsHTML(type, len) {
 
 function setAddBtn(type)
 {
-    var VisibleRows = $("." + type + "State :first-child[value|='Dirty'], ." + type + "State :first-child[value|='Added']");
+    var VisibleRows = $("." + type + "State :first-child[value|='Dirty'], ." +
+        type + "State :first-child[value|='Added'], ." +
+        type + "State :first-child[value|='Fixed']");
     var VisibleRowCount = VisibleRows.length;
     if (VisibleRowCount === 0) {
         // unhide the header '+' btn
@@ -511,26 +536,10 @@ $(function () { //
     CalcSubtotals("Labors");
     CalcSubtotals("Miscs");
     CalcTotals();
-}); // Set button, subtotals
-
-$(function () { // requiredifnotremoved validation 
-    /*
-     $('#StylesForm').validate({
-         ignore: [],
-         // any other options and/or rules
-     });
-     
-    // Don't need to do this when the form first loads
-    $("#StylesForm").data("validator").settings.ignore = "";
-    var form = $("#StylesForm");
-    $(form).removeData("validator")             // Added by jQuery Validate
-        .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation 
-    $.validator.unobtrusive.parse(form);
-    */
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
-        if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX" ) {
+        if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX") {
             return true;
         }
         if ($(element).hasClass("input-validation-error")) {
@@ -546,6 +555,7 @@ $(function () { // requiredifnotremoved validation
 
         return rt;
     }, $("#vMsg").attr("data-msg"));
+}); // Set button, subtotals
 
-}); // requiredifnotremoved validation
+
 

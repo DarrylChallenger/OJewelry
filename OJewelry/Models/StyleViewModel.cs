@@ -613,15 +613,15 @@ namespace OJewelry.Models
         public static string FinishingLaborName = "FINISHING LABOR";
         public static string SettingLaborName = "SETTING LABOR";
         public static string PackagingName = "PACKAGING";
+        public AssemblyCost assemblyCost { get; set; } 
 
         public void MarkDefaultEntriesAsFixed()
         {
-            if (Labors != null && Labors.Count > 1)
+            if (Labors != null && Labors.Count > 0)
             {
                 if (Labors[0].Name == StyleViewModel.FinishingLaborName)
                 {
                     Labors[0].SVMState = SVMStateEnum.Fixed;
-                    Labors[1].SVMState = SVMStateEnum.Fixed;
                 }
             }
 
@@ -635,26 +635,26 @@ namespace OJewelry.Models
 
         }
 
-        public void AddStoneCosts(List<StoneComponent> stones, CostData cd) // add a stone setting cost for each stone
+        public void AddStoneCosts(CostData cd) // add a labor setting cost for each stone
         {
             return;
         }
 
-        public void ComputePackaging(List<MiscComponent> miscs, CostData cd)
+        public void ComputePackaging(CostData cd)
         {
 
-            if (miscs.Count > 0 && miscs[0].SVMState == SVMStateEnum.Fixed && miscs[0].Name == PackagingName) // is there a packaging entry?
+            if (Miscs.Count > 0 && Miscs[0].SVMState == SVMStateEnum.Fixed && Miscs[0].Name == PackagingName) // is there a packaging entry?
             {
-                miscs[0].PPP = cd.packagingCosts[Style.JewelryType.Name];
+                Miscs[0].PPP = cd.packagingCosts[Style.JewelryType.Name];
             }
             return;
         }
 
-        public void ComputeFinishing(List<LaborComponent> labors, CostData cd)
+        public void ComputeFinishing(CostData cd)
         {
-            if (labors.Count > 0 && labors[0].SVMState == SVMStateEnum.Fixed && labors[0].Name == FinishingLaborName)
+            if (Labors.Count > 0 && Labors[0].SVMState == SVMStateEnum.Fixed && Labors[0].Name == FinishingLaborName)
             {
-                labors[0].PPP = cd.finishingCosts[Style.JewelryType.Name];
+                Labors[0].PPP = cd.finishingCosts[Style.JewelryType.Name];
             }
         }
         
@@ -724,6 +724,15 @@ namespace OJewelry.Models
             }
         }
 
+        public void GetSettingsCosts(OJewelryDB db)
+        {
+            assemblyCost = db.AssemblyCosts.Find(CompanyId);
+            if (assemblyCost == null)
+            {
+                assemblyCost = new AssemblyCost();
+            }
+            assemblyCost.Validate(db, CompanyId);
+        }
         public void RepopulateComponents(OJewelryDB db)
         {
             decimal t = 0;
@@ -734,6 +743,8 @@ namespace OJewelry.Models
             List<Stone> stoneSet = db.Stones.Where(st => st.CompanyId == this.CompanyId).Include(st => st.Shape).Include(st => st.Vendor).ToList();
             List<Finding> findingSet = db.Findings.Where(st => st.CompanyId == this.CompanyId).ToList();
 
+            // Get Settings
+            GetSettingsCosts(db);
 
             int i = -1;
             foreach (StoneComponent sc in Stones)
@@ -919,6 +930,7 @@ namespace OJewelry.Models
             Miscs = new List<MiscComponent>();
 
             PopulateDropDownData(db);
+            GetSettingsCosts(db);
 
             if (id == null)
             {
@@ -989,9 +1001,9 @@ namespace OJewelry.Models
                 if (cost != null)
                 {
                     CostData cd = cost.GetCostDataFromJSON();
-                    AddStoneCosts(Stones, cd);
-                    ComputeFinishing(Labors, cd);
-                    ComputePackaging(Miscs, cd);
+                    AddStoneCosts(cd);
+                    ComputeFinishing(cd);
+                    ComputePackaging(cd);
                 }
                 PopulateDropDowns(db);
             }

@@ -31,49 +31,14 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Companies");
             }
-            AssemblyCost assemblyCost = db.AssemblyCosts.FirstOrDefault(ac => ac.companyId == companyId);
+            AssemblyCost assemblyCost = db.AssemblyCosts.Find(companyId);
             if (assemblyCost == null)
             {
-                assemblyCost = new AssemblyCost
-                {
-                    companyId = companyId.Value,
-                    costDataJSON = ""
-                };
-                db.AssemblyCosts.Add(assemblyCost);
-                db.SaveChanges();
+                assemblyCost = new AssemblyCost();
             }
+            assemblyCost.Validate(db, companyId.Value);
             CostData cd = assemblyCost.GetCostDataFromJSON();
-            if (cd == null)
-            {
-                cd = new CostData
-                {
-                    companyId = companyId.Value
-                };
-            }
-            // Ensure that the CostData structure is fully expanded
-            // Metal Costs
-            int i = 0;
-            foreach (JewelryType jt in db.JewelryTypes)
-            {
-                // Finishing Costs: per Jewelry Type
-                if (cd.finishingCosts.Where(k => k.Key == jt.Name).Count() == 0)
-                {
-                    cd.finishingCosts.Add(jt.Name, 0);
-                }
-                // Packaging Costs: per Jewelry Type
-                if (cd.packagingCosts.Where(k => k.Key == jt.Name).Count() == 0)
-                {
-                    cd.packagingCosts.Add(jt.Name, 0);
-                }
-            }
-            // Settings Costs 
-            foreach (Stone st in db.Stones)
-            {
-                if (cd.settingsCosts.Where(k => k.Key == st.StoneSize).Count() == 0)
-                {
-                    cd.settingsCosts.Add(st.StoneSize, 1);
-                }
-            }
+
             ViewBag.CompanyName = company.Name;
             return View(cd);
         }

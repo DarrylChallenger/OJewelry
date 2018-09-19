@@ -29,6 +29,8 @@ namespace OJewelry.Models
 
         public int? Qty { get; set; }
 
+        //public bool Auto { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StyleLabor> StyleLabors { get; set; }
     }
