@@ -24,6 +24,7 @@ namespace OJewelry
             {
                 string empty = "";
                 result = JsonConvert.SerializeObject(new { CtWt = empty, VendorName = empty, Price = 0 });
+                throw new HttpResponseException(HttpStatusCode.NotFound);
             }
             else
             {

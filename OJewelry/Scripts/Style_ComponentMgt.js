@@ -292,13 +292,23 @@ function JewelryTypeChanged(companyId) {
 
 function StoneChanged(i) {
     // pass the stone, shape, and size to StoneMantchingController. Process the result or handle not found 
-    var stone =  $("#Stones_" + i + "__Name > option:selected").val();
-    var shape = $("#Stones_" + i + "__ShId > option:selected").val();
-    var size = $("#Stones_" + i + "__SzId > option:selected").val();
+    var stoneCtl = $("#Stones_" + i + "__Name");
+    var shapeCtl = $("#Stones_" + i + "__ShId");
+    var sizeCtl = $("#Stones_" + i + "__SzId");
+    var stone = stoneCtl.val();
+    var shape = shapeCtl.val();
+    var size =  sizeCtl.val();
     var companyid = $("#CompanyId").val();
     fetch('/api/StoneMatchingApi?companyId=' + companyid + '&stone=' + stone + '&shape=' + shape + '&size=' + size)
         .then(function (response) {
+            if (response.ok) {
                 return response.json();
+            } else {
+                // Put the controls in warning mode
+                stoneCtl.addClass("badStone");
+                shapeCtl.addClass("badStone");
+                sizeCtl.addClass("badStone");
+            }
         })
         .then(function(stonedata) {
             // unpack stonedata
@@ -309,6 +319,10 @@ function StoneChanged(i) {
             $("#Stones_" + i + "__VendorName").val(stn.VendorName);
             $("#Stones_" + i + "__Price").val(stn.Price.toFixed(2));
             CalcRowTotal("Stones", i);
+            // Put the controls in OK mode
+            stoneCtl.removeClass("badStone");
+            shapeCtl.removeClass("badStone");
+            sizeCtl.removeClass("badStone");
             UpdateStoneSettingRow(i);
         });
 }

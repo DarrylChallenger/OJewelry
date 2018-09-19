@@ -390,6 +390,11 @@ html input[disabled], locked {
     border-color: orange;
 }
 
+.badStone {
+    border-color: #b94a48; /* text-danger */
+    border-width: 2px;
+}
+
 .AddBtn {
     color:green;
 }
