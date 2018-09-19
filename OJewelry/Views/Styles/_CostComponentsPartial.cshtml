@@ -190,7 +190,7 @@ COST:
                     @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
                     @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 locked", @disabled = "disabled" } })
                     @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
-                    @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                    @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "StoneQtyChanged('" +  i + "')" })
                 }
                 else
                 {
@@ -435,12 +435,14 @@ COST:
 
             @if (Model.SVMOp != SVMOperation.Print)
             {
-                <input class="col-sm-2 col-xs-2 text-box single-line locked" type="text" disabled value="Setting #@j" /> <!-- Name size "mm setting"-->
-                <div class="col-sm-2 col-xs-2 "></div>
-                <div class="col-sm-2 col-xs-2 "></div>
-                <div class="col-sm-1 col-xs-1 "></div>
-                <input class="col-sm-1 col-xs-1 text-box single-line locked" type="text" disabled value="@Model.assemblyCost.GetCostDataFromJSON().settingsCosts[@Model.Stones[j].Size].ToString("F02")" />
-                <input class="col-sm-1 col-xs-1 text-box single-line locked" type="text" disabled value="@Model.Stones[j].Qty.ToString()" />
+                <div id="StoneSetting_@j">
+                    <input class="col-sm-2 col-xs-2 text-box single-line locked" id="StoneSettingName_@j" type="text" disabled value="Setting #@j" /> <!-- Name size "mm setting"-->
+                    <div class="col-sm-2 col-xs-2 "></div>
+                    <div class="col-sm-2 col-xs-2 "></div>
+                    <div class="col-sm-1 col-xs-1 "></div>
+                    <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingPrice_@j" type="text" disabled value="@Model.assemblyCost.GetCostDataFromJSON().settingsCosts[@Model.Stones[j].Size].ToString("F02")" />
+                    <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingQty_@j" type="text" disabled value="@Model.Stones[j].Qty.ToString()" />
+                </div>
             }
             else
             {
@@ -451,7 +453,7 @@ COST:
                 <div class="col-sm-1 col-xs-1">@Model.Stones[j].Price.ToString("F02")</div>
                 <div class="col-sm-1 col-xs-1">@Model.Stones[j].Qty</div>
             }
-            <div id="LaborsRowTotalValue_@(j+lc)" class="col-sm-1 col-xs-1 LaborsRowTotal"> @((Model.Stones[j].Qty * @Model.assemblyCost.GetCostDataFromJSON().settingsCosts[@Model.Stones[j].Size]).ToString("F02"))</div>
+            <div id="LaborsRowTotalValue_@(j+lc)" name="StoneSettingRowTotalValue_@j" class="col-sm-1 col-xs-1 LaborsRowTotal"> @((Model.Stones[j].Qty * @Model.assemblyCost.GetCostDataFromJSON().settingsCosts[@Model.Stones[j].Size]).ToString("F02"))</div>
         </div>
         j++;
     }

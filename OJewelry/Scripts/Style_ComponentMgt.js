@@ -226,6 +226,13 @@ function CalcRowTotal(type, rowId)
     CalcSubtotals(type);
 }
 
+function CalcStonesSettingsRow(stoneRow, price, qty) {
+   // Totals are in element after the row data
+    var total = $("#StoneSetting_" + stoneRow).next();
+    total.text((price * qty).toFixed(2));
+    CalcSubtotals("Labors");
+}
+
 function CalcSubtotals(type) {
     // Iterate through row totals and compute the type total 
     var rows = $("." + type + "RowTotal");
@@ -265,7 +272,8 @@ function SetPackagingCost(packagingVal) {
     if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__SVMState").val() === "Fixed") {
         $(".miscsPPP").val(packagingVal.toFixed(2));
         CalcRowTotal("Miscs", 0);
-    }}
+    }
+}
 
 function JewelryTypeChanged(companyId) {
     fetch('/api/AssemblyCostsApi?companyId=' + companyId)
@@ -306,6 +314,11 @@ function StoneChanged(i) {
     UpdateStoneSettingRow(i);
 }
 
+function StoneQtyChanged(i) {
+    CalcRowTotal("Stones", i);
+    UpdateStoneSettingRow(i);
+}
+
 function FindingChanged(i) {
     selected = $("#Findings_" + i + "__Id > option:selected");
     oldval = selected.val();
@@ -321,17 +334,45 @@ function FindingChanged(i) {
 
 function UpdateStoneSettingRow(stoneRow) {
     // find labor with data-stonerow = stonerow
-    // if it dowsn't exist, create it
+    var settingRowName = "StoneSetting_" + stoneRow;
+    var target = $("#" + settingRowName);
+    // if it dowsn't exist, create it - AddStoneSettingRowHTML
+    if (target === null) {
+        target = AddStoneSettingRowHTML(stoneRow);
+    }
+    var price;
+    var qty = 0;
+    // updates
+    // Name - some function of stone name, shape, size
+    $("#StoneSettingName_" + stoneRow).val("Setting #" + stoneRow);
+
+    // Qty = stone QTY
+    qty = $("#Stones_" + stoneRow + "__Qty").val();
+    $("#StoneSettingQty_" + stoneRow).val(qty);
+
+    price = $("#StoneSettingPrice_" + stoneRow).val();
+    CalcStonesSettingsRow(stoneRow, price, qty);
+
+}
+
+function AddStoneSettingRowHTML(stoneRow) {
     // state = fixed
     // remove Id or Name or both?
-
-    // updates
     // data-stonerow
-    // Name
-    // blank Desc
-    // PPH
+
     // PPP - get from API
-    // Qty = stone QTY
+    fetch('/api/AssemblyCostsApi?companyId=' + $("#CompanyId").val())
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (cdJSON) {
+            // unpack CostData
+            var jt = $("#JewelryTypeId :selected").text();
+            var costData = JSON.parse(cdJSON);
+            settingVal = costData.settingsCosts[$("#Stones_" + stoneRow + "__SzId").val()];
+            $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
+            price = settingVal;
+        });
 }
 
 function RemoveStoneSettingRow(stoneRow) {
@@ -394,7 +435,7 @@ function getStonesHTML(type, len) {
             <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Caret Weight must be a number." id="Stones_' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="" \"/>\
             <input class="col-sm-2 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The Vendor field is required." id="Stones_' + len + '__VendorName" name="Stones[' + len + '].VendorName" type="text" value="" />\
             <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Price field must be a number." id="Stones_' + len + '__Price" name="Stones[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
-            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="0" onblur="StoneQtyChanged(' + len + ')\"/>\
             <div id="StonesRowTotalValue_' + len + '" class="col-sm-1 StonesRowTotal ">0.00</div>\
             ' + rightDelBtn + '\
            </div>\
