@@ -18,8 +18,6 @@ function AddComponentRow(type, index)
     stateClass = "." + stateClassName;
     len = $(stateClass).length;
     //len = index;
-    console.log(type);
-    console.log(len);
     // reset components values on select; totals
     // move ltbordered values into function
     // fix ltbordered values to match CostComponentPartial
@@ -97,7 +95,7 @@ function AddComponentRow(type, index)
             .attr("id", 'Stones_' + len + '__SzId')
             .attr("data-val", "true")
             .attr("data-val-required", "Please select a stone size. ")
-            .attr("onchange", "StoneChanged('" + len + "')");
+            .attr("onchange", "StoneSizeChanged('" + len + "')");
         
         ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html()+jsShapes.html()+jsSizes.html());
     }
@@ -125,19 +123,20 @@ function AddComponentRow(type, index)
     var str = newState.add(ltbordered);
     // add after last row or header
     $(idBreak).before(str);
-
+    if (type === "Stones") {
+        StoneChanged(len);
+        AddStoneSettingRowHTML(len);
+    }
+    if (type === "Findings") {
+        FindingChanged(len);
+    }
     /* reset validation */
     var form = $("#StylesForm");
     $(form).removeData("validator")             // Added by jQuery Validate
         .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
     $.validator.unobtrusive.parse(form);
-    if (type === "Stones") {
-        StoneChanged(len);
-    }
-    if (type === "Findings") {
-        FindingChanged(len);
-    }
 }
+
 
 function RemoveComponentRow(type, i)
 {
@@ -177,7 +176,7 @@ function RemoveComponentRow(type, i)
         // ... otherwise show the header
         $("#" + idHeaderBtn).removeClass("hidden");
     }
-    if (type === "Stone") {
+    if (type === "Stones") {
         RemoveStoneSettingRow(i);
     }
 }
@@ -305,13 +304,33 @@ function StoneChanged(i) {
             // unpack stonedata
             // pack the ctwt, vwndor, and price fields
             var stn = JSON.parse(stonedata);
-            //console.log(stn.Price);
+            //console.log(stn);
             $("#Stones_" + i + "__CtWt").val(stn.CtWt);
             $("#Stones_" + i + "__VendorName").val(stn.VendorName);
             $("#Stones_" + i + "__Price").val(stn.Price.toFixed(2));
             CalcRowTotal("Stones", i);
+            UpdateStoneSettingRow(i);
         });
-    UpdateStoneSettingRow(i);
+}
+
+function StoneSizeChanged(stoneRow) {
+    // Get the assembly costs extract the settings costs
+    fetch('/api/AssemblyCostsApi?companyId=' + $("#CompanyId").val())
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (cdJSON) {
+            // unpack CostData
+            var costData = JSON.parse(cdJSON);
+            settingVal = costData.settingsCosts[$("#Stones_" + stoneRow + "__SzId").val()];
+            if (settingVal === undefined) {
+                settingVal = 0
+            }
+
+            $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
+            price = settingVal;
+        });
+    StoneChanged(stoneRow);
 }
 
 function StoneQtyChanged(i) {
@@ -337,14 +356,22 @@ function UpdateStoneSettingRow(stoneRow) {
     var settingRowName = "StoneSetting_" + stoneRow;
     var target = $("#" + settingRowName);
     // if it dowsn't exist, create it - AddStoneSettingRowHTML
-    if (target === null) {
-        target = AddStoneSettingRowHTML(stoneRow);
-    }
-    var price;
-    var qty = 0;
+
+    var price, qty;
+    var name, shape, size;
     // updates
     // Name - some function of stone name, shape, size
-    $("#StoneSettingName_" + stoneRow).val("Setting #" + stoneRow);
+    name = $("#Stones_" + stoneRow + "__Name").val();
+    shape = $("#Stones_" + stoneRow + "__ShId").val();
+    size = $("#Stones_" + stoneRow + "__SzId").val();
+
+    var stName;
+    if (name === "" || shape === "" || size === "") {
+        stName = "Setting for stone " + (parseInt(stoneRow) + 1);
+    } else {
+        stName = "Setting for " + name + "-" + shape + "-" + size ;
+    }
+    $("#StoneSettingName_" + stoneRow).val(stName);
 
     // Qty = stone QTY
     qty = $("#Stones_" + stoneRow + "__Qty").val();
@@ -356,9 +383,8 @@ function UpdateStoneSettingRow(stoneRow) {
 }
 
 function AddStoneSettingRowHTML(stoneRow) {
-    // state = fixed
-    // remove Id or Name or both?
-    // data-stonerow
+    ltbordered = getStoneSettingsHTML("Stones", len);
+    $("#LaborsTotal").before(ltbordered);
 
     // PPP - get from API
     fetch('/api/AssemblyCostsApi?companyId=' + $("#CompanyId").val())
@@ -370,14 +396,23 @@ function AddStoneSettingRowHTML(stoneRow) {
             var jt = $("#JewelryTypeId :selected").text();
             var costData = JSON.parse(cdJSON);
             settingVal = costData.settingsCosts[$("#Stones_" + stoneRow + "__SzId").val()];
+            if (settingVal === undefined) {
+                settingVal = 0;
+            }
             $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
             price = settingVal;
+            UpdateStoneSettingRow(stoneRow);
         });
+
+
 }
 
 function RemoveStoneSettingRow(stoneRow) {
-    // find labor with data-stonerow = stonerow
-    // hide it
+    // find labor for stonerow & hide the enclosing ltbordered
+    var target = $("#StoneSetting_" + stoneRow).parent();
+    if (target.hasClass("ltbordered")) {
+        target.addClass("hidden");
+    }
 }
 
 function getCastingsHTML(type, len) {
@@ -435,7 +470,7 @@ function getStonesHTML(type, len) {
             <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Caret Weight must be a number." id="Stones_' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="" \"/>\
             <input class="col-sm-2 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The Vendor field is required." id="Stones_' + len + '__VendorName" name="Stones[' + len + '].VendorName" type="text" value="" />\
             <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Price field must be a number." id="Stones_' + len + '__Price" name="Stones[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
-            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="0" onblur="StoneQtyChanged(' + len + ')\"/>\
+            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="1" onblur="StoneQtyChanged(' + len + ')\"/>\
             <div id="StonesRowTotalValue_' + len + '" class="col-sm-1 StonesRowTotal ">0.00</div>\
             ' + rightDelBtn + '\
            </div>\
@@ -496,8 +531,8 @@ function getLaborsHTML(type, len) {
                             <span class="glyphicon glyphicon-plus"></span>\
                         </button>\
                     </div>'
-                + leftDelBtn +
-                '</div>\
+        + leftDelBtn +
+        '</div>\
             </div>\
             <input class="col-sm-2 text-box single-line requiredifnotremoved" placeholder="Name"  id="Labors_' + len + '__Name" name="Labors[' + len + '].Name" type="text" value="" />\
             <input class="col-sm-2 text-box single-line" id="Labors_' + len + '__Desc" name="Labors[' + len + '].Desc" type="text" value="" />\
@@ -516,6 +551,31 @@ function getLaborsHTML(type, len) {
             <span class="field-validation-valid text-danger" data-valmsg-for="Labors[' + len + '].Qty" data-valmsg-replace="true"></span>\
         </div >\
     </div > ';
+}
+
+function getStoneSettingsHTML(type, len) {
+    return '\
+        <div class="row ltbordered">\
+            <div class="col-sm-1 ">\
+                <div class="row StyleComponentsRowHeaderBtn ">\
+                    <div class="col-sm-6 ">\
+                        <button type="button" id="LaborsAddBtn_' + len + '" class="btn btn-default ' + type + 'AddBtn hidden" onclick="AddComponentRow(\'Labors\', ' + len + ')">\
+                            <span class="glyphicon glyphicon-plus"></span>\
+                        </button>\
+                    </div>'
+                    + leftDelBtn +
+                '</div>\
+            </div>\
+            <div id=StoneSetting_'+ len + '>\
+                <input disabled="" class="col-sm-4 text-box single-line locked" id="StoneSettingName_' + len + '" type="text" value="Setting" />\
+                <div class="col-sm-2 "></div>\
+                <div class="col-sm-1 "></div>\
+                <input disabled="" class="col-sm-1 text-box single-line locked" id="StoneSettingPrice_' + len + '" type="text" value="0.00" />\
+                <input disabled="" class="col-sm-1 text-box single-line locked" id="StoneSettingQty_' + len + '" type="text" value="0" />\
+            </div>\
+            <div id="LaborsRowTotalValue_' + len + '" class="col-sm-1 LaborsRowTotal" name="StoneSettingRowTotalValue_' + len + '">0.00</div>\
+        </div >\
+';
 }
 
 function getMiscsHTML(type, len) {

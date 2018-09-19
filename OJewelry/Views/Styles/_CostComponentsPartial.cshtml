@@ -177,7 +177,7 @@ COST:
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneChanged('" + i + "')" })
+                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneSizeChanged('" + i + "')" })
                     }
                 }
                 else
@@ -433,11 +433,13 @@ COST:
             }
             @Html.Partial("_CostComponentCol1", Model)
 
+            @{
+                var stName = "Setting for " + @Model.Stones[j].Name + "-" + @Model.Stones[j].ShId + "-" + @Model.Stones[j].SzId; 
+            }
             @if (Model.SVMOp != SVMOperation.Print)
             {
                 <div id="StoneSetting_@j">
-                    <input class="col-sm-2 col-xs-2 text-box single-line locked" id="StoneSettingName_@j" type="text" disabled value="Setting #@j" /> <!-- Name size "mm setting"-->
-                    <div class="col-sm-2 col-xs-2 "></div>
+                    <input class="col-sm-4 col-xs-4 text-box single-line locked" id="StoneSettingName_@j" type="text" disabled value="@stName" /> <!-- Name size "mm setting"-->
                     <div class="col-sm-2 col-xs-2 "></div>
                     <div class="col-sm-1 col-xs-1 "></div>
                     <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingPrice_@j" type="text" disabled value="@Model.assemblyCost.GetCostDataFromJSON().settingsCosts[@Model.Stones[j].Size].ToString("F02")" />
@@ -446,8 +448,7 @@ COST:
             }
             else
             {
-                <div class="col-sm-2 col-xs-2">@Model.Stones[j].Name</div>
-                <div class="col-sm-2 col-xs-2 "></div>
+                <div class="col-sm-4 col-xs-4">@stName</div>
                 <div class="col-sm-2 col-xs-2 "></div>
                 <div class="col-sm-1 col-xs-1"></div>
                 <div class="col-sm-1 col-xs-1">@Model.Stones[j].Price.ToString("F02")</div>
