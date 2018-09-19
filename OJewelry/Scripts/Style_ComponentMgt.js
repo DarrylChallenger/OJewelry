@@ -308,6 +308,9 @@ function StoneChanged(i) {
                 stoneCtl.addClass("badStone");
                 shapeCtl.addClass("badStone");
                 sizeCtl.addClass("badStone");
+                stName = "Setting for stone " + (parseInt(i) + 1);
+                $("#StoneSettingName_" + i).val(stName);
+                $("#Stones_" + i + "__Price").val("0.00");
             }
         })
         .then(function(stonedata) {
@@ -383,7 +386,7 @@ function UpdateStoneSettingRow(stoneRow) {
     if (name === "" || shape === "" || size === "") {
         stName = "Setting for stone " + (parseInt(stoneRow) + 1);
     } else {
-        stName = "Setting for " + name + "-" + shape + "-" + size ;
+        stName = "Setting for " + name + "-" + shape + "-" + size;
     }
     $("#StoneSettingName_" + stoneRow).val(stName);
 
