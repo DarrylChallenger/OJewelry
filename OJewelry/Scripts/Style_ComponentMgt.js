@@ -295,6 +295,7 @@ function StoneChanged(i) {
     var stoneCtl = $("#Stones_" + i + "__Name");
     var shapeCtl = $("#Stones_" + i + "__ShId");
     var sizeCtl = $("#Stones_" + i + "__SzId");
+    
     var stone = stoneCtl.val();
     var shape = shapeCtl.val();
     var size =  sizeCtl.val();
@@ -311,6 +312,9 @@ function StoneChanged(i) {
                 stName = "Setting for stone " + (parseInt(i) + 1);
                 $("#StoneSettingName_" + i).val(stName);
                 $("#Stones_" + i + "__Price").val("0.00");
+                var qty = $("#Stones_" + i + "__Qty").val();
+
+                CalcStonesSettingsRow(i, 0, qty);
             }
         })
         .then(function(stonedata) {
