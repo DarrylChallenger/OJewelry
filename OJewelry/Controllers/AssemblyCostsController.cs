@@ -40,6 +40,7 @@ namespace OJewelry.Controllers
             CostData cd = assemblyCost.GetCostDataFromJSON();
 
             ViewBag.CompanyName = company.Name;
+            cd.mc = db.MetalCodes;
             return View(cd);
         }
 
@@ -58,6 +59,7 @@ namespace OJewelry.Controllers
                 db.SaveChanges();
                 //return RedirectToAction("Index", "");
             }
+            costData.mc = db.MetalCodes;
             return View(costData);
         }
 

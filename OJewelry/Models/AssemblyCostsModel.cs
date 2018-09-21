@@ -13,6 +13,7 @@ namespace OJewelry.Models
             state = db.Entry(this).State;
             companyId = _companyId;
             CostData cd;
+            
 
             if (costDataJSON == null || costDataJSON == "")
             {
@@ -23,9 +24,28 @@ namespace OJewelry.Models
             } else {
                 cd = GetCostDataFromJSON();
             }
-            // Zero out and save the data
             // Ensure that the CostData structure is fully expanded
+            if (cd.metalMarketPrice == null) { cd.metalMarketPrice = new Dictionary<string, decimal>(); }
+            if (cd.metalMultiplier == null) { cd.metalMultiplier = new Dictionary<string, float>(); }
+            if (cd.finishingCosts == null) { cd.finishingCosts = new Dictionary<string, decimal>(); }
+            if (cd.packagingCosts == null) { cd.packagingCosts = new Dictionary<string, decimal>(); }
+            if (cd.settingsCosts == null) { cd.settingsCosts = new Dictionary<string, decimal>(); }
+
             // Metal Costs
+            foreach (MetalCode m in db.MetalCodes)
+            {
+                // Metal Market Price
+                if (cd.metalMarketPrice.Where(k => k.Key == m.Code).Count() == 0)
+                {
+                    cd.metalMarketPrice.Add(m.Code, 1);
+                }
+                // Metal Multiplier
+                if (cd.metalMultiplier.Where(k => k.Key == m.Code).Count() == 0)
+                {
+                    cd.metalMultiplier.Add(m.Code, 1);
+                }
+            }
+            // Finishing Costs
             foreach (JewelryType jt in db.JewelryTypes)
             {
                 // Finishing Costs: per Jewelry Type

@@ -3,46 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
 namespace OJewelry.Models
 {
-    public class MetalCosts
-    {
-        // TBD
-    }
-    /*
-    public class FinishingCosts
-    {
-        
-        List<KeyValuePair<string,decimal>> finishingCosts { get; set; } // one for each Jewelry Type
-    }
-    public class SettingsCosts
-    {
-        List<KeyValuePair<string, decimal>> settingCosts { get; set; } // one for each size
-    }
-    public class PackagingCosts
-    {
-        
-        List<KeyValuePair<string, decimal>> packagingCosts { get; set; } // one for each Jewelry Type
-    }
-    */
-
     public class CostData
     {
         public CostData()
         {
+            metalMarketPrice = new Dictionary<string, decimal>();
+            metalMultiplier = new Dictionary<string, float>();
             finishingCosts = new Dictionary<string, decimal>();
             packagingCosts = new Dictionary<string, decimal>();
             settingsCosts = new Dictionary<string, decimal>();
         }
         public int companyId { get; set; }
-        public MetalCosts metalCosts { get; set; }
         public string GetJSON()
         {
             return JsonConvert.SerializeObject(this);
         }
+        public DbSet<MetalCode> mc { set; get; }
+        public Dictionary<string, decimal> metalMarketPrice { get; set; } // one for each metal type
+        public Dictionary<string, float> metalMultiplier { get; set; } // one for each metal type
         public Dictionary<string, decimal> finishingCosts { get; set; } // one for each Jewelry Type
         public Dictionary<string, decimal> settingsCosts { get; set; } // one for each size
         public Dictionary<string, decimal> packagingCosts { get; set; } // one for each Jewelry Type

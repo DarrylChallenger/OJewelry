@@ -388,7 +388,7 @@ function UpdateStoneSettingRow(stoneRow) {
 
     var stName;
     if (name === "" || shape === "" || size === "") {
-        stName = "Setting for stone " + (parseInt(stoneRow) + 1);
+        stName = "Setting for stone " + (parseInt(stoneRow) + 1); // change to message indicating invalid combo
     } else {
         stName = "Setting for " + name + "-" + shape + "-" + size;
     }

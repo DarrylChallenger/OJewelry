@@ -15,15 +15,44 @@
         @Html.HiddenFor(model => model.companyId)
 
         <div>
-
+            <p class="h4"><b>Metal Market and Multiplier</b> (Metal type)</p>
+            <div class="row AssemblyCostFormMetalHeader">
+                <div class="col-sm-3 col-xs-3"></div>
+                <div class="col-sm-3 col-xs-3"><label>Market Price</label></div>
+                <div class="col-sm-3 col-xs-3"><label>Multiplier</label></div>
+            </div>
+            @{ int i = 0; }
+            @foreach (var mc in Model.mc)
+            {
+                string mav = "metalMarketPrice_" + i + "__Value";
+                string muv = "metalMultiplier_" + i + "__Value";
+                string mak = "metalMarketPrice_" + i + "__Key";
+                string muk = "metalMultiplier_" + i + "__Key";
+                <div class="row">
+                    <div>
+                        <div class="col-sm-3 col-xs-3">
+                            <input type="hidden" id="@mak" name="metalMarketPrice[@i].Key" value="@mc.Code" />
+                            <input type="hidden" id="@muk" name="metalMultiplier[@i].Key" value="@mc.Code" />
+                            <label>@mc.Code</label>
+                        </div>
+                        <div class="col-sm-3 col-xs-3">
+                            <input id="@mav" name="metalMarketPrice[@i].Value" type="number" value="@Model.metalMarketPrice[mc.Code]" />
+                        </div>
+                        <div class="col-sm-3 col-xs-3">
+                            <input id="@muv" name="metalMultiplier[@i].Value" type="number" value="@Model.metalMultiplier[mc.Code]" />
+                        </div>
+                    </div>
+                </div>
+                i++;
+            }
         </div>
         <div>
             <hr />
             <p class="h4"><b>Finishing Costs</b> (Jewelry type)</p>
             <div class="row">
 
-                @{  int i = 0; }
-                @foreach (var fc in @Model.finishingCosts)
+                @{ i = 0; }
+                @foreach (var fc in Model.finishingCosts)
                 {
                     string sv = "finishingCosts_" + i + "__Value";
                     string sk = "finishingCosts_" + i + "__Key";
@@ -63,7 +92,7 @@
             <p class="h4"><b>Packaging Costs</b> (Jewelry type)</p>
             <div class="row">
                 @{ i = 0; }
-                @foreach (var pc in @Model.packagingCosts)
+                @foreach (var pc in Model.packagingCosts)
                 {
                     string sv = "packagingCosts" + i + "__Value";
                     string sk = "packagingCosts" + i + "__Key";

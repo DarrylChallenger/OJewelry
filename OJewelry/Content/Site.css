@@ -411,3 +411,6 @@ html input[disabled], locked {
     display:block;
 }
 
+.AssemblyCostFormMetalHeader label {
+    text-align:left;
+}
