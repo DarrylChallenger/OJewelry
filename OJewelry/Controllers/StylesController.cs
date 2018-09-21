@@ -99,6 +99,7 @@ namespace OJewelry.Controllers
         {
             ModelState.Clear();
             StyleViewModel newsvm = new StyleViewModel(svm);
+            newsvm.assemblyCost.Load(db, svm.CompanyId);
             newsvm.SVMOp = SVMOperation.Create;
             newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
             newsvm.CompanyId = newsvm.Style.Collection.CompanyId;

@@ -1,19 +1,43 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
 namespace OJewelry.Models
 {
+    public class CostData
+    {
+        public CostData()
+        {
+            metalMarketPrice = new Dictionary<string, decimal>();
+            metalMultiplier = new Dictionary<string, float>();
+            finishingCosts = new Dictionary<string, decimal>();
+            packagingCosts = new Dictionary<string, decimal>();
+            settingsCosts = new Dictionary<string, decimal>();
+        }
+        public int companyId { get; set; }
+        public string GetJSON()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+        public DbSet<MetalCode> mc { set; get; }
+        public Dictionary<string, decimal> metalMarketPrice { get; set; } // one for each metal type
+        public Dictionary<string, float> metalMultiplier { get; set; } // one for each metal type
+        public Dictionary<string, decimal> finishingCosts { get; set; } // one for each Jewelry Type
+        public Dictionary<string, decimal> settingsCosts { get; set; } // one for each size
+        public Dictionary<string, decimal> packagingCosts { get; set; } // one for each Jewelry Type
+    }
+
     public partial class AssemblyCost
     {
-        public void Validate(OJewelryDB db, int _companyId)
+        public void Load(OJewelryDB db, int _companyId)
         {
             System.Data.Entity.EntityState state;
             state = db.Entry(this).State;
             companyId = _companyId;
             CostData cd;
-            
 
             if (costDataJSON == null || costDataJSON == "")
             {
@@ -68,16 +92,12 @@ namespace OJewelry.Models
                 }
             }
             costDataJSON = cd.GetJSON();
-            state = db.Entry(this).State;
-            if (state == System.Data.Entity.EntityState.Detached)
-            {
-                db.AssemblyCosts.Add(this);
-            }
-            if (state != System.Data.Entity.EntityState.Unchanged)
-            {
-                db.SaveChanges();
-            }
+            db.Entry(this);
+        }
 
+        public CostData GetCostDataFromJSON()
+        {
+            return JsonConvert.DeserializeObject<CostData>(costDataJSON);
         }
 
     }

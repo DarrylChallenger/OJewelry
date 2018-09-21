@@ -36,7 +36,7 @@ namespace OJewelry.Controllers
             {
                 assemblyCost = new AssemblyCost();
             }
-            assemblyCost.Validate(db, companyId.Value);
+            assemblyCost.Load(db, companyId.Value);
             CostData cd = assemblyCost.GetCostDataFromJSON();
 
             ViewBag.CompanyName = company.Name;

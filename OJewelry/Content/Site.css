@@ -395,6 +395,10 @@ html input[disabled], locked {
     border-width: 2px;
 }
 
+.badTotal {
+    color: #b94a48; /* text-danger */
+}
+
 .AddBtn {
     color:green;
 }

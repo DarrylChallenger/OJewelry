@@ -228,6 +228,8 @@ function CalcRowTotal(type, rowId)
 function CalcStonesSettingsRow(stoneRow, price, qty) {
    // Totals are in element after the row data
     var total = $("#StoneSetting_" + stoneRow).next();
+    console.log(price);
+    console.log(qty);
     total.text((price * qty).toFixed(2));
     CalcSubtotals("Labors");
 }
@@ -309,11 +311,12 @@ function StoneChanged(i) {
                 stoneCtl.addClass("badStone");
                 shapeCtl.addClass("badStone");
                 sizeCtl.addClass("badStone");
-                stName = "Setting for stone " + (parseInt(i) + 1);
+                stName = "Invalid stone combination";//"Setting for stone " + (parseInt(i) + 1);
                 $("#StoneSettingName_" + i).val(stName);
+                $("div[name='StoneSettingRowTotalValue_" + i + "']").addClass("badTotal");
                 $("#Stones_" + i + "__Price").val("0.00");
                 var qty = $("#Stones_" + i + "__Qty").val();
-
+                console.log("++");
                 CalcStonesSettingsRow(i, 0, qty);
             }
         })
@@ -330,6 +333,7 @@ function StoneChanged(i) {
             stoneCtl.removeClass("badStone");
             shapeCtl.removeClass("badStone");
             sizeCtl.removeClass("badStone");
+            console.log("A");
             UpdateStoneSettingRow(i);
         });
 }
@@ -356,6 +360,7 @@ function StoneSizeChanged(stoneRow) {
 
 function StoneQtyChanged(i) {
     CalcRowTotal("Stones", i);
+    console.log("B");
     UpdateStoneSettingRow(i);
 }
 
@@ -388,9 +393,12 @@ function UpdateStoneSettingRow(stoneRow) {
 
     var stName;
     if (name === "" || shape === "" || size === "") {
-        stName = "Setting for stone " + (parseInt(stoneRow) + 1); // change to message indicating invalid combo
+        stName = "Invalid stone combination";// + (parseInt(stoneRow) + 1); // change to message indicating invalid combo
+        $("div[name='StoneSettingRowTotalValue_" + stoneRow + "']").addClass("badTotal");
     } else {
         stName = "Setting for " + name + "-" + shape + "-" + size;
+        $("div[name='StoneSettingRowTotalValue_" + stoneRow + "']").removeClass("badTotal");
+
     }
     $("#StoneSettingName_" + stoneRow).val(stName);
 
@@ -399,6 +407,7 @@ function UpdateStoneSettingRow(stoneRow) {
     $("#StoneSettingQty_" + stoneRow).val(qty);
 
     price = $("#StoneSettingPrice_" + stoneRow).val();
+    console.log("--");
     CalcStonesSettingsRow(stoneRow, price, qty);
 
 }
@@ -422,10 +431,9 @@ function AddStoneSettingRowHTML(stoneRow) {
             }
             $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
             price = settingVal;
+            console.log("C");
             UpdateStoneSettingRow(stoneRow);
         });
-
-
 }
 
 function RemoveStoneSettingRow(stoneRow) {

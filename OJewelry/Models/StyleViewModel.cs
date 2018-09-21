@@ -569,6 +569,7 @@ namespace OJewelry.Models
                 };
                 return m;
             })).ToList();
+            assemblyCost = new AssemblyCost();
         }
 
         public Style Style { get; set; }
@@ -731,7 +732,7 @@ namespace OJewelry.Models
             {
                 assemblyCost = new AssemblyCost();
             }
-            assemblyCost.Validate(db, CompanyId);
+            assemblyCost.Load(db, CompanyId);
         }
         public void RepopulateComponents(OJewelryDB db)
         {
@@ -1497,8 +1498,8 @@ namespace OJewelry.Models
         public void CreateNewFrom(Style oldStyle)
         {
             // clear out key values
-            StyleName = oldStyle.StyleName;
             StyleNum = "";
+            StyleName = oldStyle.StyleName;
             Desc = oldStyle.Desc;
             Id = 0;
             Quantity = 0;
