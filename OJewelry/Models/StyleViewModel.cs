@@ -29,6 +29,8 @@ namespace OJewelry.Models
             Labor = cc.Labor;
             VendorId = cc.VendorId;
             MetalCodeId = cc.MetalCodeId;
+            MetalWeight = cc.MetalWeight;
+            MetalWtUnitId = cc.MetalWtUnitId;
             MetalCode = cc.MetalCode;
             Total = Price.GetValueOrDefault() * Qty;
         }
@@ -87,6 +89,17 @@ namespace OJewelry.Models
             get { return _casting.VendorId ?? 0; }
             set { _casting.VendorId = value; }
         }
+
+        [Display(Name = "Metal")]
+        public String MetalCode { get; set; }
+
+        [Display(Name = "WEIGHT")]
+        public decimal MetalWeight
+        {
+            get { return _casting.MetalWeight; }
+            set { _casting.MetalWeight = value; }
+        }
+
         public int MetalCodeId
         {
             get { return _casting.MetalCodeID ?? 0; }
@@ -95,15 +108,24 @@ namespace OJewelry.Models
 
         public SVMStateEnum SVMState { get; set; }
 
-        /*
-         * [Display(Name="Vendor")]
-        public String VendorName { get; set; }
-        */
-        [Display(Name = "Metal")]
-        public String MetalCode { get; set; }
+        
+        [Display(Name="Vendor")]
+        public String VendorName {
+            get {
+                return _casting.Vendor.Name;
+            }
+        }
+        
+        [Display(Name ="UNIT")]
+        public int MetalWtUnitId
+        {
+            get { return _casting.MetalWtUnitId; }
+            set { _casting.MetalWtUnitId = value; }
+        }
 
         public SelectList VendorList { get; set; }
         public SelectList MetalCodes { get; set; }
+        public SelectList MetalWeightUnits { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
@@ -118,8 +140,14 @@ namespace OJewelry.Models
             MetalCodes = new SelectList(metals, "Id", "Code", defaultMetalSelection);
         }
 
+        public void SetMetalWeightUnitsList(List<MetalWeightUnit> units, int defaultMetailWeightUnit)
+        {
+            MetalWeightUnits = new SelectList(units, "Id", "Unit", defaultMetailWeightUnit);
+        }
+
         public decimal ComputePrice() // use formula based on metal and multipliers
         {
+            // Material type market * multiplier * weight (1gr = .643015DWT, 1DWT = 1.55517gr)
             return 0;
         }
     }
@@ -600,6 +628,7 @@ namespace OJewelry.Models
 
         public List<Vendor> jsVendors { get; set; }
         public List<MetalCode> jsMetals { get; set; }
+        public List<MetalWeightUnit> jsMetalWeightUnits { get; set; }
         public List<StoneListItem> jsStones { get; set; }
         public List<ShapeListItem> jsShapes { get; set; }
         public List<StoneSizeListItem> jsSizes { get; set; }
@@ -636,7 +665,7 @@ namespace OJewelry.Models
 
         }
 
-        public void AddStoneCosts(CostData cd) // add a labor setting cost for each stone
+        public void AddStoneCosts(CostData cd) // add a labor setting cost for each stone - this is implemented only on front end
         {
             return;
         }
@@ -665,8 +694,6 @@ namespace OJewelry.Models
             jsVendors = db.Vendors.ToList();
             jsMetals = db.MetalCodes.ToList();
 
-            
-                
             jsStones = db.Stones.Where(x => x.CompanyId == CompanyId)
             .Select((st) => new 
                 {
@@ -702,6 +729,7 @@ namespace OJewelry.Models
                 }).ToList();
 
             jsFindings = db.Findings.Include("Vendor").Where(x => x.CompanyId == CompanyId).ToList();
+            jsMetalWeightUnits = db.MetalWeightUnits.ToList();
         }
 
         public void PopulateDropDowns(OJewelryDB db)
@@ -711,6 +739,7 @@ namespace OJewelry.Models
             {
                 cstc.SetVendorsList(jsVendors, cstc.VendorId);
                 cstc.SetMetalsList(jsMetals, cstc.MetalCodeId);
+                cstc.SetMetalWeightUnitsList(jsMetalWeightUnits, cstc.MetalWtUnitId);
             }
             foreach (StoneComponent stscm in Stones)
             {
@@ -954,10 +983,13 @@ namespace OJewelry.Models
                 foreach (StyleCasting sc in Style.StyleCastings)
                 {
                     Casting casting = db.Castings.Find(sc.CastingId); // Castings
+                    casting.Vendor = db.Vendors.Find(casting.VendorId);
                     CastingComponent cstc = new CastingComponent(casting);
                     // Need to get the vendor and metal code
                     cstc.VendorId = casting.VendorId.Value;
                     cstc.MetalCodeId = casting.MetalCodeID.Value;
+                    cstc.MetalWtUnitId = casting.MetalWtUnitId;
+                    cstc.MetalWeight = casting.MetalWeight;
                     cstc.SetVendorsList(jsVendors, casting.VendorId.Value);
                     cstc.SetMetalsList(jsMetals, casting.MetalCodeID.Value);// 
                     //cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
@@ -1024,6 +1056,8 @@ namespace OJewelry.Models
             Name = c.Name;
             VendorId = c.VendorId;
             MetalCodeID = c.MetalCodeId;
+            MetalWeight = c.MetalWeight;
+            MetalWtUnitId = c.MetalWtUnitId;
             Price = c.Price;
             Labor = c.Labor;
             Qty = c.Qty;

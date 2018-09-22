@@ -36,6 +36,8 @@ namespace OJewelry.Models
         [Required]
         public int MetalWtUnitId { get; set; }
 
+        public virtual Vendor Vendor { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StyleCasting> StyleCastings { get; set; }
     }

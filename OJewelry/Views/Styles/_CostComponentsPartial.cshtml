@@ -18,8 +18,8 @@ COST:
         }
         @Html.Partial("_CostComponentCol1", Model)
         <div class="col-sm-2 col-xs-2">METAL STYLE</div>
-        <div class="col-sm-1 col-xs-1"></div>
-        <div class="col-sm-2 col-xs-2">VENDOR</div>
+        <div class="col-sm-1 col-xs-1">VENDOR</div>
+        <div class="col-sm-2 col-xs-2">WEIGHT</div>
         <div class="col-sm-1 col-xs-1">METAL</div>
         <div class="col-sm-1 col-xs-1">PRICE</div>
         <div class="col-sm-1 col-xs-1">LABOR</div>
@@ -44,18 +44,13 @@ COST:
                     }
                     @Html.HiddenFor(model => model.Castings[i].Id)
                     @Html.Partial("_CostComponentCol1", Model)
+
                     @if (Model.SVMOp != SVMOperation.Print)
                     {
-                        @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved" } })
-                    }
-                    else
-                    {
-                        <div class="col-sm-2 col-xs-2">@Model.Castings[i].Name</div>
-                    }
-                    <div class="col-sm-1 col-xs-1"></div>
-                    @if (Model.SVMOp != SVMOperation.Print)
-                    {
-                        @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-2 col-xs-2" })
+                        @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val="true", @data_val_required= "The Metal Style Name field is required.", @placeholder="Name" } })
+                        @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-1 col-xs-1" })
+                        @Html.EditorFor(model => model.Castings[i].MetalWeight, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice(" + i + ")", @data_val = "true", @data_val_required = "The Weight field is required." } })
+                        @Html.DropDownListFor(model => model.Castings[i].MetalWtUnitId, Model.Castings[i].MetalWeightUnits, new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice(" + i + ")" })
                         @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1 col-xs-1" })
                         @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                         @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
@@ -64,6 +59,9 @@ COST:
                     else
                     {
                         <div class="col-sm-2 col-xs-2">@Model.Castings[i].Name</div>
+                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].VendorName</div>
+                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].MetalWeight</div>
+                        <div class="col-sm-1 col-xs-1">Unit</div>
                         <div class="col-sm-1 col-xs-1">@Model.Castings[i].MetalCode</div>
                         <div class="col-sm-1 col-xs-1">@Model.Castings[i].Price</div>
                         <div class="col-sm-1 col-xs-1">@Model.Castings[i].Labor</div>
@@ -76,13 +74,14 @@ COST:
                 </div>
                 @if (Model.SVMOp != SVMOperation.Print)
                 {
-                    <div class="row">
-                        <!--Validations Here-->
-                        @Html.ValidationMessageFor(model => model.Castings[i].Name, "", new { @class = "text-danger" })
-                        @Html.ValidationMessageFor(model => model.Castings[i].Price, "", new { @class = "text-danger" })
-                        @Html.ValidationMessageFor(model => model.Castings[i].Labor, "", new { @class = "text-danger" })
-                        @Html.ValidationMessageFor(model => model.Castings[i].Qty, "", new { @class = "text-danger" })
-                    </div>
+                <div class="row">
+                    <!--Validations Here-->
+                    @Html.ValidationMessageFor(model => model.Castings[i].Name, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Castings[i].MetalWeight, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Castings[i].Price, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Castings[i].Labor, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Castings[i].Qty, "", new { @class = "text-danger" })
+                </div>
                 }
             </div>
         }
@@ -367,7 +366,7 @@ COST:
                 {
                     bool bDisabled = (Model.Labors[i].SVMState == SVMStateEnum.Fixed && Model.Labors[i].Name == StyleViewModel.FinishingLaborName);
                     @Html.HiddenFor(model => model.Labors[i].Name)
-                    @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "locked col-sm-2 col-xs-2 requiredifnotremoved", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "locked col-sm-2 col-xs-2 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
                     @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                     <div class="col-sm-2 col-xs-2 "></div>
                     @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
@@ -512,7 +511,7 @@ COST:
                 @if (Model.SVMOp != SVMOperation.Print)
                 {
                     bool bDisabled = Model.Miscs[i].SVMState == SVMStateEnum.Fixed;
-                    @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved" } })
+                    @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Misc Name field is required.", @placeholder = "Name" } })
                     @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                     <div class="col-sm-3 col-xs-3 "></div>
                     if (bDisabled)
@@ -584,11 +583,14 @@ COST:
                 List<Finding> emptyFindingList = new List<Finding>();
                 Finding findingItem = new Finding() {Id = 1, Name = ""};
                 emptyFindingList.Add(findingItem);
+                List<MetalWeightUnit> emptyMetalWeightUnitList = new List<MetalWeightUnit>();
+                MetalWeightUnit mwuItem = new MetalWeightUnit() { Id = 1, Unit = "" };
+                emptyMetalWeightUnitList.Add(mwuItem);
             }
             @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault().Id), new {@class = "col-sm-1 col-xs-1"})
         </div>
         <div id="jsVendors">
-            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.FirstOrDefault().Id), new {@class = "col-sm-2 col-xs-2 "})
+            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.FirstOrDefault().Id), new {@class = "col-sm-1 col-xs-1 "})
         </div>
         <div id="jsStones">
             @if (Model.jsStones.Count == 0)
@@ -632,6 +634,17 @@ COST:
             {
                 @*Model.jsFindings.Insert(0, Model.DefFinding);*@
                 @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name"), "Please select a finding", new {@class = "col-sm-2 col-xs-2 requiredifnotremoved"})
+            }
+        </div>
+        <div id="jsMetalUnits">
+            @if (Model.jsMetalWeightUnits.Count == 0)
+            {
+                @Html.DropDownList("jsuINDEX", new SelectList(emptyMetalWeightUnitList, "Id", "Unit"), new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
+            }
+            else
+            {
+                @*Model.jsFindings.Insert(0, Model.DefFinding);*@
+                @Html.DropDownList("jsuINDEX", new SelectList(Model.jsMetalWeightUnits, "Id", "Unit"), "Please select a Unit", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
             }
         </div>
         <div id="StonesData">

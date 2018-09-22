@@ -431,6 +431,10 @@
     <Compile Include="Migrations\201809211919294_v1.4-AddWeightToCastings.Designer.cs">
       <DependentUpon>201809211919294_v1.4-AddWeightToCastings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201809221304027_v1.4AddVendorRefernceToCasting.cs" />
+    <Compile Include="Migrations\201809221304027_v1.4AddVendorRefernceToCasting.Designer.cs">
+      <DependentUpon>201809221304027_v1.4AddVendorRefernceToCasting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -772,6 +776,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809211919294_v1.4-AddWeightToCastings.resx">
       <DependentUpon>201809211919294_v1.4-AddWeightToCastings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809221304027_v1.4AddVendorRefernceToCasting.resx">
+      <DependentUpon>201809221304027_v1.4AddVendorRefernceToCasting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

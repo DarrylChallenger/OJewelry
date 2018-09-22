@@ -64,7 +64,16 @@ function AddComponentRow(type, index)
             .attr("data-val", "true")
             .attr("data-val-number", "The field MetalCodeId must be a number.")
             .attr("data-val-required", "The MetalCodeId field is required.");
-        ltbordered = castingsltbordered.replace("JSVENDORS", jsVendors.html()).replace("JSMETALS", jsMetals.html());
+
+        var jsMetalUnits = $("#jsMetalUnits").clone();
+        jsMetalUnits.find("#jsuINDEX")
+            .attr("name", 'Castings[' + len + '].MetalWeightUnitId')
+            .attr("id", 'Castings_' + len + '__MetalWeightUnitId')
+            .attr("data-val", "true")
+            //.attr("data-val-number", "The field MetalWeightUnitId must be a number.")
+            .attr("data-val-required", "The Metal Weight Unit field is required.")
+            .attr("onchange", "CalcMetalPrice('" + len + "')");
+        ltbordered = castingsltbordered.replace("JSVENDORS", jsVendors.html()).replace("JSMETALS", jsMetals.html()).replace("JSMETALUNITS", jsMetalUnits.html());
     }
     if (type === "Stones") { // also add a labor setting with the stone row #
         // Stone
@@ -136,7 +145,6 @@ function AddComponentRow(type, index)
         .removeData("unobtrusiveValidation");   // Added by jQuery Unobtrusive Validation
     $.validator.unobtrusive.parse(form);
 }
-
 
 function RemoveComponentRow(type, i)
 {
@@ -223,6 +231,11 @@ function CalcRowTotal(type, rowId)
         rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
     }
     CalcSubtotals(type);
+}
+
+function CalcMetalPrice(i) {
+    var price = 999.96;
+    $("#Castings_" + i + "__Price").val(price);
 }
 
 function CalcStonesSettingsRow(stoneRow, price, qty) {
@@ -455,24 +468,26 @@ function getCastingsHTML(type, len) {
                         <button type="button" id="CastingsAddBtn_' + len + '" class="btn btn-default ' + type + 'AddBtn" onclick="AddComponentRow(\'Castings\', ' + len + ')"> \
                             <span class="glyphicon glyphicon-plus"></span> \
                         </button> \
-                    </div> '
+                    </div>'
                 + leftDelBtn +
                 '</div> \
             </div>\
-            <input class="col-sm-2 text-box single-line requiredifnotremoved"  placeholder="Name" data-val-required="The Metal Style name field is required." id="Castings_' + len + '__Name" name="Castings[' + len + '].Name" type="text" value="" />\
-            <div class="col-sm-1">\
-            </div >\
+            <input class="col-sm-2 text-box single-line requiredifnotremoved" data-val="true" placeholder="Name" data-val-required="The Metal Style Name field is required." id="Castings_' + len + '__Name" name="Castings[' + len + '].Name" type="text" value="" />\
             JSVENDORS\
+            <input class="col-sm-1 text-box single-line requiredifnotremoved" data-val="true" data-val-number="The field Weight field must be a number."  data-val-required="The Weight field is required." id="Castings_' + len + '__MetalWeight" name="Castings[' + len + '].MetalWeight" type="text" value="0.00" onblur="CalcMetalPrice(\'' + len + ')\"/>\
+            JSMETALUNITS\
             JSMETALS\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Price must be a number." id="Castings_' + len + '__Price" name="Castings[' + len + '].Price" type="text" value="0.00" disabled="disabled" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Labor must be a number." id="Castings_' + len + '__Labor" name="Castings[' + len + '].Labor" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Castings_' + len + '__Qty" name="Castings[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <input class="col-sm-1 text-box single-line requiredifnotremoved" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Castings_' + len + '__Qty" name="Castings[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="CastingsRowTotalValue_' + len + '" class="col-sm-1 CastingsRowTotal ">0.00</div>\
             ' + rightDelBtn + '\
             </div>\
         <div class="row">\
             <!--Validations Here-->\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Name" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].MetalWeight" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].MetalWeightUnitId" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Price" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Labor" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Qty" data-valmsg-replace="true"></span>\
@@ -563,7 +578,7 @@ function getLaborsHTML(type, len) {
         + leftDelBtn +
         '</div>\
             </div>\
-            <input class="col-sm-2 text-box single-line requiredifnotremoved" placeholder="Name"  id="Labors_' + len + '__Name" name="Labors[' + len + '].Name" type="text" value="" />\
+            <input class="col-sm-2 text-box single-line requiredifnotremoved" placeholder="Name" data-val="true" data-val-required="The Labors Name field is required." id="Labors_' + len + '__Name" name="Labors[' + len + '].Name" type="text" value="" />\
             <input class="col-sm-2 text-box single-line" id="Labors_' + len + '__Desc" name="Labors[' + len + '].Desc" type="text" value="" />\
             <div class="col-sm-2 "></div>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Hour must be a number." id="Labors_' + len + '__PPH" name="Labors[' + len + '].PPH" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
@@ -622,7 +637,7 @@ function getMiscsHTML(type, len) {
                 + leftDelBtn +
                 '</div>\
             </div>\
-            <\input class="col-sm-2 text-box single-line requiredifnotremoved" placeholder="Name"  id="Miscs_' + len + '__Name" name="Miscs[' + len + '].Name" type="text" value="" />\
+            <\input class="col-sm-2 text-box single-line requiredifnotremoved" placeholder="Name" data-val="true" data-val-required="The Misc Name field is required." id="Miscs_' + len + '__Name" name="Miscs[' + len + '].Name" type="text" value="" />\
             <input class="col-sm-2 text-box single-line" id="Miscs_' + len + '__Desc" name="Miscs[' + len + '].Desc" type="text" value="" />\
             <div class="col-sm-3 "></div>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field $/Piece must be a number." id="Miscs_' + len + '__PPP" name="Miscs[' + len + '].PPP" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
@@ -669,11 +684,11 @@ $(function () { //
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
-        if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX") {
+        if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX" || elementId === "jsuINDEX") {
             return true;
         }
         if ($(element).hasClass("input-validation-error")) {
-            $("#vMsg").attr("data-msg", $(element).attr(""));
+            $("#vMsg").attr("data-msg", $(element).attr("data-val-required"));
         }
         var target = $(element).parent().parent().prev().children();
         var state = $(target).val();
