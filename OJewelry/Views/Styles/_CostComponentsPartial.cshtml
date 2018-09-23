@@ -51,10 +51,10 @@ COST:
                         @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-1 col-xs-1" })
                         @Html.EditorFor(model => model.Castings[i].MetalWeight, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice(" + i + ")", @data_val = "true", @data_val_required = "The Weight field is required." } })
                         @Html.DropDownListFor(model => model.Castings[i].MetalWtUnitId, Model.Castings[i].MetalWeightUnits, new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice(" + i + ")" })
-                        @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1 col-xs-1" })
+                        @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice(" + i + ")" })
                         @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                         @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                        @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice('" + i + "')" })
                     }
                     else
                     {

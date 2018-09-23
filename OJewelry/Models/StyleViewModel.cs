@@ -145,10 +145,22 @@ namespace OJewelry.Models
             MetalWeightUnits = new SelectList(units, "Id", "Unit", defaultMetailWeightUnit);
         }
 
-        public decimal ComputePrice() // use formula based on metal and multipliers
+        public decimal ComputePrice(CostData cd, string unitCode) // use formula based on metal and multipliers
         {
             // Material type market * multiplier * weight (1gr = .643015DWT, 1DWT = 1.55517gr)
-            return 0;
+            double unitMultiplier;
+
+            //unitCode = "DWT";
+            if (unitCode.Trim() == "DWT")
+            {
+                unitMultiplier = 1;
+            }
+            else
+            {
+                unitMultiplier = .643015;
+            }
+            decimal price = (decimal)((double)cd.metalMarketPrice[MetalCode] * (double)cd.metalMultiplier[MetalCode] * (double)MetalWeight * unitMultiplier);
+            return price;
         }
     }
     public class StoneComponent 
@@ -995,7 +1007,8 @@ namespace OJewelry.Models
                     //cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
                     cstc.MetalCode = db.MetalCodes.Find(casting.MetalCodeID).Code; // Metal Code
                     cstc.Qty = casting.Qty.Value;
-                    t = cstc.ComputePrice();
+                    t = cstc.ComputePrice(assemblyCost.GetCostDataFromJSON(), db.MetalWeightUnits.Find(cstc.MetalWtUnitId)?.Unit);
+                    cstc.Price = t;
                     t2 = cstc.Labor ?? 0;
                     cstc.Total = cstc.Qty * (t + t2);
                     MetalsTotal += cstc.Total;

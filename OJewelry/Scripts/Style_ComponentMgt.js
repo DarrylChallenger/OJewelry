@@ -234,8 +234,42 @@ function CalcRowTotal(type, rowId)
 }
 
 function CalcMetalPrice(i) {
-    var price = 999.96;
-    $("#Castings_" + i + "__Price").val(price);
+
+    var unitMultiplier;
+    var weight = $("#Castings_" + i + "__MetalWeight").val();
+    var unitCode = $("#Castings_" + i + "__MetalWtUnitId :selected").html().trim();
+    if (unitCode === "DWT") {
+        unitMultiplier = 1;
+    }
+    else {
+        unitMultiplier = .643015;
+    }
+    var metalCode = $("#Castings_" + i + "__MetalCodeId :selected").html();
+    var metalMarketPrice = 1; //cd.metalMarketPrice[MetalCode]
+    var metalMultiplier = 1;
+    var price = 0;
+
+    var companyid = $("#CompanyId").val();
+
+    // Get the assembly costs extract the metal costs
+    fetch('/api/AssemblyCostsApi?companyId=' + $("#CompanyId").val())
+        .then(function (response) {
+            if (response.ok) {
+                return response.json();
+            } else {
+                $("#Castings_" + i + "__Price").val(price);
+                CalcRowTotal("Castings", i);
+            }
+        })
+        .then(function (cdJSON) {
+            // unpack CostData
+            var costData = JSON.parse(cdJSON);
+            metalMarketPrice = costData.metalMarketPrice[metalCode];
+            metalMultiplier = costData.metalMultiplier[metalCode];
+            price = metalMarketPrice * metalMultiplier * weight * unitMultiplier;
+            $("#Castings_" + i + "__Price").val(price);
+            CalcRowTotal("Castings", i);
+        });
 }
 
 function CalcStonesSettingsRow(stoneRow, price, qty) {
@@ -479,7 +513,7 @@ function getCastingsHTML(type, len) {
             JSMETALS\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Price must be a number." id="Castings_' + len + '__Price" name="Castings[' + len + '].Price" type="text" value="0.00" disabled="disabled" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Labor must be a number." id="Castings_' + len + '__Labor" name="Castings[' + len + '].Labor" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <input class="col-sm-1 text-box single-line requiredifnotremoved" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Castings_' + len + '__Qty" name="Castings[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <input class="col-sm-1 text-box single-line requiredifnotremoved" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Castings_' + len + '__Qty" name="Castings[' + len + '].Qty" type="text" value="0" onblur="CalcMetalPrice(\'' + len + ')\"/>\
             <div id="CastingsRowTotalValue_' + len + '" class="col-sm-1 CastingsRowTotal ">0.00</div>\
             ' + rightDelBtn + '\
             </div>\
