@@ -4,7 +4,7 @@
     ViewBag.Title = "Copy";
 }
 
-<h2>Copy (@Model.CopiedStyleName) style for the <i>@Model.Style.Collection.Name</i> collection</h2>
+<h2>Copy of (@Model.CopiedStyleName) style for the <i>@Model.Style.Collection.Name</i> collection</h2>
 
 @using (Html.BeginForm("Create", "Styles", FormMethod.Post, new { id = "StylesForm" }))
 {
