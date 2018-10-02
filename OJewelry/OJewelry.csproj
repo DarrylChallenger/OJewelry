@@ -279,6 +279,8 @@
     <Compile Include="Classes\OJExceptions.cs" />
     <Compile Include="Classes\Singletons.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AssemblyCostsApiController.cs" />
+    <Compile Include="Controllers\AssemblyCostsController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\CollectionsController.cs" />
     <Compile Include="Controllers\CompaniesController.cs" />
@@ -421,9 +423,22 @@
     <Compile Include="Migrations\201808232012331_v1.3MakeFindingsPriceMndatory.Designer.cs">
       <DependentUpon>201808232012331_v1.3MakeFindingsPriceMndatory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201809052253039_v1.3-AddAssemblyCosts.cs" />
+    <Compile Include="Migrations\201809052253039_v1.3-AddAssemblyCosts.Designer.cs">
+      <DependentUpon>201809052253039_v1.3-AddAssemblyCosts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809211919294_v1.4-AddWeightToCastings.cs" />
+    <Compile Include="Migrations\201809211919294_v1.4-AddWeightToCastings.Designer.cs">
+      <DependentUpon>201809211919294_v1.4-AddWeightToCastings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809221304027_v1.4AddVendorRefernceToCasting.cs" />
+    <Compile Include="Migrations\201809221304027_v1.4AddVendorRefernceToCasting.Designer.cs">
+      <DependentUpon>201809221304027_v1.4AddVendorRefernceToCasting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
+    <Compile Include="Models\AssemblyCostsModel.cs" />
     <Compile Include="Models\Buyer.cs" />
     <Compile Include="Models\Casting.cs" />
     <Compile Include="Models\Client.cs" />
@@ -436,6 +451,7 @@
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\ComponentType.cs" />
     <Compile Include="Models\Contact.cs" />
+    <Compile Include="Models\AssemblyCost.cs" />
     <Compile Include="Models\DataAnnotations.cs" />
     <Compile Include="Models\Findings.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -465,7 +481,7 @@
     <Compile Include="Models\Vendor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="StoneMatchingController.cs" />
+    <Compile Include="Controllers\StoneMatchingApiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -634,6 +650,11 @@
     <Content Include="Views\Shapes\Edit.cshtml" />
     <Content Include="Views\Shapes\Index.cshtml" />
     <Content Include="Views\Styles\Copy.cshtml" />
+    <Content Include="Views\AssemblyCosts\Create.cshtml" />
+    <Content Include="Views\AssemblyCosts\Delete.cshtml" />
+    <Content Include="Views\AssemblyCosts\Details.cshtml" />
+    <Content Include="Views\AssemblyCosts\Edit.cshtml" />
+    <Content Include="Views\AssemblyCosts\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -749,6 +770,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808232012331_v1.3MakeFindingsPriceMndatory.resx">
       <DependentUpon>201808232012331_v1.3MakeFindingsPriceMndatory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809052253039_v1.3-AddAssemblyCosts.resx">
+      <DependentUpon>201809052253039_v1.3-AddAssemblyCosts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809211919294_v1.4-AddWeightToCastings.resx">
+      <DependentUpon>201809211919294_v1.4-AddWeightToCastings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809221304027_v1.4AddVendorRefernceToCasting.resx">
+      <DependentUpon>201809221304027_v1.4AddVendorRefernceToCasting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

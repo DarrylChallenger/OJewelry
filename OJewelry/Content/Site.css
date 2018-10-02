@@ -390,6 +390,15 @@ html input[disabled], locked {
     border-color: orange;
 }
 
+.badStone {
+    border-color: #b94a48; /* text-danger */
+    border-width: 2px;
+}
+
+.badTotal {
+    color: #b94a48; /* text-danger */
+}
+
 .AddBtn {
     color:green;
 }
@@ -401,3 +410,11 @@ html input[disabled], locked {
     color: red;
 }
 
+.AssemblyCostsForm label {
+    text-align:right;
+    display:block;
+}
+
+.AssemblyCostFormMetalHeader label {
+    text-align:left;
+}

@@ -1,0 +1,123 @@
+﻿@model OJewelry.Models.CostData
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Assembly Costs for <i>@ViewBag.CompanyName</i></h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal AssemblyCostsForm">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.companyId)
+
+        <div>
+            <p class="h4"><b>Metal Market and Multiplier</b> (Metal type)</p>
+            <div class="row AssemblyCostFormMetalHeader">
+                <div class="col-sm-3 col-xs-3"></div>
+                <div class="col-sm-3 col-xs-3"><label>Market Price</label></div>
+                <div class="col-sm-3 col-xs-3"><label>Multiplier</label></div>
+            </div>
+            @{ int i = 0; }
+            @foreach (var mc in Model.mc)
+            {
+                string mav = "metalMarketPrice_" + i + "__Value";
+                string muv = "metalMultiplier_" + i + "__Value";
+                string mak = "metalMarketPrice_" + i + "__Key";
+                string muk = "metalMultiplier_" + i + "__Key";
+                <div class="row">
+                    <div>
+                        <div class="col-sm-3 col-xs-3">
+                            <input type="hidden" id="@mak" name="metalMarketPrice[@i].Key" value="@mc.Code" />
+                            <input type="hidden" id="@muk" name="metalMultiplier[@i].Key" value="@mc.Code" />
+                            <label>@mc.Code</label>
+                        </div>
+                        <div class="col-sm-3 col-xs-3">
+                            <input id="@mav" name="metalMarketPrice[@i].Value" type="number" value="@Model.metalMarketPrice[mc.Code]" />
+                        </div>
+                        <div class="col-sm-3 col-xs-3">
+                            <input id="@muv" name="metalMultiplier[@i].Value" type="number" value="@Model.metalMultiplier[mc.Code]" />
+                        </div>
+                    </div>
+                </div>
+                i++;
+            }
+        </div>
+        <div>
+            <hr />
+            <p class="h4"><b>Finishing Costs</b> (Jewelry type)</p>
+            <div class="row">
+
+                @{ i = 0; }
+                @foreach (var fc in Model.finishingCosts)
+                {
+                    string sv = "finishingCosts_" + i + "__Value";
+                    string sk = "finishingCosts_" + i + "__Key";
+                    <div class="">
+                        <div class="col-sm-3 col-xs-6">
+                            <input type="hidden" id="@sk" name="finishingCosts[@i].Key" value="@fc.Key" />
+                            <label for="@sv">@fc.Key</label>
+                        </div>
+                        <div class="col-sm-3 col-xs-6">
+                            <input id="@sv" name="finishingCosts[@i].Value" type="number" value="@fc.Value.ToString("F02")" />
+                        </div>
+                    </div>
+                    i++;
+                }
+                </div>
+            <hr />
+            <p class="h4"><b>Settings Costs</b> (Stone size)</p>
+            <div class="row">
+                @{ i = 0;}
+                @foreach (var sc in Model.settingsCosts)
+                {
+                    string sv = "settingsCosts_" + i + "__Value";
+                    string sk = "settingsCosts_" + i + "__Key";
+
+                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+                        <input type="hidden" id="@sk" name="settingsCosts[@i].key" value="@sc.Key" />
+                        <label for="@sv">@sc.Key</label>
+                    </div>
+                    <div class="col-lg-1 col-md-2 col-sm-3 col-xs-8">
+                        <input id="@sv" name="settingsCosts[@i].Value" type="number" value="@sc.Value.ToString("F02")" />
+                    </div>
+                    i++;
+
+                }
+            </div>
+            <hr />
+            <p class="h4"><b>Packaging Costs</b> (Jewelry type)</p>
+            <div class="row">
+                @{ i = 0; }
+                @foreach (var pc in Model.packagingCosts)
+                {
+                    string sv = "packagingCosts" + i + "__Value";
+                    string sk = "packagingCosts" + i + "__Key";
+                    <div class="">
+                        <div class="col-lg-2 col-md-3 col-sm-2 col-xs-3">
+                            <input type="hidden" id="@sk" name="packagingCosts[@i].Key" value="@pc.Key" />
+                            <label for="@sv">@pc.Key</label>
+                        </div>
+                        <div class="col-lg-1 col-md-3 col-sm-1 col-xs-8">
+                            <input id="@sv" name="packagingCosts[@i].Value" type="number" value="@pc.Value.ToString("F02")" />
+                        </div>
+                    </div>
+                    i++;
+                }
+            </div>
+        </div>
+        <br />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+    <div>
+        @Html.ActionLink("Companies", "Index", "Companies")
+    </div>

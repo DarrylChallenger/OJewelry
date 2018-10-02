@@ -22,7 +22,7 @@ select * from Companies
 update stones set CompanyId =1
 
 select * from styles sty
-where sty.id = 21079
+where sty.id = 31090
 
 select * from styles sty
 join StyleMisc as sm on sty.id = sm.StyleId
