@@ -61,9 +61,10 @@ COST:
                         <div class="col-sm-2 col-xs-2">@Model.Castings[i].Name</div>
                         <div class="col-sm-1 col-xs-1">@Model.Castings[i].VendorName</div>
                         <div class="col-sm-1 col-xs-1">@Model.Castings[i].MetalWeight</div>
-                        <div class="col-sm-1 col-xs-1">Unit</div>
+                        var q = @Model.Castings[i].MetalWeightUnits.Where(v => v.Value == Model.Castings[i].MetalWtUnitId.ToString()).FirstOrDefault()?.Text;
+                        <div class="col-sm-1 col-xs-1">@q</div>
                         <div class="col-sm-1 col-xs-1">@Model.Castings[i].MetalCode</div>
-                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].Price</div>
+                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].Price.Value.ToString("F02")</div>
                         <div class="col-sm-1 col-xs-1">@Model.Castings[i].Labor</div>
                         <div class="col-sm-1 col-xs-1">@Model.Castings[i].Qty</div>
                     }
@@ -493,6 +494,7 @@ COST:
     {
         Model.i = i;
         OJewelry.Models.MiscComponent c = Model.Miscs[i];
+        bool bDisabled = Model.Miscs[i].SVMState == SVMStateEnum.Fixed;
         <div class="MiscsState">@Html.HiddenFor(model => model.Miscs[i].SVMState)</div>
         var bHideRow = (Model.Miscs[i].SVMState == SVMStateEnum.Unadded || Model.Miscs[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
         <div id="MiscsRow_@i" class="MiscsRow @bHideRow">
@@ -510,8 +512,15 @@ COST:
 
                 @if (Model.SVMOp != SVMOperation.Print)
                 {
-                    bool bDisabled = Model.Miscs[i].SVMState == SVMStateEnum.Fixed;
-                    @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Misc Name field is required.", @placeholder = "Name" } })
+                    if (bDisabled)
+                    {
+                        @Html.HiddenFor(model => model.Miscs[i].Name)
+                        @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Misc Name field is required.", @placeholder = "Name" } })
+                    }
+                    else
+                    {
+                        @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Misc Name field is required.", @placeholder = "Name" } })
+                    }
                     @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                     <div class="col-sm-3 col-xs-3 "></div>
                     if (bDisabled)

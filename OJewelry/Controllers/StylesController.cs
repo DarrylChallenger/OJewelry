@@ -48,23 +48,6 @@ namespace OJewelry.Controllers
             return View(svm);
         }
 
-        public ActionResult Print(int? id)
-        {
-            StyleViewModel sm = new StyleViewModel();
-            if (id == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            sm.Style = db.Styles.Find(id);
-            if (sm.Style == null)
-            {
-                return HttpNotFound();
-            }
-            sm.Populate(id, db);
-            sm.SVMOp = SVMOperation.Print;
-            return View(sm);
-        }
-
         // GET: Styles/Create
         public ActionResult Create(int collectionId)
         {
@@ -121,7 +104,7 @@ namespace OJewelry.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Create([Bind(Include = "Id,Name,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
-        public Task <ActionResult> Create(StyleViewModel svm)
+        public async Task <ActionResult> Create(StyleViewModel svm)
         {
             svm.SVMOp = SVMOperation.Create;
             int i = db.Styles.
@@ -140,7 +123,7 @@ namespace OJewelry.Controllers
             else {
                 svm.SVMState = SVMStateEnum.Added;
             }
-            return Edit(svm);
+            return await Edit(svm);
         }
 
         // GET: Styles/Edit/5
@@ -170,6 +153,36 @@ namespace OJewelry.Controllers
         }
 
 
+        public ActionResult Print(int? id)
+        {
+            StyleViewModel sm = new StyleViewModel();
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            sm.Style = db.Styles.Find(id);
+            if (sm.Style == null)
+            {
+                return HttpNotFound();
+            }
+            sm.Style.Collection = db.Collections.Find(sm.Style.CollectionId);
+
+            sm.CompanyId = sm.Style.Collection.CompanyId;
+            sm.Populate(id, db);
+            sm.SVMOp = SVMOperation.Print;
+            return View(sm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Print(StyleViewModel svm)
+        {
+            // First, save the data
+            svm.SVMOp = SVMOperation.Print;
+            return await Edit(svm);
+            //return View(svm);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(StyleViewModel svm)
@@ -178,6 +191,7 @@ namespace OJewelry.Controllers
             int i;
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
+            await SaveImageInStorage(svm);
             if (ModelState.IsValid)
             {
                 // Iterate thru the components
@@ -457,14 +471,19 @@ namespace OJewelry.Controllers
                     }
                 } // false
             }
-            await SaveImageInStorage(svm);
             if (ModelState.IsValid)
             {
                 if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
                 {
                     // Save changes, go to Home
                     db.SaveChanges();
-                    return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
+                    if (svm.SVMOp != SVMOperation.Print)
+                    {
+                        return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
+                    } else
+                    {
+                        return Print(svm.Style.Id);
+                    }
                 }
             }
             Collection co = db.Collections.Find(svm.Style.CollectionId);

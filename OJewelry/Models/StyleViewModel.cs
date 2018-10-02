@@ -256,6 +256,8 @@ namespace OJewelry.Models
 
         public String Size { get; set; }
 
+        [Display(Name = "Price")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal Price
         {
             get { return _stone.Price; }
@@ -775,6 +777,13 @@ namespace OJewelry.Models
             }
             assemblyCost.Load(db, CompanyId);
         }
+
+        public void PopulateComputedValues()
+        {
+            // castings price
+            // labor stone setting costs
+        }
+
         public void RepopulateComponents(OJewelryDB db)
         {
             decimal t = 0;

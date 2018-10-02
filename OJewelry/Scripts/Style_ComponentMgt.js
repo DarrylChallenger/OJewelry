@@ -267,7 +267,7 @@ function CalcMetalPrice(i) {
             metalMarketPrice = costData.metalMarketPrice[metalCode];
             metalMultiplier = costData.metalMultiplier[metalCode];
             price = metalMarketPrice * metalMultiplier * weight * unitMultiplier;
-            $("#Castings_" + i + "__Price").val(price);
+            $("#Castings_" + i + "__Price").val(price.toFixed(2));
             CalcRowTotal("Castings", i);
         });
 }
