@@ -63,16 +63,17 @@ function AddComponentRow(type, index)
             .attr("id", 'Castings_' + len + '__MetalCodeId')
             .attr("data-val", "true")
             .attr("data-val-number", "The field MetalCodeId must be a number.")
-            .attr("data-val-required", "The MetalCodeId field is required.");
+            .attr("data-val-required", "The MetalCodeId field is required.")
+            .attr("onchange", "CalcMetalPrice(" + len + ")");
 
         var jsMetalUnits = $("#jsMetalUnits").clone();
         jsMetalUnits.find("#jsuINDEX")
-            .attr("name", 'Castings[' + len + '].MetalWeightUnitId')
-            .attr("id", 'Castings_' + len + '__MetalWeightUnitId')
+            .attr("name", 'Castings[' + len + '].MetalWtUnitId')
+            .attr("id", 'Castings_' + len + '__MetalWtUnitId')
             .attr("data-val", "true")
             //.attr("data-val-number", "The field MetalWeightUnitId must be a number.")
             .attr("data-val-required", "The Metal Weight Unit field is required.")
-            .attr("onchange", "CalcMetalPrice('" + len + "')");
+            .attr("onchange", "CalcMetalPrice(" + len + ")");
         ltbordered = castingsltbordered.replace("JSVENDORS", jsVendors.html()).replace("JSMETALS", jsMetals.html()).replace("JSMETALUNITS", jsMetalUnits.html());
     }
     if (type === "Stones") { // also add a labor setting with the stone row #
@@ -508,12 +509,12 @@ function getCastingsHTML(type, len) {
             </div>\
             <input class="col-sm-2 text-box single-line requiredifnotremoved" data-val="true" placeholder="Name" data-val-required="The Metal Style Name field is required." id="Castings_' + len + '__Name" name="Castings[' + len + '].Name" type="text" value="" />\
             JSVENDORS\
-            <input class="col-sm-1 text-box single-line requiredifnotremoved" data-val="true" data-val-number="The field Weight field must be a number."  data-val-required="The Weight field is required." id="Castings_' + len + '__MetalWeight" name="Castings[' + len + '].MetalWeight" type="text" value="0.00" onblur="CalcMetalPrice(\'' + len + ')\"/>\
+            <input class="col-sm-1 text-box single-line requiredifnotremoved" data-val="true" data-val-number="The field Weight field must be a number."  data-val-required="The Weight field is required." id="Castings_' + len + '__MetalWeight" name="Castings[' + len + '].MetalWeight" type="text" value="0.00" onblur="CalcMetalPrice(' + len + ')\"/>\
             JSMETALUNITS\
             JSMETALS\
-            <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Price must be a number." id="Castings_' + len + '__Price" name="Castings[' + len + '].Price" type="text" value="0.00" disabled="disabled" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Price must be a number." id="Castings_' + len + '__Price" name="Castings[' + len + '].Price" type="text" value="0.00" disabled="disabled" onblur="CalcRowTotal(\'' + type + '\, ' + len + ')\"/>\
             <input class="col-sm-1 text-box single-line" data-val="true" data-val-number="The field Labor must be a number." id="Castings_' + len + '__Labor" name="Castings[' + len + '].Labor" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <input class="col-sm-1 text-box single-line requiredifnotremoved" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Castings_' + len + '__Qty" name="Castings[' + len + '].Qty" type="text" value="0" onblur="CalcMetalPrice(\'' + len + ')\"/>\
+            <input class="col-sm-1 text-box single-line requiredifnotremoved" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="Castings_' + len + '__Qty" name="Castings[' + len + '].Qty" type="text" value="0" onblur="CalcMetalPrice(' + len + ')\"/>\
             <div id="CastingsRowTotalValue_' + len + '" class="col-sm-1 CastingsRowTotal ">0.00</div>\
             ' + rightDelBtn + '\
             </div>\

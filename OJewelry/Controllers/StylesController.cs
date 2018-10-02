@@ -191,7 +191,7 @@ namespace OJewelry.Controllers
             int i;
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
-            await SaveImageInStorage(svm);
+            //await SaveImageInStorage(svm);
             if (ModelState.IsValid)
             {
                 // Iterate thru the components
@@ -477,6 +477,7 @@ namespace OJewelry.Controllers
                 {
                     // Save changes, go to Home
                     db.SaveChanges();
+                    await SaveImageInStorage(db, svm);
                     if (svm.SVMOp != SVMOperation.Print)
                     {
                         return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
@@ -858,7 +859,7 @@ namespace OJewelry.Controllers
             db.StyleMiscs.Add(sm);
         }
 
-        private async Task<bool> SaveImageInStorage(StyleViewModel svm)
+        private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm)
         {
             //AzureBlobStorageContainer container = new AzureBlobStorageContainer();
             //await container.Init(ojStoreConnStr, "ojewelry");
@@ -866,8 +867,9 @@ namespace OJewelry.Controllers
             {
                 string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
                 env = (env == "Production") ? "" : env + "_";
-                string filename = env + "StyleImg" + svm.CompanyId + "_" + svm.Style.Id.ToString() + Path.GetExtension(svm.PostedImageFile.FileName);
+                string filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
                 svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
+                db.SaveChanges();
             }
 
             return true;

@@ -1575,6 +1575,7 @@ namespace OJewelry.Models
             RedlineRatio = oldStyle.RedlineRatio;
             MetalWeightUnit = oldStyle.MetalWeightUnit;
             MetalWtNote = oldStyle.MetalWtNote;
+            Image = oldStyle.Image;
         }
     }
 }
