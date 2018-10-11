@@ -161,6 +161,13 @@ namespace OJewelry.Models
                 .WithRequired(e => e.Company)
                 .WillCascadeOnDelete(true);
 
+            // Add foreign key
+            modelBuilder.Entity<Company>()
+                .HasMany(e => e.Presenters)
+                .WithRequired(e => e.Company)
+                .WillCascadeOnDelete(false);
+            //
+
             modelBuilder.Entity<Stone>()
                 .Property(e => e.Name)
                 .IsUnicode(false);

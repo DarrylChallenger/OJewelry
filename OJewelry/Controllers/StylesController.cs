@@ -271,7 +271,7 @@ namespace OJewelry.Controllers
                             ModelState.AddModelError("Stones[" + i + "].Name", e.Message);
                             continue;
                         }
-                        catch (OjMissingStoneException e)
+                        catch (OjMissingStoneException)
                         {
                             if (sc.Name == null) ModelState.AddModelError("Stones[" + i + "].Name", "You must enter a stone!! ");
                             if (sc.ShId == null) ModelState.AddModelError("Stones[" + i + "].ShId", "You must enter a shape!! ");
