@@ -435,6 +435,10 @@
     <Compile Include="Migrations\201809221304027_v1.4AddVendorRefernceToCasting.Designer.cs">
       <DependentUpon>201809221304027_v1.4AddVendorRefernceToCasting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201810050152429_v1.4AddForeignKeyPresenterToCompany.cs" />
+    <Compile Include="Migrations\201810050152429_v1.4AddForeignKeyPresenterToCompany.Designer.cs">
+      <DependentUpon>201810050152429_v1.4AddForeignKeyPresenterToCompany.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -779,6 +783,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809221304027_v1.4AddVendorRefernceToCasting.resx">
       <DependentUpon>201809221304027_v1.4AddVendorRefernceToCasting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810050152429_v1.4AddForeignKeyPresenterToCompany.resx">
+      <DependentUpon>201810050152429_v1.4AddForeignKeyPresenterToCompany.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

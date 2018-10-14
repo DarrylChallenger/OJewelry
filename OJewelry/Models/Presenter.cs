@@ -46,7 +46,7 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Email { get; set; }
 
-        public int? CompanyId { get; set; }
+        public int CompanyId { get; set; }
 
         public virtual Company Company { get; set; }
 

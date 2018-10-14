@@ -101,6 +101,17 @@ namespace OJewelry.Controllers
                         }
                     }
                 }
+
+                // add location
+                Presenter presenter = new Presenter
+                {
+                    Id = cvm.company.Id,
+                    Name = cvm.company.Name,
+                    ShortName = cvm.company.Name,
+                    Phone = cvm.company.Phone,
+                    Email = cvm.Email
+                };
+                db.Presenters.Add(presenter);
                 db.SaveChanges();
 
                 return RedirectToAction("Index");
@@ -739,49 +750,25 @@ namespace OJewelry.Controllers
                                 // from -= qty, to += qty
                                 Memo fromMemo, toMemo;
                                 // if moving from home, create a memo. If moving to home, decrease memo qty/remove the memo
-                                
-                                //if (ivm.FromLocationId == 0) // get the quant from styles
-                                if (false) // 
+                                fromMemo = db.Memos.Where(x => x.PresenterID == ivm.FromLocationId && x.StyleID == theStyle.Id).SingleOrDefault();
+                                if ((fromMemo != null) && (moveQty <= fromMemo.Quantity))
                                 {
-                                    if (moveQty <= theStyle.Quantity)
+                                    fromMemo.Quantity -= moveQty;
+                                    if (fromMemo.Quantity == 0)
                                     {
-                                        theStyle.Quantity -= moveQty;
-
-                                    }
-                                    else
-                                    {
-                                        // if qty in from < qty, error
-                                        error = "Too few items (" + theStyle.Quantity + ") in style [" + s.StyleNum + "] - cannot move " + moveQty + ".";
-                                        ivm.Errors.Add(error);
-                                        continue;
+                                        db.Memos.Remove(fromMemo);
                                     }
                                 }
                                 else
                                 {
-                                    fromMemo = db.Memos.Where(x => x.PresenterID == ivm.FromLocationId && x.StyleID == theStyle.Id).SingleOrDefault();
-                                    if ((fromMemo != null) && (moveQty <= fromMemo.Quantity))
-                                    {
-                                        fromMemo.Quantity -= moveQty;
-                                        if (fromMemo.Quantity == 0)
-                                        {
-                                            db.Memos.Remove(fromMemo);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Presenter f = db.Presenters.Find(ivm.FromLocationId);
-                                        error = "Too few items (" + (fromMemo == null ? 0 : fromMemo.Quantity) + ") in style '" + s.StyleNum + "' at " + f.Name + " - cannot move " + moveQty + ".";
-                                        ivm.Errors.Add(error);
-                                        continue;
-                                    }
+                                    Presenter f = db.Presenters.Find(ivm.FromLocationId);
+                                    error = "Too few items (" + (fromMemo == null ? 0 : fromMemo.Quantity) + ") in style '" + s.StyleNum + "' at " + f.Name + " - cannot move " + moveQty + ".";
+                                    ivm.Errors.Add(error);
+                                    continue;
                                 }
                                 // if moving to home
                                 //if (ivm.ToLocationId == 0)
-                                if(false)
-                                {
-                                    theStyle.Quantity += moveQty;
-                                }
-                                else if (ivm.ToLocationId == -1)
+                                if (ivm.ToLocationId == -1)
                                 {
                                     // if moving to sold
                                     SalesLedger sl = new SalesLedger()

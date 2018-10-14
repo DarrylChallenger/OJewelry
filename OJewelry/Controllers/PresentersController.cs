@@ -156,6 +156,12 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Presenter presenter = db.Presenters.Find(id);
+            // only allow delete if there is more than one presenter for this company
+            if (db.Presenters.Where(p => p.CompanyId == presenter.CompanyId).Count() < 2)
+            {
+                ViewBag.Message = "This is the only location for this company so it cannot be removed";
+                return View(presenter);
+            }
             /*  
             foreach (Memo m in db.Memos.Where(mm => mm.PresenterID == id))
             {
@@ -169,7 +175,7 @@ namespace OJewelry.Controllers
             }
             else
             {
-                int coid = presenter.CompanyId.Value;
+                int coid = presenter.CompanyId;
                 List<Contact> contacts = new List<Contact>();
                 foreach (Contact c in db.Contacts.Where(c => c.PresenterId == id))
                 {
