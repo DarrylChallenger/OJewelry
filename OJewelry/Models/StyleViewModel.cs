@@ -900,9 +900,16 @@ namespace OJewelry.Models
             {
                 Stone stone = db.Stones.Find(ss.StoneId);
                 Shape shape = db.Shapes.Find(stone.ShapeId);
-                stone.Vendor = db.Vendors.Find(stone.VendorId) ?? new Vendor();
                 StoneComponent stscm = new StoneComponent(stone);
-                stscm.VendorName = stone.Vendor.Name;
+                // Trouble when there is no Vendor defined!!!
+                if (stone.VendorId == null)
+                {
+                    stscm.VendorName = "";
+                }
+                else
+                {
+                    stscm.VendorName = stone.Vendor.Name;
+                }
                 stscm.linkId = ss.Id;
                 stscm.CtWt = stone.CtWt;
                 stscm.Size = stone.StoneSize;
