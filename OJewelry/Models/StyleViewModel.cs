@@ -204,6 +204,13 @@ namespace OJewelry.Models
         public StoneComponent(Stone s)
         {
             _stone = s;
+            if (_stone.Vendor != null)
+            {
+                _stone.Vendor = s.Vendor;
+            } else
+            {
+                _stone.Vendor = new Vendor(); ;
+            }
             // set link fields
             Init();
         }
@@ -899,6 +906,10 @@ namespace OJewelry.Models
             foreach (StyleStone ss in Style.StyleStones)
             {
                 Stone stone = db.Stones.Find(ss.StoneId);
+                if (stone.VendorId == null)
+                {
+
+                }
                 Shape shape = db.Shapes.Find(stone.ShapeId);
                 StoneComponent stscm = new StoneComponent(stone);
                 // Trouble when there is no Vendor defined!!!

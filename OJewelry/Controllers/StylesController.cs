@@ -599,12 +599,28 @@ namespace OJewelry.Controllers
 
         public void AddDefaultEntries(StyleViewModel svm)
         {
+            // Get the cost data and find initial values for the Finishing Labor & Packaging Costs. Both are based on the style's jewelry type
+            decimal flPrice = 0;
+            decimal packPrice = 0;
+            AssemblyCost assemblyCost = db.AssemblyCosts.Find(svm.CompanyId);
+            JewelryType jt = db.JewelryTypes.First();
+            if (assemblyCost != null)
+            {
+                CostData cd = assemblyCost.GetCostDataFromJSON();
+                if (cd != null)
+                {
+                    flPrice = cd.finishingCosts[jt.Name];
+                    packPrice = cd.packagingCosts[jt.Name];
+                    packPrice = 1;
+                }
+            }
             // Add 2 Fixed Labor entries and 1 Fixed Misc entry
             LaborComponent lc = new LaborComponent
             {
                 Id = -1,
                 Name = StyleViewModel.FinishingLaborName,
                 SVMState = SVMStateEnum.Fixed,
+                PPP = flPrice,
                 Qty = 1
             };
             svm.Labors.Add(lc);
@@ -613,6 +629,7 @@ namespace OJewelry.Controllers
             {
                 Name = StyleViewModel.PackagingName,
                 SVMState = SVMStateEnum.Fixed,
+                PPP = packPrice,
                 Qty = 1
             };
             svm.Miscs.Add(mc);
