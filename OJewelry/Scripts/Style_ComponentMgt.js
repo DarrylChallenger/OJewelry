@@ -276,8 +276,6 @@ function CalcMetalPrice(i) {
 function CalcStonesSettingsRow(stoneRow, price, qty) {
    // Totals are in element after the row data
     var total = $("#StoneSetting_" + stoneRow).next();
-    console.log(price);
-    console.log(qty);
     total.text((price * qty).toFixed(2));
     CalcSubtotals("Labors");
 }
@@ -364,7 +362,6 @@ function StoneChanged(i) {
                 $("div[name='StoneSettingRowTotalValue_" + i + "']").addClass("badTotal");
                 $("#Stones_" + i + "__Price").val("0.00");
                 var qty = $("#Stones_" + i + "__Qty").val();
-                console.log("++");
                 CalcStonesSettingsRow(i, 0, qty);
             }
         })
@@ -397,7 +394,7 @@ function StoneSizeChanged(stoneRow) {
             var costData = JSON.parse(cdJSON);
             settingVal = costData.settingsCosts[$("#Stones_" + stoneRow + "__SzId").val()];
             if (settingVal === undefined) {
-                settingVal = 0
+                settingVal = 0;
             }
 
             $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
@@ -455,7 +452,6 @@ function UpdateStoneSettingRow(stoneRow) {
     $("#StoneSettingQty_" + stoneRow).val(qty);
 
     price = $("#StoneSettingPrice_" + stoneRow).val();
-    console.log("--");
     CalcStonesSettingsRow(stoneRow, price, qty);
 
 }
@@ -479,7 +475,6 @@ function AddStoneSettingRowHTML(stoneRow) {
             }
             $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
             price = settingVal;
-            console.log("C");
             UpdateStoneSettingRow(stoneRow);
         });
 }
