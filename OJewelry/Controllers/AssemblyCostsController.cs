@@ -71,6 +71,8 @@ namespace OJewelry.Controllers
                 }
                 //return RedirectToAction("Index", "");
             }
+            Company company = db.FindCompany(costData.companyId);
+            ViewBag.CompanyName = company.Name;
             costData.mc = db.MetalCodes;
             return View(costData);
         }
