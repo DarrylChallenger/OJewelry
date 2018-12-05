@@ -35,6 +35,7 @@ namespace OJewelry.Controllers
             if (assemblyCost == null)
             {
                 assemblyCost = new AssemblyCost();
+                assemblyCost.companyId = companyId.Value;
             }
             assemblyCost.Load(db, companyId.Value);
             CostData cd = assemblyCost.GetCostDataFromJSON();
@@ -54,9 +55,20 @@ namespace OJewelry.Controllers
             if (ModelState.IsValid)
             {
                 AssemblyCost assemblyCost = db.AssemblyCosts.Find(costData.companyId);
-                assemblyCost.costDataJSON = costData.GetJSON();
-                db.Entry(assemblyCost).State = EntityState.Modified;
-                db.SaveChanges();
+                if (assemblyCost == null)
+                {
+                    assemblyCost = new AssemblyCost();
+                    assemblyCost.companyId = costData.companyId;
+                    assemblyCost.costDataJSON = costData.GetJSON();
+                    db.AssemblyCosts.Add(assemblyCost);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    assemblyCost.costDataJSON = costData.GetJSON();
+                    db.Entry(assemblyCost).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
                 //return RedirectToAction("Index", "");
             }
             costData.mc = db.MetalCodes;
