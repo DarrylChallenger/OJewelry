@@ -9,7 +9,7 @@ namespace OJewelry.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(OJewelry.Models.OJewelryDB context)

@@ -282,6 +282,10 @@ namespace OJewelry.Models
         [Required]
         [Display(Name = "Price")]
         public decimal Price { get; set; }
+
+        [Required]
+        [Display(Name = "Setting Cost")]
+        public decimal SettingCost { get; set; }
     }
 
 
