@@ -339,7 +339,7 @@ function JewelryTypeChanged(companyId) {
 }
 
 function StoneChanged(i) {
-    // pass the stone, shape, and size to StoneMantchingController. Process the result or handle not found 
+    // pass the stone, shape, and size to StoneMatchingController. Process the result or handle not found 
     var stoneCtl = $("#Stones_" + i + "__Name");
     var shapeCtl = $("#Stones_" + i + "__ShId");
     var sizeCtl = $("#Stones_" + i + "__SzId");
@@ -354,6 +354,7 @@ function StoneChanged(i) {
                 return response.json();
             } else {
                 // Put the controls in warning mode
+                console.log("Put the controls in warning mode");
                 stoneCtl.addClass("badStone");
                 shapeCtl.addClass("badStone");
                 sizeCtl.addClass("badStone");
@@ -362,28 +363,34 @@ function StoneChanged(i) {
                 $("div[name='StoneSettingRowTotalValue_" + i + "']").addClass("badTotal");
                 $("#Stones_" + i + "__Price").val("0.00");
                 var qty = $("#Stones_" + i + "__Qty").val();
-                CalcStonesSettingsRow(i, 0, qty);
+                UpdateStoneSettingRow(i, 0, false);
+                return null;
             }
-        })
-        .then(function(stonedata) {
+        }).then(function (stonedata) {
             // unpack stonedata
-            // pack the ctwt, vwndor, and price fields
-            var stn = JSON.parse(stonedata);
-            //console.log(stn);
-            $("#Stones_" + i + "__CtWt").val(stn.CtWt);
-            $("#Stones_" + i + "__VendorName").val(stn.VendorName);
-            $("#Stones_" + i + "__Price").val(stn.Price.toFixed(2));
-            CalcRowTotal("Stones", i);
-            // Put the controls in OK mode
-            stoneCtl.removeClass("badStone");
-            shapeCtl.removeClass("badStone");
-            sizeCtl.removeClass("badStone");
-            console.log("A");
-            UpdateStoneSettingRow(i);
+            if (stonedata) {
+                console.log("Valid Combo result", stonedata);
+                // pack the ctwt, vwndor, and price fields
+                var stn = JSON.parse(stonedata);
+                console.log(stn);
+                $("#Stones_" + i + "__CtWt").val(stn.CtWt);
+                $("#Stones_" + i + "__VendorName").val(stn.VendorName);
+                $("#Stones_" + i + "__Price").val(stn.Price.toFixed(2));
+                CalcRowTotal("Stones", i);
+                // Put the controls in OK mode
+                stoneCtl.removeClass("badStone");
+                shapeCtl.removeClass("badStone");
+                sizeCtl.removeClass("badStone");
+                UpdateStoneSettingRow(i, stn.SettingCost, true);
+            }
+        }).catch(function (e) {
+            console.log("Error!!!", e);
+            UpdateStoneSettingRow(i, 0, false);
         });
 }
 
-function StoneSizeChanged(stoneRow) {
+function StoneSizeChanged(stoneRow) { 
+    /* Don't need this anymore; stone size does not determin setting cost
     // Get the assembly costs extract the settings costs
     fetch('/api/AssemblyCostsApi?companyId=' + $("#CompanyId").val())
         .then(function (response) {
@@ -396,17 +403,18 @@ function StoneSizeChanged(stoneRow) {
             if (settingVal === undefined) {
                 settingVal = 0;
             }
-
-            $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
-            price = settingVal;
+            // don't need anymore now that setting cost is a Stone attribute
+            //$("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
+            //price = settingVal;
         });
+        */
     StoneChanged(stoneRow);
+    
 }
 
 function StoneQtyChanged(i) {
     CalcRowTotal("Stones", i);
-    console.log("B");
-    UpdateStoneSettingRow(i);
+    UpdateStoneSettingRow(i, null, null);
 }
 
 function FindingChanged(i) {
@@ -422,12 +430,12 @@ function FindingChanged(i) {
     CalcRowTotal("Findings", i);
 }
 
-function UpdateStoneSettingRow(stoneRow) {
+function UpdateStoneSettingRow(stoneRow, settingCost, bValidCombo) {
     // find labor with data-stonerow = stonerow
     var settingRowName = "StoneSetting_" + stoneRow;
     var target = $("#" + settingRowName);
     // if it dowsn't exist, create it - AddStoneSettingRowHTML
-
+    console.log(`Setting Cost: ${settingCost}`);
     var price, qty;
     var name, shape, size;
     // updates
@@ -437,16 +445,20 @@ function UpdateStoneSettingRow(stoneRow) {
     size = $("#Stones_" + stoneRow + "__SzId").val();
 
     var stName;
-    if (name === "" || shape === "" || size === "") {
+    // Ignore null bValidCombo
+    if (bValidCombo === false) {
         stName = "Invalid stone combination";// + (parseInt(stoneRow) + 1); // change to message indicating invalid combo
         $("div[name='StoneSettingRowTotalValue_" + stoneRow + "']").addClass("badTotal");
-    } else {
+    }
+    if (bValidCombo === true) {
         stName = "Setting for " + name + "-" + shape + "-" + size;
         $("div[name='StoneSettingRowTotalValue_" + stoneRow + "']").removeClass("badTotal");
 
     }
     $("#StoneSettingName_" + stoneRow).val(stName);
-
+    if (settingCost !== null) {
+        $("#StoneSettingPrice_" + stoneRow).val(settingCost.toFixed(2));
+    }
     // Qty = stone QTY
     qty = $("#Stones_" + stoneRow + "__Qty").val();
     $("#StoneSettingQty_" + stoneRow).val(qty);
@@ -459,7 +471,8 @@ function UpdateStoneSettingRow(stoneRow) {
 function AddStoneSettingRowHTML(stoneRow) {
     ltbordered = getStoneSettingsHTML("Stones", len);
     $("#LaborsTotal").before(ltbordered);
-
+    // Don't need this -new rows will always have PPP = 0
+    /*
     // PPP - get from API
     fetch('/api/AssemblyCostsApi?companyId=' + $("#CompanyId").val())
         .then(function (response) {
@@ -471,12 +484,13 @@ function AddStoneSettingRowHTML(stoneRow) {
             var costData = JSON.parse(cdJSON);
             settingVal = costData.settingsCosts[$("#Stones_" + stoneRow + "__SzId").val()];
             if (settingVal === undefined) {
-                settingVal = 0;
             }
-            $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
-            price = settingVal;
-            UpdateStoneSettingRow(stoneRow);
         });
+    */
+    settingVal = 0;
+    $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
+    price = settingVal;
+    UpdateStoneSettingRow(stoneRow, 0, false);
 }
 
 function RemoveStoneSettingRow(stoneRow) {

@@ -439,6 +439,10 @@
     <Compile Include="Migrations\201810050152429_v1.4AddForeignKeyPresenterToCompany.Designer.cs">
       <DependentUpon>201810050152429_v1.4AddForeignKeyPresenterToCompany.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201812082216599_v1.5AddStoneSettingCostToStons.cs" />
+    <Compile Include="Migrations\201812082216599_v1.5AddStoneSettingCostToStons.Designer.cs">
+      <DependentUpon>201812082216599_v1.5AddStoneSettingCostToStons.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -786,6 +790,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201810050152429_v1.4AddForeignKeyPresenterToCompany.resx">
       <DependentUpon>201810050152429_v1.4AddForeignKeyPresenterToCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812082216599_v1.5AddStoneSettingCostToStons.resx">
+      <DependentUpon>201812082216599_v1.5AddStoneSettingCostToStons.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

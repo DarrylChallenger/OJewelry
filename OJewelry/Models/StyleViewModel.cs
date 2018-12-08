@@ -193,11 +193,13 @@ namespace OJewelry.Models
             CtWt = sc.CtWt;
             Size = sc.Size;
             Price = sc.Price;
+            SettingCost = sc.SettingCost;
             ShapeId = sc.ShapeId;
             Id = sc.Id;
             ShId = sc.ShId;
             SzId = sc.SzId;
             Qty = sc.Qty;
+            
             Total = Price * Qty;
         }
 
@@ -269,6 +271,14 @@ namespace OJewelry.Models
         {
             get { return _stone.Price; }
             set { _stone.Price = value; }
+        }
+
+        [Display(Name = "Setting Cost")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
+        public decimal SettingCost
+        {
+            get { return _stone.SettingCost; }
+            set { _stone.SettingCost = value; }
         }
 
         public virtual int ShapeId
@@ -816,6 +826,7 @@ namespace OJewelry.Models
                         sc.Size = Stones[i].SzId;
                         sc.Qty = Stones[i].Qty;
                         sc.Price = Stones[i].Price;
+                        sc.SettingCost = Stones[i].SettingCost;
                         sc.SetStonesList(jsStonesWithDefault, null);
                         sc.SetShapesList(jsShapesWithDefault, null);
                         sc.SetSizesList(jsSizesWithDefault, null);
@@ -828,6 +839,7 @@ namespace OJewelry.Models
                         sc.Size = "";
                         sc.Qty = 0;
                         sc.Price = 0;
+                        sc.SettingCost = 0;
                         sc.SetStonesList(jsStonesWithDefault, null);
                         sc.SetShapesList(jsShapesWithDefault, null);
                         sc.SetSizesList(jsSizesWithDefault, null);
@@ -845,6 +857,7 @@ namespace OJewelry.Models
                         //sc.CtWt = c.CtWt.Value;
                         sc.Size = c.StoneSize;
                         sc.Price = c.Price;
+                        sc.SettingCost = c.SettingCost;
                         //sc.Qty = c.StyleStone.w;
                         sc.SetStonesList(jsStones, sc.Name);
                         sc.SetShapesList(jsShapes, sc.ShId);
@@ -925,7 +938,7 @@ namespace OJewelry.Models
                 stscm.CtWt = stone.CtWt;
                 stscm.Size = stone.StoneSize;
                 stscm.Price = stone.Price;
-                stscm.Qty = ss.Qty ?? 0;
+                stscm.SettingCost = stone.SettingCost;
                 stscm.Name = stone.Name;
                 stscm.ShId = shape.Name;
                 stscm.SzId = stone.StoneSize;
@@ -1113,6 +1126,7 @@ namespace OJewelry.Models
             VendorId = c.VendorId;
             Name = c.VendorName;
             Price = c.Price;
+            SettingCost = c.SettingCost;
         }
 
         public Stone(StoneComponent sc)

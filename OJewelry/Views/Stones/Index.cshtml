@@ -30,6 +30,9 @@
         <th>
             @Html.DisplayNameFor(model => model.Price)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SettingCost)
+        </th>
 
         <th></th>
     </tr>
@@ -55,9 +58,12 @@
         <td>
             @Html.DisplayFor(modelItem => item.Price)
         </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SettingCost)
+        </td>
 
         <td>
-            @Html.ActionLink("Edit", "Edit", new {id = item.Id})
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
         </td>
     </tr>
 }

@@ -42,6 +42,9 @@
         [Column(TypeName = "money")]
         public decimal Price { get; set; }
 
+        [Column(TypeName = "money")]
+        public decimal SettingCost { get; set; }
+
         public virtual Company Company { get; set; }
 
         public virtual Vendor Vendor { get; set; }
