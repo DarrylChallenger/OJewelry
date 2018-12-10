@@ -10,6 +10,8 @@ namespace OJewelry.Models
     {
         public int Id { get; set; }
 
+        public int? CompanyId { get; set; }
+
         [StringLength(6)]
         public string Code { get; set; }
 
@@ -21,5 +23,7 @@ namespace OJewelry.Models
 
         [Required]
         public float Multiplier { get; set; }
+
+        public virtual Company Company { get; set; }
     }
 }
