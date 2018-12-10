@@ -11,6 +11,7 @@ using OJewelry.Models;
 
 namespace OJewelry.Controllers
 {
+    /*
     public class AssemblyCostsController : Controller
     {
         private OJewelryDB db = new OJewelryDB();
@@ -54,10 +55,10 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                AssemblyCost assemblyCost = db.AssemblyCosts.Find(costData.companyId);
+                AssemblyCostX assemblyCost = db.AssemblyCosts.Find(costData.companyId);
                 if (assemblyCost == null)
                 {
-                    assemblyCost = new AssemblyCost();
+                    assemblyCost = new AssemblyCostX();
                     assemblyCost.companyId = costData.companyId;
                     assemblyCost.costDataJSON = costData.GetJSON();
                     db.AssemblyCosts.Add(assemblyCost);
@@ -86,4 +87,5 @@ namespace OJewelry.Controllers
             base.Dispose(disposing);
         }
     }
+    */
 }

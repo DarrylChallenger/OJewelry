@@ -219,6 +219,17 @@ namespace OJewelry.Models
         [Display(Name = "Name")]
         [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
+
+        [Required]
+        [Display(Name = "Packaging Cost")]
+        [DataType(DataType.Currency)]
+        public decimal PackagingCost { get; set; }
+
+        [Required]
+        [Display(Name = "Finishing Cost")]
+        [DataType(DataType.Currency)]
+        public decimal FinishingCost { get; set; }
+
     }
 
     [MetadataType(typeof(LedgerMetaData))]  // Ledger
@@ -236,6 +247,27 @@ namespace OJewelry.Models
     public partial class MemoMetaData
     {
     }
+
+    [MetadataType(typeof(MetalCodeMetaData))]   // MetalCode
+    public partial class MetalCode
+    {
+    }
+    public partial class MetalCodeMetaData
+    {
+        public int Id { get; set; }
+
+        public string Code { get; set; }
+
+        public string Desc { get; set; }
+
+        [Required]
+        [DataType(DataType.Currency)]
+        public decimal Market { get; set; }
+
+        [Required]
+        public float Multiplier { get; set; }
+    }
+
 
     [MetadataType(typeof(PresenterMetaData))]   // Presenter
     public partial class Presenter

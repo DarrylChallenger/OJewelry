@@ -83,7 +83,7 @@ namespace OJewelry.Models
         }
 
         public virtual DbSet<ACL> ACLs { get; set; }
-        public virtual DbSet<AssemblyCost> AssemblyCosts { get; set; }
+        //public virtual DbSet<AssemblyCost> AssemblyCosts { get; set; }
         public virtual DbSet<Buyer> Buyers { get; set; }
         public virtual DbSet<Casting> Castings { get; set; }
         public virtual DbSet<Client> Clients { get; set; }

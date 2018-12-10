@@ -145,7 +145,7 @@ namespace OJewelry.Models
             MetalWeightUnits = new SelectList(units, "Id", "Unit", defaultMetailWeightUnit);
         }
 
-        public decimal ComputePrice(CostData cd, string unitCode) // use formula based on metal and multipliers
+        public decimal ComputePrice(decimal market, float multiplier, string unitCode) // use formula based on metal and multipliers
         {
             // Material type market * multiplier * weight (1gr = .643015DWT, 1DWT = 1.55517gr)
             double unitMultiplier;
@@ -157,9 +157,9 @@ namespace OJewelry.Models
             }
             else
             {
-                unitMultiplier = .643015;
+                unitMultiplier = 1.555;//  .643015;
             }
-            decimal price = (decimal)((double)cd.metalMarketPrice[MetalCode] * (double)cd.metalMultiplier[MetalCode] * (double)MetalWeight * unitMultiplier);
+            decimal price = (decimal)((double)market * (double)multiplier * (double)MetalWeight * unitMultiplier);
             return price;
         }
     }
@@ -628,7 +628,7 @@ namespace OJewelry.Models
                 };
                 return m;
             })).ToList();
-            assemblyCost = new AssemblyCost();
+            //assemblyCost = new AssemblyCost();
         }
 
         public Style Style { get; set; }
@@ -674,7 +674,7 @@ namespace OJewelry.Models
         public static string FinishingLaborName = "FINISHING LABOR";
         public static string SettingLaborName = "SETTING LABOR";
         public static string PackagingName = "PACKAGING";
-        public AssemblyCost assemblyCost { get; set; } 
+        //public AssemblyCostX assemblyCost { get; set; } 
 
         public void MarkDefaultEntriesAsFixed()
         {
@@ -785,7 +785,7 @@ namespace OJewelry.Models
             }
         }
 
-        public void GetSettingsCosts(OJewelryDB db)
+        /*public void GetSettingsCosts(OJewelryDB db)
         {
             assemblyCost = db.AssemblyCosts.Find(CompanyId);
             if (assemblyCost == null)
@@ -793,7 +793,7 @@ namespace OJewelry.Models
                 assemblyCost = new AssemblyCost();
             }
             assemblyCost.Load(db, CompanyId);
-        }
+        }*/
 
         public void PopulateComputedValues()
         {
@@ -812,7 +812,7 @@ namespace OJewelry.Models
             List<Finding> findingSet = db.Findings.Where(st => st.CompanyId == this.CompanyId).ToList();
 
             // Get Settings
-            GetSettingsCosts(db);
+            //GetSettingsCosts(db);
 
             int i = -1;
             foreach (StoneComponent sc in Stones)
@@ -1012,7 +1012,7 @@ namespace OJewelry.Models
             Miscs = new List<MiscComponent>();
 
             PopulateDropDownData(db);
-            GetSettingsCosts(db);
+            //GetSettingsCosts(db);
 
             if (id == null)
             {
@@ -1045,9 +1045,10 @@ namespace OJewelry.Models
                     cstc.SetVendorsList(jsVendors, casting.VendorId.Value);
                     cstc.SetMetalsList(jsMetals, casting.MetalCodeID.Value);// 
                     //cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
-                    cstc.MetalCode = db.MetalCodes.Find(casting.MetalCodeID).Code; // Metal Code
+                    MetalCode mc = db.MetalCodes.Find(casting.MetalCodeID); // Check company!!!
+                    cstc.MetalCode = mc.Code; // Metal Code
                     cstc.Qty = casting.Qty.Value;
-                    t = cstc.ComputePrice(assemblyCost.GetCostDataFromJSON(), db.MetalWeightUnits.Find(cstc.MetalWtUnitId)?.Unit);
+                    t = cstc.ComputePrice(mc.Market, mc.Multiplier, db.MetalWeightUnits.Find(cstc.MetalWtUnitId)?.Unit);
                     cstc.Price = t;
                     t2 = cstc.Labor ?? 0;
                     cstc.Total = cstc.Qty * (t + t2);
@@ -1083,7 +1084,8 @@ namespace OJewelry.Models
                     Total += miscm.Total;
                 }
                 MarkDefaultEntriesAsFixed();
-                AssemblyCost cost = db.AssemblyCosts.Where(x => x.companyId == CompanyId).FirstOrDefault();
+                /*
+                AssemblyCostX costX = db.AssemblyCosts.Where(x => x.companyId == CompanyId).FirstOrDefault();
                 if (cost != null)
                 {
                     CostData cd = cost.GetCostDataFromJSON();
@@ -1091,6 +1093,7 @@ namespace OJewelry.Models
                     ComputeFinishing(cd);
                     ComputePackaging(cd);
                 }
+                */
                 PopulateDropDowns(db);
             }
         }
