@@ -435,7 +435,6 @@ COST:
 
             @{
                 var stName = "Setting for " + @Model.Stones[j].Name + "-" + @Model.Stones[j].ShId + "-" + @Model.Stones[j].SzId;
-                CostData cd = Model.assemblyCost.GetCostDataFromJSON();
             }
             @if (Model.SVMOp != SVMOperation.Print)
             {
@@ -443,7 +442,7 @@ COST:
                     <input class="col-sm-4 col-xs-4 text-box single-line locked" id="StoneSettingName_@j" type="text" disabled value="@stName" /> <!-- Name size "mm setting"-->
                     <div class="col-sm-2 col-xs-2 "></div>
                     <div class="col-sm-1 col-xs-1 "></div>
-                    <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingPrice_@j" type="text" disabled value="@Model.assemblyCost.GetCostDataFromJSON().settingsCosts[Model.Stones[j].SzId].ToString("F02")" />
+                    <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingPrice_@j" type="text" disabled value="@Model.Stones[j].SettingCost.ToString("F02")" />
                     <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingQty_@j" type="text" disabled value="@Model.Stones[j].Qty.ToString()" />
                 </div>
             }
@@ -455,7 +454,7 @@ COST:
                 <div class="col-sm-1 col-xs-1">@Model.Stones[j].Price.ToString("F02")</div>
                 <div class="col-sm-1 col-xs-1">@Model.Stones[j].Qty</div>
             }
-            <div id="LaborsRowTotalValue_@(j+lc)" name="StoneSettingRowTotalValue_@j" class="col-sm-1 col-xs-1 LaborsRowTotal"> @((Model.Stones[j].Qty * @Model.assemblyCost.GetCostDataFromJSON().settingsCosts[Model.Stones[j].SzId]).ToString("F02"))</div>
+            <div id="LaborsRowTotalValue_@(j+lc)" name="StoneSettingRowTotalValue_@j" class="col-sm-1 col-xs-1 LaborsRowTotal"> @((Model.Stones[j].Qty * @Model.Stones[j].SettingCost).ToString("F02"))</div>
         </div>
         j++;
     }

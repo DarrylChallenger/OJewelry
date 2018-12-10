@@ -243,7 +243,7 @@ function CalcMetalPrice(i) {
         unitMultiplier = 1;
     }
     else {
-        unitMultiplier = .643015;
+        unitMultiplier = 1.555;
     }
     var metalCode = $("#Castings_" + i + "__MetalCodeId :selected").html();
     var metalMarketPrice = 1; //cd.metalMarketPrice[MetalCode]

@@ -48,7 +48,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name")] JewelryType jewelryType)
+        public ActionResult Create([Bind(Include = "Id,Name,PackagingCost,FinishingCost")] JewelryType jewelryType)
         {
             if (ModelState.IsValid)
             {
@@ -80,7 +80,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name")] JewelryType jewelryType)
+        public ActionResult Edit([Bind(Include = "Id,Name,PackagingCost,FinishingCost")] JewelryType jewelryType)
         {
             if (ModelState.IsValid)
             {

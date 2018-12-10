@@ -32,6 +32,7 @@ namespace OJewelry.Models
 
     public partial class AssemblyCost
     {
+        /*
         public void Load(OJewelryDB db, int _companyId)
         {
             System.Data.Entity.EntityState state;
@@ -99,6 +100,6 @@ namespace OJewelry.Models
         {
             return JsonConvert.DeserializeObject<CostData>(costDataJSON);
         }
-
+        */
     }
 }
