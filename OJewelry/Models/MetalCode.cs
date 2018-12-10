@@ -15,5 +15,11 @@ namespace OJewelry.Models
 
         [StringLength(50)]
         public string Desc { get; set; }
+
+        [Required]
+        public decimal Market { get; set; }
+
+        [Required]
+        public float Multiplier { get; set; }
     }
 }

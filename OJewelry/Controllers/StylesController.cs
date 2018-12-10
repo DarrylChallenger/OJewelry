@@ -56,7 +56,7 @@ namespace OJewelry.Controllers
             svm.CompanyId = co.CompanyId;
             svm.SVMOp = SVMOperation.Create;
             svm.Populate(null, db);
-            AddDefaultEntries(svm);
+            //AddDefaultEntries(svm);
             return CreateNew(svm.CompanyId, collectionId, svm);
         }
 
@@ -82,7 +82,7 @@ namespace OJewelry.Controllers
         {
             ModelState.Clear();
             StyleViewModel newsvm = new StyleViewModel(svm);
-            newsvm.assemblyCost.Load(db, svm.CompanyId);
+            //newsvm.assemblyCost.Load(db, svm.CompanyId);
             newsvm.SVMOp = SVMOperation.Create;
             newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
             newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
@@ -597,12 +597,12 @@ namespace OJewelry.Controllers
             return true;
         }
 
-        public void AddDefaultEntries(StyleViewModel svm)
+        /*public void AddDefaultEntries(StyleViewModel svm)
         {
             // Get the cost data and find initial values for the Finishing Labor & Packaging Costs. Both are based on the style's jewelry type
             decimal flPrice = 0;
             decimal packPrice = 0;
-            AssemblyCost assemblyCost = db.AssemblyCosts.Find(svm.CompanyId);
+            AssemblyCostX assemblyCost = db.AssemblyCosts.Find(svm.CompanyId);
             JewelryType jt = db.JewelryTypes.First();
             if (assemblyCost != null)
             {
@@ -633,7 +633,7 @@ namespace OJewelry.Controllers
                 Qty = 1
             };
             svm.Miscs.Add(mc);
-        }
+        }*/
 
         public ActionResult Memo(int? id)
         {

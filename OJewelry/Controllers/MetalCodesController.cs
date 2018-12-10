@@ -47,7 +47,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Code,Desc")] MetalCode metalCode)
+        public ActionResult Create([Bind(Include = "Id,Code,Desc,Market,Multiplier")] MetalCode metalCode)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Code,Desc")] MetalCode metalCode)
+        public ActionResult Edit([Bind(Include = "Id,Code,Desc,Market,Multiplier")] MetalCode metalCode)
         {
             if (ModelState.IsValid)
             {

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OJewelry.Models
 {
+    /*
     [Table("Cost")]
     public partial class AssemblyCost
     {
@@ -16,4 +17,5 @@ namespace OJewelry.Models
     //http://www.hanselman.com/blog/ASPNETWireFormatForModelBindingToArraysListsCollectionsDictionaries.aspx
     //https://stackoverflow.com/questions/1300642/asp-mvc-net-how-to-bind-keyvaluepair?noredirect=1&lq=1, 
     //https://stackoverflow.com/questions/23435219/binding-mvc-view-to-ienumerablekeyvaluepairstring-bool-issues
+    */
 }

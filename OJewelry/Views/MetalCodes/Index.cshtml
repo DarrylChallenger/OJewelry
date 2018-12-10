@@ -17,6 +17,12 @@
         <th>
             @Html.DisplayNameFor(model => model.Desc)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Market)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Multiplier)
+        </th>
         <th></th>
     </tr>
 
@@ -29,7 +35,13 @@
             @Html.DisplayFor(modelItem => item.Desc)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id })
+            @Html.DisplayFor(modelItem => item.Market)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Multiplier)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
         </td>
     </tr>
 }
