@@ -417,19 +417,6 @@ function StoneQtyChanged(i) {
     UpdateStoneSettingRow(i, null, null);
 }
 
-function FindingChanged(i) {
-    selected = $("#Findings_" + i + "__Id > option:selected");
-    oldval = selected.val();
-    if (oldval !== "") {
-        dataRow = $("#FindingsData").find("#" + oldval);
-        $("#Findings_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
-        $("#Findings_" + i + "__Weight").val(dataRow.find(".Weight").attr("value"));
-        $("#Findings_" + i + "__Price").val(dataRow.find(".Price").attr("value"));
-        $("#" + "Findings" + "_" + i + "__Id option[value='']").attr("disabled", "disabled");
-    }
-    CalcRowTotal("Findings", i);
-}
-
 function UpdateStoneSettingRow(stoneRow, settingCost, bValidCombo) {
     // find labor with data-stonerow = stonerow
     var settingRowName = "StoneSetting_" + stoneRow;
@@ -444,7 +431,7 @@ function UpdateStoneSettingRow(stoneRow, settingCost, bValidCombo) {
     shape = $("#Stones_" + stoneRow + "__ShId").val();
     size = $("#Stones_" + stoneRow + "__SzId").val();
 
-    var stName;
+    var stName = $("#StoneSettingName_" + stoneRow).val();
     // Ignore null bValidCombo
     if (bValidCombo === false) {
         stName = "Invalid stone combination";// + (parseInt(stoneRow) + 1); // change to message indicating invalid combo
@@ -453,7 +440,6 @@ function UpdateStoneSettingRow(stoneRow, settingCost, bValidCombo) {
     if (bValidCombo === true) {
         stName = "Setting for " + name + "-" + shape + "-" + size;
         $("div[name='StoneSettingRowTotalValue_" + stoneRow + "']").removeClass("badTotal");
-
     }
     $("#StoneSettingName_" + stoneRow).val(stName);
     if (settingCost !== null) {
@@ -499,6 +485,19 @@ function RemoveStoneSettingRow(stoneRow) {
     if (target.hasClass("ltbordered")) {
         target.addClass("hidden");
     }
+}
+
+function FindingChanged(i) {
+    selected = $("#Findings_" + i + "__Id > option:selected");
+    oldval = selected.val();
+    if (oldval !== "") {
+        dataRow = $("#FindingsData").find("#" + oldval);
+        $("#Findings_" + i + "__VendorName").val(dataRow.find(".VendorName").attr("value"));
+        $("#Findings_" + i + "__Weight").val(dataRow.find(".Weight").attr("value"));
+        $("#Findings_" + i + "__Price").val(dataRow.find(".Price").attr("value"));
+        $("#" + "Findings" + "_" + i + "__Id option[value='']").attr("disabled", "disabled");
+    }
+    CalcRowTotal("Findings", i);
 }
 
 function getCastingsHTML(type, len) {
