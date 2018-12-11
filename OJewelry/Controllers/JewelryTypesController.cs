@@ -10,15 +10,16 @@ using OJewelry.Models;
 
 namespace OJewelry.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class JewelryTypesController : Controller
     {
         private OJewelryDB db = new OJewelryDB();
 
         // GET: JewelryTypes
-        public ActionResult Index()
+        public ActionResult Index(int companyId)
         {
-            var jewelryTypes = db.JewelryTypes;
+            var jewelryTypes = db.JewelryTypes.Where(s => s.CompanyId == companyId).OrderBy(s => s.Name);
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
             return View(jewelryTypes.ToList());
         }
 
@@ -38,8 +39,10 @@ namespace OJewelry.Controllers
         }
 
         // GET: JewelryTypes/Create
-        public ActionResult Create()
+        public ActionResult Create(int companyId)
         {
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
             return View();
         }
 
@@ -48,14 +51,16 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,PackagingCost,FinishingCost")] JewelryType jewelryType)
+        public ActionResult Create([Bind(Include = "Id,Name,PackagingCost,FinishingCost,CompanyId")] JewelryType jewelryType)
         {
             if (ModelState.IsValid)
             {
                 db.JewelryTypes.Add(jewelryType);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { companyId = jewelryType.CompanyId});
             }
+            ViewBag.CompanyId = jewelryType.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(jewelryType.CompanyId)?.Name;
 
             return View(jewelryType);
         }
@@ -72,6 +77,9 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.CompanyId = jewelryType.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(jewelryType.CompanyId)?.Name;
+
             return View(jewelryType);
         }
 
@@ -80,14 +88,16 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,PackagingCost,FinishingCost")] JewelryType jewelryType)
+        public ActionResult Edit([Bind(Include = "Id,Name,PackagingCost,FinishingCost,CompanyId")] JewelryType jewelryType)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(jewelryType).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { companyId = jewelryType.CompanyId });
             }
+            ViewBag.CompanyId = jewelryType.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(jewelryType.CompanyId)?.Name;
             return View(jewelryType);
         }
 
@@ -118,9 +128,10 @@ namespace OJewelry.Controllers
                 ModelState.AddModelError("JewelryType", jewelryType.Name + " is in use by at least one style.");
                 return View(jewelryType);
             }
+            int companyId = jewelryType.CompanyId.Value;
             db.JewelryTypes.Remove(jewelryType);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { companyId });
         }
 
         protected override void Dispose(bool disposing)

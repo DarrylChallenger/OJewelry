@@ -16,9 +16,12 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: MetalCodes
-        public ActionResult Index()
+        public ActionResult Index(int companyId)
         {
-            return View(db.MetalCodes.OrderBy(mc=>mc.Code).ToList());
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+
+            return View(db.MetalCodes.Where(mc => mc.CompanyId == companyId).OrderBy(mc=>mc.Code).ToList());
         }
 
         // GET: MetalCodes/Details/5
@@ -37,8 +40,11 @@ namespace OJewelry.Controllers
         }
 
         // GET: MetalCodes/Create
-        public ActionResult Create()
+        public ActionResult Create(int companyId)
         {
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+
             return View();
         }
 
@@ -47,14 +53,16 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Code,Desc,Market,Multiplier")] MetalCode metalCode)
+        public ActionResult Create([Bind(Include = "Id,Code,Desc,Market,Multiplier,CompanyId")] MetalCode metalCode)
         {
             if (ModelState.IsValid)
             {
                 db.MetalCodes.Add(metalCode);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { companyId = metalCode.CompanyId });
             }
+            ViewBag.CompanyId = metalCode.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(metalCode.CompanyId)?.Name;
 
             return View(metalCode);
         }
@@ -71,6 +79,8 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.CompanyId = metalCode.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(metalCode.CompanyId)?.Name;
             return View(metalCode);
         }
 
@@ -79,14 +89,16 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Code,Desc,Market,Multiplier")] MetalCode metalCode)
+        public ActionResult Edit([Bind(Include = "Id,Code,Desc,Market,Multiplier,CompanyId")] MetalCode metalCode)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(metalCode).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { metalCode.CompanyId });
             }
+            ViewBag.CompanyId = metalCode.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(metalCode.CompanyId)?.Name;
             return View(metalCode);
         }
 
@@ -116,9 +128,10 @@ namespace OJewelry.Controllers
                 ModelState.AddModelError("MetalCode", metalCode.Desc + " is in use by at least one casting.");
                 return View(metalCode);
             }
+            int companyId = metalCode.CompanyId.Value;
             db.MetalCodes.Remove(metalCode);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { companyId });
         }
 
         protected override void Dispose(bool disposing)

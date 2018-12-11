@@ -16,6 +16,8 @@ namespace OJewelry.Models
 
         public int Id { get; set; }
 
+        public int? CompanyId { get; set; }
+
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -29,5 +31,7 @@ namespace OJewelry.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Style> Styles { get; set; }
+
+        public virtual Company Company { get; set; }
     }
 }

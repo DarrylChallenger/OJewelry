@@ -41,7 +41,7 @@ namespace OJewelry.Controllers
         // GET: Findings/Create
         public ActionResult Create(int companyId)
         {
-            ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name");
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == companyId), "Id", "Name");
             Finding finding = new Finding
             {
                 CompanyId = companyId
@@ -64,7 +64,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", new {companyId = finding.CompanyId});
             }
 
-            ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", finding.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
             ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }
@@ -82,7 +82,7 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
-            ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", finding.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
             ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }
@@ -101,7 +101,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", new { companyId = finding.CompanyId });
             }
             //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
-            ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", finding.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
             ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }

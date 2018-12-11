@@ -43,8 +43,8 @@ namespace OJewelry.Controllers
         public ActionResult Create(int companyId)
         {
             ViewBag.CompanyId = companyId;
-            ViewBag.ShapeId = new SelectList(db.Shapes, "Id", "Name");
-            ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name");
+            ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == companyId), "Id", "Name");
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == companyId), "Id", "Name");
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
             Stone stone = new Stone
             {
@@ -68,8 +68,8 @@ namespace OJewelry.Controllers
             }
 
             ViewBag.CompanyId = stone.CompanyId;
-            ViewBag.ShapeId = new SelectList(db.Shapes, "Id", "Name", stone.ShapeId);
-            ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", stone.VendorId);
+            ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
             ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
             return View(stone);
         }
@@ -86,8 +86,8 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ShapeId = new SelectList(db.Shapes, "Id", "Name", stone.ShapeId);
-            ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", stone.VendorId);
+            ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
             ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
             return View(stone);
         }
@@ -106,8 +106,8 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", new { companyId = stone.CompanyId });
             }
             ViewBag.CompanyId = stone.CompanyId;
-            ViewBag.ShapeId = new SelectList(db.Shapes, "Id", "Name", stone.ShapeId);
-            ViewBag.VendorId = new SelectList(db.Vendors, "Id", "Name", stone.VendorId);
+            ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
             ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
 
             return View(stone);
