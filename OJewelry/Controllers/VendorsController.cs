@@ -151,7 +151,7 @@ namespace OJewelry.Controllers
             base.Dispose(disposing);
         }
 
-        public FileResult ExportVendorReport()
+        public FileResult ExportVendorReport(int companyId)
         {
             byte[] b;
             DCTSOpenXML oxl = new DCTSOpenXML();
@@ -193,7 +193,7 @@ namespace OJewelry.Controllers
                     cell = oxl.SetCellVal("C1", "Email"); row.Append(cell);
                     cell = oxl.SetCellVal("D1", "Type"); row.Append(cell);
                     sd.Append(row);
-                    List<Vendor> vendors = db.Vendors.ToList();
+                    List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId).ToList();
                     // Content
                     for (int i = 0; i < vendors.Count(); i++)
                     {

@@ -356,7 +356,7 @@ namespace OJewelry.Controllers
                                                 {
                                                     JewelryTypeName = GetStringVal(cell, stringtable);
                                                 }
-                                                int JewelryTypeId = GetJewelryTypeId(JewelryTypeName);
+                                                int JewelryTypeId = GetJewelryTypeId(ivm.CompanyId, JewelryTypeName);
                                                 if (JewelryTypeName != "")
                                                 {
                                                     bEmptyRow = false;
@@ -1258,9 +1258,9 @@ namespace OJewelry.Controllers
             return cell;
         }
 
-        int GetJewelryTypeId(string JewelryTypeName)
+        int GetJewelryTypeId(int companyId, string JewelryTypeName)
         {
-            JewelryType jt = db.JewelryTypes.Where(j => j.Name == JewelryTypeName).FirstOrDefault();
+            JewelryType jt = db.JewelryTypes.Where(j => j.Name == JewelryTypeName && j.CompanyId == companyId).FirstOrDefault();
             if (jt == null)
             {
                 /*

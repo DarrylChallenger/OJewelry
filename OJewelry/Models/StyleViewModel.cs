@@ -1046,7 +1046,7 @@ namespace OJewelry.Models
                     cstc.SetVendorsList(jsVendors, casting.VendorId.Value);
                     cstc.SetMetalsList(jsMetals, casting.MetalCodeID.Value);// 
                     //cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
-                    MetalCode mc = db.MetalCodes.Find(casting.MetalCodeID); // Check company!!!
+                    MetalCode mc = db.MetalCodes.Find(casting.MetalCodeID); 
                     cstc.MetalCode = mc.Code; // Metal Code
                     cstc.Qty = casting.Qty.Value;
                     t = cstc.ComputePrice(mc.Market, mc.Multiplier, db.MetalWeightUnits.Find(cstc.MetalWtUnitId)?.Unit);
