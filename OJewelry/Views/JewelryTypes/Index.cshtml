@@ -4,12 +4,12 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Jewelry Types</h2>
+<h2>Jewelry Types for <i>@ViewBag.CompanyName</i></h2>
 
 <p>
     @{
         int? vbid = ViewBag.Id;
-        <text>@Html.ActionLink("Create New", "Create")</text>
+        <text>@Html.ActionLink("Create New", "Create", new { @companyId = ViewBag.companyId })</text>
     }
 
 </p>
@@ -46,6 +46,6 @@
 </table>
 <div class="row">
     <div class="col-sm-4">
-        @Html.ActionLink("Manage Companies", "Index", "Companies")
+        @Html.ActionLink("Companies", "Index", "Companies")
     </div>
 </div>

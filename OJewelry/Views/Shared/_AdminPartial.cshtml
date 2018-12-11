@@ -1,10 +1,10 @@
 ﻿<li class="nav_item dropdown">
     @Html.ActionLink("Admin", "", "Home", new { @class = "dropdown-toggle", @role = "button", @data_toggle = "dropdown", @aria_haspopup = "true", @ariaa_xpanded = "false" })
     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <li>@Html.ActionLink("Jewelry Types", "Index", "JewelryTypes")</li>
+        @*<li>@Html.ActionLink("Jewelry Types", "Index", "JewelryTypes")</li>
         <li>@Html.ActionLink("Stone Shapes", "Index", "Shapes")</li>
         <li>@Html.ActionLink("Vendors", "Index", "Vendors")</li>
-        <li>@Html.ActionLink("Metals", "Index", "MetalCodes")</li>
+        <li>@Html.ActionLink("Metals", "Index", "MetalCodes")</li>*@
         <li>@Html.ActionLink("Create User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
         <li>@Html.ActionLink("Edit User", "UserList", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
     </ul>

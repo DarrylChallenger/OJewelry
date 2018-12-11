@@ -15,9 +15,12 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Shapes
-        public ActionResult Index()
+        public ActionResult Index(int companyId)
         {
-            return View(db.Shapes.ToList());
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+
+            return View(db.Shapes.Where(s => s.CompanyId == companyId).ToList());
         }
 
         // GET: Shapes/Details/5
@@ -36,8 +39,11 @@ namespace OJewelry.Controllers
         }
 
         // GET: Shapes/Create
-        public ActionResult Create()
+        public ActionResult Create(int companyId)
         {
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+
             return View();
         }
 
@@ -46,14 +52,16 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name")] Shape shape)
+        public ActionResult Create([Bind(Include = "Name,CompanyId")] Shape shape)
         {
             if (ModelState.IsValid)
             {
                 db.Shapes.Add(shape);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { companyId = shape.CompanyId });
             }
+            ViewBag.CompanyId = shape.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(shape.CompanyId)?.Name;
 
             return View(shape);
         }
@@ -70,6 +78,8 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.CompanyId = shape.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(shape.CompanyId)?.Name;
             return View(shape);
         }
 
@@ -78,14 +88,16 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name")] Shape shape)
+        public ActionResult Edit([Bind(Include = "Id,Name,CompanyId")] Shape shape)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(shape).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { shape.CompanyId });
             }
+            ViewBag.CompanyId = shape.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(shape.CompanyId)?.Name;
             return View(shape);
         }
 
@@ -110,9 +122,15 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Shape shape = db.Shapes.Find(id);
+            if (db.Castings.Where(c => c.MetalCodeID == id).Count() !=0) {
+                ModelState.AddModelError("Shapes", shape.Name + " is in use by at least one style.");
+                return View(shape);
+
+            }
+            int companyId = shape.CompanyId.Value;
             db.Shapes.Remove(shape);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { companyId });
         }
 
         protected override void Dispose(bool disposing)

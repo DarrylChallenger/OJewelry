@@ -12,7 +12,8 @@
 <div class="form-horizontal">
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.CompanyId)
     <div class="form-group">
         @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
@@ -47,7 +48,7 @@
 }
 
 <div>
-    @Html.ActionLink("Jewelry Types List", "Index")
+    @Html.ActionLink("Jewelry Types", "Index", new { @companyId = ViewBag.companyId })
 </div>
 
 @section Scripts {

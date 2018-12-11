@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create a Stone Shape</h2>
+<h2>Create a Stone Shape for <i>@ViewBag.CompanyName</i></h2>
 
 @using (Html.BeginForm()) 
 {
@@ -31,5 +31,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Stone Shapes", "Index", new { @companyId = ViewBag.companyId })
 </div>

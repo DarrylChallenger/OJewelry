@@ -7,7 +7,7 @@
 <h2>Vendors</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", new { @companyId = ViewBag.companyId })
 </p>
 <table class="table">
     <tr>
@@ -52,6 +52,6 @@
 @Html.ActionLink("Export Vendors to Excel", "ExportVendorReport") 
 <div class="row">
     <div class="col-sm-4">
-        @Html.ActionLink("Manage Companies", "Index", "Companies")
+        @Html.ActionLink("Companies", "Index", "Companies")
     </div>
 </div>

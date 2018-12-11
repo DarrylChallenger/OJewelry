@@ -722,8 +722,8 @@ namespace OJewelry.Models
         public void PopulateDropDownData(OJewelryDB db)
         {
 
-            jsVendors = db.Vendors.ToList();
-            jsMetals = db.MetalCodes.ToList();
+            jsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId).ToList();
+            jsMetals = db.MetalCodes.Where(x => x.CompanyId == CompanyId).ToList();
 
             jsStones = db.Stones.Where(x => x.CompanyId == CompanyId)
             .Select((st) => new 
@@ -737,7 +737,8 @@ namespace OJewelry.Models
                     Id = x.Name
                 }).ToList();
 
-            jsShapes = db.Shapes.Select((sh) => new 
+            jsShapes = db.Shapes.Where(x => x.CompanyId == CompanyId)
+                .Select((sh) => new 
                     {
                         Name = sh.Name,
                     }
