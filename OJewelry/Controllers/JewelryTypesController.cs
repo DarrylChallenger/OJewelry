@@ -17,7 +17,7 @@ namespace OJewelry.Controllers
         // GET: JewelryTypes
         public ActionResult Index(int companyId)
         {
-            var jewelryTypes = db.JewelryTypes.Where(s => s.CompanyId == companyId).OrderBy(s => s.Name);
+            var jewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == companyId).OrderBy(jt => jt.Name);
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
             return View(jewelryTypes.ToList());

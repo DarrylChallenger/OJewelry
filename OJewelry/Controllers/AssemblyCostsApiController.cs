@@ -36,7 +36,7 @@ namespace OJewelry.Controllers
                 }
             }
             // Finishing and Packaging Costs
-            foreach (JewelryType jt in db.JewelryTypes) // add company ID!!!
+            foreach (JewelryType jt in db.JewelryTypes.Where(x => x.CompanyId == companyId))
             {
                 // Finishing Costs: per Jewelry Type
                 if (cd.finishingCosts.Where(k => k.Key == jt.Name).Count() == 0)
