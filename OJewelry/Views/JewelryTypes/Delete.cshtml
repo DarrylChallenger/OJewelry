@@ -31,7 +31,7 @@
             <input type="submit" value="Delete" class="btn btn-default" />
         </div>
         <div>
-            @Html.ActionLink("Jewelry Types List", "Index")
+            @Html.ActionLink("Jewelry Types", "Index", new { companyId = Model.CompanyId })
         </div>
     }
 </div>
