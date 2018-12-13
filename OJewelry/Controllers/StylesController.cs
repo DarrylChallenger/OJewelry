@@ -147,7 +147,7 @@ namespace OJewelry.Controllers
             };
             svm.Populate(id, db);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == companyId), "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
             return View(svm);
         }
@@ -493,7 +493,7 @@ namespace OJewelry.Controllers
             svm.PopulateDropDowns(db);
             svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == companyId), "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
             // iterate thru modelstate errors, display on page
             return View(svm);
