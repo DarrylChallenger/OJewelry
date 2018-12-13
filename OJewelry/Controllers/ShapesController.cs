@@ -122,10 +122,10 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Shape shape = db.Shapes.Find(id);
-            if (db.Castings.Where(c => c.MetalCodeID == id).Count() !=0) {
-                ModelState.AddModelError("Shapes", shape.Name + " is in use by at least one style.");
+            if (db.Stones.Where(c => c.ShapeId == id).Count() !=0)
+            {
+                ModelState.AddModelError("Shapes", shape.Name + " is in use by at least one stone.");
                 return View(shape);
-
             }
             int companyId = shape.CompanyId.Value;
             db.Shapes.Remove(shape);

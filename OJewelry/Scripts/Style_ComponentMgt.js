@@ -68,6 +68,7 @@ function AddComponentRow(type, index)
 
         var jsMetalUnits = $("#jsMetalUnits").clone();
         jsMetalUnits.find("#jsuINDEX")
+            .addClass("requiredifnotremoved")
             .attr("name", 'Castings[' + len + '].MetalWtUnitId')
             .attr("id", 'Castings_' + len + '__MetalWtUnitId')
             .attr("data-val", "true")
@@ -530,7 +531,7 @@ function getCastingsHTML(type, len) {
             <!--Validations Here-->\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Name" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].MetalWeight" data-valmsg-replace="true"></span>\
-            <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].MetalWeightUnitId" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].MetalWtUnitId" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Price" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Labor" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="Castings[' + len + '].Qty" data-valmsg-replace="true"></span>\
@@ -727,7 +728,8 @@ $(function () { //
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
-        if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX" || elementId === "jsuINDEX") {
+        console.log(`validating ${elementId}`);
+        if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX") {
             return true;
         }
         if ($(element).hasClass("input-validation-error")) {
