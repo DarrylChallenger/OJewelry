@@ -695,12 +695,12 @@ namespace OJewelry.Models
             }
 
         }
-
+        /*
         public void AddStoneCosts(CostData cd) // add a labor setting cost for each stone - this is implemented only on front end
         {
             return;
         }
-
+        
         public void ComputePackaging(CostData cd)
         {
 
@@ -718,7 +718,7 @@ namespace OJewelry.Models
                 Labors[0].PPP = cd.finishingCosts[Style.JewelryType.Name];
             }
         }
-        
+        */
         public void PopulateDropDownData(OJewelryDB db)
         {
 
