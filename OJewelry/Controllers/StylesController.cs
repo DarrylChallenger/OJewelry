@@ -56,7 +56,7 @@ namespace OJewelry.Controllers
             svm.CompanyId = co.CompanyId;
             svm.SVMOp = SVMOperation.Create;
             svm.Populate(null, db);
-            //AddDefaultEntries(svm);
+            AddDefaultEntries(svm);
             return CreateNew(svm.CompanyId, collectionId, svm);
         }
 
@@ -74,6 +74,36 @@ namespace OJewelry.Controllers
             ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == companyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
             return View("Create", svm);
+        }
+
+        public void AddDefaultEntries(StyleViewModel svm)
+        {
+            // Get the cost data and find initial values for the Finishing Labor & Packaging Costs. Both are based on the style's jewelry type
+            decimal flPrice = 0;
+            decimal packPrice = 0;
+
+            JewelryType jt = db.JewelryTypes.First();
+            flPrice = jt.FinishingCost;
+            packPrice = jt.PackagingCost;
+            // Add 2 Fixed Labor entries and 1 Fixed Misc entry
+            LaborComponent lc = new LaborComponent
+            {
+                Id = -1,
+                Name = StyleViewModel.FinishingLaborName,
+                SVMState = SVMStateEnum.Fixed,
+                PPP = flPrice,
+                Qty = 1
+            };
+            svm.Labors.Add(lc);
+            MiscComponent mc = new MiscComponent
+            {
+                Id = -1,
+                Name = StyleViewModel.PackagingName,
+                SVMState = SVMStateEnum.Fixed,
+                PPP = packPrice,
+                Qty = 1
+            };
+            svm.Miscs.Add(mc);
         }
 
         [HttpPost]
@@ -445,7 +475,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Dirty:
                             case SVMStateEnum.Fixed:
-                                if (c.Id == 0)
+                                if (c.Id <= 0)
                                 {
                                     AddMisc(c, svm, i);
                                 }
