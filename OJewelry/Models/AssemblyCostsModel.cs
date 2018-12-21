@@ -7,9 +7,9 @@ using System.Web;
 
 namespace OJewelry.Models
 {
-    public class CostDataX
+    public class CostData
     {
-        public CostDataX()
+        public CostData()
         {
             metalMarketPrice = new Dictionary<string, decimal>();
             metalMultiplier = new Dictionary<string, float>();
