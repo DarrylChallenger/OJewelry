@@ -82,7 +82,7 @@ namespace OJewelry.Controllers
             decimal flPrice = 0;
             decimal packPrice = 0;
 
-            JewelryType jt = db.JewelryTypes.First();
+            JewelryType jt = db.JewelryTypes.Where(j => svm.CompanyId == j.CompanyId).First();
             flPrice = jt.FinishingCost;
             packPrice = jt.PackagingCost;
             // Add 2 Fixed Labor entries and 1 Fixed Misc entry
