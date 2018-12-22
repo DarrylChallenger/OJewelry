@@ -22,7 +22,7 @@ namespace OJewelry.Controllers
 
             // assign market and multiplier for each metalcode
             // Metal Costs
-            foreach (MetalCode m in db.MetalCodes) // add company ID!!!
+            foreach (MetalCode m in db.MetalCodes.Where(x => x.CompanyId == companyId)) // add company ID!!!
             {
                 // Metal Market Price
                 if (cd.metalMarketPrice.Where(k => k.Key == m.Code).Count() == 0)
@@ -36,7 +36,7 @@ namespace OJewelry.Controllers
                 }
             }
             // Finishing and Packaging Costs
-            foreach (JewelryType jt in db.JewelryTypes) // add company ID!!!
+            foreach (JewelryType jt in db.JewelryTypes.Where(x => x.CompanyId == companyId))
             {
                 // Finishing Costs: per Jewelry Type
                 if (cd.finishingCosts.Where(k => k.Key == jt.Name).Count() == 0)

@@ -595,10 +595,10 @@ COST:
                 MetalWeightUnit mwuItem = new MetalWeightUnit() { Id = 1, Unit = "" };
                 emptyMetalWeightUnitList.Add(mwuItem);
             }
-            @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault().Id), new {@class = "col-sm-1 col-xs-1"})
+            @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault()?.Id), new {@class = "col-sm-1 col-xs-1"})
         </div>
         <div id="jsVendors">
-            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.FirstOrDefault().Id), new {@class = "col-sm-1 col-xs-1 "})
+            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.FirstOrDefault()?.Id), new {@class = "col-sm-1 col-xs-1 "})
         </div>
         <div id="jsStones">
             @if (Model.jsStones.Count == 0)

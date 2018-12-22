@@ -56,7 +56,7 @@ namespace OJewelry.Controllers
             svm.CompanyId = co.CompanyId;
             svm.SVMOp = SVMOperation.Create;
             svm.Populate(null, db);
-            //AddDefaultEntries(svm);
+            AddDefaultEntries(svm);
             return CreateNew(svm.CompanyId, collectionId, svm);
         }
 
@@ -71,9 +71,39 @@ namespace OJewelry.Controllers
             svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == svm.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == companyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
             return View("Create", svm);
+        }
+
+        public void AddDefaultEntries(StyleViewModel svm)
+        {
+            // Get the cost data and find initial values for the Finishing Labor & Packaging Costs. Both are based on the style's jewelry type
+            decimal flPrice = 0;
+            decimal packPrice = 0;
+
+            JewelryType jt = db.JewelryTypes.Where(j => svm.CompanyId == j.CompanyId).First();
+            flPrice = jt.FinishingCost;
+            packPrice = jt.PackagingCost;
+            // Add 2 Fixed Labor entries and 1 Fixed Misc entry
+            LaborComponent lc = new LaborComponent
+            {
+                Id = -1,
+                Name = StyleViewModel.FinishingLaborName,
+                SVMState = SVMStateEnum.Fixed,
+                PPP = flPrice,
+                Qty = 1
+            };
+            svm.Labors.Add(lc);
+            MiscComponent mc = new MiscComponent
+            {
+                Id = -1,
+                Name = StyleViewModel.PackagingName,
+                SVMState = SVMStateEnum.Fixed,
+                PPP = packPrice,
+                Qty = 1
+            };
+            svm.Miscs.Add(mc);
         }
 
         [HttpPost]
@@ -93,7 +123,7 @@ namespace OJewelry.Controllers
             newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", newsvm.Style.JewelryTypeId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", newsvm.Style.MetalWtUnitId);
             return View(newsvm);
         }
@@ -147,7 +177,7 @@ namespace OJewelry.Controllers
             };
             svm.Populate(id, db);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
             return View(svm);
         }
@@ -445,7 +475,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Dirty:
                             case SVMStateEnum.Fixed:
-                                if (c.Id == 0)
+                                if (c.Id <= 0)
                                 {
                                     AddMisc(c, svm, i);
                                 }
@@ -493,7 +523,7 @@ namespace OJewelry.Controllers
             svm.PopulateDropDowns(db);
             svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
             // iterate thru modelstate errors, display on page
             return View(svm);
@@ -596,44 +626,6 @@ namespace OJewelry.Controllers
 
             return true;
         }
-
-        /*public void AddDefaultEntries(StyleViewModel svm)
-        {
-            // Get the cost data and find initial values for the Finishing Labor & Packaging Costs. Both are based on the style's jewelry type
-            decimal flPrice = 0;
-            decimal packPrice = 0;
-            AssemblyCostX assemblyCost = db.AssemblyCosts.Find(svm.CompanyId);
-            JewelryType jt = db.JewelryTypes.First();
-            if (assemblyCost != null)
-            {
-                CostData cd = assemblyCost.GetCostDataFromJSON();
-                if (cd != null)
-                {
-                    flPrice = cd.finishingCosts[jt.Name];
-                    packPrice = cd.packagingCosts[jt.Name];
-                    packPrice = 1;
-                }
-            }
-            // Add 2 Fixed Labor entries and 1 Fixed Misc entry
-            LaborComponent lc = new LaborComponent
-            {
-                Id = -1,
-                Name = StyleViewModel.FinishingLaborName,
-                SVMState = SVMStateEnum.Fixed,
-                PPP = flPrice,
-                Qty = 1
-            };
-            svm.Labors.Add(lc);
-
-            MiscComponent mc = new MiscComponent
-            {
-                Name = StyleViewModel.PackagingName,
-                SVMState = SVMStateEnum.Fixed,
-                PPP = packPrice,
-                Qty = 1
-            };
-            svm.Miscs.Add(mc);
-        }*/
 
         public ActionResult Memo(int? id)
         {
