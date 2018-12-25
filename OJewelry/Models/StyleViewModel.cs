@@ -946,6 +946,7 @@ namespace OJewelry.Models
                 stscm.SetStonesList(jsStones, stone.Name);
                 stscm.SetShapesList(jsShapes, stscm.ShId);
                 stscm.SetSizesList(jsSizes, stscm.SzId);
+                stscm.Qty = ss.Qty ?? 0;
                 t = stscm.Price;
                 stscm.Total = stscm.Qty * t;
                 StonesTotal += stscm.Total;
