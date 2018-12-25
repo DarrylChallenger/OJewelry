@@ -217,8 +217,21 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(StyleViewModel svm)
         {
+            int i = db.Styles.
+                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
+                {
+                    StyleId = s.Id,
+                    StyleNum = s.StyleNum,
+                    StyleName = s.StyleName,
+                    CompanyId = c.CompanyId,
+                }).Where(x => x.StyleId != svm.Style.Id && x.CompanyId == svm.CompanyId && (x.StyleNum == svm.Style.StyleNum || x.StyleName == svm.Style.StyleName)).Count();
+            if (i != 0) // is there a style with the same number for this company?
+            {
+                ModelState.AddModelError("Style.StyleNum", "Style with this number/name already exists for "
+                    + db.FindCompany(svm.CompanyId).Name + ".");
+            }
+
             //ModelState.Clear();
-            int i;
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
             //await SaveImageInStorage(svm);
