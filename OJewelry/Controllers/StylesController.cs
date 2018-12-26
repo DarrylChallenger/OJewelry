@@ -196,6 +196,7 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             sm.Style.Collection = db.Collections.Find(sm.Style.CollectionId);
+            sm.Style.JewelryType = db.JewelryTypes.Find(sm.Style.JewelryTypeId);
 
             sm.CompanyId = sm.Style.Collection.CompanyId;
             sm.Populate(id, db);

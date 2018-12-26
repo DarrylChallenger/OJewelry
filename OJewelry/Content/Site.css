@@ -42,6 +42,10 @@ textarea {
     width: 33%;
 }
 
+.width100{
+    width:100%;
+}
+
 .navbar 
 {
     background-color:white;
