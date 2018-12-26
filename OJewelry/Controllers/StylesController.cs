@@ -24,7 +24,7 @@ namespace OJewelry.Controllers
         // GET: Styles
         public ActionResult Index(int CollectionId)
         {
-            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s=>s.StyleNum).Include(s => s.JewelryType);
+            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s => s.StyleNum).Include(s => s.JewelryType);
             ViewBag.CollectionName = db.Collections.Find(CollectionId).Name;
             ViewBag.CollectionId = CollectionId;
             ViewBag.CompanyId = db.Collections.Find(CollectionId).CompanyId;
@@ -128,6 +128,46 @@ namespace OJewelry.Controllers
             return View(newsvm);
         }
 
+        private bool CheckForNameAndNumberUniqueness(StyleViewModel svm)
+        {
+            // make sure the collection is valid
+            if (svm.Style.Collection == null)
+            {
+                svm.Style.Collection = db.Collections.Find(svm.Style.CollectionId);
+            }
+            int iStyleNums = db.Styles.
+                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
+                {
+                    StyleId = s.Id,
+                    StyleNum = s.StyleNum,
+                    StyleName = s.StyleName,
+                    CompanyId = c.CompanyId,
+                }).Where(x => x.CompanyId == svm.CompanyId && (x.StyleNum == svm.Style.StyleNum)).Count();
+            if (iStyleNums != 0)
+            {
+                ModelState.AddModelError("Style.StyleNum", "Style with this number already exists for " + db.FindCompany(svm.CompanyId).Name + ".");
+            }
+
+            int iStyleNames = db.Styles.
+                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
+                {
+                    StyleId = s.Id,
+                    StyleNum = s.StyleNum,
+                    StyleName = s.StyleName,
+                    CompanyId = c.CompanyId,
+                    CollectionName = c.Name
+                }).Where(x => x.CompanyId == svm.CompanyId && (x.CollectionName == svm.Style.Collection.Name) && x.StyleName == svm.Style.StyleName).Count();
+            if (iStyleNames != 0)
+            {
+                ModelState.AddModelError("Style.StyleName", "Style with this name already exists in this collection.");
+            }
+            if (iStyleNames != 0 || iStyleNums != 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
         // POST: Styles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -137,20 +177,9 @@ namespace OJewelry.Controllers
         public async Task <ActionResult> Create(StyleViewModel svm)
         {
             svm.SVMOp = SVMOperation.Create;
-            int i = db.Styles.
-                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
-                {
-                    StyleId = s.Id,
-                    StyleNum = s.StyleNum,
-                    StyleName = s.StyleName,
-                    CompanyId = c.CompanyId,
-                }).Where(x => x.CompanyId == svm.CompanyId  && (x.StyleNum == svm.Style.StyleNum || x.StyleName == svm.Style.StyleName)).Count();
-            if (i != 0) // is there a style with the same number for this company?
+            bool b = CheckForNameAndNumberUniqueness(svm);
+            if (b) // is there a style with the same number for this company?
             {
-                ModelState.AddModelError("Style.StyleNum", "Style with this number/name already exists for "
-                    + db.FindCompany(svm.CompanyId).Name + ".");
-            }
-            else {
                 svm.SVMState = SVMStateEnum.Added;
             }
             return await Edit(svm);
@@ -218,20 +247,8 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(StyleViewModel svm)
         {
-            int i = db.Styles.
-                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
-                {
-                    StyleId = s.Id,
-                    StyleNum = s.StyleNum,
-                    StyleName = s.StyleName,
-                    CompanyId = c.CompanyId,
-                }).Where(x => x.StyleId != svm.Style.Id && x.CompanyId == svm.CompanyId && (x.StyleNum == svm.Style.StyleNum || x.StyleName == svm.Style.StyleName)).Count();
-            if (i != 0) // is there a style with the same number for this company?
-            {
-                ModelState.AddModelError("Style.StyleNum", "Style with this number/name already exists for "
-                    + db.FindCompany(svm.CompanyId).Name + ".");
-            }
-
+            CheckForNameAndNumberUniqueness(svm);
+            int i;
             //ModelState.Clear();
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;

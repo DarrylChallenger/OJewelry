@@ -268,7 +268,8 @@ function CalcMetalPrice(i) {
             var costData = JSON.parse(cdJSON);
             metalMarketPrice = costData.metalMarketPrice[metalCode];
             metalMultiplier = costData.metalMultiplier[metalCode];
-            price = metalMarketPrice * metalMultiplier * weight * unitMultiplier;
+            //price = metalMarketPrice * metalMultiplier * weight * unitMultiplier; old formula
+            price = metalMultiplier * weight * unitMultiplier;
             $("#Castings_" + i + "__Price").val(price.toFixed(2));
             CalcRowTotal("Castings", i);
         });

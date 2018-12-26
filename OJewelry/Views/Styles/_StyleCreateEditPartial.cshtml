@@ -55,7 +55,7 @@
                     }
                     else
                     {
-                        @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "width100 ", onchange = "JewelryTypeChanged("+ Model.CompanyId + ")" })
+                        @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "width100 ", onchange = "JewelryTypeChanged(" + Model.CompanyId + ")" })
                     }
                 </div>
             </div>
@@ -84,6 +84,11 @@
         </div> <!-- style right header-->
 
     </div>
+    @Html.ValidationMessageFor(model => model.Style.StyleNum, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.Style.StyleName, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.Style.Desc, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.Style.JewelryTypeId, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.Style.CollectionId, "", new { @class = "text-danger" })
     <div class="row StyleBodyBoundingBox">
         <div class="row">
             <div class="col-sm-6 col-xs-6 bold">
@@ -108,7 +113,7 @@
                         var datemo = Model.Style.IntroDate.GetValueOrDefault().Month.ToString("D2");
                         var datedt = Model.Style.IntroDate.GetValueOrDefault().Day.ToString("D2");
                         <input name="Style.IntroDate" class="text-box single-line" id="Style_IntroDate" type="date" data-val-date="The field INTRO DATE must be a date."
-                                value="@dateyr-@datemo-@datedt" />
+                               value="@dateyr-@datemo-@datedt" />
                     }
                 }
             </div>
@@ -194,11 +199,7 @@
     </div>
 </div>
 <div>
-    @Html.ValidationMessageFor(model => model.Style.StyleNum, "", new { @class = "text-danger" })
-    @Html.ValidationMessageFor(model => model.Style.StyleName, "", new { @class = "text-danger" })
-    @Html.ValidationMessageFor(model => model.Style.Desc, "", new { @class = "text-danger" })
-    @Html.ValidationMessageFor(model => model.Style.JewelryTypeId, "", new { @class = "text-danger" })
-    @Html.ValidationMessageFor(model => model.Style.CollectionId, "", new { @class = "text-danger" })
+
     @Html.ValidationMessageFor(model => model.Style.MetalWeight, "", new { @class = "text-danger" })
     @Html.ValidationMessageFor(model => model.Style.IntroDate, "", new { @class = "text-danger" })
     @Html.ValidationMessageFor(model => model.Style.Length, "", new { @class = "text-danger" })

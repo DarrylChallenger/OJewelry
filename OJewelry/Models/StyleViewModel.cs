@@ -159,7 +159,7 @@ namespace OJewelry.Models
             {
                 unitMultiplier = 1.555;//  .643015;
             }
-            decimal price = (decimal)((double)market * (double)multiplier * (double)MetalWeight * unitMultiplier);
+            decimal price = (decimal)((double)multiplier * (double)MetalWeight * unitMultiplier);
             return price;
         }
     }
