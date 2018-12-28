@@ -305,9 +305,11 @@ namespace OJewelry.Models
                 .Property(e => e.Length)
                 .HasPrecision(8, 5);
 
-            modelBuilder.Entity<Style>()
+            /*
+             * modelBuilder.Entity<Style>()
                 .Property(e => e.ChainLength)
                 .HasPrecision(8, 5);
+            */
 
             modelBuilder.Entity<Style>()
                 .Property(e => e.RetailRatio)

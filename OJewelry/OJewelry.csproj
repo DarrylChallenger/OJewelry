@@ -455,6 +455,10 @@
     <Compile Include="Migrations\201812101705564_v1.5AddCompanyIdTo-JT-Vend-SS-MC.Designer.cs">
       <DependentUpon>201812101705564_v1.5AddCompanyIdTo-JT-Vend-SS-MC.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201812272348062_v1.5MakeChainLengthAString.cs" />
+    <Compile Include="Migrations\201812272348062_v1.5MakeChainLengthAString.Designer.cs">
+      <DependentUpon>201812272348062_v1.5MakeChainLengthAString.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -814,6 +818,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201812101705564_v1.5AddCompanyIdTo-JT-Vend-SS-MC.resx">
       <DependentUpon>201812101705564_v1.5AddCompanyIdTo-JT-Vend-SS-MC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812272348062_v1.5MakeChainLengthAString.resx">
+      <DependentUpon>201812272348062_v1.5MakeChainLengthAString.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

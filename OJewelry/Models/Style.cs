@@ -54,7 +54,7 @@ namespace OJewelry.Models
 
         public decimal? Length { get; set; }
 
-        public decimal? ChainLength { get; set; }
+        public string ChainLength { get; set; }
 
         public decimal? RetailPrice { get; set; }
 
