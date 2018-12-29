@@ -24,7 +24,7 @@ namespace OJewelry.Controllers
         // GET: Styles
         public ActionResult Index(int CollectionId)
         {
-            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s => s.StyleNum).Include(s => s.JewelryType);
+            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s => s.StyleName).Include(s => s.JewelryType);
             ViewBag.CollectionName = db.Collections.Find(CollectionId).Name;
             ViewBag.CollectionId = CollectionId;
             ViewBag.CompanyId = db.Collections.Find(CollectionId).CompanyId;
