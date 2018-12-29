@@ -150,23 +150,7 @@ namespace OJewelry.Controllers
                 ModelState.AddModelError("Style.StyleNum", "Style with this number already exists for " + db.FindCompany(svm.CompanyId).Name + ".");
             }
 
-            int iStyleNames = db.Styles.
-                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
-                {
-                    StyleId = s.Id,
-                    StyleNum = s.StyleNum,
-                    StyleName = s.StyleName,
-                    CompanyId = c.CompanyId,
-                    CollectionName = c.Name
-                }).Where(x => x.CompanyId == svm.CompanyId 
-                    && x.CollectionName == svm.Style.Collection.Name
-                    && x.StyleId != svm.Style.Id
-                    && x.StyleName == svm.Style.StyleName).Count();
-            if (iStyleNames != 0)
-            {
-                ModelState.AddModelError("Style.StyleName", "Style with this name already exists in this collection.");
-            }
-            if (iStyleNames != 0 || iStyleNums != 0)
+            if (iStyleNums != 0)
             {
                 return false;
             }
