@@ -419,11 +419,13 @@ COST:
     @{
         int lc = Model.Labors.Count;
         int j = lc - Model.Labors.Count;
+        decimal StoneSettingTotal = 0;
     }
     @foreach (StoneComponent sc in Model.Stones)
     {
         @*<div class="LaborsState"></div>*@
-        <div class="row ltbordered">
+        var bHideSettingRow = (Model.Stones[j].SVMState == SVMStateEnum.Unadded || Model.Stones[j].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+        <div class="row ltbordered @bHideSettingRow">
             @{Model.CCLastRow = false;
                 Model.CCHeaderRow = false;
                 Model.CCRowIndex = j;}
@@ -451,8 +453,9 @@ COST:
                 <div class="col-sm-4 col-xs-4">@stName</div>
                 <div class="col-sm-2 col-xs-2 "></div>
                 <div class="col-sm-1 col-xs-1"></div>
-                <div class="col-sm-1 col-xs-1">@Model.Stones[j].Price.ToString("F02")</div>
+                <div class="col-sm-1 col-xs-1">@Model.Stones[j].SettingCost.ToString("F02")</div>
                 <div class="col-sm-1 col-xs-1">@Model.Stones[j].Qty</div>
+                StoneSettingTotal += (Model.Stones[j].SettingCost * Model.Stones[j].Qty);
             }
             <div id="LaborsRowTotalValue_@(j+lc)" name="StoneSettingRowTotalValue_@j" class="col-sm-1 col-xs-1 LaborsRowTotal"> @((Model.Stones[j].Qty * @Model.Stones[j].SettingCost).ToString("F02"))</div>
         </div>
@@ -463,7 +466,7 @@ COST:
             <div class="col-sm-1 col-xs-1"></div>
             <div class="col-sm-4 col-xs-4"><b>TOTAL LABOR</b></div>
             <div class="col-sm-5 col-xs-5"></div>
-            <div id="LaborsTotalValue" class="col-sm-2 col-xs-2">@Model.LaborsTotal.ToString("F02")</div>
+            <div id="LaborsTotalValue" class="col-sm-2 col-xs-2">@((Model.LaborsTotal + StoneSettingTotal).ToString("F02"))</div>
         </div>
     </div>
 
@@ -578,7 +581,7 @@ COST:
     <div class="col-sm-1 col-xs-1"></div>
     <div class="col-sm-4 col-xs-4"><b>TOTAL COST</b></div>
     <div class="col-sm-5 col-xs-5"></div>
-    <div id="GrandTotal" class="col-sm-2 col-xs-2">@Model.Total.ToString("F02")</div>
+    <div id="GrandTotal" class="col-sm-2 col-xs-2">@((Model.Total + StoneSettingTotal).ToString("F02"))</div>
 </div>
 @if (Model.SVMOp != SVMOperation.Print)
 {

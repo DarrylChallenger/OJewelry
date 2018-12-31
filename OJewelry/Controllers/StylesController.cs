@@ -10,6 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OJewelry.Classes;
 using OJewelry.Models;
@@ -108,12 +109,15 @@ namespace OJewelry.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Copy(StyleViewModel svm)
+        public async Task<ActionResult> Copy(StyleViewModel svm)
         {
             ModelState.Clear();
-            StyleViewModel newsvm = new StyleViewModel(svm);
+            svm.SVMOp = SVMOperation.Create;
+            StyleViewModel newsvm = new StyleViewModel(svm, db);
+            svm.SVMOp = SVMOperation.Create;
+            await SaveImageInStorage(db, newsvm, true);
             //newsvm.assemblyCost.Load(db, svm.CompanyId);
-            newsvm.SVMOp = SVMOperation.Create;
+            // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
             newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
             newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
             newsvm.CopiedStyleName = svm.Style.StyleName;
@@ -169,6 +173,7 @@ namespace OJewelry.Controllers
             bool b = CheckForNameAndNumberUniqueness(svm);
             if (b) // is there a style with the same number for this company?
             {
+                // No, add it
                 svm.SVMState = SVMStateEnum.Added;
             }
             return await Edit(svm);
@@ -228,8 +233,26 @@ namespace OJewelry.Controllers
         {
             // First, save the data
             svm.SVMOp = SVMOperation.Print;
-            return await Edit(svm);
-            //return View(svm);
+            ModelState.Clear();
+            StyleViewModel newsvm = new StyleViewModel(svm, db);
+            await SaveImageInStorage(db, newsvm, true);
+            //newsvm.assemblyCost.Load(db, svm.CompanyId);
+            // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
+            newsvm.SVMOp = SVMOperation.Print;
+            newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
+            newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
+            newsvm.CopiedStyleName = svm.Style.StyleName;
+            //svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            newsvm.Style.JewelryType = db.JewelryTypes.Find(newsvm.Style.JewelryTypeId);
+            newsvm.Style.MetalWeightUnit = db.MetalWeightUnits.Find(newsvm.Style.MetalWtUnitId);
+            newsvm.PopulateDropDownData(db);
+            newsvm.PopulateDropDowns(db);
+            newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
+
+            //ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.CollectionId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.JewelryTypeId);
+            //ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", newsvm.Style.MetalWtUnitId);
+            return View(newsvm);            //return View(svm);
         }
 
         [HttpPost]
@@ -888,17 +911,32 @@ namespace OJewelry.Controllers
             db.StyleMiscs.Add(sm);
         }
 
-        private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm)
+        private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm, bool bCopy = false)
         {
             //AzureBlobStorageContainer container = new AzureBlobStorageContainer();
             //await container.Init(ojStoreConnStr, "ojewelry");
             if (svm.PostedImageFile != null)
             {
+                string filename;
                 string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+                string username = User.Identity.GetUserName();
                 env = (env == "Production") ? "" : env + "_";
-                string filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
+                if (bCopy)
+                {
+                    filename = env + "StyleImg_" + username + Path.GetExtension(svm.PostedImageFile.FileName);
+                }
+                else
+                {
+                    filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
+                }
                 svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
-                db.SaveChanges();
+                if (!bCopy)
+                {
+                    db.SaveChanges();
+                }
+            } else
+            {
+
             }
 
             return true;
