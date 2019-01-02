@@ -42,13 +42,15 @@ namespace OJewelry.Controllers
         // GET: Stones/Create
         public ActionResult Create(int companyId)
         {
+            Company company = db.FindCompany(companyId);
             ViewBag.CompanyId = companyId;
             ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == companyId), "Id", "Name");
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == companyId), "Id", "Name");
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == companyId), "Id", "Name", company.defaultStoneVendor);
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
             Stone stone = new Stone
             {
-                CompanyId = companyId
+                CompanyId = companyId,
+                VendorId = company.defaultStoneVendor
             };
             return View(stone);
         }

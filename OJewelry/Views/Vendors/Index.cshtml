@@ -28,6 +28,8 @@
 
     @foreach (var item in Model)
     {
+        if (item.Name != "")
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -45,6 +47,7 @@
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id })
             </td>
         </tr>
+        }
     }
 
 </table>

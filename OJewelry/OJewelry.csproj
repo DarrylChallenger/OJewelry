@@ -459,6 +459,10 @@
     <Compile Include="Migrations\201812272348062_v1.5MakeChainLengthAString.Designer.cs">
       <DependentUpon>201812272348062_v1.5MakeChainLengthAString.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901022108490_v.15AddDefaultStoneVendor.cs" />
+    <Compile Include="Migrations\201901022108490_v.15AddDefaultStoneVendor.Designer.cs">
+      <DependentUpon>201901022108490_v.15AddDefaultStoneVendor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -821,6 +825,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201812272348062_v1.5MakeChainLengthAString.resx">
       <DependentUpon>201812272348062_v1.5MakeChainLengthAString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901022108490_v.15AddDefaultStoneVendor.resx">
+      <DependentUpon>201901022108490_v.15AddDefaultStoneVendor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

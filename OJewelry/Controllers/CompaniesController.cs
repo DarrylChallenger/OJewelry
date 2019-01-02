@@ -76,6 +76,13 @@ namespace OJewelry.Controllers
                     UserId = user.Id
                 };
                 cvm.company.CompanyUsers.Add(cu);
+                Vendor vendor = new Vendor
+                {
+                    Name = "",
+                    CompanyId = cvm.company.Id
+                };
+                cvm.company.defaultStoneVendor = vendor.Id;
+
                 db.AddCompany(cvm.company);
                 
                 foreach (CompanyViewClientModel c in cvm.clients)
