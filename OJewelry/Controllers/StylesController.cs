@@ -114,10 +114,8 @@ namespace OJewelry.Controllers
             ModelState.Clear();
             svm.SVMOp = SVMOperation.Create;
             StyleViewModel newsvm = new StyleViewModel(svm, db);
-            svm.SVMOp = SVMOperation.Create;
             await SaveImageInStorage(db, newsvm, true);
-            //newsvm.assemblyCost.Load(db, svm.CompanyId);
-            // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
+
             newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
             newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
             newsvm.CopiedStyleName = svm.Style.StyleName;
@@ -549,8 +547,10 @@ namespace OJewelry.Controllers
                 if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
                 {
                     // Save changes, go to Home
-                    db.SaveChanges();
+                    db.SaveChanges(); // need the styleId for the image name
                     await SaveImageInStorage(db, svm);
+                    db.Entry(svm.Style);
+                    db.SaveChanges();
                     if (svm.SVMOp != SVMOperation.Print)
                     {
                         return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
@@ -593,12 +593,14 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Style style = db.Styles.Find(id);
+            string imageName = style.Image;
             int collectionId = style.CollectionId;
             // remove memos 
             List<Memo> rmMemos = db.Memos.Where(m => m.StyleID == id).ToList();
             db.Memos.RemoveRange(rmMemos);
             db.Styles.Remove(style);
             db.SaveChanges();
+            RemoveImageFromStorage(imageName);
             return RedirectToAction("Index", new { CollectionID = collectionId });
         }
 
@@ -913,15 +915,17 @@ namespace OJewelry.Controllers
 
         private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm, bool bCopy = false)
         {
-            //AzureBlobStorageContainer container = new AzureBlobStorageContainer();
-            //await container.Init(ojStoreConnStr, "ojewelry");
-            if (svm.PostedImageFile != null)
+            if (svm.Style.Image == null && svm.PostedImageFile == null) return true;
+
+            string filename;
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            string username = User.Identity.GetUserName();
+            env = (env == "Production") ? "" : env + "_";
+            // Set filename
+
+            if (svm.PostedImageFile != null) // new image
             {
-                string filename;
-                string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-                string username = User.Identity.GetUserName();
-                env = (env == "Production") ? "" : env + "_";
-                if (bCopy)
+                if (bCopy) // new style
                 {
                     filename = env + "StyleImg_" + username + Path.GetExtension(svm.PostedImageFile.FileName);
                 }
@@ -930,24 +934,37 @@ namespace OJewelry.Controllers
                     filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
                 }
                 svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
-                if (!bCopy)
+            } else { // same image
+                Uri u = new Uri(svm.Style.Image);
+                string blobFile = u.Segments.Last();
+                if (bCopy) // new style
                 {
-                    db.SaveChanges();
+                    // Copy old image to new
+                    filename = env + "StyleImg_" + username + Path.GetExtension(svm.Style.Image);
+                    svm.Style.Image = await Singletons.azureBlobStorage.Copy(blobFile, filename);
+                } else
+                {
+                    filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.Style.Image);
+                    if (svm.Style.Image != filename)
+                    {
+                        svm.Style.Image = await Singletons.azureBlobStorage.Copy(blobFile, filename);
+                    }
                 }
-            } else
-            {
-
+                //svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.Style.Image, filename);
             }
-
             return true;
         }
 
-        /*
-        private async Task<bool> RetrieveImageFromStorage(StyleViewModel svm)
+        
+        private void RemoveImageFromStorage(string imageName)
         {
-            return true;
+            if (imageName == null) return;
+            Uri u = new Uri(imageName);
+            string blobFile = u.Segments.Last();
+            Singletons.azureBlobStorage.Delete(blobFile);
+            return;
         }
-        */
+        
 
         protected override void Dispose(bool disposing)
         {
