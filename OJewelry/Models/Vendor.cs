@@ -18,7 +18,7 @@ namespace OJewelry.Models
 
         public int? CompanyId { get; set; }
 
-        [Required]
+        //[Required]
         [StringLength(50)]
         public string Name { get; set; }
 

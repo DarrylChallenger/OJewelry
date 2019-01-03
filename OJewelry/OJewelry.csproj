@@ -459,6 +459,18 @@
     <Compile Include="Migrations\201812272348062_v1.5MakeChainLengthAString.Designer.cs">
       <DependentUpon>201812272348062_v1.5MakeChainLengthAString.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901022108490_v.15AddDefaultStoneVendor.cs" />
+    <Compile Include="Migrations\201901022108490_v.15AddDefaultStoneVendor.Designer.cs">
+      <DependentUpon>201901022108490_v.15AddDefaultStoneVendor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901031736294_v1.5MakeVendorNameNullable.cs" />
+    <Compile Include="Migrations\201901031736294_v1.5MakeVendorNameNullable.Designer.cs">
+      <DependentUpon>201901031736294_v1.5MakeVendorNameNullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901032031110_v1.5AddVendorRefToCompanies.cs" />
+    <Compile Include="Migrations\201901032031110_v1.5AddVendorRefToCompanies.Designer.cs">
+      <DependentUpon>201901032031110_v1.5AddVendorRefToCompanies.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -821,6 +833,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201812272348062_v1.5MakeChainLengthAString.resx">
       <DependentUpon>201812272348062_v1.5MakeChainLengthAString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901022108490_v.15AddDefaultStoneVendor.resx">
+      <DependentUpon>201901022108490_v.15AddDefaultStoneVendor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901031736294_v1.5MakeVendorNameNullable.resx">
+      <DependentUpon>201901031736294_v1.5MakeVendorNameNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901032031110_v1.5AddVendorRefToCompanies.resx">
+      <DependentUpon>201901032031110_v1.5AddVendorRefToCompanies.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -76,8 +76,15 @@ namespace OJewelry.Controllers
                     UserId = user.Id
                 };
                 cvm.company.CompanyUsers.Add(cu);
+                Vendor vendor = new Vendor
+                {
+                    Name = "",
+                    CompanyId = cvm.company.Id
+                };
+
+                db.Vendors.Add(vendor);
                 db.AddCompany(cvm.company);
-                
+
                 foreach (CompanyViewClientModel c in cvm.clients)
                 {
                     if (c.Id == 0)
@@ -113,6 +120,11 @@ namespace OJewelry.Controllers
                 };
                 db.Presenters.Add(presenter);
                 db.SaveChanges();
+
+                Company company = db.FindCompany(cvm.company.Id);
+                company.defaultStoneVendor = vendor.Id;
+                db.SaveChanges();
+
 
                 return RedirectToAction("Index");
             }
@@ -212,6 +224,13 @@ namespace OJewelry.Controllers
             // Remove collections, locations, clients, components
 //            List<Collection> collections = db.Collections.Where(col => col.CompanyId == id).ToList();
   //          db.Collections.RemoveRange(collections);
+            if (company.defaultStoneVendor.HasValue && company.defaultStoneVendor != 0)
+            {
+                Vendor defaultStoneVendor = db.Vendors.Find(company.defaultStoneVendor);
+                db.Vendors.Remove(defaultStoneVendor);
+            }
+            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == id).ToList();
+            db.Vendors.RemoveRange(vendors);
             db.Collections.RemoveRange(company.Collections);
             db.Presenters.RemoveRange(company.Presenters);
             db.Clients.RemoveRange(company.Clients);

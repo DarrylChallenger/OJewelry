@@ -10,6 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OJewelry.Classes;
 using OJewelry.Models;
@@ -24,7 +25,7 @@ namespace OJewelry.Controllers
         // GET: Styles
         public ActionResult Index(int CollectionId)
         {
-            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s => s.StyleNum).Include(s => s.JewelryType);
+            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s => s.StyleName).Include(s => s.JewelryType);
             ViewBag.CollectionName = db.Collections.Find(CollectionId).Name;
             ViewBag.CollectionId = CollectionId;
             ViewBag.CompanyId = db.Collections.Find(CollectionId).CompanyId;
@@ -108,12 +109,13 @@ namespace OJewelry.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Copy(StyleViewModel svm)
+        public async Task<ActionResult> Copy(StyleViewModel svm)
         {
             ModelState.Clear();
-            StyleViewModel newsvm = new StyleViewModel(svm);
-            //newsvm.assemblyCost.Load(db, svm.CompanyId);
-            newsvm.SVMOp = SVMOperation.Create;
+            svm.SVMOp = SVMOperation.Create;
+            StyleViewModel newsvm = new StyleViewModel(svm, db);
+            await SaveImageInStorage(db, newsvm, true);
+
             newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
             newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
             newsvm.CopiedStyleName = svm.Style.StyleName;
@@ -150,23 +152,7 @@ namespace OJewelry.Controllers
                 ModelState.AddModelError("Style.StyleNum", "Style with this number already exists for " + db.FindCompany(svm.CompanyId).Name + ".");
             }
 
-            int iStyleNames = db.Styles.
-                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
-                {
-                    StyleId = s.Id,
-                    StyleNum = s.StyleNum,
-                    StyleName = s.StyleName,
-                    CompanyId = c.CompanyId,
-                    CollectionName = c.Name
-                }).Where(x => x.CompanyId == svm.CompanyId 
-                    && x.CollectionName == svm.Style.Collection.Name
-                    && x.StyleId != svm.Style.Id
-                    && x.StyleName == svm.Style.StyleName).Count();
-            if (iStyleNames != 0)
-            {
-                ModelState.AddModelError("Style.StyleName", "Style with this name already exists in this collection.");
-            }
-            if (iStyleNames != 0 || iStyleNums != 0)
+            if (iStyleNums != 0)
             {
                 return false;
             }
@@ -185,6 +171,7 @@ namespace OJewelry.Controllers
             bool b = CheckForNameAndNumberUniqueness(svm);
             if (b) // is there a style with the same number for this company?
             {
+                // No, add it
                 svm.SVMState = SVMStateEnum.Added;
             }
             return await Edit(svm);
@@ -244,8 +231,26 @@ namespace OJewelry.Controllers
         {
             // First, save the data
             svm.SVMOp = SVMOperation.Print;
-            return await Edit(svm);
-            //return View(svm);
+            ModelState.Clear();
+            StyleViewModel newsvm = new StyleViewModel(svm, db);
+            await SaveImageInStorage(db, newsvm, true);
+            //newsvm.assemblyCost.Load(db, svm.CompanyId);
+            // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
+            newsvm.SVMOp = SVMOperation.Print;
+            newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
+            newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
+            newsvm.CopiedStyleName = svm.Style.StyleName;
+            //svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            newsvm.Style.JewelryType = db.JewelryTypes.Find(newsvm.Style.JewelryTypeId);
+            newsvm.Style.MetalWeightUnit = db.MetalWeightUnits.Find(newsvm.Style.MetalWtUnitId);
+            newsvm.PopulateDropDownData(db);
+            newsvm.PopulateDropDowns(db);
+            newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
+
+            //ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.CollectionId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.JewelryTypeId);
+            //ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", newsvm.Style.MetalWtUnitId);
+            return View(newsvm);            //return View(svm);
         }
 
         [HttpPost]
@@ -542,8 +547,10 @@ namespace OJewelry.Controllers
                 if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
                 {
                     // Save changes, go to Home
-                    db.SaveChanges();
+                    db.SaveChanges(); // need the styleId for the image name
                     await SaveImageInStorage(db, svm);
+                    db.Entry(svm.Style);
+                    db.SaveChanges();
                     if (svm.SVMOp != SVMOperation.Print)
                     {
                         return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
@@ -586,12 +593,14 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Style style = db.Styles.Find(id);
+            string imageName = style.Image;
             int collectionId = style.CollectionId;
             // remove memos 
             List<Memo> rmMemos = db.Memos.Where(m => m.StyleID == id).ToList();
             db.Memos.RemoveRange(rmMemos);
             db.Styles.Remove(style);
             db.SaveChanges();
+            RemoveImageFromStorage(imageName);
             return RedirectToAction("Index", new { CollectionID = collectionId });
         }
 
@@ -904,28 +913,58 @@ namespace OJewelry.Controllers
             db.StyleMiscs.Add(sm);
         }
 
-        private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm)
+        private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm, bool bCopy = false)
         {
-            //AzureBlobStorageContainer container = new AzureBlobStorageContainer();
-            //await container.Init(ojStoreConnStr, "ojewelry");
-            if (svm.PostedImageFile != null)
+            if (svm.Style.Image == null && svm.PostedImageFile == null) return true;
+
+            string filename;
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            string username = User.Identity.GetUserName();
+            env = (env == "Production") ? "" : env + "_";
+            // Set filename
+
+            if (svm.PostedImageFile != null) // new image
             {
-                string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-                env = (env == "Production") ? "" : env + "_";
-                string filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
+                if (bCopy) // new style
+                {
+                    filename = env + "StyleImg_" + username + Path.GetExtension(svm.PostedImageFile.FileName);
+                }
+                else
+                {
+                    filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
+                }
                 svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
-                db.SaveChanges();
+            } else { // same image
+                Uri u = new Uri(svm.Style.Image);
+                string blobFile = u.Segments.Last();
+                if (bCopy) // new style
+                {
+                    // Copy old image to new
+                    filename = env + "StyleImg_" + username + Path.GetExtension(svm.Style.Image);
+                    svm.Style.Image = await Singletons.azureBlobStorage.Copy(blobFile, filename);
+                } else
+                {
+                    filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.Style.Image);
+                    if (svm.Style.Image != filename)
+                    {
+                        svm.Style.Image = await Singletons.azureBlobStorage.Copy(blobFile, filename);
+                    }
+                }
+                //svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.Style.Image, filename);
             }
-
             return true;
         }
 
-        /*
-        private async Task<bool> RetrieveImageFromStorage(StyleViewModel svm)
+        
+        private void RemoveImageFromStorage(string imageName)
         {
-            return true;
+            if (imageName == null) return;
+            Uri u = new Uri(imageName);
+            string blobFile = u.Segments.Last();
+            Singletons.azureBlobStorage.Delete(blobFile);
+            return;
         }
-        */
+        
 
         protected override void Dispose(bool disposing)
         {

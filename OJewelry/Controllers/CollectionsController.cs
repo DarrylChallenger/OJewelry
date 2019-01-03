@@ -42,7 +42,7 @@ namespace OJewelry.Controllers
                     Name = coll.Name
                 };
                 collM.Styles = new List<StyleModel>();
-                foreach (Style sty in coll.Styles.OrderBy(s=>s.StyleNum))
+                foreach (Style sty in coll.Styles.OrderBy(s=>s.StyleName))
                 {
                     StyleModel styM = new StyleModel()
                     {
