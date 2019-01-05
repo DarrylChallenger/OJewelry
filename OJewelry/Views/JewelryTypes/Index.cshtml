@@ -26,24 +26,27 @@
         </th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PackagingCost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FinishingCost)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PackagingCost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FinishingCost)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>
+@Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
+
 <div class="row">
     <div class="col-sm-4">
         @Html.ActionLink("Companies", "Index", "Companies")

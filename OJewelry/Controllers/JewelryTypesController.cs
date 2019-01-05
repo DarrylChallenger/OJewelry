@@ -7,6 +7,11 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using OJewelry.Models;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using OJewelry.Classes;
+using System.IO;
 
 namespace OJewelry.Controllers
 {
@@ -15,8 +20,13 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: JewelryTypes
-        public ActionResult Index(int companyId)
+        public ActionResult Index(int? companyId)
         {
+            if (companyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            companyId = companyId.Value;
             var jewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == companyId).OrderBy(jt => jt.Name);
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
@@ -132,6 +142,71 @@ namespace OJewelry.Controllers
             db.JewelryTypes.Remove(jewelryType);
             db.SaveChanges();
             return RedirectToAction("Index", new { companyId });
+        }
+
+        public FileResult ExportJewelryTypesReport(int companyId)
+        {
+            byte[] b;
+            DCTSOpenXML oxl = new DCTSOpenXML();
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
+                {
+
+                    // Build Excel File
+                    WorkbookPart workbookPart = document.AddWorkbookPart();
+                    workbookPart.Workbook = new Workbook();
+
+                    WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    worksheetPart.Worksheet = new Worksheet(new SheetData());
+
+                    Sheets sheets = document.WorkbookPart.Workbook.AppendChild(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
+
+                    // declare locals
+                    Row row;
+                    Cell cell;
+                    string loc;
+                    int rr;
+
+                    Sheet sheet = new Sheet()
+                    {
+                        Id = workbookPart.GetIdOfPart(worksheetPart),
+                        SheetId = 1,
+                        Name = "Jewelry Types"
+                    };
+                    sheets.Append(sheet);
+
+                    Worksheet worksheet = new Worksheet();
+                    SheetData sd = new SheetData();
+                    // Build sheet
+                    // Headers
+                    row = new Row();
+                    cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
+                    cell = oxl.SetCellVal("B1", "Packaging Cost"); row.Append(cell);
+                    cell = oxl.SetCellVal("C1", "Finishing Cost"); row.Append(cell);
+                    sd.Append(row);
+                    List<JewelryType> JewelryTypes = db.JewelryTypes.Where(v => v.CompanyId == companyId).ToList();
+                    // Content
+                    for (int i = 0; i < JewelryTypes.Count(); i++)
+                    {
+                        row = new Row();
+                        rr = 2 + i;
+                        loc = "A" + rr; cell = oxl.SetCellVal(loc, JewelryTypes[i].Name); row.Append(cell);
+                        loc = "B" + rr; cell = oxl.SetCellVal(loc, JewelryTypes[i].PackagingCost); row.Append(cell);
+                        loc = "C" + rr; cell = oxl.SetCellVal(loc, JewelryTypes[i].FinishingCost); row.Append(cell);
+                        sd.Append(row);
+                    }
+                    worksheet.Append(sd);
+                    // Autofit columns - ss:AutoFitWidth="1"
+                    worksheetPart.Worksheet = worksheet;
+                    workbookPart.Workbook.Save();
+                    document.Close();
+
+                    b = memStream.ToArray();
+                    return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Jewelry Types as of " + DateTime.Now.ToString() + ".xlsx");
+                }
+            }
         }
 
         protected override void Dispose(bool disposing)

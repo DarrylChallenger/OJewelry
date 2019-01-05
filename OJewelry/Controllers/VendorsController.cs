@@ -21,8 +21,13 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Vendors
-        public ActionResult Index(int companyId)
+        public ActionResult Index(int? companyId)
         {
+            if (companyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            companyId = companyId.Value;
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
 
@@ -197,6 +202,10 @@ namespace OJewelry.Controllers
                     // Content
                     for (int i = 0; i < vendors.Count(); i++)
                     {
+                        if (vendors[i].Name == "") // don't print default vendor
+                        {
+                            continue;
+                        }
                         row = new Row();
                         rr = 2 + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, vendors[i].Name); row.Append(cell);
