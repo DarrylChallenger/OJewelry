@@ -194,7 +194,6 @@ function RemoveComponentRow(type, i)
 function CalcRowTotal(type, rowId)
 {
     var ry, qty;
-    //console.log("Calc " + type + " row " + rowId + " totals");
     // Iterate through row and compute the row total
     if (type === "Castings")
     {
@@ -272,6 +271,8 @@ function CalcMetalPrice(i) {
             price = metalMultiplier * weight * unitMultiplier;
             $("#Castings_" + i + "__Price").val(price.toFixed(2));
             CalcRowTotal("Castings", i);
+        }).catch(function (e) {
+            console.log("Error retrieving assembly cost data (cmp)", e);
         });
 }
 
@@ -337,6 +338,8 @@ function JewelryTypeChanged(companyId) {
             var packagingVal = costData.packagingCosts[jt];
             SetFinishingCost(finishingVal);
             SetPackagingCost(packagingVal);
+        }).catch(function (e) {
+            console.log("Error retrieving assembly cost data (jtc)", e);
         });
 }
 
@@ -356,7 +359,7 @@ function StoneChanged(i) {
                 return response.json();
             } else {
                 // Put the controls in warning mode
-                console.log("Put the controls in warning mode");
+                //console.log("Put the controls in warning mode");
                 stoneCtl.addClass("badStone");
                 shapeCtl.addClass("badStone");
                 sizeCtl.addClass("badStone");
@@ -371,10 +374,10 @@ function StoneChanged(i) {
         }).then(function (stonedata) {
             // unpack stonedata
             if (stonedata) {
-                console.log("Valid Combo result", stonedata);
+                //console.log("Valid Combo result", stonedata);
                 // pack the ctwt, vwndor, and price fields
                 var stn = JSON.parse(stonedata);
-                console.log(stn);
+                //console.log(stn);
                 $("#Stones_" + i + "__CtWt").val(stn.CtWt);
                 $("#Stones_" + i + "__VendorName").val(stn.VendorName);
                 $("#Stones_" + i + "__Price").val(stn.Price.toFixed(2));
@@ -386,32 +389,13 @@ function StoneChanged(i) {
                 UpdateStoneSettingRow(i, stn.SettingCost, true);
             }
         }).catch(function (e) {
-            console.log("Error!!!", e);
+            console.log("Error retrieving stone matching data", e);
             UpdateStoneSettingRow(i, 0, false);
         });
 }
 
 function StoneSizeChanged(stoneRow) { 
-    /* Don't need this anymore; stone size does not determin setting cost
-    // Get the assembly costs extract the settings costs
-    fetch('/api/AssemblyCostsApi?companyId=' + $("#CompanyId").val())
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (cdJSON) {
-            // unpack CostData
-            var costData = JSON.parse(cdJSON);
-            settingVal = costData.settingsCosts[$("#Stones_" + stoneRow + "__SzId").val()];
-            if (settingVal === undefined) {
-                settingVal = 0;
-            }
-            // don't need anymore now that setting cost is a Stone attribute
-            //$("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
-            //price = settingVal;
-        });
-        */
-    StoneChanged(stoneRow);
-    
+    StoneChanged(stoneRow);  
 }
 
 function StoneQtyChanged(i) {
@@ -424,7 +408,7 @@ function UpdateStoneSettingRow(stoneRow, settingCost, bValidCombo) {
     var settingRowName = "StoneSetting_" + stoneRow;
     var target = $("#" + settingRowName);
     // if it dowsn't exist, create it - AddStoneSettingRowHTML
-    console.log(`Setting Cost: ${settingCost}`);
+    //console.log(`Setting Cost: ${settingCost}`);
     var price, qty;
     var name, shape, size;
     // updates
@@ -460,21 +444,6 @@ function AddStoneSettingRowHTML(stoneRow) {
     ltbordered = getStoneSettingsHTML("Stones", len);
     $("#LaborsTotal").before(ltbordered);
     // Don't need this -new rows will always have PPP = 0
-    /*
-    // PPP - get from API
-    fetch('/api/AssemblyCostsApi?companyId=' + $("#CompanyId").val())
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (cdJSON) {
-            // unpack CostData
-            var jt = $("#JewelryTypeId :selected").text();
-            var costData = JSON.parse(cdJSON);
-            settingVal = costData.settingsCosts[$("#Stones_" + stoneRow + "__SzId").val()];
-            if (settingVal === undefined) {
-            }
-        });
-    */
     settingVal = 0;
     $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
     price = settingVal;
@@ -729,7 +698,7 @@ $(function () { //
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
-        console.log(`validating ${elementId}`);
+        //console.log(`validating ${elementId}`);
         if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX") {
             return true;
         }
