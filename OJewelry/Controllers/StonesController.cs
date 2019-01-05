@@ -7,6 +7,11 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using OJewelry.Models;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using OJewelry.Classes;
+using System.IO;
 
 namespace OJewelry.Controllers
 {
@@ -140,6 +145,79 @@ namespace OJewelry.Controllers
             db.Stones.Remove(stone);
             db.SaveChanges();
             return RedirectToAction("Index", new { companyId = companyId});
+        }
+
+        public FileResult ExportStonesReport(int companyId)
+        {
+            byte[] b;
+            DCTSOpenXML oxl = new DCTSOpenXML();
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
+                {
+
+                    // Build Excel File
+                    WorkbookPart workbookPart = document.AddWorkbookPart();
+                    workbookPart.Workbook = new Workbook();
+
+                    WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    worksheetPart.Worksheet = new Worksheet(new SheetData());
+
+                    Sheets sheets = document.WorkbookPart.Workbook.AppendChild(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
+
+                    // declare locals
+                    Row row;
+                    Cell cell;
+                    string loc;
+                    int rr;
+
+                    Sheet sheet = new Sheet()
+                    {
+                        Id = workbookPart.GetIdOfPart(worksheetPart),
+                        SheetId = 1,
+                        Name = "Stones"
+                    };
+                    sheets.Append(sheet);
+
+                    Worksheet worksheet = new Worksheet();
+                    SheetData sd = new SheetData();
+                    // Build sheet
+                    // Headers
+                    row = new Row();
+                    cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
+                    cell = oxl.SetCellVal("B1", "Shape"); row.Append(cell);
+                    cell = oxl.SetCellVal("C1", "Vendor"); row.Append(cell);
+                    cell = oxl.SetCellVal("D1", "Caret"); row.Append(cell);
+                    cell = oxl.SetCellVal("E1", "Size"); row.Append(cell);
+                    cell = oxl.SetCellVal("F1", "Price"); row.Append(cell);
+                    cell = oxl.SetCellVal("G1", "Setting Cost"); row.Append(cell);
+                    sd.Append(row);
+                    List<Stone> Stones = db.Stones.Where(v => v.CompanyId == companyId).Include("Vendor").Include("Shape").ToList();
+                    // Content
+                    for (int i = 0; i < Stones.Count(); i++)
+                    {
+                        row = new Row();
+                        rr = 2 + i;
+                        loc = "A" + rr; cell = oxl.SetCellVal(loc, Stones[i].Name); row.Append(cell);
+                        loc = "B" + rr; cell = oxl.SetCellVal(loc, Stones[i].Shape.Name); row.Append(cell);
+                        loc = "C" + rr; cell = oxl.SetCellVal(loc, Stones[i].Vendor.Name); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, Stones[i].CtWt.Value); row.Append(cell);
+                        loc = "E" + rr; cell = oxl.SetCellVal(loc, Stones[i].StoneSize); row.Append(cell);
+                        loc = "F" + rr; cell = oxl.SetCellVal(loc, Stones[i].Price); row.Append(cell);
+                        loc = "G" + rr; cell = oxl.SetCellVal(loc, Stones[i].SettingCost); row.Append(cell);
+                        sd.Append(row);
+                    }
+                    worksheet.Append(sd);
+                    // Autofit columns - ss:AutoFitWidth="1"
+                    worksheetPart.Worksheet = worksheet;
+                    workbookPart.Workbook.Save();
+                    document.Close();
+
+                    b = memStream.ToArray();
+                    return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Stones as of " + DateTime.Now.ToString() + ".xlsx");
+                }
+            }
         }
 
         protected override void Dispose(bool disposing)
