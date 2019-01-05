@@ -20,8 +20,13 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Stones
-        public ActionResult Index(int companyId)
+        public ActionResult Index(int? companyId)
         {
+            if (companyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            companyId = companyId.Value;
             var stones = db.Stones.Where(st => st.CompanyId == companyId).Include(s => s.Company).Include(s => s.Shape).Include(s => s.Vendor);
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
@@ -192,7 +197,7 @@ namespace OJewelry.Controllers
                     cell = oxl.SetCellVal("F1", "Price"); row.Append(cell);
                     cell = oxl.SetCellVal("G1", "Setting Cost"); row.Append(cell);
                     sd.Append(row);
-                    List<Stone> Stones = db.Stones.Where(v => v.CompanyId == companyId).Include("Vendor").Include("Shape").ToList();
+                    List<Stone> Stones = db.Stones.Include("Vendor").Include("Shape").Where(v => v.CompanyId == companyId).ToList();
                     // Content
                     for (int i = 0; i < Stones.Count(); i++)
                     {
@@ -200,8 +205,16 @@ namespace OJewelry.Controllers
                         rr = 2 + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, Stones[i].Name); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, Stones[i].Shape.Name); row.Append(cell);
-                        loc = "C" + rr; cell = oxl.SetCellVal(loc, Stones[i].Vendor.Name); row.Append(cell);
-                        loc = "D" + rr; cell = oxl.SetCellVal(loc, Stones[i].CtWt.Value); row.Append(cell);
+                        loc = "C" + rr; cell = oxl.SetCellVal(loc, Stones[i].Vendor?.Name); row.Append(cell);
+                        loc = "D" + rr;
+                        if (Stones[i].CtWt == null)
+                        {
+                            cell = oxl.SetCellVal(loc, "");
+                        } else
+                        {
+                            cell = oxl.SetCellVal(loc, Stones[i].CtWt.Value);
+                        }
+                        row.Append(cell);                       
                         loc = "E" + rr; cell = oxl.SetCellVal(loc, Stones[i].StoneSize); row.Append(cell);
                         loc = "F" + rr; cell = oxl.SetCellVal(loc, Stones[i].Price); row.Append(cell);
                         loc = "G" + rr; cell = oxl.SetCellVal(loc, Stones[i].SettingCost); row.Append(cell);

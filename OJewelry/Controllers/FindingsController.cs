@@ -20,8 +20,13 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Findings
-        public ActionResult Index(int companyId)
+        public ActionResult Index(int? companyId)
         {
+            if (companyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            companyId = companyId.Value;
             var findings = db.Findings.Where(st => st.CompanyId == companyId).Include(f => f.Company).Include(f => f.Vendor);
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
@@ -187,7 +192,16 @@ namespace OJewelry.Controllers
                         row = new Row();
                         rr = 2 + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, Findings[i].Name); row.Append(cell);
-                        loc = "B" + rr; cell = oxl.SetCellVal(loc, Findings[i].Weight.Value); row.Append(cell);
+                        loc = "B" + rr; 
+                        if (Findings[i].Weight == null)
+                        {
+                            cell = oxl.SetCellVal(loc, "");
+                        }
+                        else
+                        {
+                            cell = oxl.SetCellVal(loc, Findings[i].Weight.Value);
+                        }
+                        row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, Findings[i].Price); row.Append(cell);
                         loc = "D" + rr; cell = oxl.SetCellVal(loc, Findings[i].Vendor.Name); row.Append(cell);
                         sd.Append(row);

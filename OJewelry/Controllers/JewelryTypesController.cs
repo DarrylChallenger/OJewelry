@@ -20,8 +20,13 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: JewelryTypes
-        public ActionResult Index(int companyId)
+        public ActionResult Index(int? companyId)
         {
+            if (companyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            companyId = companyId.Value;
             var jewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == companyId).OrderBy(jt => jt.Name);
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;

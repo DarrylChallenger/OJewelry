@@ -20,8 +20,13 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Shapes
-        public ActionResult Index(int companyId)
+        public ActionResult Index(int? companyId)
         {
+            if (companyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            companyId = companyId.Value;
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
 
@@ -138,7 +143,7 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", new { companyId });
         }
 
-        public FileResult ExportJewelryTypessReport(int companyId)
+        public FileResult ExportStoneShapesReport(int companyId)
         {
             byte[] b;
             DCTSOpenXML oxl = new DCTSOpenXML();
