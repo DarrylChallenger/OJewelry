@@ -745,7 +745,7 @@ namespace OJewelry.Models
         {
 
             jsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId).ToList();
-            jsMetals = db.MetalCodes.Where(x => x.CompanyId == CompanyId).ToList();
+            jsMetals = db.MetalCodes.Where(x => x.CompanyId == CompanyId).OrderByDescending(m => m.Code).ToList();
 
             jsStones = db.Stones.Where(x => x.CompanyId == CompanyId)
             .Select((st) => new 
