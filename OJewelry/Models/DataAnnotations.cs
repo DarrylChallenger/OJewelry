@@ -400,6 +400,10 @@ namespace OJewelry.Models
         [Display(Name="Vendor Email")]
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
+
+        [Display(Name = "Notes")]
+        [StringLength(50)]
+        public string Type { get; set; }
     }
 
     /*
