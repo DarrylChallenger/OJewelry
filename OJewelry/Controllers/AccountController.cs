@@ -166,6 +166,7 @@ namespace OJewelry.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            OJewelryDB db = new OJewelryDB();
             ApplicationDbContext sec = new ApplicationDbContext();
             if (ModelState.IsValid)
             {
@@ -181,7 +182,6 @@ namespace OJewelry.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    OJewelryDB db = new OJewelryDB();
                     UpdateCompaniesUsers(user, db, model.Companies);
                     UpdateRoles(sec, user, model.RoleId);
                     db.SaveChanges();
@@ -192,6 +192,11 @@ namespace OJewelry.Controllers
 
             // If we got this far, something failed, redisplay form
             ViewBag.Roles = sec.Roles.ToList();
+            List<Company> allCompanies = db.Companies.ToList();
+            foreach (CompanyAuthorizedUser cau in model.Companies) // should be company left outer joined to users by id, exclude Managers, admins
+            {
+                cau.CompanyName = allCompanies.First(c => c.Id == cau.CompanyId).Name;
+            }
             return View(model);
         }
 
