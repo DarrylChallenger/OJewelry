@@ -202,7 +202,7 @@ namespace OJewelry.Controllers
 
                     b = memStream.ToArray();
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Findings as of " + DateTime.Now.ToString() + ".xlsx");
+                        "Stone Shapes as of " + DateTime.Now.ToString() + ".xlsx");
                 }
             }
         }

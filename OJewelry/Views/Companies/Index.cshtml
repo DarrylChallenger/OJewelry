@@ -24,15 +24,7 @@
         </td>
         <td>
             @Html.ActionLink("Contact", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = item.Id }, null) |
-            @Html.ActionLink("Stones", "Index", "Stones", new { CompanyId = item.Id }, null) |
-            @Html.ActionLink("Findings", "Index", "Findings", new { CompanyId = item.Id }, null) |
-            @Html.ActionLink("Jewelry Types", "Index", "JewelryTypes", new { CompanyId = item.Id }, null) |
-            @Html.ActionLink("Metal Codes", "Index", "MetalCodes", new { CompanyId = item.Id }, null) |
-            @Html.ActionLink("Stone Shapes", "Index", "Shapes", new { CompanyId = item.Id }, null) |
-            @Html.ActionLink("Vendors", "Index", "Vendors", new { CompanyId = item.Id }, null) |
-            @Html.ActionLink("Locations", "Index", "Presenters", new { companyId = item.Id }, null) |
-            @Html.ActionLink("Inventory", "Inventory", new { CompanyId = item.Id })
+            @Html.Partial("_CompanyNavPartial", item.Id) 
         </td>
     </tr>
 }

@@ -186,7 +186,7 @@ namespace OJewelry.Controllers
                     cell = oxl.SetCellVal("B1", "Packaging Cost"); row.Append(cell);
                     cell = oxl.SetCellVal("C1", "Finishing Cost"); row.Append(cell);
                     sd.Append(row);
-                    List<JewelryType> JewelryTypes = db.JewelryTypes.Where(v => v.CompanyId == companyId).ToList();
+                    List<JewelryType> JewelryTypes = db.JewelryTypes.Where(v => v.CompanyId == companyId).OrderBy(j => j.Name).ToList();
                     // Content
                     for (int i = 0; i < JewelryTypes.Count(); i++)
                     {

@@ -7,8 +7,11 @@
 <h2>The <i>@Model.CompanyName</i> Assortment</h2>
 
 <p>
-    @Html.ActionLink("Create New Collection", "Create", new { id = Model.CompanyId }) |
-    @Html.ActionLink("Companies", "Index", "Companies")
+    @Html.ActionLink("Create New Collection", "Create", new { id = Model.CompanyId })
+</p>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
 
 </p>
 <table class="table">
@@ -80,5 +83,7 @@
 @Html.ActionLink("Export Assortment to Excel", "ExportAssortmentReport", new { companyId = Model.CompanyId })
 
 <p>
-    @Html.ActionLink("Companies", "Index", "Companies")
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+
 </p>

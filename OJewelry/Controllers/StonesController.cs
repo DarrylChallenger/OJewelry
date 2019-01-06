@@ -31,7 +31,7 @@ namespace OJewelry.Controllers
             var stones = db.Stones.Where(st => st.CompanyId == companyId).Include(s => s.Company).Include(s => s.Shape).Include(s => s.Vendor);
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
-            return View(stones.OrderBy(f => f.Company.Name).ThenBy(g => g.Name).ThenBy(h=>h.Shape.Name).ThenBy(i=>i.StoneSize).ToList());
+            return View(stones.OrderBy(g => g.Name).ThenBy(h=>h.Shape.Name).ThenBy(i=>i.StoneSize).ToList());
         }
 
         // GET: Stones/Details/5
@@ -200,7 +200,8 @@ namespace OJewelry.Controllers
                     cell = oxl.SetCellVal("G1", "Setting Cost"); row.Append(cell);
                     cell = oxl.SetCellVal("H1", "Qty"); row.Append(cell);
                     sd.Append(row);
-                    List<Stone> Stones = db.Stones.Include("Vendor").Include("Shape").Where(v => v.CompanyId == companyId).ToList();
+                    List<Stone> Stones = db.Stones.Include("Vendor").Include("Shape").Where(v => v.CompanyId == companyId)
+                        .OrderBy(s => s.Name).ThenBy(s => s.Shape).ThenBy(s => s.StoneSize).ToList();
                     // Content
                     for (int i = 0; i < Stones.Count(); i++)
                     {

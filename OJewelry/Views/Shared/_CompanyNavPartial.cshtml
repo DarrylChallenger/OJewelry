@@ -1,0 +1,12 @@
+﻿@model Int32
+@using OJewelry.Models
+
+@Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = Model }, null) |
+@Html.ActionLink("Stones", "Index", "Stones", new { CompanyId = Model }, null) |
+@Html.ActionLink("Stone Shapes", "Index", "Shapes", new { CompanyId = Model }, null) |
+@Html.ActionLink("Findings", "Index", "Findings", new { CompanyId = Model }, null) |
+@Html.ActionLink("Vendors", "Index", "Vendors", new { CompanyId = Model }, null) |
+@Html.ActionLink("Jewelry Types", "Index", "JewelryTypes", new { CompanyId = Model }, null) |
+@Html.ActionLink("Metal Codes", "Index", "MetalCodes", new { CompanyId = Model }, null) |
+@Html.ActionLink("Locations", "Index", "Presenters", new { companyId = Model }, null) |
+@Html.ActionLink("Inventory", "Inventory", new { CompanyId = Model })
