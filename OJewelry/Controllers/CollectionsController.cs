@@ -42,12 +42,13 @@ namespace OJewelry.Controllers
                     Name = coll.Name
                 };
                 collM.Styles = new List<StyleModel>();
-                foreach (Style sty in coll.Styles.OrderBy(s=>s.StyleName))
+                foreach (Style sty in coll.Styles.OrderBy(s=>s.StyleName).ThenBy(s=>s.Desc))
                 {
                     StyleModel styM = new StyleModel()
                     {
                         Id = sty.Id,
                         Image = sty.Image,
+                        Desc = sty.Desc,
                         Name = sty.StyleName,
                         Num = sty.StyleNum,
                         Memod = sty.Memos.Sum(s => s.Quantity),

@@ -20,6 +20,7 @@ namespace OJewelry.Models
         public double Qty { get; set; }
         [Display(Name = "Retail Price")]
         public decimal RetialPrice { get; set; }
+        public string Desc { get; set; }
         public decimal Cost { get; set; }
         public string Image { get; set; }
     }

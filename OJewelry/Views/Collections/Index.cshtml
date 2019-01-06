@@ -14,9 +14,9 @@
 <table class="table">
     <tr>
         @* Put style titles here
-            <th>
-                @Html.DisplayNameFor(model => model.collection)
-            </th>
+        <th>
+            @Html.DisplayNameFor(model => model.collection)
+        </th>
         *@
 
         <th>
@@ -26,11 +26,12 @@
             @Html.DisplayNameFor(model => model.style.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.style.Num)
+            @Html.DisplayNameFor(model => model.style.Desc)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.style.RetialPrice)
+            @Html.DisplayNameFor(model => model.style.Num)
         </th>
+
         <th>
             @Html.DisplayNameFor(model => model.style.Qty)
         </th>
@@ -55,7 +56,7 @@
         </tr>
         foreach (OJewelry.Models.StyleModel sty in item.Styles)
         {
-        <tr class="@sectionNumberClass in">
+        <tr class="@sectionNumberClass collapse">
             <td>
                 @{ var imgName = sty.Image ?? "/Images/logo.png";}
                 <a href='@Url.Action("Edit", "Styles", new { id=sty.Id })'>
@@ -63,8 +64,8 @@
                 </a>
             </td>
             <td>@Html.DisplayFor(modelItem => sty.Name)</td>
+            <td>@Html.DisplayFor(modelItem => sty.Desc)</td>
             <td>@Html.DisplayFor(modelItem => sty.Num)</td>
-            <td>@Html.DisplayFor(modelItem => sty.RetialPrice)</td>
             <td>@Html.DisplayFor(modelItem => sty.Qty)</td>
             <td>
                 @Html.ActionLink("Edit", "Edit", "Styles", new { id = sty.Id }, null) @*|
