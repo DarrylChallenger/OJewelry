@@ -783,7 +783,7 @@ namespace OJewelry.Models
                 }).ToList();
 
             jsFindings = db.Findings.Include("Vendor").Where(x => x.CompanyId == CompanyId).ToList();
-            jsMetalWeightUnits = db.MetalWeightUnits.ToList();
+            jsMetalWeightUnits = db.MetalWeightUnits.OrderBy(mwu => mwu.Unit).ToList();
         }
 
         public void PopulateDropDowns(OJewelryDB db)
