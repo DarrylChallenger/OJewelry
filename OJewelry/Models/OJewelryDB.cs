@@ -297,7 +297,8 @@ namespace OJewelry.Models
                 .Property(e => e.Desc)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Style>()
+            /* W, L, chain length changed to strings
+             * modelBuilder.Entity<Style>()
                 .Property(e => e.Width)
                 .HasPrecision(8, 5);
 
@@ -305,7 +306,6 @@ namespace OJewelry.Models
                 .Property(e => e.Length)
                 .HasPrecision(8, 5);
 
-            /*
              * modelBuilder.Entity<Style>()
                 .Property(e => e.ChainLength)
                 .HasPrecision(8, 5);

@@ -467,9 +467,9 @@
     <Compile Include="Migrations\201901031736294_v1.5MakeVendorNameNullable.Designer.cs">
       <DependentUpon>201901031736294_v1.5MakeVendorNameNullable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201901032031110_v1.5AddVendorRefToCompanies.cs" />
-    <Compile Include="Migrations\201901032031110_v1.5AddVendorRefToCompanies.Designer.cs">
-      <DependentUpon>201901032031110_v1.5AddVendorRefToCompanies.cs</DependentUpon>
+    <Compile Include="Migrations\201901061357118_v1.5IssuesFromJan5Meeting-Iter4.cs" />
+    <Compile Include="Migrations\201901061357118_v1.5IssuesFromJan5Meeting-Iter4.Designer.cs">
+      <DependentUpon>201901061357118_v1.5IssuesFromJan5Meeting-Iter4.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -840,8 +840,8 @@
     <EmbeddedResource Include="Migrations\201901031736294_v1.5MakeVendorNameNullable.resx">
       <DependentUpon>201901031736294_v1.5MakeVendorNameNullable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201901032031110_v1.5AddVendorRefToCompanies.resx">
-      <DependentUpon>201901032031110_v1.5AddVendorRefToCompanies.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201901061357118_v1.5IssuesFromJan5Meeting-Iter4.resx">
+      <DependentUpon>201901061357118_v1.5IssuesFromJan5Meeting-Iter4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
