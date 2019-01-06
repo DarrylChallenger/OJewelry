@@ -15,7 +15,7 @@ using OJewelry.Models;
 
 namespace OJewelry.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class VendorsController : Controller
     {
         private OJewelryDB db = new OJewelryDB();

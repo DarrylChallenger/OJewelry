@@ -15,7 +15,7 @@ using System.IO;
 
 namespace OJewelry.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class MetalCodesController : Controller
     {
         private OJewelryDB db = new OJewelryDB();
@@ -186,7 +186,7 @@ namespace OJewelry.Controllers
                     cell = oxl.SetCellVal("C1", "Market"); row.Append(cell);
                     cell = oxl.SetCellVal("D1", "Multiplier"); row.Append(cell);
                     sd.Append(row);
-                    List<MetalCode> Metals = db.MetalCodes.Where(v => v.CompanyId == companyId).ToList();
+                    List<MetalCode> Metals = db.MetalCodes.Where(m => m.CompanyId == companyId).OrderBy(m => m.Code).ToList();
                     // Content
                     for (int i = 0; i < Metals.Count(); i++)
                     {

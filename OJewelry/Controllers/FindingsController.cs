@@ -15,6 +15,7 @@ using OJewelry.Models;
 
 namespace OJewelry.Controllers
 {
+    [Authorize]
     public class FindingsController : Controller
     {
         private OJewelryDB db = new OJewelryDB();

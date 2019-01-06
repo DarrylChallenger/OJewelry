@@ -15,6 +15,7 @@ using System.IO;
 
 namespace OJewelry.Controllers
 {
+    [Authorize]
     public class JewelryTypesController : Controller
     {
         private OJewelryDB db = new OJewelryDB();
