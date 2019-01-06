@@ -198,16 +198,19 @@ namespace OJewelry.Controllers
                     cell = oxl.SetCellVal("C1", "Email"); row.Append(cell);
                     cell = oxl.SetCellVal("D1", "Type"); row.Append(cell);
                     sd.Append(row);
-                    List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId).ToList();
+                    List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId).OrderBy(vv => vv.Name).ToList();
                     // Content
+                    int offset = 2;
                     for (int i = 0; i < vendors.Count(); i++)
                     {
+
                         if (vendors[i].Name == "") // don't print default vendor
                         {
+                            offset--;
                             continue;
                         }
                         row = new Row();
-                        rr = 2 + i;
+                        rr = offset + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, vendors[i].Name); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, vendors[i].Phone); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, vendors[i].Email); row.Append(cell);
