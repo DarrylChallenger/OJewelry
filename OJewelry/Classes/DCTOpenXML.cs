@@ -168,5 +168,12 @@ namespace OJewelry.Classes
             Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             return cell;
         }
+
+        public Cell SetCellVal(string loc, double val)
+        {
+            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
+            return cell;
+        }
+
     }
 }

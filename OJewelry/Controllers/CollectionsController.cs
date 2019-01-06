@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using OJewelry.Classes;
 using OJewelry.Models;
 
 namespace OJewelry.Controllers
@@ -185,6 +190,80 @@ namespace OJewelry.Controllers
             db.Collections.Remove(collection);
             db.SaveChanges();
             return RedirectToAction("Index", new { CompanyId = collection.CompanyId });
+        }
+
+        public FileResult ExportAssortmentReport(int companyId)
+        {
+            byte[] b;
+            DCTSOpenXML oxl = new DCTSOpenXML();
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
+                {
+
+                    // Build Excel File
+                    WorkbookPart workbookPart = document.AddWorkbookPart();
+                    workbookPart.Workbook = new Workbook();
+
+
+                    Sheets sheets = document.WorkbookPart.Workbook.AppendChild(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
+
+                    // declare locals
+                    Row row;
+                    Cell cell;
+                    string loc;
+                    int rr;
+                    uint shNo = 1;
+                    //for each collection
+                    foreach (Collection collection in db.Collections.Where(c => c.CompanyId == companyId).OrderBy(c => c.Name))
+                    {
+                        WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                        worksheetPart.Worksheet = new Worksheet(new SheetData());
+
+                        Sheet sheet = new Sheet()
+                        {
+                            Id = workbookPart.GetIdOfPart(worksheetPart),
+                            SheetId = shNo++,
+                            Name = collection.Name // collection name"
+                        };
+                        sheets.Append(sheet);
+
+                        Worksheet worksheet = new Worksheet();
+                        SheetData sd = new SheetData();
+                        // Build sheet
+                        // Headers
+                        row = new Row();
+                        cell = oxl.SetCellVal("A1", "Image"); row.Append(cell);
+                        cell = oxl.SetCellVal("B1", "Name"); row.Append(cell);
+                        cell = oxl.SetCellVal("C1", "Desc"); row.Append(cell);
+                        cell = oxl.SetCellVal("D1", "Style No."); row.Append(cell);
+                        cell = oxl.SetCellVal("E1", "Inventory"); row.Append(cell);
+                        sd.Append(row);
+                        List<Style> Styles = db.Styles.Where(s => s.CollectionId == collection.Id).OrderBy(s => s.StyleName).ThenBy(s => s.Desc).ToList();
+                        // Content
+                        for (int i = 0; i < Styles.Count(); i++)
+                        {
+                            row = new Row();
+                            rr = 2 + i;
+                            loc = "A" + rr; cell = oxl.SetCellVal(loc, Styles[i].Image); row.Append(cell);
+                            loc = "B" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleName); row.Append(cell);
+                            loc = "C" + rr; cell = oxl.SetCellVal(loc, Styles[i].Desc); row.Append(cell);
+                            loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleNum); row.Append(cell);
+                            loc = "E" + rr; cell = oxl.SetCellVal(loc, Styles[i].Quantity); row.Append(cell);
+                            sd.Append(row);
+                        }
+                        worksheet.Append(sd);
+                        // Autofit columns - ss:AutoFitWidth="1"
+                        worksheetPart.Worksheet = worksheet;
+                    }
+                    workbookPart.Workbook.Save();
+                    document.Close();
+
+                    b = memStream.ToArray();
+                    return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Findings as of " + DateTime.Now.ToString() + ".xlsx");
+                }
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -8,15 +8,15 @@
 
 <p>
     @Html.ActionLink("Create New Collection", "Create", new { id = Model.CompanyId }) |
-        @Html.ActionLink("Companies", "Index", "Companies")
+    @Html.ActionLink("Companies", "Index", "Companies")
 
 </p>
 <table class="table">
     <tr>
         @* Put style titles here
-        <th>
-            @Html.DisplayNameFor(model => model.collection)
-        </th>
+            <th>
+                @Html.DisplayNameFor(model => model.collection)
+            </th>
         *@
 
         <th>
@@ -45,7 +45,7 @@
         i++;
         <tr>
             <td>
-                <a data-toggle='collapse' href=@collapseClass  role="button" aria-expanded="true" aria-controls="collapseExample">
+                <a data-toggle='collapse' href=@collapseClass role="button" aria-expanded="true" aria-controls="collapseExample">
                     <b>@Html.DisplayFor(modelItem => item.Name)</b>
                 </a>
             </td>
@@ -56,27 +56,29 @@
         </tr>
         foreach (OJewelry.Models.StyleModel sty in item.Styles)
         {
-        <tr class="@sectionNumberClass collapse">
-            <td>
-                @{ var imgName = sty.Image ?? "/Images/logo.png";}
-                <a href='@Url.Action("Edit", "Styles", new { id=sty.Id })'>
-                    <img src="@imgName" class="StyleThumbImage" />
-                </a>
-            </td>
-            <td>@Html.DisplayFor(modelItem => sty.Name)</td>
-            <td>@Html.DisplayFor(modelItem => sty.Desc)</td>
-            <td>@Html.DisplayFor(modelItem => sty.Num)</td>
-            <td>@Html.DisplayFor(modelItem => sty.Qty)</td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", "Styles", new { id = sty.Id }, null) @*|
-            @Html.ActionLink("Sell", "Sell", "Styles", new { id = sty.Id }, null)
-            @* @Html.ActionLink("Memo", "Memo", "Styles", new { id = sty.Id }, null) *@
-            </td>
-        </tr>
+            <tr class="@sectionNumberClass collapse">
+                <td>
+                    @{ var imgName = sty.Image ?? "/Images/logo.png";}
+                    <a href='@Url.Action("Edit", "Styles", new { id=sty.Id })'>
+                        <img src="@imgName" class="StyleThumbImage" />
+                    </a>
+                </td>
+                <td>@Html.DisplayFor(modelItem => sty.Name)</td>
+                <td>@Html.DisplayFor(modelItem => sty.Desc)</td>
+                <td>@Html.DisplayFor(modelItem => sty.Num)</td>
+                <td>@Html.DisplayFor(modelItem => sty.Qty)</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Styles", new { id = sty.Id }, null) @*|
+                        @Html.ActionLink("Sell", "Sell", "Styles", new { id = sty.Id }, null)
+                        @* @Html.ActionLink("Memo", "Memo", "Styles", new { id = sty.Id }, null) *@
+                </td>
+            </tr>
         }
     }
 
 </table>
+@Html.ActionLink("Export Assortment to Excel", "ExportAssortmentReport", new { companyId = Model.CompanyId })
+
 <p>
     @Html.ActionLink("Companies", "Index", "Companies")
 </p>
