@@ -30,7 +30,7 @@ namespace OJewelry.Controllers
             var findings = db.Findings.Where(st => st.CompanyId == companyId).Include(f => f.Company).Include(f => f.Vendor);
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
-            return View(findings.OrderBy(a=>a.Company.Name).ThenBy(b=>b.Name).ToList());
+            return View(findings.OrderBy(f => f.Name).ToList());
         }
 
         // GET: Findings/Details/5
@@ -185,7 +185,7 @@ namespace OJewelry.Controllers
                     cell = oxl.SetCellVal("C1", "Price"); row.Append(cell);
                     cell = oxl.SetCellVal("D1", "Vendor"); row.Append(cell);
                     sd.Append(row);
-                    List<Finding> Findings = db.Findings.Where(v => v.CompanyId == companyId).Include("Vendor").ToList();
+                    List<Finding> Findings = db.Findings.Where(v => v.CompanyId == companyId).OrderBy(f => f.Name).Include("Vendor").ToList();
                     // Content
                     for (int i = 0; i < Findings.Count(); i++)
                     {
