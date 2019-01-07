@@ -30,6 +30,7 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Stone Shapes", "Index", new { @companyId = ViewBag.companyId })
-</div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+</p>

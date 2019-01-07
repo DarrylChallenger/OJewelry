@@ -7,9 +7,13 @@
 <h2>Styles for the <i>@ViewBag.CollectionName</i> Collection</h2>
 
 <p>
-    @Html.ActionLink("Create New Style", "Create", new { CollectionId = @ViewBag.CollectionID }) |
-    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = ViewBag.CompanyId }, null) |
-    @Html.ActionLink("Companies", "Index", "Companies")
+    @Html.ActionLink("Create New Style", "Create", new { CollectionId = @ViewBag.CollectionID }) 
+
+</p>
+<p>
+    @Html.ActionLink("Edit", "Edit", "Collections", new { id = @ViewBag.CollectionID }, null) |
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) 
 </p>
 <table class="table">
     <tr>
@@ -67,7 +71,6 @@
 
 </table>
 <p>
-    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = ViewBag.CompanyId }, null) |
-    @Html.ActionLink("Companies", "Index", "Companies")
-
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) 
 </p>

@@ -39,8 +39,9 @@
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" />
         </div>
-        <div>
-            @Html.ActionLink("Metal Codes", "Index", new { companyId = Model.CompanyId })
-        </div>
     }
 </div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+</p>

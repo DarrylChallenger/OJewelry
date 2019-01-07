@@ -41,9 +41,10 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Assortment", "Index", new { CompanyId = Model.CompanyId })
-</div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+</p>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

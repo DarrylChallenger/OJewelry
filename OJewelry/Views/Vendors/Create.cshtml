@@ -54,6 +54,7 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Vendor List", "Index", new { CompanyId = ViewBag.CompanyId })
-</div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+</p>

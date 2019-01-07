@@ -93,3 +93,7 @@
 <div>
     @Html.ActionLink("Stones", "Index", new { companyId = Model.CompanyId })
 </div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+</p>

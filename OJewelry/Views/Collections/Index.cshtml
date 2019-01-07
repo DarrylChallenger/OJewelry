@@ -11,8 +11,8 @@
 </p>
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
-
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
+    @Html.ActionLink("Export Assortment to Excel", "ExportAssortmentReport", new { companyId = Model.CompanyId })
 </p>
 <table class="table">
     <tr>
@@ -80,10 +80,10 @@
     }
 
 </table>
-@Html.ActionLink("Export Assortment to Excel", "ExportAssortmentReport", new { companyId = Model.CompanyId })
 
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
+    @Html.ActionLink("Export Assortment to Excel", "ExportAssortmentReport", new { companyId = Model.CompanyId })
 
 </p>

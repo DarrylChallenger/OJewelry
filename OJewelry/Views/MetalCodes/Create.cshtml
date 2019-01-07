@@ -55,9 +55,11 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Metals", "Index", new { CompanyId = ViewBag.CompanyId })
-</div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int) ViewBag.CompanyId)
+</p>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

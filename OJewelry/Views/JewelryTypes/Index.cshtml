@@ -9,10 +9,15 @@
 <p>
     @{
         int? vbid = ViewBag.Id;
-        <text>@Html.ActionLink("Create New", "Create", new { @companyId = ViewBag.companyId })</text>
+        <text>@Html.ActionLink("Create New Jewelry Type", "Create", new { @companyId = ViewBag.companyId })</text>
     }
-
 </p>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
+</p>
+
 <table class="table">
     <tr>
         <th>
@@ -45,10 +50,9 @@
     }
 
 </table>
-@Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
 
-<div class="row">
-    <div class="col-sm-4">
-        @Html.ActionLink("Companies", "Index", "Companies")
-    </div>
-</div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
+</p>

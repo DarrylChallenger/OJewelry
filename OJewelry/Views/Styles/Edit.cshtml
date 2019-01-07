@@ -36,12 +36,12 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
-    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = @Model.CompanyId }, null) |
-    @Html.ActionLink("Companies", "Index", "Companies")
+    <p>
+        @Html.ActionLink("Companies", "Index", "Companies") |
+        @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
+        @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+    </p>
 
-</div>
 
 @section Scripts {
     @*@Scripts.Render("~/bundles/jqueryval")*@

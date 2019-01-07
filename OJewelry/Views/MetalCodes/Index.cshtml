@@ -7,7 +7,12 @@
 <h2>Metals</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create", new { @companyId = ViewBag.companyId })
+    @Html.ActionLink("Create New Metal Code", "Create", new { @companyId = ViewBag.companyId })
+</p>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Metals to Excel", "ExportMetalsReport", new { companyId = ViewBag.companyId })
 </p>
 <table class="table">
     <tr>
@@ -48,11 +53,8 @@
     }
 
 </table>
-@Html.ActionLink("Export Metals to Excel", "ExportMetalsReport", new { companyId = ViewBag.companyId })
-
-
-<div class="row">
-    <div class="col-sm-4">
-        @Html.ActionLink("Companies", "Index", "Companies")
-    </div>
-</div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Metals to Excel", "ExportMetalsReport", new { companyId = ViewBag.companyId })
+</p>
