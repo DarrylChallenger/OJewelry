@@ -68,6 +68,7 @@ namespace OJewelry.Controllers
             }
             PresenterViewModel pvm = new PresenterViewModel();
             ViewBag.CompanyName = co.Name;
+            ViewBag.CompanyId = co.Id;
             pvm.Location.CompanyId = co.Id;
             return View(pvm);
         }
@@ -88,6 +89,7 @@ namespace OJewelry.Controllers
             }
 
             pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
+            ViewBag.CompanyName = pvm.Location.Name;
             return View(pvm);
         }
 

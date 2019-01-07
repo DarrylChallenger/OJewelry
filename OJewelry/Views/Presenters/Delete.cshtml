@@ -42,7 +42,7 @@
 
     <div class="form-actions no-color">
         <input type="submit" value="Delete" class="btn btn-default" /> |
-        @Html.ActionLink("Back to List", "Index", new { @companyId = Model.CompanyId })
+
     </div>
 
     <div>
@@ -50,3 +50,7 @@
     </div>
     }
 </div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Home", new { @companyId = Model.CompanyId }, null)
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+</p>
