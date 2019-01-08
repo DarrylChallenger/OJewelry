@@ -6,6 +6,7 @@ using Microsoft.Owin;
 using OJewelry.Models;
 using OJewelry.Classes;
 using Owin;
+using System.Diagnostics;
 
 [assembly: OwinStartupAttribute(typeof(OJewelry.Startup))]
 namespace OJewelry
@@ -14,6 +15,7 @@ namespace OJewelry
     {
         public void Configuration(IAppBuilder app)
         {
+            Trace.TraceError("Starting...");
             ConfigureAuth(app);
             createRolesandUsers();
             ConfigureStorage();
