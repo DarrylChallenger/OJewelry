@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Linq;
@@ -545,6 +546,7 @@ namespace OJewelry.Controllers
                 {
                     // Save changes, go to Home
                     db.SaveChanges(); // need the styleId for the image name
+                    Trace.TraceInformation("Operation: {0}, svmId:{1}", svm.SVMOp.ToString(), svm.Style.Id);
                     await SaveImageInStorage(db, svm);
                     db.Entry(svm.Style);
                     db.SaveChanges();
@@ -912,7 +914,11 @@ namespace OJewelry.Controllers
 
         private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm, bool bCopy = false)
         {
-            if (svm.Style.Image == null && svm.PostedImageFile == null) return true;
+            if (svm.Style.Image == null && svm.PostedImageFile == null)
+            {
+                Trace.TraceInformation("Image and postedfile are both blank, returnig.");
+                return true;
+            }
 
             string filename;
             string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
@@ -930,7 +936,9 @@ namespace OJewelry.Controllers
                 {
                     filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
                 }
+                Trace.TraceInformation("Uploading {0} to {1}", svm.PostedImageFile, filename);
                 svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
+                Trace.TraceInformation("Done uploading, image=[{0}]", svm.Style.Image);
             } else { // same image
                 Uri u = new Uri(svm.Style.Image);
                 string blobFile = u.Segments.Last();
@@ -938,13 +946,18 @@ namespace OJewelry.Controllers
                 {
                     // Copy old image to new
                     filename = env + "StyleImg_" + username + Path.GetExtension(svm.Style.Image);
+                    Trace.TraceInformation("Copying {0} to {1} (bCopy=true)", blobFile, filename);
                     svm.Style.Image = await Singletons.azureBlobStorage.Copy(blobFile, filename);
-                } else
+                    Trace.TraceInformation("Done copying, image=[{0}]", svm.Style.Image);
+                }
+                else
                 {
                     filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.Style.Image);
                     if (svm.Style.Image != filename)
                     {
+                        Trace.TraceInformation("Copying {0} to {1} (bCopy=false)", blobFile, filename);
                         svm.Style.Image = await Singletons.azureBlobStorage.Copy(blobFile, filename);
+                        Trace.TraceInformation("Done copying, image=[{0}]", svm.Style.Image);
                     }
                 }
                 //svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.Style.Image, filename);

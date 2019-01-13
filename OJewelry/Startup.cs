@@ -15,7 +15,7 @@ namespace OJewelry
     {
         public void Configuration(IAppBuilder app)
         {
-            Trace.TraceError("Starting...");
+            Trace.TraceInformation("Starting OJewelry...");
             ConfigureAuth(app);
             createRolesandUsers();
             ConfigureStorage();

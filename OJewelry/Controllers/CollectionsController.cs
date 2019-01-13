@@ -239,7 +239,7 @@ namespace OJewelry.Controllers
                         cell = oxl.SetCellVal("D1", "Style No."); row.Append(cell);
                         cell = oxl.SetCellVal("E1", "Inventory"); row.Append(cell);
                         sd.Append(row);
-                        List<Style> Styles = db.Styles.Where(s => s.CollectionId == collection.Id).OrderBy(s => s.StyleName).ThenBy(s => s.Desc).ToList();
+                        List<Style> Styles = collection.Styles.OrderBy(s => s.StyleName).ThenBy(s => s.Desc).ToList();
                         // Content
                         for (int i = 0; i < Styles.Count(); i++)
                         {
