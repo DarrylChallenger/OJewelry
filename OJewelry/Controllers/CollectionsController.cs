@@ -215,7 +215,7 @@ namespace OJewelry.Controllers
                     int rr;
                     uint shNo = 1;
                     //for each collection
-                    foreach (Collection collection in db.Collections.Where(c => c.CompanyId == companyId).OrderBy(c => c.Name))
+                    foreach (Collection collection in db.Collections.Where(c => c.CompanyId == companyId).OrderBy(c => c.Name).Include("Styles"))
                     {
                         WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
                         worksheetPart.Worksheet = new Worksheet(new SheetData());
