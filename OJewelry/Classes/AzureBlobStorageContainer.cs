@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
@@ -37,18 +38,16 @@ namespace OJewelry.Classes
             return blockBlob.StorageUri.PrimaryUri.ToString();
         }
 
-        /*
-        public async Task Download(string fn)
+        
+        public async Task<Stream> Download(string uri)
         {
             // check bInitialized
-            using (FileStream filestream = new FileStream(fn, FileMode.Open))
-            {
-                CloudBlockBlob blockBlob = container.GetBlockBlobReference(fn);
-                await blockBlob.DownloadToStreamAsync(filestream);
-            }
-            return;
+            CloudBlockBlob blockBlob = new CloudBlockBlob(new Uri(uri));
+            MemoryStream m = new MemoryStream();
+            await blockBlob.DownloadToStreamAsync(m);           
+            return m;
         }
-
+        /*
         public void Move(string fnSource, string fnTarget) { }
         */
 
