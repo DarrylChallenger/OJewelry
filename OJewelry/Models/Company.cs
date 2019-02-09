@@ -36,6 +36,10 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Phone { get; set; }
 
+        [Display(Name = "Email")]
+        [StringLength(150)]
+        public string Email { get; set; }
+
         [StringLength(50)]
         public string Website { get; set; }
 

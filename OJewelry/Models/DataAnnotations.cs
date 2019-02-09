@@ -102,6 +102,11 @@ namespace OJewelry.Models
         [Display(Name = "Website")]
         public string Website { get; set; }
 
+        [Display(Name = "Email")]
+        [DataType(DataType.EmailAddress)]
+        [StringLength(150)]
+        public String Email { get; set; }
+
         [DisplayName("Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]

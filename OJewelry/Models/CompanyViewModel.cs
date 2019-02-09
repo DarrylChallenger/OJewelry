@@ -67,7 +67,6 @@ namespace OJewelry.Models
         public Company company { get; set; }
         public List<CompanyViewClientModel> clients { get; set; }
         // Default location (Presenter[0])
-        public string Email { set; get; }
 
     }
 

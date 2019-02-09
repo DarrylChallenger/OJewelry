@@ -41,7 +41,7 @@
         @Html.AntiForgeryToken()
 
     <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <input type="submit" value="Delete" class="btn btn-default" /> 
 
     </div>
 
@@ -51,6 +51,6 @@
     }
 </div>
 <p>
-    @Html.ActionLink("Companies", "Index", "Home", new { @companyId = Model.CompanyId }, null)
+    @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId)
 </p>

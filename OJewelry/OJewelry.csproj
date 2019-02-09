@@ -471,6 +471,10 @@
     <Compile Include="Migrations\201901061357118_v1.5IssuesFromJan5Meeting-Iter4.Designer.cs">
       <DependentUpon>201901061357118_v1.5IssuesFromJan5Meeting-Iter4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902090121049_v1.5AddEmailToCompany.cs" />
+    <Compile Include="Migrations\201902090121049_v1.5AddEmailToCompany.Designer.cs">
+      <DependentUpon>201902090121049_v1.5AddEmailToCompany.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -843,6 +847,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901061357118_v1.5IssuesFromJan5Meeting-Iter4.resx">
       <DependentUpon>201901061357118_v1.5IssuesFromJan5Meeting-Iter4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902090121049_v1.5AddEmailToCompany.resx">
+      <DependentUpon>201902090121049_v1.5AddEmailToCompany.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

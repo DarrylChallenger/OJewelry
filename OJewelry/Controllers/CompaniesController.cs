@@ -116,7 +116,7 @@ namespace OJewelry.Controllers
                     Name = cvm.company.Name,
                     ShortName = cvm.company.Name,
                     Phone = cvm.company.Phone,
-                    Email = cvm.Email
+                    Email = cvm.company.Email
                 };
                 db.Presenters.Add(presenter);
                 db.SaveChanges();
