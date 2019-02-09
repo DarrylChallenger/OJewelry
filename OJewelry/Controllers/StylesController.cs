@@ -238,6 +238,7 @@ namespace OJewelry.Controllers
             //newsvm.assemblyCost.Load(db, svm.CompanyId);
             // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
             newsvm.SVMOp = SVMOperation.Print;
+            newsvm.Style.StyleNum = svm.Style.StyleNum;
             newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
             newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
             newsvm.CopiedStyleName = svm.Style.StyleName;
