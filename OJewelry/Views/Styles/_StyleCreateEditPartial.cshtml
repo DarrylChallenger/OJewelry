@@ -157,17 +157,20 @@
 
             @if (@Model.SVMOp == SVMOperation.Print)
             {
-                <div class="col-sm-12 col-xs-12">
-                    @Html.LabelFor(model => model.Style.MetalWeight, null, htmlAttributes: new { @class = "control-label" })
-                    <text>&nbsp;</text>
-                    @Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
-                    <text>&nbsp;</text>
-                    @Model.Style.MetalWeightUnit.Unit
-                    <text>&nbsp;</text>
-                    <text>&nbsp;</text>
-                    <text>&nbsp;</text>
+            <div class="col-sm-10 col-xs-10">
+                @Html.LabelFor(model => model.Style.MetalWeight, null, htmlAttributes: new { @class = "control-label" })
+                <text>&nbsp;</text>
+                @Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
+                <text>&nbsp;</text>
+                @Model.Style.MetalWeightUnit.Unit
+                <text>&nbsp;</text>
+                <text>&nbsp;</text>
+                <text>&nbsp;</text>
+                <span class="rightjustify">
+                    @Html.LabelFor(model => model.Style.MetalWtNote, null, htmlAttributes: new { @class = "" }):
                     @Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })
-                </div>
+                </span>
+            </div>
             }
             else
             {

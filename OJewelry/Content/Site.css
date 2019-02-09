@@ -59,6 +59,9 @@ textarea {
     background-color: lightblue;
 }
 
+.rightjustify {
+    float: right;
+}
 
 .nav > li > a:hover, .nav > li > a:focus {
     color: darkgray;
