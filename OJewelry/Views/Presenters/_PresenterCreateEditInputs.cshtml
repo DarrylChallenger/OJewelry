@@ -62,7 +62,7 @@
                         @Html.EditorFor(model => model.contacts[i].JobTitle, new { htmlAttributes = new { @class = "form-control col-md-3" } })
                     </div>
                     <div>
-                        @Html.EditorFor(model => model.contacts[i].Phone, new { htmlAttributes = new { @class = "form-control col-md-3" } })
+                        @Html.EditorFor(model => model.contacts[i].Phone, new { htmlAttributes = new { @class = "form-control col-md-3", onblur = "FormatPhoneNumber(this)" } })
                     </div>
                     <div>
                         @Html.EditorFor(model => model.contacts[i].Email, new { htmlAttributes = new { @class = "form-control col-md-3" } })

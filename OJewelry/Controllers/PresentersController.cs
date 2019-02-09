@@ -34,6 +34,10 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             var presenters = db.Presenters.Where(x => x.CompanyId == companyId).OrderBy(p=>p.Name).Include(p => p.Company);
+            foreach (Presenter p in presenters)
+            {
+                p.Phone = SetFormattedPhone(p.Phone);
+            }
             ViewBag.CompanyName = co.Name;
             ViewBag.CompanyId = co.Id;
             return View(presenters.ToList());
@@ -307,6 +311,7 @@ namespace OJewelry.Controllers
 
         private string GetNormalizedPhone(string phone)
         {
+            if (phone == "" || phone == null) { return phone; }
             string[] newPhone = Regex.Split(phone, "[.()-]");
             string finPhone = newPhone[0] + newPhone[1] + newPhone[2];
             return finPhone;
