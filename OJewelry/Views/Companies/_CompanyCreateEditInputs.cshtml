@@ -16,7 +16,7 @@
     </div>
     @Html.LabelFor(model => model.company.Phone, htmlAttributes: new { @class = "control-label col-md-1" })
     <div class="col-md-5">
-        @Html.EditorFor(model => model.company.Phone, new { htmlAttributes = new { @class = "form-control width100" } })
+        @Html.EditorFor(model => model.company.Phone, new { htmlAttributes = new { @class = "form-control width100", onblur = "FormatPhoneNumber(this)" } })
     </div>
 </div>
 <div class="form-group">
@@ -70,7 +70,7 @@
                         @Html.EditorFor(model => model.clients[i].JobTitle, new { htmlAttributes = new { @class = "form-control col-md-3" } })
                     </div>
                     <div>
-                        @Html.EditorFor(model => model.clients[i].Phone, new { htmlAttributes = new { @class = "form-control col-md-3" } })
+                        @Html.EditorFor(model => model.clients[i].Phone, new { htmlAttributes = new { @class = "form-control col-md-3", onblur = "FormatPhoneNumber(this)" } })
                     </div>
                     <div>
                         @Html.EditorFor(model => model.clients[i].Email, new { htmlAttributes = new { @class = "form-control col-md-3" } })
@@ -86,4 +86,3 @@
         }
     </div>
 }
-

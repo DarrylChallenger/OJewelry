@@ -12,6 +12,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml;
 using OJewelry.Models;
 using OJewelry.Classes;
+using System.Text.RegularExpressions;
 
 namespace OJewelry.Controllers
 {
@@ -82,6 +83,7 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
+                pvm.Location.Phone = GetNormalizedPhone(pvm.Phone);
                 db.Presenters.Add(pvm.Location);
                 SavePresenters(pvm.Location.Id, pvm.contacts);
                 db.SaveChanges();
@@ -106,10 +108,12 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            pvm.Phone = SetFormattedPhone(pvm.Location.Phone);
             List<Contact> contacts = db.Contacts.Where(x => x.Location.Id == pvm.Location.Id).ToList();
             foreach (Contact c in contacts)
             {
                 PresenterViewContactModel pvcm = new PresenterViewContactModel(c);
+                pvcm.Phone = SetFormattedPhone(c.Phone);
                 pvm.contacts.Add(pvcm);
             }
             pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
@@ -128,6 +132,7 @@ namespace OJewelry.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(pvm.Location).State = EntityState.Modified;
+                pvm.Location.Phone = GetNormalizedPhone(pvm.Phone);
                 SavePresenters(pvm.Location.Id, pvm.contacts);
                 db.SaveChanges();
                 return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
@@ -195,6 +200,7 @@ namespace OJewelry.Controllers
             Contact con;
             foreach (PresenterViewContactModel p in contacts)
             {
+                p.Phone = GetNormalizedPhone(p.Phone);
                 if (p.Name != null)
                 {
                     p.PresenterId = presenterId;
@@ -298,5 +304,20 @@ namespace OJewelry.Controllers
                 }
             }
         }
+
+        private string GetNormalizedPhone(string phone)
+        {
+            string[] newPhone = Regex.Split(phone, "[.()-]");
+            string finPhone = newPhone[0] + newPhone[1] + newPhone[2];
+            return finPhone;
+        }
+
+        private string SetFormattedPhone(string phone)
+        {
+            if (phone == "" || phone == null) return "";
+            string newPhone = Regex.Replace(phone, @"^([0-9]{3})([0-9]{3})([0-9]{4})$", @"$1-$2-$3");
+            return newPhone;
+        }
+
     }
 }

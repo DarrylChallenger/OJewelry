@@ -11,6 +11,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Packaging;
 using System.IO.Packaging;
 using System.IO;
+using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml;
 
 namespace OJewelry.Controllers
@@ -70,6 +71,8 @@ namespace OJewelry.Controllers
                 string loggedOnUserName = System.Web.HttpContext.Current.User.Identity.Name;
                 sec = new ApplicationDbContext();
                 ApplicationUser user = sec.Users.Where(x => x.UserName == loggedOnUserName).FirstOrDefault();
+                // Get Phone Number
+                cvm.company.Phone = GetNormalizedPhone(cvm.company.Phone);
                 CompanyUser cu = new CompanyUser()
                 {
                     CompanyId = cvm.company.Id,
@@ -145,10 +148,13 @@ namespace OJewelry.Controllers
             }
             CompanyViewModel cvm = new CompanyViewModel();
             cvm.company = company;
+            cvm.company.Phone = SetFormattedPhone(company.Phone);
+
             List<Client> clients = db.Clients.Where(x => x.CompanyID == cvm.company.Id).ToList();
             foreach(Client c in clients)
             {
                 CompanyViewClientModel cvcm =  new CompanyViewClientModel(c);
+                cvcm.Phone = SetFormattedPhone(c.Phone);
                 cvm.clients.Add(cvcm);
             }
             return View(cvm);
@@ -163,24 +169,25 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(cvm.company).State = EntityState.Modified; 
+                db.Entry(cvm.company).State = EntityState.Modified;
+                cvm.company.Phone = GetNormalizedPhone(cvm.company.Phone);
 
                 foreach (CompanyViewClientModel c in cvm.clients)
                 {
                     Client client;
+                    client = new Client(c, cvm.company.Id);
+                    client.Phone = GetNormalizedPhone(c.Phone);
+
                     switch (c.State)
                     {
                         case CVCMState.Added:
-                            client = new Client(c, cvm.company.Id);
                             db.Clients.Add(client);
                             break;
                         case CVCMState.Deleted:
-                            client = new Client(c, cvm.company.Id);
                             db.Entry(client).State = EntityState.Deleted;
                             //db.Clients.Remove(client);
                             break;
                         case CVCMState.Dirty:
-                            client = new Client(c, cvm.company.Id);
                             db.Entry(client).State = EntityState.Modified; 
                             break;
                         case CVCMState.Unadded:
@@ -193,6 +200,20 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index");
             }
             return View(cvm);
+        }
+
+        private string GetNormalizedPhone(string phone)
+        {
+            string [] newPhone = Regex.Split(phone, "[.()-]");
+            string finPhone = newPhone[0] + newPhone[1] + newPhone[2];
+            return finPhone;
+        }
+
+        private string SetFormattedPhone(string phone)
+        {
+            if (phone == "" || phone == null) return "";
+            string newPhone = Regex.Replace(phone, @"^([0-9]{3})([0-9]{3})([0-9]{4})$", @"$1-$2-$3");
+            return newPhone;
         }
 
         // GET: Companies/Delete/5

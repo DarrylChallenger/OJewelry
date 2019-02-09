@@ -35,7 +35,6 @@ namespace OJewelry.Models
         [RequiredIfNotRemoved]
         public string Name { get; set; }
 
-        [StringLength(10)]
         [DisplayName("Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]

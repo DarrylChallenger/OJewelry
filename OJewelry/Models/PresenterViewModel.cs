@@ -36,7 +36,6 @@
         [RequiredIfNotRemoved]
         public string Name { get; set; }
 
-        [StringLength(10)]
         [DisplayName("Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
@@ -65,6 +64,7 @@
             Location = new Presenter();
             contacts = new List<PresenterViewContactModel>();
         }
+        public string Phone { get; set; }
         public Presenter Location { get; set; }
         public List<PresenterViewContactModel> contacts { get; set; }
 
