@@ -245,6 +245,11 @@ html input[disabled], locked {
     font-weight:normal;
 }
 
+.styleCastings .sslabel {
+    padding-left: 5px;
+}
+
+
 .ssdata {
     font-weight:bold;
 }
