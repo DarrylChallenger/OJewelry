@@ -436,7 +436,6 @@ COST:
                         @Html.HiddenFor(model => model.Labors[i].Name)
                         @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "locked col-sm-3 col-xs-3 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
                         @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3" } })
-                        <div class="@boxme @boxbot col-sm-2 col-xs-2 "></div>
                         @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                         if (bDisabled)
                         {
