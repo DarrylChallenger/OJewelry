@@ -34,14 +34,14 @@ COST:
                 boxbot = "";
             }
             @Html.Partial("_CostComponentCol1", Model)
-            <div class="@boxme @boxbot sslabel col-sm-2 col-xs-2">METAL STYLE</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">VENDOR</div>
-            <div class="@boxme @boxbot sslabel col-sm-2 col-xs-2">WEIGHT</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">METAL</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">PRICE</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">LABOR</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">QTY</div>
-            <div class="@boxme @boxbot sslabel @boxright col-sm-2 col-xs-2">TOTAL COST</div>
+            <div class="col-sm-2 col-xs-2">METAL STYLE</div>
+            <div class="col-sm-1 col-xs-1">VENDOR</div>
+            <div class="col-sm-2 col-xs-2">WEIGHT</div>
+            <div class="col-sm-1 col-xs-1">METAL</div>
+            <div class="col-sm-1 col-xs-1">PRICE</div>
+            <div class="col-sm-1 col-xs-1">LABOR</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class="col-sm-2 col-xs-2">TOTAL COST</div>
         </div>
         <div>
             @for (int i = 0; i < Model.Castings.Count; i++) // where state != deleted
@@ -141,14 +141,14 @@ COST:
                 boxbot = "";
             }
             @Html.Partial("_CostComponentCol1", Model)
-            <div class="@boxme @boxbot sslabel col-sm-2 col-xs-2">STONES</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">SHAPE</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">SIZE</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">CT</div>
-            <div class="@boxme @boxbot sslabel col-sm-2 col-xs-2">VENDOR</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">PRICE</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">QTY</div>
-            <div class="@boxme @boxbot sslabel @boxright col-sm-2 col-xs-2">TOTAL COST</div>
+            <div class="col-sm-2 col-xs-2">STONES</div>
+            <div class="col-sm-1 col-xs-1">SHAPE</div>
+            <div class="col-sm-1 col-xs-1">SIZE</div>
+            <div class="col-sm-1 col-xs-1">CT</div>
+            <div class="col-sm-2 col-xs-2">VENDOR</div>
+            <div class="col-sm-1 col-xs-1">PRICE</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class=" col-sm-2 col-xs-2">TOTAL COST</div>
         </div>
         @for (int i = 0; i < Model.Stones.Count; i++)
         {
@@ -289,12 +289,12 @@ COST:
                 boxbot = "";
             }
             @Html.Partial("_CostComponentCol1", Model)
-            <div class="@boxme @boxbot sslabel col-sm-4 col-xs-4">FINDINGS</div>
-            <div class="@boxme @boxbot sslabel col-sm-2 col-xs-2">VENDOR</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">WT</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">PRICE</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">QTY</div>
-            <div class="@boxme @boxbot sslabel @boxright col-sm-2 col-xs-2">TOTAL COST</div>
+            <div class="col-sm-4 col-xs-4">FINDINGS</div>
+            <div class="col-sm-2 col-xs-2">VENDOR</div>
+            <div class="col-sm-1 col-xs-1">WT</div>
+            <div class="col-sm-1 col-xs-1">PRICE</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class="col-sm-2 col-xs-2">TOTAL COST</div>
         </div>
         @for (int i = 0; i < Model.Findings.Count; i++)
         {
@@ -400,12 +400,12 @@ COST:
                 boxbot = "";
             }
             @Html.Partial("_CostComponentCol1")
-            <div class="@boxme @boxbot sslabel col-sm-3 col-xs-3">LABOR</div>
-            <div class="@boxme @boxbot sslabel col-sm-3 col-xs-3 ">Desc</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">$/HR</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">$/PC</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">QTY</div>
-            <div class="@boxme @boxbot sslabel @boxright col-sm-2 col-xs-2">TOTAL COST</div>
+            <div class="col-sm-3 col-xs-3">LABOR</div>
+            <div class="col-sm-3 col-xs-3 ">Desc</div>
+            <div class="col-sm-1 col-xs-1">$/HR</div>
+            <div class="col-sm-1 col-xs-1">$/PC</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class=" col-sm-2 col-xs-2">TOTAL COST</div>
         </div>
         @for (int i = 0; i < Model.Labors.Count; i++)
         {
@@ -567,12 +567,12 @@ COST:
                 boxbot = "";
             }
             @Html.Partial("_CostComponentCol1")
-            <div class="@boxme @boxbot sslabel col-sm-2 col-xs-2">MISC</div>
-            <div class="@boxme @boxbot sslabel col-sm-2 col-xs-2">Desc</div>
-            <div class="@boxme @boxbot sslabel col-sm-3 col-xs-3">&nbsp;</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">$/PC</div>
-            <div class="@boxme @boxbot sslabel col-sm-1 col-xs-1">QTY</div>
-            <div class="@boxme @boxbot sslabel @boxright col-sm-2 col-xs-2">TOTAL COST</div>
+            <div class="col-sm-2 col-xs-2">MISC</div>
+            <div class="col-sm-2 col-xs-2">Desc</div>
+            <div class="col-sm-3 col-xs-3">&nbsp;</div>
+            <div class="col-sm-1 col-xs-1">$/PC</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class=" col-sm-2 col-xs-2">TOTAL COST</div>
         </div>
         @for (int i = 0; i < Model.Miscs.Count; i++)
         {
