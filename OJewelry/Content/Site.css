@@ -225,6 +225,12 @@ html input[disabled], locked {
     color: lightsteelblue;
 }
 
+.boxfull {
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgray;
+}
+
 .boxme {
     border-top-style:solid;
     border-width:1px;
@@ -241,8 +247,8 @@ html input[disabled], locked {
     border-bottom-style:solid;
 }
 
-.sslabel {
-    font-weight:normal;
+.StyleComponentsRowHeader {
+    font-weight: normal;
 }
 
 .styleCastings .sslabel {

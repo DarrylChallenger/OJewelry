@@ -91,6 +91,7 @@
     @Html.ValidationMessageFor(model => model.Style.CollectionId, "", new { @class = "text-danger" })
     <div class="row StyleBodyBoundingBox">
         <div class="row">
+            <div class="col-sm-1 col-xs-1"></div>
             <div class="col-sm-4 col-xs-4 bold">
                 <p>MEASUREMENTS:</p>
             </div>
@@ -127,18 +128,25 @@
         <div class="row">
             @if (@Model.SVMOp == SVMOperation.Print)
             {
-            <div class="col-sm-6 col-xs-6">
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-10 col-xs-10">
                 @Html.LabelFor(model => model.Style.Length, new { @class = "" })
                 <text>:</text>
-                @Html.DisplayFor(model => model.Style.Length, new { htmlAttributes = new { @class = "" } })
-                <text> &nbsp;&nbsp;&nbsp;&nbsp;</text>
+                <span class="boxfull">
+                    &nbsp;@Html.DisplayFor(model => model.Style.Length, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
+                </span>
+                <text> &nbsp;&nbsp;&nbsp;</text>
                 @Html.LabelFor(model => model.Style.Width, new { @class = "" })
                 <text>:</text>
-                @Html.DisplayFor(model => model.Style.Width, new { htmlAttributes = new { @class = "" } })
+                <span class="boxfull">
+                    &nbsp;@Html.DisplayFor(model => model.Style.Width, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
+                </span>
                 <text> &nbsp;&nbsp;&nbsp;&nbsp;</text>
                 @Html.LabelFor(model => model.Style.ChainLength, new { @class = "" })
                 <text>:</text>
-                @Html.DisplayFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "" } })
+                <span class="boxfull">
+                    &nbsp;@Html.DisplayFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
+                </span>
                 <text> &nbsp;&nbsp;&nbsp;&nbsp;</text>
             </div>
             }
@@ -172,10 +180,13 @@
 
             @if (@Model.SVMOp == SVMOperation.Print)
             {
-            <div class="col-sm-10 col-xs-10">
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-8 col-xs-8">
                 @Html.LabelFor(model => model.Style.MetalWeight, null, htmlAttributes: new { @class = "control-label" })
                 <text>&nbsp;</text>
-                @Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
+                <span class="boxfull">
+                    &nbsp;@Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })&nbsp;
+                </span>
                 <text>&nbsp;</text>
                 @Model.Style.MetalWeightUnit.Unit
                 <text>&nbsp;</text>
@@ -183,7 +194,9 @@
                 <text>&nbsp;</text>
                 <span class="rightjustify">
                     @Html.LabelFor(model => model.Style.MetalWtNote, null, htmlAttributes: new { @class = "" }):
-                    @Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })
+                    <span class="boxfull">
+                        &nbsp;@Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })&nbsp;
+                    </span>
                 </span>
             </div>
             }
