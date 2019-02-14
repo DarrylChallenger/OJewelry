@@ -13,6 +13,7 @@ using System.IO.Packaging;
 using System.IO;
 using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml;
+using OJewelry.Classes;
 
 namespace OJewelry.Controllers
 {
@@ -316,6 +317,8 @@ namespace OJewelry.Controllers
         {
             try
             {
+                DCTSOpenXML oxl = new DCTSOpenXML();
+
                 String error, warning;
                 if (isValidAddModel())//(ModelState.IsValid)
                 {
@@ -340,14 +343,14 @@ namespace OJewelry.Controllers
                                 int rc = worksheet.Descendants<Row>().Count();
                                 if (rc != 0)
                                 {
-                                    if (CellMatches("A1", worksheet, stringtable, "Style") &&
-                                    (CellMatches("B1", worksheet, stringtable, "Name")) &&
-                                    (CellMatches("C1", worksheet, stringtable, "JewelryType")) &&
-                                    (CellMatches("D1", worksheet, stringtable, "Collection")) &&
-                                    (CellMatches("E1", worksheet, stringtable, "Description")) &&
-                                    (CellMatches("F1", worksheet, stringtable, "Retail")) &&
-                                    (CellMatches("G1", worksheet, stringtable, "Qty")) &&
-                                    (CellMatches("H1", worksheet, stringtable, "Location")))
+                                    if (oxl.CellMatches("A1", worksheet, stringtable, "Style") &&
+                                    (oxl.CellMatches("B1", worksheet, stringtable, "Name")) &&
+                                    (oxl.CellMatches("C1", worksheet, stringtable, "JewelryType")) &&
+                                    (oxl.CellMatches("D1", worksheet, stringtable, "Collection")) &&
+                                    (oxl.CellMatches("E1", worksheet, stringtable, "Description")) &&
+                                    (oxl.CellMatches("F1", worksheet, stringtable, "Retail")) &&
+                                    (oxl.CellMatches("G1", worksheet, stringtable, "Qty")) &&
+                                    (oxl.CellMatches("H1", worksheet, stringtable, "Location")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
@@ -362,7 +365,7 @@ namespace OJewelry.Controllers
                                                 Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    style.StyleNum = GetStringVal(cell, stringtable);
+                                                    style.StyleNum = oxl.GetStringVal(cell, stringtable);
                                                 }
                                                 if (style.StyleNum == "")
                                                 {
@@ -378,7 +381,7 @@ namespace OJewelry.Controllers
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    style.StyleName = GetStringVal(cell, stringtable);
+                                                    style.StyleName = oxl.GetStringVal(cell, stringtable);
                                                 }
                                                 if (style.StyleName == "")
                                                 {
@@ -394,7 +397,7 @@ namespace OJewelry.Controllers
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    JewelryTypeName = GetStringVal(cell, stringtable);
+                                                    JewelryTypeName = oxl.GetStringVal(cell, stringtable);
                                                 }
                                                 int JewelryTypeId = GetJewelryTypeId(ivm.CompanyId, JewelryTypeName);
                                                 if (JewelryTypeName != "")
@@ -414,7 +417,7 @@ namespace OJewelry.Controllers
                                                 // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
                                                 string CollectionName = "";
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
-                                                CollectionName = GetStringVal(cell, stringtable);
+                                                CollectionName = oxl.GetStringVal(cell, stringtable);
                                                 int CollectionId = GetCollectionId(CollectionName, company.Id);
                                                 if (CollectionName != "")
                                                 {
@@ -435,7 +438,7 @@ namespace OJewelry.Controllers
                                                 // Descrription
                                                 style.Desc = "";
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).FirstOrDefault();
-                                                if (cell != null) style.Desc = GetStringVal(cell, stringtable);
+                                                if (cell != null) style.Desc = oxl.GetStringVal(cell, stringtable);
                                                 if (style.Desc != "")
                                                 {
                                                     bEmptyRow = false;
@@ -445,14 +448,14 @@ namespace OJewelry.Controllers
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    if (Decimal.TryParse(GetStringVal(cell, stringtable), out decimal rp))
+                                                    if (Decimal.TryParse(oxl.GetStringVal(cell, stringtable), out decimal rp))
                                                     {
                                                         style.RetailPrice = rp;
                                                         bEmptyRow = false;
                                                     }
                                                     else
                                                     {
-                                                        error = "Invalid price [" + GetStringVal(cell, stringtable) + "] in row " + j + " of sheet [" + sheet.Name + "].";
+                                                        error = "Invalid price [" + oxl.GetStringVal(cell, stringtable) + "] in row " + j + " of sheet [" + sheet.Name + "].";
                                                         ModelState.AddModelError("RetailPrice-"+j, error); 
                                                         ivm.Errors.Add(error);
                                                     }
@@ -467,7 +470,7 @@ namespace OJewelry.Controllers
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    quantity = GetDoubleVal(cell);
+                                                    quantity = oxl.GetDoubleVal(cell);
                                                     // Quality check for quantity
                                                     if (isValidQuantity(JewelryTypeName, quantity)) // integral or integral + .5
                                                     {
@@ -489,7 +492,7 @@ namespace OJewelry.Controllers
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "H" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    string presenter = GetStringVal(cell, stringtable);
+                                                    string presenter = oxl.GetStringVal(cell, stringtable);
                                                     if (presenter == "")
                                                     {
                                                         // add to QOH
@@ -645,6 +648,8 @@ namespace OJewelry.Controllers
             try
             {
                 String error;
+                DCTSOpenXML oxl = new DCTSOpenXML();
+
                 if (isValidMoveModel())//(ModelState.IsValid)
                 {
                     // if from == to, error
@@ -679,9 +684,9 @@ namespace OJewelry.Controllers
                                 {
                                     int q = worksheet.Descendants<Column>().Count();
                                     if ((true) && //worksheet.Descendants<Column>().Count() >= 4) &&
-                                        (CellMatches("A1", worksheet, stringtable, "Style") &&
-                                        CellMatches("B1", worksheet, stringtable, "Qty") &&
-                                        CellMatches("C1", worksheet, stringtable, "Retail")))
+                                        (oxl.CellMatches("A1", worksheet, stringtable, "Style") &&
+                                        oxl.CellMatches("B1", worksheet, stringtable, "Qty") &&
+                                        oxl.CellMatches("C1", worksheet, stringtable, "Retail")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
@@ -693,7 +698,7 @@ namespace OJewelry.Controllers
                                                 //StyleNum
                                                 style.StyleNum = "";
                                                 Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
-                                                if (cell != null) style.StyleNum = GetStringVal(cell, stringtable);
+                                                if (cell != null) style.StyleNum = oxl.GetStringVal(cell, stringtable);
                                                 if (style.StyleNum == "")
                                                 {
                                                     // error
@@ -709,7 +714,7 @@ namespace OJewelry.Controllers
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
-                                                    style.Quantity = GetDoubleVal(cell);
+                                                    style.Quantity = oxl.GetDoubleVal(cell);
                                                     bEmptyRow = false;
                                                 }
                                                 else
@@ -724,7 +729,7 @@ namespace OJewelry.Controllers
                                                 /*
                                                 string retail = "";
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
-                                                if (cell != null) retail = GetStringVal(cell, stringtable);
+                                                if (cell != null) retail = oxl.GetStringVal(cell, stringtable);
                                                 */
 
 
@@ -902,6 +907,7 @@ namespace OJewelry.Controllers
             }
             InventoryReportModel irm = SetIRM(CompanyId.Value);
             byte[] b;
+            DCTSOpenXML oxl = new DCTSOpenXML();
             using (MemoryStream memStream = new MemoryStream())
             {
                 using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
@@ -936,35 +942,37 @@ namespace OJewelry.Controllers
 
                     // Date row
                     row = new Row();
-                    cell = SetCellVal("A1", "Inventory Report");
+                    cell = oxl.SetCellVal("A1", "Inventory Report");
                     row.Append(cell);
-                    cell = SetCellVal("B1", "Date: " + docDate); 
+                    cell = oxl.SetCellVal("B1", "Date: " + docDate); 
                     row.Append(cell);
                     sd.Append(row);
                     // Header row
                     // Save Col A for image
                     row = new Row();
-                    cell = SetCellVal("A2", "Style"); row.Append(cell);
-                    cell = SetCellVal("B2", "Name"); row.Append(cell);
-                    cell = SetCellVal("C2", "Description"); row.Append(cell);
-                    cell = SetCellVal("D2", "Jewelry Type"); row.Append(cell);
-                    cell = SetCellVal("E2", "Collection"); row.Append(cell);
-                    cell = SetCellVal("F2", "Retail"); row.Append(cell);
-                    //cell = SetCellVal("G2", irm.CompanyName); row.Append(cell);
-                    //cell = SetCellVal("G2", "QOH"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A2", "Style"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B2", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C2", "Description"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D2", "Jewelry Type"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E2", "Collection"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 6, Max = 6, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F2", "Retail"); row.Append(cell);
+                    //cell = oxl.SetCellVal("G2", irm.CompanyName); row.Append(cell);
+                    //cell = oxl.SetCellVal("G2", "QOH"); row.Append(cell);
                     for (int i = 0; i < irm.locations.Count(); i++)
                     {
                         ch = (char)(((int)'G') + i);
                         loc = ch + "2";
-                        cell = SetCellVal(loc, irm.locations[i].ShortName);
+                        oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = (uint)i + 7, Max = (uint)i + 7, BestFit = true, CustomWidth = true });
+                        cell = oxl.SetCellVal(loc, irm.locations[i].ShortName);
                         row.Append(cell);
                     }
                     /* Ignore Sold
                     ch = (char)(((int)'G') + irm.locations.Count());
                     loc = ch + "2";
-                    cell = SetCellVal(loc, "SOLD");
+                    cell = oxl.SetCellVal(loc, "SOLD");
                     */
                     //row.Append(cell);
+                    worksheet.Append(oxl.columns);
                     sd.Append(row);
 
                     // Loop thru styles
@@ -972,13 +980,13 @@ namespace OJewelry.Controllers
                     {
                         row = new Row();
                         rr = 3 + i;
-                        loc = "A" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleNum); row.Append(cell);
-                        loc = "B" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleName); row.Append(cell);
-                        loc = "C" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleDesc); row.Append(cell);
-                        loc = "D" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].JewelryTypeName); row.Append(cell);
-                        loc = "E" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleCollectionName); row.Append(cell);
-                        loc = "F" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StylePrice); row.Append(cell);
-                        //loc = "G" + rr.ToString(); cell = SetCellVal(loc, irm.styles[i].StyleQuantity); row.Append(cell);
+                        loc = "A" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].StyleNum); row.Append(cell);
+                        loc = "B" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].StyleName); row.Append(cell);
+                        loc = "C" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].StyleDesc); row.Append(cell);
+                        loc = "D" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].JewelryTypeName); row.Append(cell);
+                        loc = "E" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].StyleCollectionName); row.Append(cell);
+                        loc = "F" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].StylePrice); row.Append(cell);
+                        //loc = "G" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].StyleQuantity); row.Append(cell);
 
                         for (int j = 0; j < irm.locations.Count; j++)
                         {
@@ -990,11 +998,11 @@ namespace OJewelry.Controllers
                             if (irmls != null)
                             {
                                 double q = irmls.MemoQty;
-                                cell = SetCellVal(loc, irmls.MemoQty);
+                                cell = oxl.SetCellVal(loc, irmls.MemoQty);
                             }
                             else
                             {
-                                cell = SetCellVal(loc, 0);
+                                cell = oxl.SetCellVal(loc, 0);
                             }
                             row.Append(cell);
                            
@@ -1002,7 +1010,7 @@ namespace OJewelry.Controllers
                         /* Ignore SOLD
                         ch = (char)(((int)'G') + irm.locations.Count());
                         loc = ch.ToString() + rr.ToString();
-                        cell = SetCellVal(loc, irm.styles[i].StyleQtySold); row.Append(cell);
+                        cell = oxl.SetCellVal(loc, irm.styles[i].StyleQtySold); row.Append(cell);
                         */
                         sd.Append(row);
                      }
@@ -1121,8 +1129,8 @@ namespace OJewelry.Controllers
             }
             base.Dispose(disposing);
         }
-
-        bool CellMatches(string cellref, Worksheet w, SharedStringTablePart strings, string value)
+        /*
+        bool oxl.CellMatches(string cellref, Worksheet w, SharedStringTablePart strings, string value)
         {
             Cell cell = w.Descendants<Cell>().Where(c => c.CellReference == cellref).First();
             try
@@ -1144,7 +1152,7 @@ namespace OJewelry.Controllers
             return false;
         }
 
-        bool CellMatches(string cellref, Worksheet w, int value)
+        bool oxl.CellMatches(string cellref, Worksheet w, int value)
         {
             Cell cell = w.Descendants<Cell>().Where(c => c.CellReference == cellref).First();
             try
@@ -1164,7 +1172,7 @@ namespace OJewelry.Controllers
             return false;
         }
 
-        bool CellMatches(string cellref, Worksheet w, DateTime value)
+        bool oxl.CellMatches(string cellref, Worksheet w, DateTime value)
         {
             Cell cell = w.Descendants<Cell>().Where(c => c.CellReference == cellref).First();
             try
@@ -1187,7 +1195,7 @@ namespace OJewelry.Controllers
             return false;
         }
 
-        bool CellMatches(string cellref, Worksheet w, bool value)
+        bool oxl.CellMatches(string cellref, Worksheet w, bool value)
         {
             Cell cell = w.Descendants<Cell>().Where(c => c.CellReference == cellref).First();
             try
@@ -1210,7 +1218,7 @@ namespace OJewelry.Controllers
             return false;
         }
 
-        string GetStringVal(Cell cell, SharedStringTablePart strings)
+        string oxl.GetStringVal(Cell cell, SharedStringTablePart strings)
         {
             String str = "";
             try
@@ -1274,30 +1282,30 @@ namespace OJewelry.Controllers
             return d;
         }
 
-        Cell SetCellVal(string loc, int val)
+        Cell oxl.SetCellVal(string loc, int val)
         {
             Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             return cell;
         }
 
-        Cell SetCellVal(string loc, decimal val)
+        Cell oxl.SetCellVal(string loc, decimal val)
         {
             Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             return cell;
         }
 
-        Cell SetCellVal(string loc, double val)
+        Cell oxl.SetCellVal(string loc, double val)
         {
             Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             return cell;
         }
 
-        Cell SetCellVal(string loc, string val)
+        Cell oxl.SetCellVal(string loc, string val)
         {
             Cell cell = new Cell() { CellReference = loc, DataType = CellValues.String, CellValue = new CellValue(val) };
             return cell;
         }
-
+        */
         int GetJewelryTypeId(int companyId, string JewelryTypeName)
         {
             JewelryType jt = db.JewelryTypes.Where(j => j.Name == JewelryTypeName && j.CompanyId == companyId).FirstOrDefault();

@@ -18,7 +18,8 @@ namespace OJewelry.Classes
             columns = new Columns();
             graphics = Graphics.FromImage(new Bitmap(100, 100));
             font = new System.Drawing.Font("Calabri", 11);
-            minWidth = graphics.MeasureString("WWWWW", font).Width;
+            minWidth = ComputeExcelCellWidth(graphics.MeasureString("0000", font).Width);
+            minWidth = ComputeExcelCellWidth(graphics.MeasureString("WWWWW", font).Width);
             cellBuf = "WW";
         }
         public double minWidth { get; set; }
@@ -159,6 +160,24 @@ namespace OJewelry.Classes
             return i;
         }
 
+        public double GetDoubleVal(Cell cell)
+        {
+            double d = 0;
+            try
+            {
+                if (cell.DataType == null)
+                {
+                    d = double.Parse(cell.CellValue.InnerText);
+                }
+            }
+            catch
+            {
+                return 0;
+            }
+
+            return d;
+        }
+
         public Cell SetCellVal(string loc, int val, bool bSetCellWidth = true)
         {
 
@@ -221,7 +240,7 @@ namespace OJewelry.Classes
             Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue("") };
             if (bSetCellWidth)
             {
-                SetColumnWidth(loc, (double)ComputeExcelCellWidth(img.Width*cellHeight/img.Height));
+                SetColumnWidth(loc, (double)ComputeExcelCellWidthForImage(img.Width*cellHeight/img.Height));
             }
             return cell;
         }
@@ -247,6 +266,7 @@ namespace OJewelry.Classes
             {
                 Column c = columns.ChildElements[col.Value] as Column;
                 double width = graphics.MeasureString(val + cellBuf, font).Width;
+                // column widths are stored in points!
                 c.Width = Math.Max(ComputeExcelCellWidth(width), c.Width);
             }
         }
@@ -275,6 +295,20 @@ namespace OJewelry.Classes
         }
 
         public DoubleValue ComputeExcelCellWidth(double widthInPixel)
+        {
+            DoubleValue result = widthInPixel;
+            if (widthInPixel > 12)
+            {
+                result = 1;
+                result += (widthInPixel - 12) / 7;
+            }
+            else
+                result = 1;
+
+            return result;
+        }
+
+        public DoubleValue ComputeExcelCellWidthForImage(double widthInPixel)
         {
             DoubleValue result = 0;
             if (widthInPixel > 12)

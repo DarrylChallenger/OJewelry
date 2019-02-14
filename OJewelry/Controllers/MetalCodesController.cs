@@ -181,10 +181,11 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Headers
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", "Code"); row.Append(cell);
-                    cell = oxl.SetCellVal("B1", "Desct"); row.Append(cell);
-                    cell = oxl.SetCellVal("C1", "Market"); row.Append(cell);
-                    cell = oxl.SetCellVal("D1", "Multiplier"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Code"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Desc"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Market"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Multiplier"); row.Append(cell);
+                    worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<MetalCode> Metals = db.MetalCodes.Where(m => m.CompanyId == companyId).OrderBy(m => m.Code).ToList();
                     // Content
@@ -193,8 +194,9 @@ namespace OJewelry.Controllers
                         row = new Row();
                         rr = 2 + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, Metals[i].Code); row.Append(cell);
-                        loc = "B" + rr; cell = oxl.SetCellVal(loc, Metals[i].Market); row.Append(cell);
-                        loc = "C" + rr; cell = oxl.SetCellVal(loc, Metals[i].Multiplier); row.Append(cell);
+                        loc = "B" + rr; cell = oxl.SetCellVal(loc, Metals[i].Desc); row.Append(cell);
+                        loc = "C" + rr; cell = oxl.SetCellVal(loc, Metals[i].Market); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, Metals[i].Multiplier); row.Append(cell);
                         sd.Append(row);
                     }
                     worksheet.Append(sd);

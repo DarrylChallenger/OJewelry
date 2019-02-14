@@ -181,7 +181,8 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Headers
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
+                    worksheet.Append(oxl.columns);
 
                     sd.Append(row);
                     List<Shape> Shapes = db.Shapes.Where(v => v.CompanyId == companyId).ToList();

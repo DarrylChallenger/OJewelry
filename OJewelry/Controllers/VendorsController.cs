@@ -193,10 +193,11 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Headers
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
-                    cell = oxl.SetCellVal("B1", "Phone"); row.Append(cell);
-                    cell = oxl.SetCellVal("C1", "Email"); row.Append(cell);
-                    cell = oxl.SetCellVal("D1", "Type"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Phone"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Email"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Type"); row.Append(cell);
+                    worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId).OrderBy(vv => vv.Name).ToList();
                     // Content

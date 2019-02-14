@@ -191,14 +191,15 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Headers
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
-                    cell = oxl.SetCellVal("B1", "Shape"); row.Append(cell);
-                    cell = oxl.SetCellVal("C1", "Vendor"); row.Append(cell);
-                    cell = oxl.SetCellVal("D1", "Caret"); row.Append(cell);
-                    cell = oxl.SetCellVal("E1", "Size"); row.Append(cell);
-                    cell = oxl.SetCellVal("F1", "Price"); row.Append(cell);
-                    cell = oxl.SetCellVal("G1", "Setting Cost"); row.Append(cell);
-                    cell = oxl.SetCellVal("H1", "Qty"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Shape"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Vendor"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Caret"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "Size"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 6, Max = 6, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F1", "Price"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 7, Max = 7, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("G1", "Setting Cost"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 8, Max = 8, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("H1", "Qty"); row.Append(cell);
+                    worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<Stone> Stones = db.Stones.Include("Vendor").Include("Shape").Where(v => v.CompanyId == companyId)
                         .OrderBy(s => s.Name).ThenBy(s => s.Shape).ThenBy(s => s.StoneSize).ToList();
