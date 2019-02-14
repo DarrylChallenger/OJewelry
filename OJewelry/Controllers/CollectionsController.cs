@@ -31,7 +31,7 @@ namespace OJewelry.Controllers
         private int relId = 0;
         private uint imageId = 1025;
         Drawing drawing = null;
-        private int pixelRowHeight = 80;
+        private int pixelRowHeight = 60;
 
         // GET: Collections
         public ActionResult Index(int? CompanyId)
