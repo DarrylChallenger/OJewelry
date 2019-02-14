@@ -76,6 +76,16 @@ namespace OJewelry.Controllers
             return View(jewelryType);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateOnAddStyle(int companyId)
+        {
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+            return RedirectToAction("Create", new { companyId});
+        }
+
+
         // GET: JewelryTypes/Edit/5
         public ActionResult Edit(int? id)
         {

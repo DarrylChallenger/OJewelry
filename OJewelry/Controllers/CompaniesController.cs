@@ -205,6 +205,7 @@ namespace OJewelry.Controllers
 
         private string GetNormalizedPhone(string phone)
         {
+            if (phone == null) return phone;
             string [] newPhone = Regex.Split(phone, "[.()-]");
             string finPhone = newPhone[0] + newPhone[1] + newPhone[2];
             return finPhone;
@@ -240,7 +241,12 @@ namespace OJewelry.Controllers
             Company company = db.FindCompany(id);
             if (db.Collections.Where(col => col.CompanyId == id && col.Styles.Count() != 0).Count() != 0)
             {
-                ModelState.AddModelError("Company", company.Name + " has at least one collection that is not empty.");
+                ModelState.AddModelError("Company", company.Name + " has at least one Collection that is not empty.");
+                return View(company);
+            }
+            if (db.JewelryTypes.Where(jt => jt.CompanyId == id).Count() != 0)
+            {
+                ModelState.AddModelError("Company", company.Name + " has at least one Jewelry Type that is not empty.");
                 return View(company);
             }
             // Remove collections, locations, clients, components
