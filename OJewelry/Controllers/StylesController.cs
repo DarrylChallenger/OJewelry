@@ -557,7 +557,8 @@ namespace OJewelry.Controllers
                     db.SaveChanges();
                     if (svm.SVMOp != SVMOperation.Print)
                     {
-                        return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
+                        //return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
+                        // fall through to reopen the cost sheet view
                     } else
                     {
                         return Print(svm.Style.Id);

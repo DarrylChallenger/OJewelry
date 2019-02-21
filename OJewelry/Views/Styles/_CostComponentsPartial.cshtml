@@ -413,66 +413,73 @@ COST:
             OJewelry.Models.LaborComponent c = Model.Labors[i];
             <div class="LaborsState">@Html.HiddenFor(model => model.Labors[i].SVMState)</div>
             var bHideRow = (Model.Labors[i].SVMState == SVMStateEnum.Unadded || Model.Labors[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
-            <div id="LaborsRow_@i" class="LaborsRow @bHideRow">
-                <div class="row ltbordered">
-                    @{Model.CCLastRow = false;
-                        Model.CCHeaderRow = false;
-                        Model.CCRowIndex = i;}
-                    @if (i == Model.Labors.Count - 1 && Model.Stones.Count == 0)
-                    {
-                        Model.CCLastRow = true;
-                        if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
-                    }
-                    else
-                    {
-                        boxbot = "";
-                    }
-                    @Html.HiddenFor(model => model.Labors[i].Id)
-                    @Html.Partial("_CostComponentCol1", Model)
+           <div id="LaborsRow_@i" class="LaborsRow @bHideRow">
+               <div class="row ltbordered">
+                   @{Model.CCLastRow = false;
+                       Model.CCHeaderRow = false;
+                       Model.CCRowIndex = i;}
+                   @if (i == Model.Labors.Count - 1 && Model.Stones.Count == 0)
+                   {
+                       Model.CCLastRow = true;
+                       if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
+                   }
+                   else
+                   {
+                       boxbot = "";
+                   }
+                   @Html.HiddenFor(model => model.Labors[i].Id)
+                   @Html.Partial("_CostComponentCol1", Model)
 
-                    @if (Model.SVMOp != SVMOperation.Print)
-                    {
-                        bool bDisabled = (Model.Labors[i].SVMState == SVMStateEnum.Fixed && Model.Labors[i].Name == StyleViewModel.FinishingLaborName);
-                        @Html.HiddenFor(model => model.Labors[i].Name)
-                        @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "locked col-sm-3 col-xs-3 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
-                        @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3" } })
-                        @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        if (bDisabled)
-                        {
-                            @Html.HiddenFor(model => model.Labors[i].PPP, new { @class = "finishingPPP" })
-                            @Html.HiddenFor(model => model.Labors[i].Qty, new { @class = "finishingQty" })
-                            @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 finishingPPP", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                            @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1 finishingQty", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                        }
-                        else
-                        {
-                            @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                            @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                        }
-                    }
-                    else
-                    {
-                        <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.Labors[i].Name</div>
-                        <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.Labors[i].Desc&nbsp;</div>
-                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPH.Value.ToString("F02")</div>
-                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPP.Value.ToString("F02")</div>
-                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].Qty</div>
-                    }
-                    @if (Model.SVMOp != SVMOperation.Print)
-                    {
-                        <div id="LaborsRowTotalValue_@i" class="col-sm-1 col-xs-1 LaborsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
-                        <div class="col-sm-1 col-xs-1">
-                            @if (Model.Labors[i].SVMState != SVMStateEnum.Fixed)
-                            {
-                                @Html.Partial("_CostComponentLastCol", Model)
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div id="LaborsRowTotalValue_@i" class="@boxme @boxbot ssdata  @boxright col-sm-2 col-xs-2 LaborsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
-                    }
-                </div>
+                   @if (Model.SVMOp != SVMOperation.Print)
+                   {
+                       bool bDisabled = (Model.Labors[i].SVMState == SVMStateEnum.Fixed && Model.Labors[i].Name == StyleViewModel.FinishingLaborName);
+                       if (bDisabled)
+                       {
+                           @Html.HiddenFor(model => model.Labors[i].Name)
+                           @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "locked col-sm-3 col-xs-3 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
+                       }
+                       else
+                       {
+                           @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3 requiredifnotremoved", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
+                       }
+                       @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3" } })
+                       @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                       if (bDisabled)
+                       {
+                           @Html.HiddenFor(model => model.Labors[i].PPP, new { @class = "finishingPPP" })
+                           @Html.HiddenFor(model => model.Labors[i].Qty, new { @class = "finishingQty" })
+                           @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 finishingPPP", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                           @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1 finishingQty", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                       }
+                       else
+                       {
+                           @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                           @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                       }
+                   }
+                   else
+                   {
+                       <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.Labors[i].Name</div>
+                       <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.Labors[i].Desc&nbsp;</div>
+                       <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPH.Value.ToString("F02")</div>
+                       <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPP.Value.ToString("F02")</div>
+                       <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].Qty</div>
+                   }
+                   @if (Model.SVMOp != SVMOperation.Print)
+                   {
+                       <div id="LaborsRowTotalValue_@i" class="col-sm-1 col-xs-1 LaborsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
+                       <div class="col-sm-1 col-xs-1">
+                           @if (Model.Labors[i].SVMState != SVMStateEnum.Fixed)
+                           {
+                               @Html.Partial("_CostComponentLastCol", Model)
+                           }
+                       </div>
+                   }
+                   else
+                   {
+                       <div id="LaborsRowTotalValue_@i" class="@boxme @boxbot ssdata  @boxright col-sm-2 col-xs-2 LaborsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
+                   }
+               </div>
                 @if (Model.SVMOp != SVMOperation.Print)
                 {
                     <div class="row">
