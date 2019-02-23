@@ -695,6 +695,8 @@ $(function () { //
     CalcSubtotals("Miscs");
     CalcTotals();
 
+    $(".LaborsState :first-child[value]").each(function (i, e) { console.log(`i: ${i} State: ${$(e).val()}`); });
+    console.log($(".LaborState"));
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
         //console.log(`validating ${elementId}`);

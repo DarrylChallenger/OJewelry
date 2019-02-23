@@ -306,8 +306,8 @@ namespace OJewelry.Controllers
                                 sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id)
                                     .SingleOrDefault();
                                 casting = db.Castings.Find(c.Id);
-                                db.StyleCastings.Remove(sc);
                                 db.Castings.Remove(casting);
+                                db.StyleCastings.Remove(sc);
                                 break;
                             case SVMStateEnum.Dirty:
                             case SVMStateEnum.Fixed:
@@ -368,6 +368,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 ss = db.StyleStones.Where(x => x.Id == sc.linkId).SingleOrDefault();
+                                db.Stones.Remove(ss.Stone);
                                 db.StyleStones.Remove(ss);
                                 break;
                             case SVMStateEnum.Dirty:
@@ -420,6 +421,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 fc = db.StyleFindings.Where(x => x.Id == c.linkId).SingleOrDefault();
+                                db.Findings.Remove(fc.Finding);
                                 db.StyleFindings.Remove(fc);
                                 break;
                             case SVMStateEnum.Dirty:
@@ -465,7 +467,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
-                                db.StyleLabors.Remove(sl);
+                                RemoveLabor(sl);
                                 break;
                             case SVMStateEnum.Dirty:
                             case SVMStateEnum.Fixed:
@@ -515,7 +517,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
-                                db.StyleMiscs.Remove(sm);
+                                RemoveMisc(sm);
                                 break;
                             case SVMStateEnum.Dirty:
                             case SVMStateEnum.Fixed:
@@ -557,9 +559,10 @@ namespace OJewelry.Controllers
                     db.SaveChanges();
                     if (svm.SVMOp != SVMOperation.Print)
                     {
-                        //return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
-                        // fall through to reopen the cost sheet view
-                    } else
+                        // Redurect to Edit
+                        return RedirectToAction("Edit", new { id = svm.Style.Id });
+                    }
+                    else
                     {
                         return Print(svm.Style.Id);
                     }
@@ -909,6 +912,12 @@ namespace OJewelry.Controllers
             db.StyleLabors.Add(sl);
         }
 
+        void RemoveLabor(StyleLabor sl)
+        {
+            db.Labors.Remove(sl.Labor);
+            db.StyleLabors.Remove(sl);
+        }
+
         void AddMisc(MiscComponent m, StyleViewModel svm, int keyVal)
         {
             Misc misc = new Misc(m);
@@ -918,6 +927,11 @@ namespace OJewelry.Controllers
             db.StyleMiscs.Add(sm);
         }
 
+        void RemoveMisc(StyleMisc sm)
+        {
+            db.Miscs.Remove(sm.Misc);
+            db.StyleMiscs.Remove(sm);
+        }
         private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm, bool bCopy = false)
         {
             if (svm.Style.Image == null && svm.PostedImageFile == null)

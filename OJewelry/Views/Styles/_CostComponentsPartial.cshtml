@@ -58,11 +58,15 @@ COST:
                         @if (i == Model.Castings.Count - 1)
                         {
                             Model.CCLastRow = true;
-                            if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
                         }
-                        else
-                        {
-                            boxbot = "";
+                        @{
+                            CastingComponent cc = Model.Castings.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                            if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Castings[i].Id == cc.Id))
+                            {
+                                boxbot = "boxbot";
+                            } else {
+                                boxbot = "";
+                            }
                         }
                         @Html.HiddenFor(model => model.Castings[i].Id)
                         @Html.Partial("_CostComponentCol1", Model)
@@ -164,11 +168,15 @@ COST:
                     @if (i == Model.Stones.Count - 1)
                     {
                         Model.CCLastRow = true;
-                        if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
                     }
-                    else
-                    {
-                        boxbot = "";
+                    @{
+                        StoneComponent cc = Model.Stones.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                        if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Stones[i].Id == cc.Id))
+                        {
+                            boxbot = "boxbot";
+                        } else {
+                            boxbot = "";
+                        }
                     }
                     @Html.HiddenFor(model => model.Stones[i].Id)
                     @Html.HiddenFor(model => model.Stones[i].linkId)
@@ -243,7 +251,8 @@ COST:
                         <div class="col-sm-1 col-xs-1">
                             @Html.Partial("_CostComponentLastCol", Model)
                         </div>
-                    } else
+                    }
+                    else
                     {
                         <div id="StonesRowTotalValue_@i" class="@boxme @boxbot ssdata @boxright col-sm-2 col-xs-2 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
                     }
@@ -309,12 +318,16 @@ COST:
                         Model.CCRowIndex = i;}
                     @if (i == Model.Findings.Count - 1)
                     {
-                        if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
-                    }
-                    else
-                    {
-                        boxbot = "";
                         Model.CCLastRow = true;
+                    }
+                    @{
+                        FindingsComponent cc = Model.Findings.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                        if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Findings[i].Id == cc.Id))
+                        {
+                            boxbot = "boxbot";
+                        } else {
+                            boxbot = "";
+                        }
                     }
                     @Html.HiddenFor(model => model.Findings[i].linkId)
                     @Html.Partial("_CostComponentCol1", Model)
@@ -415,17 +428,22 @@ COST:
             var bHideRow = (Model.Labors[i].SVMState == SVMStateEnum.Unadded || Model.Labors[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
            <div id="LaborsRow_@i" class="LaborsRow @bHideRow">
                <div class="row ltbordered">
-                   @{Model.CCLastRow = false;
+                    @{Model.CCLastRow = false;
                        Model.CCHeaderRow = false;
-                       Model.CCRowIndex = i;}
+                       Model.CCRowIndex = i;
+                    }
                    @if (i == Model.Labors.Count - 1 && Model.Stones.Count == 0)
                    {
                        Model.CCLastRow = true;
-                       if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
                    }
-                   else
-                   {
-                       boxbot = "";
+                   @{
+                       LaborComponent cc = Model.Labors.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                       if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Labors[i].Id == cc.Id))
+                       {
+                           boxbot = "boxbot";
+                       } else {
+                           boxbot = "";
+                       }
                    }
                    @Html.HiddenFor(model => model.Labors[i].Id)
                    @Html.Partial("_CostComponentCol1", Model)
@@ -511,11 +529,17 @@ COST:
             @if (j == Model.Stones.Count - 1)
             {
                 Model.CCLastRow = false;
-                if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
             }
-            else
-            {
-                boxbot = "";
+            @{
+                StoneComponent cc = Model.Stones.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Stones[j].Id == cc.Id))
+                {
+                    boxbot = "boxbot";
+                }
+                else
+                {
+                    boxbot = "";
+                }
             }
             @Html.Partial("_CostComponentCol1", Model)
 
@@ -592,16 +616,20 @@ COST:
                 <div class="row ltbordered">
                     @{Model.CCLastRow = false;
                         Model.CCHeaderRow = false;
-                        Model.CCRowIndex = i;}
+                        Model.CCRowIndex = i;
+                        }
                     @if (i == Model.Miscs.Count - 1)
                     {
                         Model.CCLastRow = true;
-                        Model.CCRowIndex = i;
-                        if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
                     }
-                    else
-                    {
-                        boxbot = "";
+                    @{
+                        MiscComponent cc = Model.Miscs.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                        if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Miscs[i].Id == cc.Id))
+                        {
+                            boxbot = "boxbot";
+                        } else {
+                            boxbot = "";
+                        }
                     }
                     @Html.HiddenFor(model => model.Miscs[i].Id)
                     @Html.Partial("_CostComponentCol1", Model)

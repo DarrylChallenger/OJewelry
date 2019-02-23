@@ -1135,7 +1135,7 @@ namespace OJewelry.Models
                     Labor lb = db.Labors.Find(sl.LaborId); 
                     LaborComponent liscm = new LaborComponent(lb);
                     liscm.Qty = sl.Labor.Qty ?? 0;
-                    liscm.PPP = Style.JewelryType.FinishingCost;
+                    //liscm.PPP = Style.JewelryType.FinishingCost;
                     t = liscm.PPH ?? 0;
                     t2 = liscm.PPP ?? 0;
                     liscm.Total = liscm.Qty.Value * (t + t2);
@@ -1149,7 +1149,7 @@ namespace OJewelry.Models
                     Misc misc = db.Miscs.Find(sms.MiscId); 
                     MiscComponent miscm = new MiscComponent(misc);
                     miscm.Qty = sms.Misc.Qty ?? 0;
-                    miscm.PPP = Style.JewelryType.PackagingCost;
+                    //miscm.PPP = Style.JewelryType.PackagingCost;
                     t = miscm.PPP;
                     miscm.Total = miscm.Qty.Value * t;
                     MiscsTotal += miscm.Total;
