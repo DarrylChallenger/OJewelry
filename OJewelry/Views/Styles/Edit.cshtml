@@ -28,9 +28,9 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
-                <input type="submit" value="Print" formaction="../Print/@Model.Style.Id" class="btn" formtarget="_blank" />
-                <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn" />
-                <input type="submit" value="Delete" formaction="../Delete/@Model.Style.Id" class="btn" />
+                <input type="submit" value="Print" formaction="../Print/@Model.Style.Id" class="btn btn-default" formtarget="_blank" />
+                <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn btn-default" />
+                @Html.ActionLink("Delete", "Delete", new {  id = Model.Style.Id }, new { @class="btn btn-default"})
             </div>
         </div>
     </div>
