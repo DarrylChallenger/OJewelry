@@ -98,7 +98,9 @@ namespace OJewelry.Controllers
                 Name = StyleViewModel.FinishingLaborName,
                 SVMState = SVMStateEnum.Fixed,
                 PPP = flPrice,
-                Qty = 1
+                Qty = 1,
+                Total = flPrice
+                
             };
             svm.Labors.Add(lc);
             MiscComponent mc = new MiscComponent
@@ -107,7 +109,8 @@ namespace OJewelry.Controllers
                 Name = StyleViewModel.PackagingName,
                 SVMState = SVMStateEnum.Fixed,
                 PPP = packPrice,
-                Qty = 1
+                Qty = 1,
+                Total = packPrice
             };
             svm.Miscs.Add(mc);
         }
