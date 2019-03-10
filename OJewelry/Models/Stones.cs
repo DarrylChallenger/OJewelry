@@ -47,6 +47,9 @@
 
         public int Qty { get; set; }
 
+        [StringLength(2048)]
+        public string Note { get; set; }
+
         public virtual Company Company { get; set; }
 
         public virtual Vendor Vendor { get; set; }

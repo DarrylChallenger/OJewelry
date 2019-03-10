@@ -66,7 +66,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight")] Finding finding)
+        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight,Note")] Finding finding)
         {
             if (ModelState.IsValid)
             {
@@ -103,7 +103,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight")] Finding finding)
+        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight,Note")] Finding finding)
         {
             if (ModelState.IsValid)
             {
@@ -138,7 +138,7 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Finding finding = db.Findings.Find(id);
-            int companyId = finding.Id;
+            int companyId = finding.CompanyId.Value;
             db.Findings.Remove(finding);
             db.SaveChanges();
             return RedirectToAction("Index", new { companyId = companyId });

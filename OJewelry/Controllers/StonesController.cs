@@ -72,7 +72,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,CtWt,StoneSize,ShapeId,Price,SettingCost,Qty")] Stone stone)
+        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,CtWt,StoneSize,ShapeId,Price,SettingCost,Qty,Note")] Stone stone)
         {
             if (ModelState.IsValid)
             {
@@ -111,7 +111,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,Qty,SettingCost,Qty")] Stone stone)
+        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,Qty,SettingCost,Qty,Note")] Stone stone)
         {
             if (ModelState.IsValid)
             {

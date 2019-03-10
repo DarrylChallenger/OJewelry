@@ -475,6 +475,10 @@
     <Compile Include="Migrations\201902090121049_v1.5AddEmailToCompany.Designer.cs">
       <DependentUpon>201902090121049_v1.5AddEmailToCompany.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903102123323_v1.6AddNotesToFindingsAndStones.cs" />
+    <Compile Include="Migrations\201903102123323_v1.6AddNotesToFindingsAndStones.Designer.cs">
+      <DependentUpon>201903102123323_v1.6AddNotesToFindingsAndStones.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -851,6 +855,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902090121049_v1.5AddEmailToCompany.resx">
       <DependentUpon>201902090121049_v1.5AddEmailToCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903102123323_v1.6AddNotesToFindingsAndStones.resx">
+      <DependentUpon>201903102123323_v1.6AddNotesToFindingsAndStones.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
