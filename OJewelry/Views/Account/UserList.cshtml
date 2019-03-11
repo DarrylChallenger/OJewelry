@@ -21,17 +21,17 @@
         <hr />
         @foreach (ApplicationUser u in Model.Users)
         {
-            <div class="form-group row ">
-                <div class="col-md-3">
-                    @Html.DisplayFor(model => u.UserName)
-                </div>
-                <div class="col-md-3">
-                    @Html.DisplayFor(model => u.Email)
-                </div>
-
-                @Html.ActionLink("Edit", "ManagerEditUser", new { userId = u.Id }) |
-                @Html.ActionLink("Reset Password", "ResetPassword", new { userId = u.Id })
+        <div class="form-group row ">
+            <div class="col-md-3">
+                @Html.DisplayFor(model => u.UserName)
             </div>
+            <div class="col-md-3">
+                @Html.DisplayFor(model => u.Email)
+            </div>
+
+            @Html.ActionLink("Edit", "ManagerEditUser", new { userId = u.Id }) |
+            @Html.ActionLink("Admin Reset Password", "AdminResetPassword", new { userId = u.Id })
+        </div>
         }
     </div>
 }

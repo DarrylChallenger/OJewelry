@@ -701,6 +701,7 @@
     <Content Include="Views\AssemblyCosts\Edit.cshtml" />
     <Content Include="Views\AssemblyCosts\Index.cshtml" />
     <Content Include="Views\Shared\_CompanyNavPartial.cshtml" />
+    <Content Include="Views\Account\AdminResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

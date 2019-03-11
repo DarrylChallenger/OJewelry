@@ -138,7 +138,7 @@ namespace OJewelry.Controllers
         }
 
         // GET: /Account/Register
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Register()
         {
             RegisterViewModel rvm = new RegisterViewModel();
@@ -214,7 +214,7 @@ namespace OJewelry.Controllers
             string currUserId = User.Identity.GetUserId();
             if (UserManager.IsInRole(currUserId, "Admin") == true)
             {
-                return RedirectToAction("EditUser", new { UserId = UserId});
+                return RedirectToAction("EditUser", new { UserId = UserId });
             }
             EditUserViewModel evm = new EditUserViewModel();
             if (UserManager.IsInRole(UserId, "Guest") == true)
@@ -359,7 +359,7 @@ namespace OJewelry.Controllers
         {
             IdentityRole ir = sec.Roles.Find(roleId);
             // user.Roles.Clear(); // ensure user only has one role
-            foreach(IdentityRole r in sec.Roles)
+            foreach (IdentityRole r in sec.Roles)
             {
                 UserManager.RemoveFromRole(user.Id, r.Name);
             }
@@ -380,6 +380,44 @@ namespace OJewelry.Controllers
         public ActionResult UserList(string UserId)
         {
             return RedirectToAction("EditUser", UserId);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public ActionResult AdminResetPassword(string userId)
+        {
+            ApplicationUser user = UserManager.FindById(userId);
+            AdminResetPasswordModel arp = new AdminResetPasswordModel() {
+                userId = userId,
+                UserName = user.UserName
+            };
+            return View(arp);
+        }
+
+        [Authorize(Roles ="Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AdminResetPassword(AdminResetPasswordModel arp)
+        {
+
+            if (await UserManager.PasswordValidator.ValidateAsync(arp.newPassword) == IdentityResult.Success)
+            {
+                var user = new ApplicationUser();
+                if (UserManager.RemovePassword(arp.userId) == IdentityResult.Success)
+                {
+                    UserManager.AddPassword(arp.userId, arp.newPassword);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error restting password");
+                    return View(arp);
+                }
+            } else
+            {
+                ModelState.AddModelError("", "Invalid password");
+                return View(arp);
+            }
+            return RedirectToAction("UserList");
         }
 
         //

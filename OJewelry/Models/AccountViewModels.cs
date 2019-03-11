@@ -170,4 +170,20 @@ namespace OJewelry.Models
         public int CompanyId { get; set; }
         public string CompanyName { get; set; }
     }
+
+    [NotMapped]
+    public class AdminResetPasswordModel
+    {
+        [Display(Name ="User Id")]
+        public string userId { get; set; }
+
+        [Display(Name ="User Name")]
+        public string UserName { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name ="New Password")]
+        public string newPassword { get; set; }
+    }
 }
