@@ -381,7 +381,23 @@ namespace OJewelry.Controllers
                 BlipFill blipFill = new BlipFill();
                 DocumentFormat.OpenXml.Drawing.Blip blip = new DocumentFormat.OpenXml.Drawing.Blip();
                 blip.Embed = dp.GetIdOfPart(imagePart);
-                blip.CompressionState = DocumentFormat.OpenXml.Drawing.BlipCompressionValues.Print;
+                blip.CompressionState = DocumentFormat.OpenXml.Drawing.BlipCompressionValues.Email;
+                /*
+                    string outerXml = 
+                        "<a:ext uri=\"{28A0092B-C50C-407E-A947-70E740481C1C}\">" + 
+                        "<a14:useLocalDpi xmlns:a14 = \"http://schemas.microsoft.com/office/drawing/2010/main\"/>" +
+                        "</a:ext> ";
+
+                    string outerXml = "uri=\"{28A0092B-C50C-407E-A947-70E740481C1C}\">";
+                */
+                A14.UseLocalDpi localDpi = new A14.UseLocalDpi();
+                ExtensionList extLst = new ExtensionList();
+                Extension extsn = new Extension(localDpi);
+                extsn.Uri = "{28A0092B-C50C-407E-A947-70E740481C1C}";
+                extLst.Append(extsn);
+                blip.Append(extLst);
+
+                blip.Append();
                 blipFill.Blip = blip;
                 blipFill.SourceRectangle = new DocumentFormat.OpenXml.Drawing.SourceRectangle();
                 blipFill.Append(stretch);

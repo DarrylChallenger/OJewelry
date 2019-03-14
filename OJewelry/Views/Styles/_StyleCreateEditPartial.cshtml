@@ -77,9 +77,9 @@
             <!-- style right header-->
             @Html.HiddenFor((model => model.Style.Image))
             @{var imgurl = (Model.Style != null && Model.Style.Image != null) ? Model.Style.Image : "/Images/logo.png"; }
-            <img src="@imgurl" class="StyleImage centerImage" />
+            <img src="@imgurl" class="StyleImage centerImage bor" />
             @*<input class="StyleLoadBtn " type="file"  />*@
-            @Html.TextBoxFor(model => model.PostedImageFile, new { @class = "StyleLoadBtn", type = "file" })
+            @Html.TextBoxFor(model => model.PostedImageFile, new { @class = "StyleLoadBtn bordered", type = "file" })
 
         </div> <!-- style right header-->
 
