@@ -439,6 +439,46 @@
     <Compile Include="Migrations\201810050152429_v1.4AddForeignKeyPresenterToCompany.Designer.cs">
       <DependentUpon>201810050152429_v1.4AddForeignKeyPresenterToCompany.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201812082216599_v1.5AddStoneSettingCostToStons.cs" />
+    <Compile Include="Migrations\201812082216599_v1.5AddStoneSettingCostToStons.Designer.cs">
+      <DependentUpon>201812082216599_v1.5AddStoneSettingCostToStons.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812101314310_v1.5RemoveAssemlyCosts.cs" />
+    <Compile Include="Migrations\201812101314310_v1.5RemoveAssemlyCosts.Designer.cs">
+      <DependentUpon>201812101314310_v1.5RemoveAssemlyCosts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812101438083_v1.5HideAssemblyCostClass.cs" />
+    <Compile Include="Migrations\201812101438083_v1.5HideAssemblyCostClass.Designer.cs">
+      <DependentUpon>201812101438083_v1.5HideAssemblyCostClass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812101705564_v1.5AddCompanyIdTo-JT-Vend-SS-MC.cs" />
+    <Compile Include="Migrations\201812101705564_v1.5AddCompanyIdTo-JT-Vend-SS-MC.Designer.cs">
+      <DependentUpon>201812101705564_v1.5AddCompanyIdTo-JT-Vend-SS-MC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201812272348062_v1.5MakeChainLengthAString.cs" />
+    <Compile Include="Migrations\201812272348062_v1.5MakeChainLengthAString.Designer.cs">
+      <DependentUpon>201812272348062_v1.5MakeChainLengthAString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901022108490_v.15AddDefaultStoneVendor.cs" />
+    <Compile Include="Migrations\201901022108490_v.15AddDefaultStoneVendor.Designer.cs">
+      <DependentUpon>201901022108490_v.15AddDefaultStoneVendor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901031736294_v1.5MakeVendorNameNullable.cs" />
+    <Compile Include="Migrations\201901031736294_v1.5MakeVendorNameNullable.Designer.cs">
+      <DependentUpon>201901031736294_v1.5MakeVendorNameNullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901061357118_v1.5IssuesFromJan5Meeting-Iter4.cs" />
+    <Compile Include="Migrations\201901061357118_v1.5IssuesFromJan5Meeting-Iter4.Designer.cs">
+      <DependentUpon>201901061357118_v1.5IssuesFromJan5Meeting-Iter4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902090121049_v1.5AddEmailToCompany.cs" />
+    <Compile Include="Migrations\201902090121049_v1.5AddEmailToCompany.Designer.cs">
+      <DependentUpon>201902090121049_v1.5AddEmailToCompany.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903102123323_v1.6AddNotesToFindingsAndStones.cs" />
+    <Compile Include="Migrations\201903102123323_v1.6AddNotesToFindingsAndStones.Designer.cs">
+      <DependentUpon>201903102123323_v1.6AddNotesToFindingsAndStones.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -526,6 +566,7 @@
     <None Include="Properties\PublishProfiles\OldOJewelryProd - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CreateEditComponents.js" />
+    <Content Include="Scripts\FormatPhone.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -659,6 +700,8 @@
     <Content Include="Views\AssemblyCosts\Details.cshtml" />
     <Content Include="Views\AssemblyCosts\Edit.cshtml" />
     <Content Include="Views\AssemblyCosts\Index.cshtml" />
+    <Content Include="Views\Shared\_CompanyNavPartial.cshtml" />
+    <Content Include="Views\Account\AdminResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -786,6 +829,36 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201810050152429_v1.4AddForeignKeyPresenterToCompany.resx">
       <DependentUpon>201810050152429_v1.4AddForeignKeyPresenterToCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812082216599_v1.5AddStoneSettingCostToStons.resx">
+      <DependentUpon>201812082216599_v1.5AddStoneSettingCostToStons.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812101314310_v1.5RemoveAssemlyCosts.resx">
+      <DependentUpon>201812101314310_v1.5RemoveAssemlyCosts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812101438083_v1.5HideAssemblyCostClass.resx">
+      <DependentUpon>201812101438083_v1.5HideAssemblyCostClass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812101705564_v1.5AddCompanyIdTo-JT-Vend-SS-MC.resx">
+      <DependentUpon>201812101705564_v1.5AddCompanyIdTo-JT-Vend-SS-MC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201812272348062_v1.5MakeChainLengthAString.resx">
+      <DependentUpon>201812272348062_v1.5MakeChainLengthAString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901022108490_v.15AddDefaultStoneVendor.resx">
+      <DependentUpon>201901022108490_v.15AddDefaultStoneVendor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901031736294_v1.5MakeVendorNameNullable.resx">
+      <DependentUpon>201901031736294_v1.5MakeVendorNameNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901061357118_v1.5IssuesFromJan5Meeting-Iter4.resx">
+      <DependentUpon>201901061357118_v1.5IssuesFromJan5Meeting-Iter4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902090121049_v1.5AddEmailToCompany.resx">
+      <DependentUpon>201902090121049_v1.5AddEmailToCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903102123323_v1.6AddNotesToFindingsAndStones.resx">
+      <DependentUpon>201903102123323_v1.6AddNotesToFindingsAndStones.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

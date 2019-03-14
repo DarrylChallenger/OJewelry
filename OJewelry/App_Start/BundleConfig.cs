@@ -17,7 +17,7 @@ namespace OJewelry
 
                 bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                             "~/Scripts/jquery.validate.min.js",
-                            "~/Scripts/jquery.validate.min.unobtrusive.js"));
+                            "~/Scripts/jquery.validate.unobtrusive.min.js"));
 
                 bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                             "~/Scripts/bootstrap.min.js",

@@ -102,6 +102,11 @@ namespace OJewelry.Models
         [Display(Name = "Website")]
         public string Website { get; set; }
 
+        [Display(Name = "Email")]
+        [DataType(DataType.EmailAddress)]
+        [StringLength(150)]
+        public String Email { get; set; }
+
         [DisplayName("Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
@@ -219,6 +224,17 @@ namespace OJewelry.Models
         [Display(Name = "Name")]
         [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
+
+        [Required]
+        [Display(Name = "Packaging Cost")]
+        [DataType(DataType.Currency)]
+        public decimal PackagingCost { get; set; }
+
+        [Required]
+        [Display(Name = "Finishing Cost")]
+        [DataType(DataType.Currency)]
+        public decimal FinishingCost { get; set; }
+
     }
 
     [MetadataType(typeof(LedgerMetaData))]  // Ledger
@@ -236,6 +252,27 @@ namespace OJewelry.Models
     public partial class MemoMetaData
     {
     }
+
+    [MetadataType(typeof(MetalCodeMetaData))]   // MetalCode
+    public partial class MetalCode
+    {
+    }
+    public partial class MetalCodeMetaData
+    {
+        public int Id { get; set; }
+
+        public string Code { get; set; }
+
+        public string Desc { get; set; }
+
+        [Required]
+        [DataType(DataType.Currency)]
+        public decimal Market { get; set; }
+
+        [Required]
+        public float Multiplier { get; set; }
+    }
+
 
     [MetadataType(typeof(PresenterMetaData))]   // Presenter
     public partial class Presenter
@@ -282,6 +319,10 @@ namespace OJewelry.Models
         [Required]
         [Display(Name = "Price")]
         public decimal Price { get; set; }
+
+        [Required]
+        [Display(Name = "Setting Cost")]
+        public decimal SettingCost { get; set; }
     }
 
 
@@ -306,7 +347,7 @@ namespace OJewelry.Models
         [Display(Name = "METAL WT")]
         public Nullable<decimal> MetalWeight { get; set; }
 
-        [Display(Name ="Note")]
+        [Display(Name ="NOTE")]
         public string MetalWtNote { get; set; }
 
         [Display(Name = "INTRO DATE")]
@@ -352,7 +393,7 @@ namespace OJewelry.Models
         [Display(Name ="Vendors")]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Name is required.")]
+        //[Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
 
         [DisplayName("Vendor Phone")]
@@ -364,6 +405,10 @@ namespace OJewelry.Models
         [Display(Name="Vendor Email")]
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
+
+        [Display(Name = "Notes")]
+        [StringLength(50)]
+        public string Type { get; set; }
     }
 
     /*

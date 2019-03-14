@@ -50,11 +50,11 @@ namespace OJewelry.Models
         [DataType(DataType.ImageUrl)]
         public string Image { get; set; }
 
-        public decimal? Width { get; set; }
+        public string Width { get; set; }
 
-        public decimal? Length { get; set; }
+        public string Length { get; set; }
 
-        public decimal? ChainLength { get; set; }
+        public string ChainLength { get; set; }
 
         public decimal? RetailPrice { get; set; }
 

@@ -28,12 +28,14 @@
 
 }
 
-<div>
-    @Html.ActionLink("Locations", "Index", new { @companyId = Model.Location.CompanyId })
-</div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies", null) |
+    @Html.Partial("_CompanyNavPartial", Model.Location.CompanyId)
+</p>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/RowManager.js")
     @Scripts.Render("~/Scripts/SetupContacts-Presenters.js")
+    @Scripts.Render("~/Scripts/FormatPhone.js")
 }

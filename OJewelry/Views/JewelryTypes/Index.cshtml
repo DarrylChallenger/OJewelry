@@ -4,36 +4,55 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Jewelry Types</h2>
+<h2>Jewelry Types for <i>@ViewBag.CompanyName</i></h2>
 
 <p>
     @{
         int? vbid = ViewBag.Id;
-        <text>@Html.ActionLink("Create New", "Create")</text>
+        <text>@Html.ActionLink("Create New Jewelry Type", "Create", new { @companyId = ViewBag.companyId })</text>
     }
-
 </p>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
+</p>
+
 <table class="table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PackagingCost)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FinishingCost)
+        </th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PackagingCost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FinishingCost)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>
-<div class="row">
-    <div class="col-sm-4">
-        @Html.ActionLink("Manage Companies", "Index", "Companies")
-    </div>
-</div>
+
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
+</p>

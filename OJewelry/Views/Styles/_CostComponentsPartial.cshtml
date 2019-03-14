@@ -5,437 +5,546 @@
 
 COST:
 <div id="vMsg"></div>
-<div class="styleCastings">
-    <!-- Castings -->
-    <div class="row StyleComponentsRowHeader">
-        @{Model.CCLastRow = false;
-            Model.CCHeaderRow = true;
-            Model.CCRowIndex = -1;
-            Model.SVMCCType = SVMCCTypeEnum.Castings;}
-        @if (Model.Castings.Count == 0)
+<div>
+    @{
+        var boxme = "";
+        var boxbot = "";
+        var boxright = "";
+        if (Model.SVMOp == SVMOperation.Print)
         {
-            Model.CCLastRow = true;
+            boxme = "boxme";
+            boxright = "boxright";
         }
-        @Html.Partial("_CostComponentCol1", Model)
-        <div class="col-sm-2 col-xs-2">METAL STYLE</div>
-        <div class="col-sm-1 col-xs-1">VENDOR</div>
-        <div class="col-sm-2 col-xs-2">WEIGHT</div>
-        <div class="col-sm-1 col-xs-1">METAL</div>
-        <div class="col-sm-1 col-xs-1">PRICE</div>
-        <div class="col-sm-1 col-xs-1">LABOR</div>
-        <div class="col-sm-1 col-xs-1">QTY</div>
-        <div class="col-sm-2 col-xs-2">TOTAL COST</div>
-    </div>
-    <div>
-        @for (int i = 0; i < Model.Castings.Count; i++) // where state != deleted
+    }
+    <div class="styleCastings">
+        <!-- Castings -->
+
+        <div class="row StyleComponentsRowHeader">
+            @{Model.CCLastRow = false;
+                Model.CCHeaderRow = true;
+                Model.CCRowIndex = -1;
+                Model.SVMCCType = SVMCCTypeEnum.Castings;}
+            @if (Model.Castings.Count == 0)
+            {
+                Model.CCLastRow = true;
+                if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
+            }
+            else
+            {
+                boxbot = "";
+            }
+            @Html.Partial("_CostComponentCol1", Model)
+            <div class="col-sm-2 col-xs-2">METAL STYLE</div>
+            <div class="col-sm-1 col-xs-1">VENDOR</div>
+            <div class="col-sm-2 col-xs-2">WEIGHT</div>
+            <div class="col-sm-1 col-xs-1">METAL</div>
+            <div class="col-sm-1 col-xs-1">PRICE</div>
+            <div class="col-sm-1 col-xs-1">LABOR</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class="col-sm-2 col-xs-2">TOTAL COST</div>
+        </div>
+        <div>
+            @for (int i = 0; i < Model.Castings.Count; i++) // where state != deleted
+            {
+                Model.i = i;
+                OJewelry.Models.CastingComponent c = Model.Castings[i];
+                <div class="CastingsState">@Html.HiddenFor(model => model.Castings[i].SVMState)</div>
+                var bHideRow = (Model.Castings[i].SVMState == SVMStateEnum.Unadded || Model.Castings[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+                <div id="CastingsRow_@i" class="CastingsRow @bHideRow">
+                    <div class="row ltbordered">
+                        @{Model.CCLastRow = false;
+                            Model.CCHeaderRow = false;
+                            Model.CCRowIndex = i;}
+                        @if (i == Model.Castings.Count - 1)
+                        {
+                            Model.CCLastRow = true;
+                        }
+                        @{
+                            CastingComponent cc = Model.Castings.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                            if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Castings[i].Id == cc.Id))
+                            {
+                                boxbot = "boxbot";
+                            } else {
+                                boxbot = "";
+                            }
+                        }
+                        @Html.HiddenFor(model => model.Castings[i].Id)
+                        @Html.Partial("_CostComponentCol1", Model)
+
+                        @if (Model.SVMOp != SVMOperation.Print)
+                        {
+                            @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Metal Style Name field is required.", @placeholder = "Name" } })
+                            @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-1 col-xs-1" })
+                            @Html.EditorFor(model => model.Castings[i].MetalWeight, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice(" + i + ")", @data_val = "true", @data_val_required = "The Weight field is required." } })
+                            @Html.DropDownListFor(model => model.Castings[i].MetalWtUnitId, Model.Castings[i].MetalWeightUnits, new { @class = "col-sm-1 col-xs-1", onchange = "CalcMetalPrice(" + i + ")" })
+                            @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1 col-xs-1", onchange = "CalcMetalPrice(" + i + ")" })
+                            @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                            @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                            @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice('" + i + "')" })
+                        }
+                        else
+                        {
+                            <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Castings[i].Name</div>
+                            <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Castings[i].VendorName</div>
+                            <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Castings[i].MetalWeight</div>
+                            var metalunit = @Model.Castings[i].MetalWeightUnits.Where(v => v.Value == Model.Castings[i].MetalWtUnitId.ToString()).FirstOrDefault()?.Text;
+                            <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@metalunit</div>
+                            <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Castings[i].MetalCode</div>
+                            <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Castings[i].Price.Value.ToString("F02")</div>
+                            <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Castings[i].Labor</div>
+                            <div class="@boxme @boxbot ssdata col-xs-1">@Model.Castings[i].Qty</div>
+                        }
+                        @if (Model.SVMOp != SVMOperation.Print)
+                        {
+                            <div id="CastingsRowTotalValue_@i" class="@boxme @boxbot ssdata @boxright col-sm-1 col-xs-1 CastingsRowTotal ">@Model.Castings[i].Total.ToString("F02")</div>
+                            <div class="col-sm-1 col-xs-1">
+                                @Html.Partial("_CostComponentLastCol", Model)
+                            </div>
+                        }
+                        else
+                        {
+                            <div id="CastingsRowTotalValue_@i" class="@boxme @boxbot ssdata @boxright col-sm-2 col-xs-2 CastingsRowTotal ">@Model.Castings[i].Total.ToString("F02")</div>
+                        }
+                    </div>
+                    @if (Model.SVMOp != SVMOperation.Print)
+                    {
+                        <div class="row">
+                            <!--Validations Here-->
+                            @Html.ValidationMessageFor(model => model.Castings[i].Name, "", new { @class = "text-danger" })
+                            @Html.ValidationMessageFor(model => model.Castings[i].MetalWeight, "", new { @class = "text-danger" })
+                            @Html.ValidationMessageFor(model => model.Castings[i].Price, "", new { @class = "text-danger" })
+                            @Html.ValidationMessageFor(model => model.Castings[i].Labor, "", new { @class = "text-danger" })
+                            @Html.ValidationMessageFor(model => model.Castings[i].Qty, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                </div>
+            }
+            <div id="CastingsBreak"></div>
+            <div id="CastingsTotal">
+                <div class="row StyleComponentsRowFooter">
+                    <div class="col-sm-1 col-xs-1"></div>
+                    <div class="col-sm-4 col-xs-4"><b>TOTAL METAL</b></div>
+                    <div class="col-sm-5 col-xs-5"></div>
+                    <div id="CastingsTotalValue" class="col-sm-2 col-xs-2">@Model.MetalsTotal.ToString("F02")</div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Castings-->
+
+    <div class="styleStones">
+        <div class="row StyleComponentsRowHeader">
+            @{Model.CCLastRow = false;
+                Model.CCHeaderRow = true;
+                Model.CCRowIndex = -1;
+                Model.SVMCCType = SVMCCTypeEnum.Stones;}
+            @if (Model.Stones.Count == 0)
+            {
+                Model.CCLastRow = true;
+                if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
+            } else {
+                boxbot = "";
+            }
+            @Html.Partial("_CostComponentCol1", Model)
+            <div class="col-sm-2 col-xs-2">STONES</div>
+            <div class="col-sm-1 col-xs-1">SHAPE</div>
+            <div class="col-sm-1 col-xs-1">SIZE</div>
+            <div class="col-sm-1 col-xs-1">CT</div>
+            <div class="col-sm-2 col-xs-2">VENDOR</div>
+            <div class="col-sm-1 col-xs-1">PRICE</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class=" col-sm-2 col-xs-2">TOTAL COST</div>
+        </div>
+        @for (int i = 0; i < Model.Stones.Count; i++)
         {
             Model.i = i;
-            OJewelry.Models.CastingComponent c = Model.Castings[i];
-            <div class="CastingsState">@Html.HiddenFor(model => model.Castings[i].SVMState)</div>
-            var bHideRow = (Model.Castings[i].SVMState == SVMStateEnum.Unadded || Model.Castings[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
-            <div id="CastingsRow_@i" class="CastingsRow @bHideRow">
+            OJewelry.Models.StoneComponent c = Model.Stones[i];
+            <div class="StonesState">@Html.HiddenFor(model => model.Stones[i].SVMState)</div>
+            var bHideRow = (Model.Stones[i].SVMState == SVMStateEnum.Unadded || Model.Stones[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+            <div id="StonesRow_@i" class="StonesRow @bHideRow">
                 <div class="row ltbordered">
                     @{Model.CCLastRow = false;
                         Model.CCHeaderRow = false;
                         Model.CCRowIndex = i;}
-                    @if (i == Model.Castings.Count - 1)
+                    @if (i == Model.Stones.Count - 1)
                     {
                         Model.CCLastRow = true;
                     }
-                    @Html.HiddenFor(model => model.Castings[i].Id)
+                    @{
+                        StoneComponent cc = Model.Stones.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                        if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Stones[i].Id == cc.Id))
+                        {
+                            boxbot = "boxbot";
+                        } else {
+                            boxbot = "";
+                        }
+                    }
+                    @Html.HiddenFor(model => model.Stones[i].Id)
+                    @Html.HiddenFor(model => model.Stones[i].linkId)
                     @Html.Partial("_CostComponentCol1", Model)
+                    @*<div class="col-sm-2 col-xs-2 ">@c.Name </div>*@
+                    @if (Model.SVMOp != SVMOperation.Print)
+                    {
+                        if (Model.Stones[i].Id == 0)
+                        {
+                            @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, "You must select a stone", new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone. ", onchange = "StoneChanged('" + i + "')" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone. ", onchange = "StoneChanged('" + i + "')" })
+                        }
+                    }
+                    else
+                    {
+                        <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Stones[i].Name</div>
+                    }
 
                     @if (Model.SVMOp != SVMOperation.Print)
                     {
-                        @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val="true", @data_val_required= "The Metal Style Name field is required.", @placeholder="Name" } })
-                        @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-1 col-xs-1" })
-                        @Html.EditorFor(model => model.Castings[i].MetalWeight, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice(" + i + ")", @data_val = "true", @data_val_required = "The Weight field is required." } })
-                        @Html.DropDownListFor(model => model.Castings[i].MetalWtUnitId, Model.Castings[i].MetalWeightUnits, new { @class = "col-sm-1 col-xs-1", onchange = "CalcMetalPrice(" + i + ")" })
-                        @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1 col-xs-1", onchange = "CalcMetalPrice(" + i + ")" })
-                        @Html.EditorFor(model => model.Castings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        @Html.EditorFor(model => model.Castings[i].Labor, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        @Html.TextBoxFor(model => model.Castings[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice('" + i + "')" })
+                        if (Model.Stones[i].ShapeId == 0)
+                        {
+                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone shape. ", onchange = "StoneChanged('" + i + "')" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone shape.", onchange = "StoneChanged('" + i + "')" })
+                        }
                     }
                     else
                     {
-                        <div class="col-sm-2 col-xs-2">@Model.Castings[i].Name</div>
-                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].VendorName</div>
-                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].MetalWeight</div>
-                        var q = @Model.Castings[i].MetalWeightUnits.Where(v => v.Value == Model.Castings[i].MetalWtUnitId.ToString()).FirstOrDefault()?.Text;
-                        <div class="col-sm-1 col-xs-1">@q</div>
-                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].MetalCode</div>
-                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].Price.Value.ToString("F02")</div>
-                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].Labor</div>
-                        <div class="col-sm-1 col-xs-1">@Model.Castings[i].Qty</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].ShId</div>
                     }
-                    <div id="CastingsRowTotalValue_@i" class="col-sm-1 col-xs-1 CastingsRowTotal ">@Model.Castings[i].Total.ToString("F02")</div>
-                    <div class="col-sm-1 col-xs-1">
-                        @Html.Partial("_CostComponentLastCol", Model)
-                    </div>
+
+                    @if (Model.SVMOp != SVMOperation.Print)
+                    {
+                        if (Model.Stones[i].Size == "")
+                        {
+                            @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, "You must select a size", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneChanged('" + i + "')" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneSizeChanged('" + i + "')" })
+                        }
+                    }
+                    else
+                    {
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].SzId</div>
+                    }
+
+                    @if (Model.SVMOp != SVMOperation.Print)
+                    {
+                        @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
+                        @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 locked", @disabled = "disabled" } })
+                        @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
+                        @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "StoneQtyChanged('" + i + "')" })
+                    }
+                    else
+                    {
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].CtWt&nbsp;</div>
+                        <div class="@boxme @boxbot ssdata ol-sm-2 col-xs-2">@Model.Stones[i].VendorName&nbsp;</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].Price.ToString("F02")</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].Qty</div>
+                    }
+
+                    @if (Model.SVMOp != SVMOperation.Print)
+                    {
+                        <div id="StonesRowTotalValue_@i" class="@boxme @boxbot ssdata @boxright col-sm-1 col-xs-1 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
+                        <div class="col-sm-1 col-xs-1">
+                            @Html.Partial("_CostComponentLastCol", Model)
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="StonesRowTotalValue_@i" class="@boxme @boxbot ssdata @boxright col-sm-2 col-xs-2 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
+                    }
                 </div>
                 @if (Model.SVMOp != SVMOperation.Print)
                 {
-                <div class="row">
-                    <!--Validations Here-->
-                    @Html.ValidationMessageFor(model => model.Castings[i].Name, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Castings[i].MetalWeight, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Castings[i].Price, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Castings[i].Labor, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Castings[i].Qty, "", new { @class = "text-danger" })
-                </div>
+                    <div class="row">
+                        @Html.ValidationMessageFor(model => model.Stones[i].Id, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Stones[i].Name, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Stones[i].ShId, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Stones[i].SzId, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Stones[i].Qty, "", new { @class = "text-danger" })
+                    </div>
                 }
             </div>
         }
-        <div id="CastingsBreak"></div>
-        <div id="CastingsTotal">
+        <div id="StonesBreak"></div>
+        <div id="StonesTotal">
             <div class="row StyleComponentsRowFooter">
                 <div class="col-sm-1 col-xs-1"></div>
-                <div class="col-sm-4 col-xs-4"><b>TOTAL METAL</b></div>
+                <div class="col-sm-4 col-xs-4"><b>TOTAL STONES</b></div>
                 <div class="col-sm-5 col-xs-5"></div>
-                <div id="CastingsTotalValue" class="col-sm-2 col-xs-2">@Model.MetalsTotal.ToString("F02")</div>
+                <div id="StonesTotalValue" class="col-sm-2 col-xs-2">@Model.StonesTotal.ToString("F02")</div>
             </div>
         </div>
-    </div>
-</div> <!-- Castings-->
+    </div> <!--Stones-->
 
-<div class="styleStones">
-    <div class="row StyleComponentsRowHeader">
-        @{Model.CCLastRow = false;
-            Model.CCHeaderRow = true;
-            Model.CCRowIndex = -1;
-            Model.SVMCCType = SVMCCTypeEnum.Stones;}
-        @if (Model.Stones.Count == 0)
-        {
-            Model.CCLastRow = true;
-        }
-        @Html.Partial("_CostComponentCol1", Model)
-        <div class="col-sm-2 col-xs-2">STONES</div>
-        <div class="col-sm-1 col-xs-1">SHAPE</div>
-        <div class="col-sm-1 col-xs-1">SIZE</div>
-        <div class="col-sm-1 col-xs-1">CT</div>
-        <div class="col-sm-2 col-xs-2">VENDOR</div>
-        <div class="col-sm-1 col-xs-1">PRICE</div>
-        <div class="col-sm-1 col-xs-1">QTY</div>
-        <div class="col-sm-2 col-xs-2">TOTAL COST</div>
-    </div>
-    @for (int i = 0; i < Model.Stones.Count; i++)
-    {
-        Model.i = i;
-        OJewelry.Models.StoneComponent c = Model.Stones[i];
-        <div class="StonesState">@Html.HiddenFor(model => model.Stones[i].SVMState)</div>
-        var bHideRow = (Model.Stones[i].SVMState == SVMStateEnum.Unadded || Model.Stones[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
-        <div id="StonesRow_@i" class="StonesRow @bHideRow">
-            <div class="row ltbordered">
-                @{Model.CCLastRow = false;
-                    Model.CCHeaderRow = false;
-                    Model.CCRowIndex = i;}
-                @if (i == Model.Stones.Count - 1)
-                {
-                    Model.CCLastRow = true;
-                }
-                @Html.HiddenFor(model => model.Stones[i].Id)
-                @Html.HiddenFor(model => model.Stones[i].linkId)
-                @Html.Partial("_CostComponentCol1", Model)
-                @*<div class="col-sm-2 col-xs-2 ">@c.Name </div>*@
-                @if (Model.SVMOp != SVMOperation.Print)
-                {
-                    if (Model.Stones[i].Id == 0)
-                    {
-                        @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, "You must select a stone", new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone. ", onchange = "StoneChanged('" + i + "')" })
-                    }
-                    else
-                    {
-                        @Html.DropDownListFor(model => model.Stones[i].Name, Model.Stones[i].StoneList, new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone. ", onchange = "StoneChanged('" + i + "')" })
-                    }
-                }
-                else
-                {
-                    <div class="col-sm-2 col-xs-2">@Model.Stones[i].Name</div>
-                }
-
-                @if (Model.SVMOp != SVMOperation.Print)
-                {
-                    if (Model.Stones[i].ShapeId == 0)
-                    {
-                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone shape. ", onchange = "StoneChanged('" + i + "')" })
-                    }
-                    else
-                    {
-                        @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone shape.", onchange = "StoneChanged('" + i + "')" })
-                    }
-                }
-                else
-                {
-                    <div class="col-sm-1 col-xs-1">@Model.Stones[i].ShId</div>
-                }
-
-                @if (Model.SVMOp != SVMOperation.Print)
-                {
-                    if (Model.Stones[i].Size == "")
-                    {
-                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, "You must select a size", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneChanged('" + i + "')" })
-                    }
-                    else
-                    {
-                        @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneSizeChanged('" + i + "')" })
-                    }
-                }
-                else
-                {
-                    <div class="col-sm-1 col-xs-1">@Model.Stones[i].SzId</div>
-                }
-
-                @if (Model.SVMOp != SVMOperation.Print)
-                {
-                    @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
-                    @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 locked", @disabled = "disabled" } })
-                    @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
-                    @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "StoneQtyChanged('" +  i + "')" })
-                }
-                else
-                {
-                    <div class="col-sm-1 col-xs-1">@Model.Stones[i].CtWt</div>
-                    <div class="col-sm-2 col-xs-2">@Model.Stones[i].VendorName</div>
-                    <div class="col-sm-1 col-xs-1">@Model.Stones[i].Price.ToString("F02")</div>
-                    <div class="col-sm-1 col-xs-1">@Model.Stones[i].Qty</div>
-                }
-
-                <div id="StonesRowTotalValue_@i" class="col-sm-1 col-xs-1 StonesRowTotal ">@Model.Stones[i].Total.ToString("F02")</div>
-                <div class="col-sm-1 col-xs-1">
-                    @Html.Partial("_CostComponentLastCol", Model)
-                </div>
-
-            </div>
-            @if (Model.SVMOp != SVMOperation.Print)
-            {
-                <div class="row">
-                    @Html.ValidationMessageFor(model => model.Stones[i].Id, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Stones[i].Name, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Stones[i].ShId, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Stones[i].SzId, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Stones[i].Qty, "", new { @class = "text-danger" })
-                </div>
+    <div class="styleFindings">
+        <!-- Findings -->
+        <div class="row StyleComponentsRowHeader">
+            @{Model.CCLastRow = false;
+                Model.CCHeaderRow = true;
+                Model.CCRowIndex = -1;
+                Model.SVMCCType = SVMCCTypeEnum.Findings;
             }
+            @if (Model.Findings.Count == 0)
+            {
+                Model.CCLastRow = true;
+                if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
+            }
+            else
+            {
+                boxbot = "";
+            }
+            @Html.Partial("_CostComponentCol1", Model)
+            <div class="col-sm-4 col-xs-4">FINDINGS</div>
+            <div class="col-sm-2 col-xs-2">VENDOR</div>
+            <div class="col-sm-1 col-xs-1">WT</div>
+            <div class="col-sm-1 col-xs-1">PRICE</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class="col-sm-2 col-xs-2">TOTAL COST</div>
         </div>
-    }
-    <div id="StonesBreak"></div>
-    <div id="StonesTotal">
-        <div class="row StyleComponentsRowFooter">
-            <div class="col-sm-1 col-xs-1"></div>
-            <div class="col-sm-4 col-xs-4"><b>TOTAL STONES</b></div>
-            <div class="col-sm-5 col-xs-5"></div>
-            <div id="StonesTotalValue" class="col-sm-2 col-xs-2">@Model.StonesTotal.ToString("F02")</div>
-        </div>
-    </div>
-</div> <!--Stones-->
-
-<div class="styleFindings">
-    <!-- Findings -->
-    <div class="row StyleComponentsRowHeader">
-        @{Model.CCLastRow = false;
-            Model.CCHeaderRow = true;
-            Model.CCRowIndex = -1;
-            Model.SVMCCType = SVMCCTypeEnum.Findings;
-        }
-        @if (Model.Findings.Count == 0)
+        @for (int i = 0; i < Model.Findings.Count; i++)
         {
-            Model.CCLastRow = true;
-        }
-        @Html.Partial("_CostComponentCol1", Model)
-        <div class="col-sm-4 col-xs-4">FINDINGS</div>
-        <div class="col-sm-2 col-xs-2">VENDOR</div>
-        <div class="col-sm-1 col-xs-1">WT</div>
-        <div class="col-sm-1 col-xs-1">PRICE</div>
-        <div class="col-sm-1 col-xs-1">QTY</div>
-        <div class="col-sm-2 col-xs-2">TOTAL COST</div>
-    </div>
-    @for (int i = 0; i < Model.Findings.Count; i++)
-    {
-        Model.i = i;
-        OJewelry.Models.FindingsComponent c = Model.Findings[i];
-        <div class="FindingsState">@Html.HiddenFor(model => model.Findings[i].SVMState)</div>
-        var bHideRow = (Model.Findings[i].SVMState == SVMStateEnum.Unadded || Model.Findings[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
-        <div id="FindingsRow_@i" class="FindingsRow @bHideRow">
-            <div class="row ltbordered">
-                @{Model.CCLastRow = false;
-                    Model.CCHeaderRow = false;
-                    Model.CCRowIndex = i;}
-                @if (i == Model.Findings.Count - 1)
-                {
-                    Model.CCLastRow = true;
-                }
-                @Html.HiddenFor(model => model.Findings[i].linkId)
-                @Html.Partial("_CostComponentCol1", Model)
-                @if (Model.SVMOp != SVMOperation.Print)
-                {
-                    if (Model.Findings[i].Id == 0)
+            Model.i = i;
+            OJewelry.Models.FindingsComponent c = Model.Findings[i];
+            <div class="FindingsState">@Html.HiddenFor(model => model.Findings[i].SVMState)</div>
+            var bHideRow = (Model.Findings[i].SVMState == SVMStateEnum.Unadded || Model.Findings[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+            <div id="FindingsRow_@i" class="FindingsRow @bHideRow">
+                <div class="row ltbordered">
+                    @{Model.CCLastRow = false;
+                        Model.CCHeaderRow = false;
+                        Model.CCRowIndex = i;}
+                    @if (i == Model.Findings.Count - 1)
                     {
-                        @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, "You must select a finding", new { @class = "col-sm-4 col-xs-4 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
+                        Model.CCLastRow = true;
+                    }
+                    @{
+                        FindingsComponent cc = Model.Findings.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                        if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Findings[i].Id == cc.Id))
+                        {
+                            boxbot = "boxbot";
+                        } else {
+                            boxbot = "";
+                        }
+                    }
+                    @Html.HiddenFor(model => model.Findings[i].linkId)
+                    @Html.Partial("_CostComponentCol1", Model)
+                    @if (Model.SVMOp != SVMOperation.Print)
+                    {
+                        if (Model.Findings[i].Id == 0)
+                        {
+                            @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, "You must select a finding", new { @class = "col-sm-4 col-xs-4 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-4 col-xs-4 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
+                        }
                     }
                     else
                     {
-                        @Html.DropDownListFor(model => model.Findings[i].Id, Model.Findings[i].CompList, new { @class = "col-sm-4 col-xs-4 requiredifnotremoved", onchange = "FindingChanged('" + i + "')" })
+                        <div class="@boxme @boxbot ssdata col-sm-4 col-xs-4">@Model.Findings[i].Name</div>
                     }
-                }
-                else
-                {
-                    <div class="col-sm-4 col-xs-4">@Model.Findings[i].Name</div>
-                }
 
-                @if (Model.SVMOp != SVMOperation.Print)
-                {
-                    @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 locked", @disabled = "disabled" } })
-                    @Html.EditorFor(model => model.Findings[i].Weight, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
-                    @Html.EditorFor(model => model.Findings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
-                    @Html.TextBoxFor(model => model.Findings[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                }
-                else
-                {
-                    <div class="col-sm-2 col-xs-2">@Model.Findings[i].VendorName</div>
-                    <div class="col-sm-1 col-xs-1">@Model.Findings[i].Weight</div>
-                    <div class="col-sm-1 col-xs-1">@Model.Findings[i].Price.ToString("F02")</div>
-                    <div class="col-sm-1 col-xs-1">@Model.Findings[i].Qty</div>
-                }
-
-                <div id="FindingsRowTotalValue_@i" class="col-sm-1 col-xs-1 FindingsRowTotal ">@Model.Findings[i].Total.ToString("F02")</div>
-                <div class="col-sm-1 col-xs-1">
-                    @Html.Partial("_CostComponentLastCol", Model)
-                </div>
-
-            </div>
-            @if (Model.SVMOp != SVMOperation.Print)
-            {
-                <div class="row">
-                    @Html.ValidationMessageFor(model => model.Findings[i].Id, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Findings[i].Qty, "", new { @class = "text-danger" })
-                </div>
-            }
-
-        </div>
-    }
-    <div id="FindingsBreak"></div>
-    <div id="FindingsTotal">
-        <div class="row StyleComponentsRowFooter">
-            <div class="col-sm-1 col-xs-1"></div>
-            <div class="col-sm-4 col-xs-4"><b>TOTAL FINDINGS</b></div>
-            <div class="col-sm-5 col-xs-5"></div>
-            <div id="FindingsTotalValue" class="col-sm-2 col-xs-2">@Model.FindingsTotal.ToString("F02")</div>
-        </div>
-    </div>
-</div> <!-- Findings -->
-
-<div class="styleLabors">
-    <!-- Labor -->
-    <div class="row StyleComponentsRowHeader">
-        @{Model.CCLastRow = false;
-            Model.CCHeaderRow = true;
-            Model.CCRowIndex = -1;
-            Model.SVMCCType = SVMCCTypeEnum.Labors;
-        }
-        @if (Model.Labors.Count == 0)
-        {
-            Model.CCLastRow = true;
-        }
-        @Html.Partial("_CostComponentCol1")
-        <div class="col-sm-2 col-xs-2">LABOR</div>
-        <div class="col-sm-2 col-xs-2 ">Desc</div>
-        <div class="col-sm-2 col-xs-2"></div>
-        <div class="col-sm-1 col-xs-1">PRICE/HR</div>
-        <div class="col-sm-1 col-xs-1">PRICE/PC</div>
-        <div class="col-sm-1 col-xs-1">QTY</div>
-        <div class="col-sm-2 col-xs-2">TOTAL COST</div>
-    </div>
-    @for (int i = 0; i < Model.Labors.Count; i++)
-    {
-        Model.i = i;
-        OJewelry.Models.LaborComponent c = Model.Labors[i];
-        <div class="LaborsState">@Html.HiddenFor(model => model.Labors[i].SVMState)</div>
-        var bHideRow = (Model.Labors[i].SVMState == SVMStateEnum.Unadded || Model.Labors[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
-        <div id="LaborsRow_@i" class="LaborsRow @bHideRow">
-            <div class="row ltbordered">
-                @{Model.CCLastRow = false;
-                    Model.CCHeaderRow = false;
-                    Model.CCRowIndex = i;}
-                @if (i == Model.Labors.Count - 1 && Model.Stones.Count == 0)
-                {
-                    Model.CCLastRow = true;
-                }
-                @Html.HiddenFor(model => model.Labors[i].Id)
-                @Html.Partial("_CostComponentCol1", Model)
-
-                @if (Model.SVMOp != SVMOperation.Print)
-                {
-                    bool bDisabled = (Model.Labors[i].SVMState == SVMStateEnum.Fixed && Model.Labors[i].Name == StyleViewModel.FinishingLaborName);
-                    @Html.HiddenFor(model => model.Labors[i].Name)
-                    @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "locked col-sm-2 col-xs-2 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
-                    @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
-                    <div class="col-sm-2 col-xs-2 "></div>
-                    @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                    if (bDisabled)
+                    @if (Model.SVMOp != SVMOperation.Print)
                     {
-                        @Html.HiddenFor(model => model.Labors[i].PPP, new { @class = "finishingPPP" })
-                        @Html.HiddenFor(model => model.Labors[i].Qty, new { @class = "finishingQty" })
-                        @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 finishingPPP", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1 finishingQty", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                        @Html.EditorFor(model => model.Findings[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 locked", @disabled = "disabled" } })
+                        @Html.EditorFor(model => model.Findings[i].Weight, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
+                        @Html.EditorFor(model => model.Findings[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
+                        @Html.TextBoxFor(model => model.Findings[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
                     }
                     else
                     {
-                        @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                        <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Findings[i].VendorName&nbsp;</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Findings[i].Weight&nbsp;</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Findings[i].Price.ToString("F02")</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Findings[i].Qty</div>
                     }
-                }
-                else
-                {
-                    <div class="col-sm-2 col-xs-2">@Model.Labors[i].Name</div>
-                    <div class="col-sm-2 col-xs-2">@Model.Labors[i].Desc</div>
-                    <div class="col-sm-2 col-xs-2 "></div>
-                    <div class="col-sm-1 col-xs-1">@Model.Labors[i].PPH.Value.ToString("F02")</div>
-                    <div class="col-sm-1 col-xs-1">@Model.Labors[i].PPP.Value.ToString("F02")</div>
-                    <div class="col-sm-1 col-xs-1">@Model.Labors[i].Qty</div>
-                }
-                <div id="LaborsRowTotalValue_@i" class="col-sm-1 col-xs-1 LaborsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
-                <div class="col-sm-1 col-xs-1">
-                    @if (Model.Labors[i].SVMState != SVMStateEnum.Fixed)
+
+                    @if (Model.SVMOp != SVMOperation.Print)
                     {
-                        @Html.Partial("_CostComponentLastCol", Model)
+                        <div id="FindingsRowTotalValue_@i" class="@boxme @boxbot @boxright col-sm-1 col-xs-1 FindingsRowTotal ">@Model.Findings[i].Total.ToString("F02")</div>
+                        <div class="col-sm-1 col-xs-1">
+                            @Html.Partial("_CostComponentLastCol", Model)
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="FindingsRowTotalValue_@i" class="@boxme @boxbot @boxright col-sm-2 col-xs-2 FindingsRowTotal ">@Model.Findings[i].Total.ToString("F02")</div>
                     }
                 </div>
+                @if (Model.SVMOp != SVMOperation.Print)
+                {
+                    <div class="row">
+                        @Html.ValidationMessageFor(model => model.Findings[i].Id, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Findings[i].Qty, "", new { @class = "text-danger" })
+                    </div>
+                }
 
             </div>
-            @if (Model.SVMOp != SVMOperation.Print)
-            {
-                <div class="row">
-                    @Html.ValidationMessageFor(model => model.Labors[i].Name, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Labors[i].PPH, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Labors[i].PPP, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Labors[i].Qty, "", new { @class = "text-danger" })
-                </div>
-            }
+        }
+        <div id="FindingsBreak"></div>
+        <div id="FindingsTotal">
+            <div class="row StyleComponentsRowFooter">
+                <div class="col-sm-1 col-xs-1"></div>
+                <div class="col-sm-4 col-xs-4"><b>TOTAL FINDINGS</b></div>
+                <div class="col-sm-5 col-xs-5"></div>
+                <div id="FindingsTotalValue" class="col-sm-2 col-xs-2">@Model.FindingsTotal.ToString("F02")</div>
+            </div>
         </div>
-    }
-    <div id="LaborsBreak"></div>
+    </div> <!-- Findings -->
 
-    @* add a setting for each stone with data-stonerow*@
-    @{
-        int lc = Model.Labors.Count;
-        int j = lc - Model.Labors.Count;
-    }
-    @foreach (StoneComponent sc in Model.Stones)
-    {
-        @*<div class="LaborsState"></div>*@
-        <div class="row ltbordered">
+    <div class="styleLabors">
+        <!-- Labor -->
+        <div class="row StyleComponentsRowHeader">
+            @{Model.CCLastRow = false;
+                Model.CCHeaderRow = true;
+                Model.CCRowIndex = -1;
+                Model.SVMCCType = SVMCCTypeEnum.Labors;
+            }
+            @if (Model.Labors.Count == 0)
+            {
+                Model.CCLastRow = true;
+                if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
+            }
+            else
+            {
+                boxbot = "";
+            }
+            @Html.Partial("_CostComponentCol1")
+            <div class="col-sm-3 col-xs-3">LABOR</div>
+            <div class="col-sm-3 col-xs-3 ">Desc</div>
+            <div class="col-sm-1 col-xs-1">$/HR</div>
+            <div class="col-sm-1 col-xs-1">$/PC</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class=" col-sm-2 col-xs-2">TOTAL COST</div>
+        </div>
+        @for (int i = 0; i < Model.Labors.Count; i++)
+        {
+            Model.i = i;
+            OJewelry.Models.LaborComponent c = Model.Labors[i];
+            <div class="LaborsState">@Html.HiddenFor(model => model.Labors[i].SVMState)</div>
+            var bHideRow = (Model.Labors[i].SVMState == SVMStateEnum.Unadded || Model.Labors[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+           <div id="LaborsRow_@i" class="LaborsRow @bHideRow">
+               <div class="row ltbordered">
+                    @{Model.CCLastRow = false;
+                       Model.CCHeaderRow = false;
+                       Model.CCRowIndex = i;
+                    }
+                   @if (i == Model.Labors.Count - 1 && Model.Stones.Count == 0)
+                   {
+                       Model.CCLastRow = true;
+                   }
+                   @{
+                       LaborComponent cc = Model.Labors.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                       if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Labors[i].Id == cc.Id))
+                       {
+                           boxbot = "boxbot";
+                       } else {
+                           boxbot = "";
+                       }
+                   }
+                   @Html.HiddenFor(model => model.Labors[i].Id)
+                   @Html.Partial("_CostComponentCol1", Model)
+
+                   @if (Model.SVMOp != SVMOperation.Print)
+                   {
+                       bool bDisabled = (Model.Labors[i].SVMState == SVMStateEnum.Fixed && Model.Labors[i].Name == StyleViewModel.FinishingLaborName);
+                       if (bDisabled)
+                       {
+                           @Html.HiddenFor(model => model.Labors[i].Name)
+                           @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "locked col-sm-3 col-xs-3 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
+                       }
+                       else
+                       {
+                           @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3 requiredifnotremoved", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
+                       }
+                       @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3" } })
+                       @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                       if (bDisabled)
+                       {
+                           @Html.HiddenFor(model => model.Labors[i].PPP, new { @class = "finishingPPP" })
+                           @Html.HiddenFor(model => model.Labors[i].Qty, new { @class = "finishingQty" })
+                           @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 finishingPPP", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                           @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1 finishingQty", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                       }
+                       else
+                       {
+                           @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                           @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                       }
+                   }
+                   else
+                   {
+                       <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.Labors[i].Name</div>
+                       <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.Labors[i].Desc&nbsp;</div>
+                       <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPH.Value.ToString("F02")</div>
+                       <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPP.Value.ToString("F02")</div>
+                       <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].Qty</div>
+                   }
+                   @if (Model.SVMOp != SVMOperation.Print)
+                   {
+                       <div id="LaborsRowTotalValue_@i" class="col-sm-1 col-xs-1 LaborsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
+                       <div class="col-sm-1 col-xs-1">
+                           @if (Model.Labors[i].SVMState != SVMStateEnum.Fixed)
+                           {
+                               @Html.Partial("_CostComponentLastCol", Model)
+                           }
+                       </div>
+                   }
+                   else
+                   {
+                       <div id="LaborsRowTotalValue_@i" class="@boxme @boxbot ssdata  @boxright col-sm-2 col-xs-2 LaborsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
+                   }
+               </div>
+                @if (Model.SVMOp != SVMOperation.Print)
+                {
+                    <div class="row">
+                        @Html.ValidationMessageFor(model => model.Labors[i].Name, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Labors[i].PPH, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Labors[i].PPP, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Labors[i].Qty, "", new { @class = "text-danger" })
+                    </div>
+                }
+            </div>
+        }
+        <div id="LaborsBreak"></div>
+
+        @* add a setting for each stone with data-stonerow*@
+        @{
+            int lc = Model.Labors.Count;
+            int j = lc - Model.Labors.Count;
+            decimal StoneSettingTotal = 0;
+        }
+        @foreach (StoneComponent sc in Model.Stones)
+        {
+            @*<div class="LaborsState"></div>*@
+            var bHideSettingRow = (Model.Stones[j].SVMState == SVMStateEnum.Unadded || Model.Stones[j].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+        <div class="row ltbordered @bHideSettingRow">
             @{Model.CCLastRow = false;
                 Model.CCHeaderRow = false;
-                Model.CCRowIndex = j;}
+                Model.CCRowIndex = j;
+            }
             @if (j == Model.Stones.Count - 1)
             {
                 Model.CCLastRow = false;
+            }
+            @{
+                StoneComponent cc = Model.Stones.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Stones[j].Id == cc.Id))
+                {
+                    boxbot = "boxbot";
+                }
+                else
+                {
+                    boxbot = "";
+                }
             }
             @Html.Partial("_CostComponentCol1", Model)
 
             @{
                 var stName = "Setting for " + @Model.Stones[j].Name + "-" + @Model.Stones[j].ShId + "-" + @Model.Stones[j].SzId;
-                CostData cd = Model.assemblyCost.GetCostDataFromJSON();
             }
             @if (Model.SVMOp != SVMOperation.Print)
             {
@@ -443,143 +552,165 @@ COST:
                     <input class="col-sm-4 col-xs-4 text-box single-line locked" id="StoneSettingName_@j" type="text" disabled value="@stName" /> <!-- Name size "mm setting"-->
                     <div class="col-sm-2 col-xs-2 "></div>
                     <div class="col-sm-1 col-xs-1 "></div>
-                    <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingPrice_@j" type="text" disabled value="@Model.assemblyCost.GetCostDataFromJSON().settingsCosts[Model.Stones[j].SzId].ToString("F02")" />
+                    <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingPrice_@j" type="text" disabled value="@Model.Stones[j].SettingCost.ToString("F02")" />
                     <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingQty_@j" type="text" disabled value="@Model.Stones[j].Qty.ToString()" />
                 </div>
             }
             else
             {
-                <div class="col-sm-4 col-xs-4">@stName</div>
-                <div class="col-sm-2 col-xs-2 "></div>
-                <div class="col-sm-1 col-xs-1"></div>
-                <div class="col-sm-1 col-xs-1">@Model.Stones[j].Price.ToString("F02")</div>
-                <div class="col-sm-1 col-xs-1">@Model.Stones[j].Qty</div>
+                <div class="@boxme @boxbot ssdata col-sm-4 col-xs-4">@stName</div>
+                <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">&nbsp;</div>
+                <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">&nbsp;</div>
+                <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].SettingCost.ToString("F02")</div>
+                <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].Qty</div>
+                StoneSettingTotal += (Model.Stones[j].SettingCost * Model.Stones[j].Qty);
             }
-            <div id="LaborsRowTotalValue_@(j+lc)" name="StoneSettingRowTotalValue_@j" class="col-sm-1 col-xs-1 LaborsRowTotal"> @((Model.Stones[j].Qty * @Model.assemblyCost.GetCostDataFromJSON().settingsCosts[Model.Stones[j].SzId]).ToString("F02"))</div>
+            <div id="LaborsRowTotalValue_@(j+lc)" name="StoneSettingRowTotalValue_@j" class="@boxme @boxbot ssdata @boxright col-sm-2 col-xs-2 LaborsRowTotal"> @((Model.Stones[j].Qty * @Model.Stones[j].SettingCost).ToString("F02"))</div>
         </div>
-        j++;
-    }
-    <div id="LaborsTotal">
-        <div class="row StyleComponentsRowFooter">
-            <div class="col-sm-1 col-xs-1"></div>
-            <div class="col-sm-4 col-xs-4"><b>TOTAL LABOR</b></div>
-            <div class="col-sm-5 col-xs-5"></div>
-            <div id="LaborsTotalValue" class="col-sm-2 col-xs-2">@Model.LaborsTotal.ToString("F02")</div>
-        </div>
-    </div>
-
-</div> <!-- Labors -->
-
-<div class="styleMiscs">
-    <!-- Misc -->
-    <div class="row StyleComponentsRowHeader">
-        @{Model.CCLastRow = false;
-            Model.CCHeaderRow = true;
-            Model.CCRowIndex = -1;
-            Model.SVMCCType = SVMCCTypeEnum.Miscs;
+            j++;
         }
-        @if (Model.Miscs.Count == 0)
+        <div id="LaborsTotal">
+            <div class="row StyleComponentsRowFooter">
+                <div class="col-sm-1 col-xs-1"></div>
+                <div class="col-sm-4 col-xs-4"><b>TOTAL LABOR</b></div>
+                <div class="col-sm-5 col-xs-5"></div>
+                <div id="LaborsTotalValue" class="col-sm-2 col-xs-2">@((Model.LaborsTotal + StoneSettingTotal).ToString("F02"))</div>
+            </div>
+        </div>
+
+    </div> <!-- Labors -->
+
+    <div class="styleMiscs">
+        <!-- Misc -->
+        <div class="row StyleComponentsRowHeader">
+            @{Model.CCLastRow = false;
+                Model.CCHeaderRow = true;
+                Model.CCRowIndex = -1;
+                Model.SVMCCType = SVMCCTypeEnum.Miscs;
+            }
+            @if (Model.Miscs.Count == 0)
+            {
+                Model.CCLastRow = true;
+                if (Model.SVMOp == SVMOperation.Print) { boxbot = "boxbot"; }
+            }
+            else
+            {
+                boxbot = "";
+            }
+            @Html.Partial("_CostComponentCol1")
+            <div class="col-sm-2 col-xs-2">MISC</div>
+            <div class="col-sm-2 col-xs-2">Desc</div>
+            <div class="col-sm-3 col-xs-3">&nbsp;</div>
+            <div class="col-sm-1 col-xs-1">$/PC</div>
+            <div class="col-sm-1 col-xs-1">QTY</div>
+            <div class=" col-sm-2 col-xs-2">TOTAL COST</div>
+        </div>
+        @for (int i = 0; i < Model.Miscs.Count; i++)
         {
-            Model.CCLastRow = true;
-        }
-        @Html.Partial("_CostComponentCol1")
-        <div class="col-sm-2 col-xs-2">MISC</div>
-        <div class="col-sm-2 col-xs-2">Desc</div>
-        <div class="col-sm-3 col-xs-3"></div>
-        <div class="col-sm-1 col-xs-1">PRICE/PC</div>
-        <div class="col-sm-1 col-xs-1">QTY</div>
-        <div class="col-sm-2 col-xs-2">TOTAL COST</div>
-    </div>
-    @for (int i = 0; i < Model.Miscs.Count; i++)
-    {
-        Model.i = i;
-        OJewelry.Models.MiscComponent c = Model.Miscs[i];
-        bool bDisabled = Model.Miscs[i].SVMState == SVMStateEnum.Fixed;
-        <div class="MiscsState">@Html.HiddenFor(model => model.Miscs[i].SVMState)</div>
-        var bHideRow = (Model.Miscs[i].SVMState == SVMStateEnum.Unadded || Model.Miscs[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
-        <div id="MiscsRow_@i" class="MiscsRow @bHideRow">
-            <div class="row ltbordered">
-                @{Model.CCLastRow = false;
-                    Model.CCHeaderRow = false;
-                    Model.CCRowIndex = i;}
-                @if (i == Model.Miscs.Count - 1)
-                {
-                    Model.CCLastRow = true;
-                    Model.CCRowIndex = i;
-                }
-                @Html.HiddenFor(model => model.Miscs[i].Id)
-                @Html.Partial("_CostComponentCol1", Model)
+            Model.i = i;
+            OJewelry.Models.MiscComponent c = Model.Miscs[i];
+            bool bDisabled = Model.Miscs[i].SVMState == SVMStateEnum.Fixed;
+            <div class="MiscsState">@Html.HiddenFor(model => model.Miscs[i].SVMState)</div>
+            var bHideRow = (Model.Miscs[i].SVMState == SVMStateEnum.Unadded || Model.Miscs[i].SVMState == SVMStateEnum.Deleted) ? "hidden" : "";
+            <div id="MiscsRow_@i" class="MiscsRow @bHideRow">
+                <div class="row ltbordered">
+                    @{Model.CCLastRow = false;
+                        Model.CCHeaderRow = false;
+                        Model.CCRowIndex = i;
+                        }
+                    @if (i == Model.Miscs.Count - 1)
+                    {
+                        Model.CCLastRow = true;
+                    }
+                    @{
+                        MiscComponent cc = Model.Miscs.Where(x => x.SVMState != SVMStateEnum.Deleted && x.SVMState != SVMStateEnum.Unadded).LastOrDefault();
+                        if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Miscs[i].Id == cc.Id))
+                        {
+                            boxbot = "boxbot";
+                        } else {
+                            boxbot = "";
+                        }
+                    }
+                    @Html.HiddenFor(model => model.Miscs[i].Id)
+                    @Html.Partial("_CostComponentCol1", Model)
 
+                    @if (Model.SVMOp != SVMOperation.Print)
+                    {
+                        if (bDisabled)
+                        {
+                            @Html.HiddenFor(model => model.Miscs[i].Name)
+                            @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Misc Name field is required.", @placeholder = "Name" } })
+                        }
+                        else
+                        {
+                            @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Misc Name field is required.", @placeholder = "Name" } })
+                        }
+                        @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
+                        <div class="col-sm-3 col-xs-3 "></div>
+                        if (bDisabled)
+                        {
+                            @Html.HiddenFor(model => model.Miscs[i].PPP, new { @class = "miscsPPP" })
+                            @Html.HiddenFor(model => model.Miscs[i].Qty, new { @class = "miscsQty" })
+                            @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 miscsPPP", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                            @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1 col-xs-1 miscsQty", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                        }
+                        else
+                        {
+                            @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                            @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                        }
+                    }
+                    else
+                    {
+                        <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Miscs[i].Name</div>
+                        <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Miscs[i].Desc&nbsp;</div>
+                        <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3 ">&nbsp;</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Miscs[i].PPP.ToString("F02")</div>
+                        <div class="@boxme @boxbot ssdata @boxright col-sm-1 col-xs-1">@Model.Miscs[i].Qty</div>
+                    }
+                    @if (Model.SVMOp != SVMOperation.Print)
+                    {
+                        <div id="MiscsRowTotalValue_@i" class="col-sm-1 col-xs-1 MiscsRowTotal">@Model.Miscs[i].Total.ToString("F02")</div>
+                        <div class="col-sm-1 col-xs-1">
+                            @if (Model.Miscs[i].SVMState != SVMStateEnum.Fixed)
+                            {
+                                @Html.Partial("_CostComponentLastCol", Model)
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="MiscsRowTotalValue_@i" class="@boxme @boxbot ssdata @boxright col-sm-2 col-xs-2 MiscsRowTotal">@Model.Miscs[i].Total.ToString("F02")</div>
+                    }
+                </div>
                 @if (Model.SVMOp != SVMOperation.Print)
                 {
-                    if (bDisabled)
-                    {
-                        @Html.HiddenFor(model => model.Miscs[i].Name)
-                        @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Misc Name field is required.", @placeholder = "Name" } })
-                    }
-                    else
-                    {
-                        @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Misc Name field is required.", @placeholder = "Name" } })
-                    }
-                    @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
-                    <div class="col-sm-3 col-xs-3 "></div>
-                    if (bDisabled)
-                    {
-                        @Html.HiddenFor(model => model.Miscs[i].PPP, new { @class = "miscsPPP" })
-                        @Html.HiddenFor(model => model.Miscs[i].Qty, new { @class = "miscsQty" })
-                        @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 miscsPPP", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1 col-xs-1 miscsQty", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    }
-                    else
-                    {
-                        @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
-                        @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                    }
+                    <div class="row">
+                        @Html.ValidationMessageFor(model => model.Miscs[i].Name, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Miscs[i].PPP, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Miscs[i].Qty, "", new { @class = "text-danger" })
+                    </div>
                 }
-                else
-                {
-                    <div class="col-sm-2 col-xs-2">@Model.Miscs[i].Name</div>
-                    <div class="col-sm-2 col-xs-2">@Model.Miscs[i].Desc</div>
-                    <div class="col-sm-3 col-xs-3 "></div>
-                    <div class="col-sm-1 col-xs-1">@Model.Miscs[i].PPP.ToString("F02")</div>
-                    <div class="col-sm-1 col-xs-1">@Model.Miscs[i].Qty</div>
-                }
-
-                <div id="MiscsRowTotalValue_@i" class="col-sm-1 col-xs-1 MiscsRowTotal">@Model.Miscs[i].Total.ToString("F02")</div>
-                <div class="col-sm-1 col-xs-1">
-                    @if (Model.Miscs[i].SVMState != SVMStateEnum.Fixed)
-                    {
-                        @Html.Partial("_CostComponentLastCol", Model)
-                    }
-                </div>
-
             </div>
-            @if (Model.SVMOp != SVMOperation.Print)
-            {
-                <div class="row">
-                    @Html.ValidationMessageFor(model => model.Miscs[i].Name, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Miscs[i].PPP, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.Miscs[i].Qty, "", new { @class = "text-danger" })
-                </div>
-            }
+        }
+        <div id="MiscsBreak"></div>
+        <div id="MiscsTotal">
+            <div class="row StyleComponentsRowFooter">
+                <div class="col-sm-1 col-xs-1"></div>
+                <div class="col-sm-4 col-xs-4">TOTAL MISC</div>
+                <div class="col-sm-5 col-xs-5"></div>
+                <div id="MiscsTotalValue" class="col-sm-2 col-xs-2">@Model.MiscsTotal.ToString("F02")</div>
+            </div>
         </div>
-    }
-    <div id="MiscsBreak"></div>
-    <div id="MiscsTotal">
-        <div class="row StyleComponentsRowFooter">
-            <div class="col-sm-1 col-xs-1"></div>
-            <div class="col-sm-4 col-xs-4">TOTAL MISC</div>
-            <div class="col-sm-5 col-xs-5"></div>
-            <div id="MiscsTotalValue" class="col-sm-2 col-xs-2">@Model.MiscsTotal.ToString("F02")</div>
-        </div>
-    </div>
-</div> <!-- Misc -->
+    </div> <!-- Misc -->
 
-<div class="row h3 StyleComponentsFooter">
-    <div class="col-sm-1 col-xs-1"></div>
-    <div class="col-sm-4 col-xs-4"><b>TOTAL COST</b></div>
-    <div class="col-sm-5 col-xs-5"></div>
-    <div id="GrandTotal" class="col-sm-2 col-xs-2">@Model.Total.ToString("F02")</div>
+    <div class="row h3 StyleComponentsFooter">
+        <div class="col-sm-1 col-xs-1"></div>
+        <div class="col-sm-4 col-xs-4"><b>TOTAL COST</b></div>
+        <div class="col-sm-5 col-xs-5"></div>
+        <div id="GrandTotal" class="col-sm-2 col-xs-2">@((Model.Total + StoneSettingTotal).ToString("F02"))</div>
+    </div>
+
 </div>
 @if (Model.SVMOp != SVMOperation.Print)
 {
@@ -596,10 +727,10 @@ COST:
                 MetalWeightUnit mwuItem = new MetalWeightUnit() { Id = 1, Unit = "" };
                 emptyMetalWeightUnitList.Add(mwuItem);
             }
-            @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault().Id), new {@class = "col-sm-1 col-xs-1"})
+            @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault()?.Id), new {@class = "col-sm-1 col-xs-1"})
         </div>
         <div id="jsVendors">
-            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.FirstOrDefault().Id), new {@class = "col-sm-1 col-xs-1 "})
+            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.FirstOrDefault()?.Id), new {@class = "col-sm-1 col-xs-1 "})
         </div>
         <div id="jsStones">
             @if (Model.jsStones.Count == 0)

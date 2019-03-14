@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OJewelry.Classes;
 using OJewelry.Models;
@@ -24,7 +26,7 @@ namespace OJewelry.Controllers
         // GET: Styles
         public ActionResult Index(int CollectionId)
         {
-            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s=>s.StyleNum).Include(s => s.JewelryType);
+            var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s => s.StyleName).Include(s => s.JewelryType);
             ViewBag.CollectionName = db.Collections.Find(CollectionId).Name;
             ViewBag.CollectionId = CollectionId;
             ViewBag.CompanyId = db.Collections.Find(CollectionId).CompanyId;
@@ -71,19 +73,57 @@ namespace OJewelry.Controllers
             svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == svm.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
-            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == companyId), "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             return View("Create", svm);
+        }
+
+        public void AddDefaultEntries(StyleViewModel svm)
+        {
+            // Get the cost data and find initial values for the Finishing Labor & Packaging Costs. Both are based on the style's jewelry type
+            decimal flPrice = 0;
+            decimal packPrice = 0;
+
+            JewelryType jt = db.JewelryTypes.Where(j => svm.CompanyId == j.CompanyId).FirstOrDefault();
+            if (jt != null)
+            {
+                flPrice = jt.FinishingCost;
+                packPrice = jt.PackagingCost;
+            }
+
+            // Add 2 Fixed Labor entries and 1 Fixed Misc entry
+            LaborComponent lc = new LaborComponent
+            {
+                Id = -1,
+                Name = StyleViewModel.FinishingLaborName,
+                SVMState = SVMStateEnum.Fixed,
+                PPP = flPrice,
+                Qty = 1,
+                Total = flPrice
+                
+            };
+            svm.Labors.Add(lc);
+            MiscComponent mc = new MiscComponent
+            {
+                Id = -1,
+                Name = StyleViewModel.PackagingName,
+                SVMState = SVMStateEnum.Fixed,
+                PPP = packPrice,
+                Qty = 1,
+                Total = packPrice
+            };
+            svm.Miscs.Add(mc);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Copy(StyleViewModel svm)
+        public async Task<ActionResult> Copy(StyleViewModel svm)
         {
             ModelState.Clear();
-            StyleViewModel newsvm = new StyleViewModel(svm);
-            newsvm.assemblyCost.Load(db, svm.CompanyId);
-            newsvm.SVMOp = SVMOperation.Create;
+            svm.SVMOp = SVMOperation.Create;
+            StyleViewModel newsvm = new StyleViewModel(svm, db);
+            await SaveImageInStorage(db, newsvm, true);
+
             newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
             newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
             newsvm.CopiedStyleName = svm.Style.StyleName;
@@ -93,9 +133,38 @@ namespace OJewelry.Controllers
             newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", newsvm.Style.JewelryTypeId);
-            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", newsvm.Style.MetalWtUnitId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", newsvm.Style.MetalWtUnitId);
             return View(newsvm);
+        }
+
+        private bool CheckForNameAndNumberUniqueness(StyleViewModel svm)
+        {
+            // make sure the collection is valid
+            if (svm.Style.Collection == null)
+            {
+                svm.Style.Collection = db.Collections.Find(svm.Style.CollectionId);
+            }
+            int iStyleNums = db.Styles.
+                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
+                {
+                    StyleId = s.Id,
+                    StyleNum = s.StyleNum,
+                    StyleName = s.StyleName,
+                    CompanyId = c.CompanyId,
+                }).Where(x => x.CompanyId == svm.CompanyId
+                    && x.StyleId != svm.Style.Id
+                    && (x.StyleNum == svm.Style.StyleNum)).Count();
+            if (iStyleNums != 0)
+            {
+                ModelState.AddModelError("Style.StyleNum", "Style with this number already exists for " + db.FindCompany(svm.CompanyId).Name + ".");
+            }
+
+            if (iStyleNums != 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         // POST: Styles/Create
@@ -107,20 +176,10 @@ namespace OJewelry.Controllers
         public async Task <ActionResult> Create(StyleViewModel svm)
         {
             svm.SVMOp = SVMOperation.Create;
-            int i = db.Styles.
-                Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
-                {
-                    StyleId = s.Id,
-                    StyleNum = s.StyleNum,
-                    StyleName = s.StyleName,
-                    CompanyId = c.CompanyId,
-                }).Where(x => x.CompanyId == svm.CompanyId  && (x.StyleNum == svm.Style.StyleNum || x.StyleName == svm.Style.StyleName)).Count();
-            if (i != 0) // is there a style with the same number for this company?
+            bool b = CheckForNameAndNumberUniqueness(svm);
+            if (b) // is there a style with the same number for this company?
             {
-                ModelState.AddModelError("Style.StyleNum", "Style with this number/name already exists for "
-                    + db.FindCompany(svm.CompanyId).Name + ".");
-            }
-            else {
+                // No, add it
                 svm.SVMState = SVMStateEnum.Added;
             }
             return await Edit(svm);
@@ -147,8 +206,8 @@ namespace OJewelry.Controllers
             };
             svm.Populate(id, db);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
-            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             return View(svm);
         }
 
@@ -166,6 +225,7 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             sm.Style.Collection = db.Collections.Find(sm.Style.CollectionId);
+            sm.Style.JewelryType = db.JewelryTypes.Find(sm.Style.JewelryTypeId);
 
             sm.CompanyId = sm.Style.Collection.CompanyId;
             sm.Populate(id, db);
@@ -179,16 +239,33 @@ namespace OJewelry.Controllers
         {
             // First, save the data
             svm.SVMOp = SVMOperation.Print;
-            return await Edit(svm);
-            //return View(svm);
+            ModelState.Clear();
+            StyleViewModel newsvm = new StyleViewModel(svm, db);
+            await SaveImageInStorage(db, newsvm, true);
+            //newsvm.assemblyCost.Load(db, svm.CompanyId);
+            // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
+            newsvm.SVMOp = SVMOperation.Print;
+            newsvm.Style.StyleNum = svm.Style.StyleNum;
+            newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
+            newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
+            newsvm.CopiedStyleName = svm.Style.StyleName;
+            //svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            newsvm.Style.JewelryType = db.JewelryTypes.Find(newsvm.Style.JewelryTypeId);
+            newsvm.Style.MetalWeightUnit = db.MetalWeightUnits.Find(newsvm.Style.MetalWtUnitId);
+            newsvm.PopulateDropDownData(db);
+            newsvm.PopulateDropDowns(db);
+            newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
+
+            return View(newsvm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(StyleViewModel svm)
         {
-            //ModelState.Clear();
+            CheckForNameAndNumberUniqueness(svm);
             int i;
+            //ModelState.Clear();
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
             //await SaveImageInStorage(svm);
@@ -232,8 +309,8 @@ namespace OJewelry.Controllers
                                 sc = db.StyleCastings.Where(x => x.StyleId == svm.Style.Id && x.CastingId == c.Id)
                                     .SingleOrDefault();
                                 casting = db.Castings.Find(c.Id);
-                                db.StyleCastings.Remove(sc);
                                 db.Castings.Remove(casting);
+                                db.StyleCastings.Remove(sc);
                                 break;
                             case SVMStateEnum.Dirty:
                             case SVMStateEnum.Fixed:
@@ -294,6 +371,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 ss = db.StyleStones.Where(x => x.Id == sc.linkId).SingleOrDefault();
+                                db.Stones.Remove(ss.Stone);
                                 db.StyleStones.Remove(ss);
                                 break;
                             case SVMStateEnum.Dirty:
@@ -346,6 +424,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 fc = db.StyleFindings.Where(x => x.Id == c.linkId).SingleOrDefault();
+                                db.Findings.Remove(fc.Finding);
                                 db.StyleFindings.Remove(fc);
                                 break;
                             case SVMStateEnum.Dirty:
@@ -391,7 +470,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
-                                db.StyleLabors.Remove(sl);
+                                RemoveLabor(sl);
                                 break;
                             case SVMStateEnum.Dirty:
                             case SVMStateEnum.Fixed:
@@ -441,11 +520,11 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 sm = db.StyleMiscs.Where(x => x.StyleId == svm.Style.Id && x.MiscId == c.Id).Single();
-                                db.StyleMiscs.Remove(sm);
+                                RemoveMisc(sm);
                                 break;
                             case SVMStateEnum.Dirty:
                             case SVMStateEnum.Fixed:
-                                if (c.Id == 0)
+                                if (c.Id <= 0)
                                 {
                                     AddMisc(c, svm, i);
                                 }
@@ -476,12 +555,17 @@ namespace OJewelry.Controllers
                 if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
                 {
                     // Save changes, go to Home
-                    db.SaveChanges();
+                    db.SaveChanges(); // need the styleId for the image name
+                    Trace.TraceInformation("Operation: {0}, svmId:{1}", svm.SVMOp.ToString(), svm.Style.Id);
                     await SaveImageInStorage(db, svm);
+                    db.Entry(svm.Style);
+                    db.SaveChanges();
                     if (svm.SVMOp != SVMOperation.Print)
                     {
-                        return RedirectToAction("Index", new { CollectionID = svm.Style.CollectionId });
-                    } else
+                        // Redurect to Edit
+                        return RedirectToAction("Edit", new { id = svm.Style.Id });
+                    }
+                    else
                     {
                         return Print(svm.Style.Id);
                     }
@@ -493,8 +577,8 @@ namespace OJewelry.Controllers
             svm.PopulateDropDowns(db);
             svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes, "Id", "Name", svm.Style.JewelryTypeId);
-            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits, "Id", "Unit", svm.Style.MetalWtUnitId);
+            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
+            ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             // iterate thru modelstate errors, display on page
             return View(svm);
         }
@@ -520,12 +604,14 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Style style = db.Styles.Find(id);
+            string imageName = style.Image;
             int collectionId = style.CollectionId;
             // remove memos 
             List<Memo> rmMemos = db.Memos.Where(m => m.StyleID == id).ToList();
             db.Memos.RemoveRange(rmMemos);
             db.Styles.Remove(style);
             db.SaveChanges();
+            RemoveImageFromStorage(imageName);
             return RedirectToAction("Index", new { CollectionID = collectionId });
         }
 
@@ -595,27 +681,6 @@ namespace OJewelry.Controllers
             }
 
             return true;
-        }
-
-        public void AddDefaultEntries(StyleViewModel svm)
-        {
-            // Add 2 Fixed Labor entries and 1 Fixed Misc entry
-            LaborComponent lc = new LaborComponent
-            {
-                Id = -1,
-                Name = StyleViewModel.FinishingLaborName,
-                SVMState = SVMStateEnum.Fixed,
-                Qty = 1
-            };
-            svm.Labors.Add(lc);
-
-            MiscComponent mc = new MiscComponent
-            {
-                Name = StyleViewModel.PackagingName,
-                SVMState = SVMStateEnum.Fixed,
-                Qty = 1
-            };
-            svm.Miscs.Add(mc);
         }
 
         public ActionResult Memo(int? id)
@@ -850,6 +915,12 @@ namespace OJewelry.Controllers
             db.StyleLabors.Add(sl);
         }
 
+        void RemoveLabor(StyleLabor sl)
+        {
+            db.Labors.Remove(sl.Labor);
+            db.StyleLabors.Remove(sl);
+        }
+
         void AddMisc(MiscComponent m, StyleViewModel svm, int keyVal)
         {
             Misc misc = new Misc(m);
@@ -859,28 +930,74 @@ namespace OJewelry.Controllers
             db.StyleMiscs.Add(sm);
         }
 
-        private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm)
+        void RemoveMisc(StyleMisc sm)
         {
-            //AzureBlobStorageContainer container = new AzureBlobStorageContainer();
-            //await container.Init(ojStoreConnStr, "ojewelry");
-            if (svm.PostedImageFile != null)
+            db.Miscs.Remove(sm.Misc);
+            db.StyleMiscs.Remove(sm);
+        }
+        private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm, bool bCopy = false)
+        {
+            if (svm.Style.Image == null && svm.PostedImageFile == null)
             {
-                string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-                env = (env == "Production") ? "" : env + "_";
-                string filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
-                svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
-                db.SaveChanges();
+                Trace.TraceInformation("Image and postedfile are both blank, returnig.");
+                return true;
             }
 
+            string filename;
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            string username = User.Identity.GetUserName();
+            env = (env == "Production") ? "" : env + "_";
+            // Set filename
+
+            if (svm.PostedImageFile != null) // new image
+            {
+                if (bCopy) // new style
+                {
+                    filename = env + "StyleImg_" + username + Path.GetExtension(svm.PostedImageFile.FileName);
+                }
+                else
+                {
+                    filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
+                }
+                Trace.TraceInformation("Uploading {0} to {1}", svm.PostedImageFile, filename);
+                svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
+                Trace.TraceInformation("Done uploading, image=[{0}]", svm.Style.Image);
+            } else { // same image
+                Uri u = new Uri(svm.Style.Image);
+                string blobFile = u.Segments.Last();
+                if (bCopy) // new style
+                {
+                    // Copy old image to new
+                    filename = env + "StyleImg_" + username + Path.GetExtension(svm.Style.Image);
+                    Trace.TraceInformation("Copying {0} to {1} (bCopy=true)", blobFile, filename);
+                    svm.Style.Image = await Singletons.azureBlobStorage.Copy(blobFile, filename);
+                    Trace.TraceInformation("Done copying, image=[{0}]", svm.Style.Image);
+                }
+                else
+                {
+                    filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.Style.Image);
+                    if (svm.Style.Image != filename)
+                    {
+                        Trace.TraceInformation("Copying {0} to {1} (bCopy=false)", blobFile, filename);
+                        svm.Style.Image = await Singletons.azureBlobStorage.Copy(blobFile, filename);
+                        Trace.TraceInformation("Done copying, image=[{0}]", svm.Style.Image);
+                    }
+                }
+                //svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.Style.Image, filename);
+            }
             return true;
         }
 
-        /*
-        private async Task<bool> RetrieveImageFromStorage(StyleViewModel svm)
+        
+        private void RemoveImageFromStorage(string imageName)
         {
-            return true;
+            if (imageName == null) return;
+            Uri u = new Uri(imageName);
+            string blobFile = u.Segments.Last();
+            Singletons.azureBlobStorage.Delete(blobFile);
+            return;
         }
-        */
+        
 
         protected override void Dispose(bool disposing)
         {

@@ -11,6 +11,7 @@ using OJewelry.Models;
 
 namespace OJewelry.Controllers
 {
+    /*
     public class AssemblyCostsController : Controller
     {
         private OJewelryDB db = new OJewelryDB();
@@ -35,6 +36,7 @@ namespace OJewelry.Controllers
             if (assemblyCost == null)
             {
                 assemblyCost = new AssemblyCost();
+                assemblyCost.companyId = companyId.Value;
             }
             assemblyCost.Load(db, companyId.Value);
             CostData cd = assemblyCost.GetCostDataFromJSON();
@@ -53,12 +55,25 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                AssemblyCost assemblyCost = db.AssemblyCosts.Find(costData.companyId);
-                assemblyCost.costDataJSON = costData.GetJSON();
-                db.Entry(assemblyCost).State = EntityState.Modified;
-                db.SaveChanges();
+                AssemblyCostX assemblyCost = db.AssemblyCosts.Find(costData.companyId);
+                if (assemblyCost == null)
+                {
+                    assemblyCost = new AssemblyCostX();
+                    assemblyCost.companyId = costData.companyId;
+                    assemblyCost.costDataJSON = costData.GetJSON();
+                    db.AssemblyCosts.Add(assemblyCost);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    assemblyCost.costDataJSON = costData.GetJSON();
+                    db.Entry(assemblyCost).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
                 //return RedirectToAction("Index", "");
             }
+            Company company = db.FindCompany(costData.companyId);
+            ViewBag.CompanyName = company.Name;
             costData.mc = db.MetalCodes;
             return View(costData);
         }
@@ -72,4 +87,5 @@ namespace OJewelry.Controllers
             base.Dispose(disposing);
         }
     }
+    */
 }

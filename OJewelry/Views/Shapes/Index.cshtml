@@ -5,9 +5,13 @@
 }
 
 <h2>Stone Shapes</h2>
-
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New Shape", "Create", new { @companyId = ViewBag.companyId })
+</p>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Stone Shapes to Excel", "ExportStoneShapesReport", new { companyId = ViewBag.companyId })
 </p>
 <table class="table">
     <tr>
@@ -17,21 +21,22 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>
 
-<div class="row">
-    <div class="col-sm-4">
-        @Html.ActionLink("Manage Companies", "Index", "Companies")
-    </div>
-</div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Stone Shapes to Excel", "ExportStoneShapesReport", new { companyId = ViewBag.companyId })
+</p>

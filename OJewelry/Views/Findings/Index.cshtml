@@ -9,6 +9,11 @@
 <p>
     @Html.ActionLink("Create New Finding", "Create", new { companyId = ViewBag.CompanyId })
 </p>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Findings to Excel", "ExportFindingsReport", new { companyId = ViewBag.companyId })
+</p>
 <table class="table">
     <tr>
         <th>
@@ -27,29 +32,31 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Weight)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Vendor.Name)
-        </td>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Weight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vendor.Name)
+            </td>
 
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-        </td>
-    </tr>
-}
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>
 <p>
-    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = ViewBag.CompanyId }, null) |
-    @Html.ActionLink("Companies", "Index", "Companies")
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Findings to Excel", "ExportFindingsReport", new { companyId = ViewBag.companyId })
 </p>

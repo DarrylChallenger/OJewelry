@@ -89,7 +89,8 @@
 </div>
 
 <div>
-    @Html.ActionLink("Inventory Report", "InventoryReport", new { CompanyId = Model.CompanyId }) |
-    @Html.ActionLink("Companies", "Index")
+    @Html.ActionLink("Companies", "Index") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
+    @Html.ActionLink("Inventory Report", "InventoryReport", new { CompanyId = Model.CompanyId })
 </div>
 

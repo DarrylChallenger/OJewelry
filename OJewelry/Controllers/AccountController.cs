@@ -138,7 +138,7 @@ namespace OJewelry.Controllers
         }
 
         // GET: /Account/Register
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public ActionResult Register()
         {
             RegisterViewModel rvm = new RegisterViewModel();
@@ -166,6 +166,7 @@ namespace OJewelry.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            OJewelryDB db = new OJewelryDB();
             ApplicationDbContext sec = new ApplicationDbContext();
             if (ModelState.IsValid)
             {
@@ -181,7 +182,6 @@ namespace OJewelry.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    OJewelryDB db = new OJewelryDB();
                     UpdateCompaniesUsers(user, db, model.Companies);
                     UpdateRoles(sec, user, model.RoleId);
                     db.SaveChanges();
@@ -192,6 +192,11 @@ namespace OJewelry.Controllers
 
             // If we got this far, something failed, redisplay form
             ViewBag.Roles = sec.Roles.ToList();
+            List<Company> allCompanies = db.Companies.ToList();
+            foreach (CompanyAuthorizedUser cau in model.Companies) // should be company left outer joined to users by id, exclude Managers, admins
+            {
+                cau.CompanyName = allCompanies.First(c => c.Id == cau.CompanyId).Name;
+            }
             return View(model);
         }
 
@@ -209,7 +214,7 @@ namespace OJewelry.Controllers
             string currUserId = User.Identity.GetUserId();
             if (UserManager.IsInRole(currUserId, "Admin") == true)
             {
-                return RedirectToAction("EditUser", new { UserId = UserId});
+                return RedirectToAction("EditUser", new { UserId = UserId });
             }
             EditUserViewModel evm = new EditUserViewModel();
             if (UserManager.IsInRole(UserId, "Guest") == true)
@@ -354,7 +359,7 @@ namespace OJewelry.Controllers
         {
             IdentityRole ir = sec.Roles.Find(roleId);
             // user.Roles.Clear(); // ensure user only has one role
-            foreach(IdentityRole r in sec.Roles)
+            foreach (IdentityRole r in sec.Roles)
             {
                 UserManager.RemoveFromRole(user.Id, r.Name);
             }
@@ -375,6 +380,44 @@ namespace OJewelry.Controllers
         public ActionResult UserList(string UserId)
         {
             return RedirectToAction("EditUser", UserId);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public ActionResult AdminResetPassword(string userId)
+        {
+            ApplicationUser user = UserManager.FindById(userId);
+            AdminResetPasswordModel arp = new AdminResetPasswordModel() {
+                userId = userId,
+                UserName = user.UserName
+            };
+            return View(arp);
+        }
+
+        [Authorize(Roles ="Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AdminResetPassword(AdminResetPasswordModel arp)
+        {
+
+            if (await UserManager.PasswordValidator.ValidateAsync(arp.newPassword) == IdentityResult.Success)
+            {
+                var user = new ApplicationUser();
+                if (UserManager.RemovePassword(arp.userId) == IdentityResult.Success)
+                {
+                    UserManager.AddPassword(arp.userId, arp.newPassword);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error restting password");
+                    return View(arp);
+                }
+            } else
+            {
+                ModelState.AddModelError("", "Invalid password");
+                return View(arp);
+            }
+            return RedirectToAction("UserList");
         }
 
         //

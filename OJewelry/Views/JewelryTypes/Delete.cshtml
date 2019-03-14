@@ -30,8 +30,9 @@
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" />
         </div>
-        <div>
-            @Html.ActionLink("Jewelry Types List", "Index")
-        </div>
     }
 </div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.CompanyId)
+</p>

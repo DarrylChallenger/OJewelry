@@ -6,8 +6,15 @@
 
 <h2>Stones for the <i>@ViewBag.CompanyName</i> company</h2>
 
+
 <p>
-    @Html.ActionLink("Create New Stone", "Create", new {companyId = ViewBag.CompanyId})
+    @Html.ActionLink("Create New Stone", "Create", new { companyId = ViewBag.CompanyId })
+</p>
+
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
 </p>
 <table class="table">
     <tr>
@@ -30,40 +37,55 @@
         <th>
             @Html.DisplayNameFor(model => model.Price)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SettingCost)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Qty)
+        </th>
 
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Shape.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Vendor.Name)
-        </td>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Shape.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vendor.Name)
+            </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.CtWt)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StoneSize)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CtWt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StoneSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SettingCost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Qty)
+            </td>
 
-        <td>
-            @Html.ActionLink("Edit", "Edit", new {id = item.Id})
-        </td>
-    </tr>
-}
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
+    }
 
 </table>
+
 <p>
-    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = ViewBag.CompanyId }, null) |
-    @Html.ActionLink("Companies", "Index", "Companies")
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
 </p>

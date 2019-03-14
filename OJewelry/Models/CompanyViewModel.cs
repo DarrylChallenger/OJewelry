@@ -35,7 +35,6 @@ namespace OJewelry.Models
         [RequiredIfNotRemoved]
         public string Name { get; set; }
 
-        [StringLength(10)]
         [DisplayName("Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
@@ -67,7 +66,6 @@ namespace OJewelry.Models
         public Company company { get; set; }
         public List<CompanyViewClientModel> clients { get; set; }
         // Default location (Presenter[0])
-        public string Email { set; get; }
 
     }
 

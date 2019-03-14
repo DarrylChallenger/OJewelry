@@ -4,11 +4,17 @@
     ViewBag.Title = "Locations";
 }
 
-<h2>The <i>@ViewBag.CompanyName</i> Company locations</h2>
+<h2>The <i>@ViewBag.CompanyName</i> Company Locations</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create", new { @companyId = ViewBag.CompanyId })
+    @Html.ActionLink("Create New Location", "Create", new { @companyId = ViewBag.CompanyId })
 </p>
+<p>
+    @Html.ActionLink("Companies List", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Locations to Excel", "ExportLocationReport", new { CompanyId = ViewBag.CompanyId })
+</p>
+
 <table class="table">
     <tr>
         <th>
@@ -28,26 +34,28 @@
 
     @foreach (var item in Model)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ShortName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Phone)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-        </td>
-    </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShortName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
     }
 
 </table>
-
-@Html.ActionLink("Export Locations to Excel", "ExportLocationReport", new { CompanyId = ViewBag.CompanyId }) |
-@Html.ActionLink("Companies List", "Index", "Companies")
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Locations to Excel", "ExportLocationReport", new { CompanyId = ViewBag.CompanyId }) 
+</p>

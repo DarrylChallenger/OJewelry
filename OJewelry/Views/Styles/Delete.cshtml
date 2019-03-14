@@ -4,123 +4,67 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete the <i>@Model.StyleName</i> style</h2>
+<h2>Delete the <i>@Model.StyleNum</i> style</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to delete @Model.StyleNum?</h3>
 <div>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.StyleNum)
-        </dt>
+    <div class="row StyleDelete">
+        <div class="col-sm-7">
+            <dl class="dl-horizontal ">
+                <dt>
+                    @Html.DisplayNameFor(model => model.StyleNum)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.StyleNum)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.StyleNum)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.StyleName)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.StyleName)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.StyleName)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.StyleName)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Desc)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Desc)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Desc)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Desc)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IntroDate)
-        </dt>
+                <dt>
+                    @Html.DisplayName("COLLECTION ")
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.IntroDate)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Collection.Name)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
+                <dt>
+                    @Html.DisplayName("JEWELRY TYPE")
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Image)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Width)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Width)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Length)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Length)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ChainLength)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ChainLength)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.RetailRatio)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.RetailRatio)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.RedlineRatio)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.RedlineRatio)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Quantity)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Collection.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Collection.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.JewelryType.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.JewelryType.Name)
-        </dd>
-
-    </dl>
-
+                <dd>
+                    @Html.DisplayFor(model => model.JewelryType.Name)
+                </dd>
+            </dl>
+        </div>
+        <div class="col-sm-5">
+            <div class="StyleDeleteRightHeader">
+                @{var imgurl = (Model.Image != null) ? Model.Image : "/Images/logo.png"; }
+                <img src="@imgurl" class="StyleImage centerImage" />
+            </div>
+        </div>
+    </div>
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
 
     <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <input type="submit" value="Delete" class="btn btn-default" /> 
         @Html.ActionLink("Style List", "Index", new { CollectionId = Model.CollectionId })
     </div>
     }

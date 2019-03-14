@@ -12,6 +12,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml;
 using OJewelry.Models;
 using OJewelry.Classes;
+using System.Text.RegularExpressions;
 
 namespace OJewelry.Controllers
 {
@@ -33,6 +34,10 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             var presenters = db.Presenters.Where(x => x.CompanyId == companyId).OrderBy(p=>p.Name).Include(p => p.Company);
+            foreach (Presenter p in presenters)
+            {
+                p.Phone = SetFormattedPhone(p.Phone);
+            }
             ViewBag.CompanyName = co.Name;
             ViewBag.CompanyId = co.Id;
             return View(presenters.ToList());
@@ -68,6 +73,7 @@ namespace OJewelry.Controllers
             }
             PresenterViewModel pvm = new PresenterViewModel();
             ViewBag.CompanyName = co.Name;
+            ViewBag.CompanyId = co.Id;
             pvm.Location.CompanyId = co.Id;
             return View(pvm);
         }
@@ -81,6 +87,7 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
+                pvm.Location.Phone = GetNormalizedPhone(pvm.Phone);
                 db.Presenters.Add(pvm.Location);
                 SavePresenters(pvm.Location.Id, pvm.contacts);
                 db.SaveChanges();
@@ -88,6 +95,7 @@ namespace OJewelry.Controllers
             }
 
             pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
+            ViewBag.CompanyName = pvm.Location.Name;
             return View(pvm);
         }
 
@@ -104,10 +112,12 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            pvm.Phone = SetFormattedPhone(pvm.Location.Phone);
             List<Contact> contacts = db.Contacts.Where(x => x.Location.Id == pvm.Location.Id).ToList();
             foreach (Contact c in contacts)
             {
                 PresenterViewContactModel pvcm = new PresenterViewContactModel(c);
+                pvcm.Phone = SetFormattedPhone(c.Phone);
                 pvm.contacts.Add(pvcm);
             }
             pvm.Location.Company = db.FindCompany(pvm.Location.CompanyId);
@@ -126,6 +136,7 @@ namespace OJewelry.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(pvm.Location).State = EntityState.Modified;
+                pvm.Location.Phone = GetNormalizedPhone(pvm.Phone);
                 SavePresenters(pvm.Location.Id, pvm.contacts);
                 db.SaveChanges();
                 return RedirectToAction("Index", new { companyId = pvm.Location.CompanyId });
@@ -193,6 +204,7 @@ namespace OJewelry.Controllers
             Contact con;
             foreach (PresenterViewContactModel p in contacts)
             {
+                p.Phone = GetNormalizedPhone(p.Phone);
                 if (p.Name != null)
                 {
                     p.PresenterId = presenterId;
@@ -266,10 +278,11 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Headers
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
-                    cell = oxl.SetCellVal("B1", "Short Name"); row.Append(cell);
-                    cell = oxl.SetCellVal("C1", "Phone"); row.Append(cell);
-                    cell = oxl.SetCellVal("D1", "Email"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Short Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Phone"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Email"); row.Append(cell);
+                    worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<Presenter> locations = db.Presenters.Where(x => x.CompanyId == CompanyId).ToList();
                     // Content
@@ -296,5 +309,21 @@ namespace OJewelry.Controllers
                 }
             }
         }
+
+        private string GetNormalizedPhone(string phone)
+        {
+            if (phone == "" || phone == null) { return phone; }
+            string[] newPhone = Regex.Split(phone, "[.()-]");
+            string finPhone = newPhone[0] + newPhone[1] + newPhone[2];
+            return finPhone;
+        }
+
+        private string SetFormattedPhone(string phone)
+        {
+            if (phone == "" || phone == null) return "";
+            string newPhone = Regex.Replace(phone, @"^([0-9]{3})([0-9]{3})([0-9]{4})$", @"$1-$2-$3");
+            return newPhone;
+        }
+
     }
 }

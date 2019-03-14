@@ -42,6 +42,10 @@ textarea {
     width: 33%;
 }
 
+.width100{
+    width:100%;
+}
+
 .navbar 
 {
     background-color:white;
@@ -55,6 +59,9 @@ textarea {
     background-color: lightblue;
 }
 
+.rightjustify {
+    float: right;
+}
 
 .nav > li > a:hover, .nav > li > a:focus {
     color: darkgray;
@@ -113,7 +120,7 @@ textarea {
 
 .bordered {
     border-style: solid;
-    border-color: black;
+    border-color: green;
 }
 
 .ltbordered {
@@ -151,6 +158,7 @@ html input[disabled], locked {
     font-family: 'Calibri','sans-serif';
     font-weight: 700;
 }
+
 .StyleHeader 
 {
     border-color:mediumpurple;
@@ -158,8 +166,9 @@ html input[disabled], locked {
 
 .StyleRightHeader {
     border-color: #e8e8e8;
+    border-color:green;
     border-style: solid;
-    border-width: .5px;
+    border-width: 1.5px;
     float: right;
     height: 16em;
     padding-left: 0;
@@ -185,7 +194,7 @@ html input[disabled], locked {
 .StyleImage 
 {
     border-style:solid;
-    border-color:black;
+    border-color:red;
     border-width:2px;
     height:100%;
 }
@@ -217,6 +226,41 @@ html input[disabled], locked {
     color: lightsteelblue;
 }
 
+.boxfull {
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgray;
+}
+
+.boxme {
+    border-top-style:solid;
+    border-width:1px;
+    border-left-style:solid;
+    border-color:lightgray;
+    margin-bottom: -1px;
+}
+
+.boxright {
+    border-right-style: solid;
+}
+
+.boxbot {
+    border-bottom-style:solid;
+}
+
+.StyleComponentsRowHeader {
+    font-weight: normal;
+}
+
+.styleCastings .sslabel {
+    padding-left: 5px;
+}
+
+
+.ssdata {
+    font-weight:bold;
+}
+
 .floatleft {
     float: left;
 }
@@ -244,8 +288,27 @@ html input[disabled], locked {
     text-align:center;
 }
 
+.StyleDelete dd {
+    border-color:black;
+}
+
+.StyleDeleteRightHeader {
+    border-color: #e8e8e8;
+    border-style: solid;
+    border-width: .5px;
+    float: left;
+    height: 16em;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.btn-dctech {
+    -webkit-appearance:button;
+    -moz-appearance:button;
+}
+
 .control-label-align {
-    padding-top:7px;
+    padding-top: 7px;
 }
 
 .InvTemplate img
@@ -418,3 +481,4 @@ html input[disabled], locked {
 .AssemblyCostFormMetalHeader label {
     text-align:left;
 }
+

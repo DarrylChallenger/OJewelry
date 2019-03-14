@@ -6,7 +6,7 @@
 
 <h2>Copy of (@Model.CopiedStyleName) style for the <i>@Model.Style.Collection.Name</i> collection</h2>
 
-@using (Html.BeginForm("Create", "Styles", FormMethod.Post, new { id = "StylesForm" }))
+@using (Html.BeginForm("Create", "Styles", FormMethod.Post, new { id = "StylesForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -31,11 +31,11 @@
     </div>
 }
 
-<div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
-    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = @Model.CompanyId }, null) |
-    @Html.ActionLink("Companies", "Index", "Companies")
-</div>
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+</p>
 
 @section Scripts {
     @*@Scripts.Render("~/bundles/jqueryval")*@

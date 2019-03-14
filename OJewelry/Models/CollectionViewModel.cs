@@ -18,8 +18,9 @@ namespace OJewelry.Models
         public double Memod { get; set; }
         [Display(Name="Inventory")]
         public double Qty { get; set; }
-        [Display(Name = "Retial Price")]
+        [Display(Name = "Retail Price")]
         public decimal RetialPrice { get; set; }
+        public string Desc { get; set; }
         public decimal Cost { get; set; }
         public string Image { get; set; }
     }

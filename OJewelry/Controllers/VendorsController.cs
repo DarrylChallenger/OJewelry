@@ -15,15 +15,23 @@ using OJewelry.Models;
 
 namespace OJewelry.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class VendorsController : Controller
     {
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Vendors
-        public ActionResult Index()
+        public ActionResult Index(int? companyId)
         {
-            return View(db.Vendors.OrderBy(v => v.Name).ToList());
+            if (companyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            companyId = companyId.Value;
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+
+            return View(db.Vendors.Where(v => v.CompanyId == companyId).OrderBy(v => v.Name).ToList());
         }
 
         // GET: Vendors/Details/5
@@ -42,8 +50,11 @@ namespace OJewelry.Controllers
         }
 
         // GET: Vendors/Create
-        public ActionResult Create()
+        public ActionResult Create(int companyId)
         {
+            ViewBag.CompanyId = companyId;
+            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+
             return View();
         }
 
@@ -52,14 +63,16 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,Type")] Vendor vendor)
+        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,Type,CompanyId")] Vendor vendor)
         {
             if (ModelState.IsValid)
             {
                 db.Vendors.Add(vendor);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { companyId = vendor.CompanyId });
             }
+            ViewBag.CompanyId = vendor.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
 
             return View(vendor);
         }
@@ -76,6 +89,8 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.CompanyId = vendor.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
             return View(vendor);
         }
 
@@ -84,14 +99,16 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Phone,Email,Type")] Vendor vendor)
+        public ActionResult Edit([Bind(Include = "Id,Name,Phone,Email,Type,CompanyId")] Vendor vendor)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(vendor).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { companyId = vendor.CompanyId });
             }
+            ViewBag.CompanyId = vendor.CompanyId;
+            ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
             return View(vendor);
         }
 
@@ -124,10 +141,10 @@ namespace OJewelry.Controllers
                 ModelState.AddModelError("Vendor", vendor.Name + " is in use by at least one casting, stone, or finding.");
                 return View(vendor);
             }
-            
+            int companyId = vendor.CompanyId.Value;
             db.Vendors.Remove(vendor);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { companyId });
         }
 
         protected override void Dispose(bool disposing)
@@ -139,7 +156,7 @@ namespace OJewelry.Controllers
             base.Dispose(disposing);
         }
 
-        public FileResult ExportVendorReport()
+        public FileResult ExportVendorReport(int companyId)
         {
             byte[] b;
             DCTSOpenXML oxl = new DCTSOpenXML();
@@ -176,17 +193,25 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Headers
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
-                    cell = oxl.SetCellVal("B1", "Phone"); row.Append(cell);
-                    cell = oxl.SetCellVal("C1", "Email"); row.Append(cell);
-                    cell = oxl.SetCellVal("D1", "Type"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Phone"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Email"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Type"); row.Append(cell);
+                    worksheet.Append(oxl.columns);
                     sd.Append(row);
-                    List<Vendor> vendors = db.Vendors.ToList();
+                    List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId).OrderBy(vv => vv.Name).ToList();
                     // Content
+                    int offset = 2;
                     for (int i = 0; i < vendors.Count(); i++)
                     {
+
+                        if (vendors[i].Name == "") // don't print default vendor
+                        {
+                            offset--;
+                            continue;
+                        }
                         row = new Row();
-                        rr = 2 + i;
+                        rr = offset + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, vendors[i].Name); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, vendors[i].Phone); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, vendors[i].Email); row.Append(cell);

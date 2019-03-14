@@ -83,7 +83,7 @@ namespace OJewelry.Models
         }
 
         public virtual DbSet<ACL> ACLs { get; set; }
-        public virtual DbSet<AssemblyCost> AssemblyCosts { get; set; }
+        //public virtual DbSet<AssemblyCost> AssemblyCosts { get; set; }
         public virtual DbSet<Buyer> Buyers { get; set; }
         public virtual DbSet<Casting> Castings { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
@@ -297,7 +297,8 @@ namespace OJewelry.Models
                 .Property(e => e.Desc)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Style>()
+            /* W, L, chain length changed to strings
+             * modelBuilder.Entity<Style>()
                 .Property(e => e.Width)
                 .HasPrecision(8, 5);
 
@@ -305,9 +306,10 @@ namespace OJewelry.Models
                 .Property(e => e.Length)
                 .HasPrecision(8, 5);
 
-            modelBuilder.Entity<Style>()
+             * modelBuilder.Entity<Style>()
                 .Property(e => e.ChainLength)
                 .HasPrecision(8, 5);
+            */
 
             modelBuilder.Entity<Style>()
                 .Property(e => e.RetailRatio)

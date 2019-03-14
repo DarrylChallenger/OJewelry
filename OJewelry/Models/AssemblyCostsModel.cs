@@ -30,8 +30,9 @@ namespace OJewelry.Models
         public Dictionary<string, decimal> packagingCosts { get; set; } // one for each Jewelry Type
     }
 
-    public partial class AssemblyCost
+    public partial class AssemblyCostX
     {
+        /*
         public void Load(OJewelryDB db, int _companyId)
         {
             System.Data.Entity.EntityState state;
@@ -99,6 +100,6 @@ namespace OJewelry.Models
         {
             return JsonConvert.DeserializeObject<CostData>(costDataJSON);
         }
-
+        */
     }
 }

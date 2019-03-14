@@ -23,7 +23,7 @@ namespace OJewelry
             if (stn == null)
             {
                 string empty = "";
-                result = JsonConvert.SerializeObject(new { CtWt = empty, VendorName = empty, Price = 0 });
+                result = JsonConvert.SerializeObject(new { CtWt = empty, VendorName = empty, Price = 0, SettingCost = 0 });
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
             else
@@ -31,7 +31,7 @@ namespace OJewelry
                 // make json string of results
                 string CtWt = stn.CtWt.GetValueOrDefault().ToString();
                 string VendorName = stn.Vendor == null ? "" : stn.Vendor.Name ?? "";
-                result = JsonConvert.SerializeObject(new { CtWt = CtWt, VendorName = VendorName, Price = stn.Price});
+                result = JsonConvert.SerializeObject(new { CtWt = CtWt, VendorName = VendorName, Price = stn.Price, SettingCost = stn.SettingCost });
             }
             return result;
         }

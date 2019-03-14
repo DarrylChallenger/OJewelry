@@ -8,16 +8,11 @@
         <div class="col-sm-7 col-xs-7 StyleLeftHeader">
             <!-- style left header-->
             <div class="row">
-                @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
-                <div class="col-sm-5 col-xs-5">
-                    @if (Model.SVMOp == OJewelry.Models.SVMOperation.Edit)
+                @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
+                <div class="col-sm-6 col-xs-6">
+                    @if (Model.SVMOp == OJewelry.Models.SVMOperation.Create || Model.SVMOp == OJewelry.Models.SVMOperation.Edit)
                     {
-                        @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "locked", @disabled = "disabled", placeholder = "Style Number" } })
-                        @Html.HiddenFor(model => model.Style.StyleNum)
-                    }
-                    @if (Model.SVMOp == OJewelry.Models.SVMOperation.Create)
-                    {
-                        @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "", placeholder = "Style Number" } })
+                        @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "width100", placeholder = "Style Number" } })
                     }
                     @if (Model.SVMOp == OJewelry.Models.SVMOperation.Print)
                     {
@@ -26,33 +21,33 @@
                 </div>
             </div>
             <div class="row">
-                @Html.LabelFor(model => model.Style.StyleName, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
-                <div class="col-sm-4 col-xs-4">
+                @Html.LabelFor(model => model.Style.StyleName, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
+                <div class="col-sm-6 col-xs-6">
                     @if (@Model.SVMOp == SVMOperation.Print)
                     {
                         @Html.DisplayFor(model => model.Style.StyleName, new { @class = "control-label col-sm-2 col-xs-2" })
                     }
                     else
                     {
-                        @Html.EditorFor(model => model.Style.StyleName, new { htmlAttributes = new { @class = "", placeholder = "Style Name" } })
+                        @Html.EditorFor(model => model.Style.StyleName, new { htmlAttributes = new { @class = "width100", placeholder = "Style Name" } })
                     }
                 </div>
             </div>
             <div class="row">
-                @Html.LabelFor(model => model.Style.Desc, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
-                <div class="col-sm-4 col-xs-4">
+                @Html.LabelFor(model => model.Style.Desc, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
+                <div class="col-sm-6 col-xs-6">
                     @if (@Model.SVMOp == SVMOperation.Print)
                     {
                         @Html.DisplayFor(model => model.Style.Desc, new { htmlAttributes = new { @class = "" } })
                     }
                     else
                     {
-                        @Html.EditorFor(model => model.Style.Desc, new { htmlAttributes = new { @class = "" } })
+                        @Html.EditorFor(model => model.Style.Desc, new { htmlAttributes = new { @class = "width100" } })
                     }
                 </div>
             </div>
             <div class="row">
-                @Html.LabelFor(model => model.Style.JewelryTypeId, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
+                @Html.LabelFor(model => model.Style.JewelryTypeId, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
                 <div class="col-sm-4 col-xs-4">
                     @if (@Model.SVMOp == SVMOperation.Print)
                     {
@@ -60,12 +55,12 @@
                     }
                     else
                     {
-                        @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "", onchange = "JewelryTypeChanged("+ Model.CompanyId + ")" })
+                        @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "width100 ", onchange = "JewelryTypeChanged(" + Model.CompanyId + ")" })
                     }
                 </div>
             </div>
             <div class="row">
-                @Html.LabelFor(model => model.Style.CollectionId, htmlAttributes: new { @class = "control-label col-sm-5 col-xs-5" })
+                @Html.LabelFor(model => model.Style.CollectionId, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
                 <div class="col-sm-4 col-xs-4">
                     @if (@Model.SVMOp == SVMOperation.Print)
                     {
@@ -73,7 +68,7 @@
                     }
                     else
                     {
-                        @Html.DropDownList("CollectionId", null, htmlAttributes: new { @class = "" })
+                        @Html.DropDownList("CollectionId", null, htmlAttributes: new { @class = "width100" })
                     }
                 </div>
             </div>
@@ -82,74 +77,102 @@
             <!-- style right header-->
             @Html.HiddenFor((model => model.Style.Image))
             @{var imgurl = (Model.Style != null && Model.Style.Image != null) ? Model.Style.Image : "/Images/logo.png"; }
-            <img src="@imgurl" class="StyleImage centerImage" />
+            <img src="@imgurl" class="StyleImage centerImage bor" />
             @*<input class="StyleLoadBtn " type="file"  />*@
-            @Html.TextBoxFor(model => model.PostedImageFile, new { @class = "StyleLoadBtn", type = "file" })
+            @Html.TextBoxFor(model => model.PostedImageFile, new { @class = "StyleLoadBtn bordered", type = "file" })
 
         </div> <!-- style right header-->
 
     </div>
+    @Html.ValidationMessageFor(model => model.Style.StyleNum, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.Style.StyleName, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.Style.Desc, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.Style.JewelryTypeId, "", new { @class = "text-danger" })
+    @Html.ValidationMessageFor(model => model.Style.CollectionId, "", new { @class = "text-danger" })
     <div class="row StyleBodyBoundingBox">
         <div class="row">
-            <div class="col-sm-6 col-xs-6 bold">
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-4 col-xs-4 bold">
                 <p>MEASUREMENTS:</p>
             </div>
             <div class="col-sm-3 col-xs-3">
-                @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
-            </div>
-            <div class="col-sm-3 col-xs-3">
-                @if (@Model.SVMOp == SVMOperation.Print)
+                @if (Model.SVMOp != SVMOperation.Print)
                 {
-                    if (Model.Style.IntroDate.HasValue)
-                    {
-
-                        @Model.Style.IntroDate.Value.ToShortDateString()
-                    }
+                    @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label" })
                 }
                 else
                 {
+                    @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label" })
+                    if (Model.Style.IntroDate.HasValue)
                     {
-                        var dateyr = Model.Style.IntroDate.GetValueOrDefault().Year;
-                        var datemo = Model.Style.IntroDate.GetValueOrDefault().Month.ToString("D2");
-                        var datedt = Model.Style.IntroDate.GetValueOrDefault().Day.ToString("D2");
-                        <input name="Style.IntroDate" class="text-box single-line" id="Style_IntroDate" type="date" data-val-date="The field INTRO DATE must be a date."
-                                value="@dateyr-@datemo-@datedt" />
+                        <text>: </text>
+                        @Model.Style.IntroDate.Value.ToShortDateString()
                     }
+                }
+            </div>
+            <div class="">
+                @if (@Model.SVMOp != SVMOperation.Print)
+                {
+                    <span class="col-sm-3 col-xs-3">
+                        @{
+                            var dateyr = Model.Style.IntroDate.GetValueOrDefault().Year;
+                            var datemo = Model.Style.IntroDate.GetValueOrDefault().Month.ToString("D2");
+                            var datedt = Model.Style.IntroDate.GetValueOrDefault().Day.ToString("D2");
+                            <input name="Style.IntroDate" class="text-box single-line" id="Style_IntroDate" type="date" data-val-date="The field INTRO DATE must be a date."
+                                   value="@dateyr-@datemo-@datedt" />
+                        }
+                    </span>
                 }
             </div>
         </div>
         <div class="row">
-            @Html.LabelFor(model => model.Style.Length, new { @class = "col-sm-1 col-xs-1" })
-            <div class="col-sm-2 col-xs-2">
+            @if (@Model.SVMOp == SVMOperation.Print)
+            {
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-10 col-xs-10">
+                @Html.LabelFor(model => model.Style.Length, new { @class = "" })
+                <text>:</text>
+                <span class="boxfull">
+                    &nbsp;@Html.DisplayFor(model => model.Style.Length, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
+                </span>
+                <text> &nbsp;&nbsp;&nbsp;</text>
+                @Html.LabelFor(model => model.Style.Width, new { @class = "" })
+                <text>:</text>
+                <span class="boxfull">
+                    &nbsp;@Html.DisplayFor(model => model.Style.Width, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
+                </span>
+                <text> &nbsp;&nbsp;&nbsp;&nbsp;</text>
+                @Html.LabelFor(model => model.Style.ChainLength, new { @class = "" })
+                <text>:</text>
+                <span class="boxfull">
+                    &nbsp;@Html.DisplayFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
+                </span>
+                <text> &nbsp;&nbsp;&nbsp;&nbsp;</text>
+            </div>
+            }
+            else
+            {
+                @Html.LabelFor(model => model.Style.Length, new { @class = "col-sm-1 col-xs-1" });
+                @Html.EditorFor(model => model.Style.Length, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } });
+            }
+            <div class="">
                 @if (@Model.SVMOp == SVMOperation.Print)
                 {
-                    @Html.DisplayFor(model => model.Style.Length, new { htmlAttributes = new { @class = "" } })
                 }
                 else
                 {
-                    @Html.EditorFor(model => model.Style.Length, new { htmlAttributes = new { @class = "" } })
+                    @Html.LabelFor(model => model.Style.Width, new { @class = "col-sm-1 col-xs-1" })
+                    @Html.EditorFor(model => model.Style.Width, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                 }
             </div>
-            @Html.LabelFor(model => model.Style.Width, new { @class = "col-sm-1 col-xs-1" })
-            <div class="col-sm-2 col-xs-2">
+            <div>
                 @if (@Model.SVMOp == SVMOperation.Print)
                 {
-                    @Html.DisplayFor(model => model.Style.Width, new { htmlAttributes = new { @class = "" } })
                 }
                 else
                 {
-                    @Html.EditorFor(model => model.Style.Width, new { htmlAttributes = new { @class = "" } })
-                }
-            </div>
-            @Html.LabelFor(model => model.Style.ChainLength, new { @class = "col-sm-3 col-xs-3" })
-            <div class="col-sm-3 col-xs-3">
-                @if (@Model.SVMOp == SVMOperation.Print)
-                {
-                    @Html.DisplayFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "" } })
-                }
-                else
-                {
-                    @Html.EditorFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "" } })
+                    @Html.LabelFor(model => model.Style.ChainLength, new { @class = "col-sm-2 col-xs-2" })
+                    @Html.EditorFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                 }
             </div>
         </div>
@@ -157,17 +180,25 @@
 
             @if (@Model.SVMOp == SVMOperation.Print)
             {
-                <div class="col-sm-12 col-xs-12">
-                    @Html.LabelFor(model => model.Style.MetalWeight, null, htmlAttributes: new { @class = "control-label" })
-                    <text>&nbsp;</text>
-                    @Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
-                    <text>&nbsp;</text>
-                    @Model.Style.MetalWeightUnit.Unit
-                    <text>&nbsp;</text>
-                    <text>&nbsp;</text>
-                    <text>&nbsp;</text>
-                    @Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })
-                </div>
+            <div class="col-sm-1 col-xs-1"></div>
+            <div class="col-sm-8 col-xs-8">
+                @Html.LabelFor(model => model.Style.MetalWeight, null, htmlAttributes: new { @class = "control-label" })
+                <text>&nbsp;</text>
+                <span class="boxfull">
+                    &nbsp;@Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })&nbsp;
+                </span>
+                <text>&nbsp;</text>
+                @Model.Style.MetalWeightUnit.Unit
+                <text>&nbsp;</text>
+                <text>&nbsp;</text>
+                <text>&nbsp;</text>
+                <span class="rightjustify">
+                    @Html.LabelFor(model => model.Style.MetalWtNote, null, htmlAttributes: new { @class = "" }):
+                    <span class="boxfull">
+                        &nbsp;@Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })&nbsp;
+                    </span>
+                </span>
+            </div>
             }
             else
             {
@@ -191,7 +222,7 @@
                         @Html.LabelFor(model => model.Style.MetalWtNote, null, htmlAttributes: new { @class = "" })
                     </div>
                     <div class="col-sm-4 col-xs-4">
-                        @Html.EditorFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })
+                        @Html.EditorFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "width100" } })
                     </div>
                 }
             </div>
@@ -199,11 +230,7 @@
     </div>
 </div>
 <div>
-    @Html.ValidationMessageFor(model => model.Style.StyleNum, "", new { @class = "text-danger" })
-    @Html.ValidationMessageFor(model => model.Style.StyleName, "", new { @class = "text-danger" })
-    @Html.ValidationMessageFor(model => model.Style.Desc, "", new { @class = "text-danger" })
-    @Html.ValidationMessageFor(model => model.Style.JewelryTypeId, "", new { @class = "text-danger" })
-    @Html.ValidationMessageFor(model => model.Style.CollectionId, "", new { @class = "text-danger" })
+
     @Html.ValidationMessageFor(model => model.Style.MetalWeight, "", new { @class = "text-danger" })
     @Html.ValidationMessageFor(model => model.Style.IntroDate, "", new { @class = "text-danger" })
     @Html.ValidationMessageFor(model => model.Style.Length, "", new { @class = "text-danger" })

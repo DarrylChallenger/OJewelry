@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
@@ -36,17 +37,41 @@ namespace OJewelry.Classes
             // Make sure file is accessible as URL
             return blockBlob.StorageUri.PrimaryUri.ToString();
         }
-        /*
-        public void Download(string fn)
+
+        
+        public async Task<Stream> Download(string uri)
         {
             // check bInitialized
-            using (MemoryStream memstream = new MemoryStream())
-            {
-                CloudBlockBlob blockBlob = container.GetBlockBlobReference(fn);
-                blockBlob.DownloadToStreamAsync();
-            }
+            CloudBlockBlob blockBlob = new CloudBlockBlob(new Uri(uri));
+            MemoryStream m = new MemoryStream();
+            await blockBlob.DownloadToStreamAsync(m);           
+            return m;
         }
+        /*
+        public void Move(string fnSource, string fnTarget) { }
         */
+
+        public async Task<string> Copy(string uriSource, string fnTarget)
+        {
+            CloudBlockBlob sourceBlob = container.GetBlockBlobReference(uriSource);
+            CloudBlockBlob targetBlob = container.GetBlockBlobReference(fnTarget);
+            using (MemoryStream sourceStream = new MemoryStream())
+            {
+                await sourceBlob.DownloadToStreamAsync(sourceStream);         
+                targetBlob.Properties.ContentType = sourceBlob.Properties.ContentType;
+                sourceStream.Seek(0, SeekOrigin.Begin);
+                await targetBlob.UploadFromStreamAsync(sourceStream);             
+            }
+            return targetBlob.StorageUri.PrimaryUri.ToString();
+        }
+
+        public void Delete(string uriSource)
+        {
+            CloudBlockBlob blob = container.GetBlockBlobReference(uriSource);
+            blob.Delete();
+        }
+
+
         private void CreateStorageAccountFromConnectionString(string connStr)
         {
             try

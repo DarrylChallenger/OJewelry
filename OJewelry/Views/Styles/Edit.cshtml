@@ -28,20 +28,20 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
-                <input type="submit" value="Print" formaction="../Print/@Model.Style.Id" class="btn" formtarget="_blank" />
-                <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn" />
-                <input type="submit" value="Delete" formaction="../Delete/@Model.Style.Id" class="btn" />
+                <input type="submit" value="Print" formaction="../Print/@Model.Style.Id" class="btn btn-default" formtarget="_blank" />
+                <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn btn-default" />
+                @Html.ActionLink("Delete", "Delete", new {  id = Model.Style.Id }, new { @class="btn btn-default"})
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
-    @Html.ActionLink("Assortment", "Index", "Collections", new { CompanyId = @Model.CompanyId }, null) |
-    @Html.ActionLink("Companies", "Index", "Companies")
+    <p>
+        @Html.ActionLink("Companies", "Index", "Companies") |
+        @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
+        @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+    </p>
 
-</div>
 
 @section Scripts {
     @*@Scripts.Render("~/bundles/jqueryval")*@

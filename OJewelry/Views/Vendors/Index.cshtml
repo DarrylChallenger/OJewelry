@@ -4,10 +4,15 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Vendors</h2>
+<h2>Vendors for <i>@ViewBag.CompanyName</i></h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New Vendor", "Create", new { @companyId = ViewBag.companyId })
+</p>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Vendors to Excel", "ExportVendorReport", new { companyId = ViewBag.companyId })
 </p>
 <table class="table">
     <tr>
@@ -28,30 +33,32 @@
 
     @foreach (var item in Model)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-            </td>
-        </tr>
+        if (item.Name != "")
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                </td>
+            </tr>
+        }
     }
 
 </table>
 
-@Html.ActionLink("Export Vendors to Excel", "ExportVendorReport") 
-<div class="row">
-    <div class="col-sm-4">
-        @Html.ActionLink("Manage Companies", "Index", "Companies")
-    </div>
-</div>
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Export Vendors to Excel", "ExportVendorReport", new { companyId = ViewBag.companyId })
+</p>
