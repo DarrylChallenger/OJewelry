@@ -249,7 +249,7 @@ namespace OJewelry.Controllers
                         Columns columns = new Columns();
                         Worksheet worksheet = new Worksheet();
                         SheetData sd = new SheetData();
-                        List<Image> images = new List<Image>();
+                        List<Bitmap> images = new List<Bitmap>();
                         string imageName = "";
                         // Build sheet
                         // Headers
@@ -268,14 +268,14 @@ namespace OJewelry.Controllers
                         {
                             row = new Row();
                             rr = 2 + i;
-                            Image image;
+                            Bitmap image;
                             if (Styles[i].Image == null)
                             {
-                                image = Image.FromFile(Server.MapPath("/Images") + "/logo.png");
+                                image = new Bitmap(Server.MapPath("/Images") + "/logo.png");
                             } else
                             {
                                 // get the file off storage 
-                                image = Image.FromStream(await Singletons.azureBlobStorage.Download(Styles[i].Image));
+                                image = new Bitmap(await Singletons.azureBlobStorage.Download(Styles[i].Image));
                                 //image = Image.FromFile(Server.MapPath("/Images") + "/logo.png");
                             }
                             images.Add(image);
@@ -310,7 +310,7 @@ namespace OJewelry.Controllers
                             rr = 2 + i;
                             // place images in column A
                             string contentType = MimeMapping.GetMimeMapping(imageName);
-                            InsertImageOnCell(worksheet, images[i], 0, rr-1, col0Width, pixelRowHeight, contentType, Styles[i].StyleName, Styles[i].Desc);
+                            PlaceImageOnCell(worksheet, images[i], 0, rr-1, col0Width, pixelRowHeight, contentType, Styles[i].StyleName, Styles[i].Desc);
                             
                         }
                     }
@@ -326,7 +326,7 @@ namespace OJewelry.Controllers
             }
         }
 
-        private void InsertImageOnCell(Worksheet worksheet, Image image, int Col, int Row, double colWid, double rowHeight, string type, string imgName="", string imgDesc="")//, float? W, float? H)
+        private void PlaceImageOnCell(Worksheet worksheet, Bitmap image, int Col, int Row, double colWid, double rowHeight, string type, string imgName="", string imgDesc="")//, float? W, float? H)
         {
             try
             {
@@ -341,27 +341,17 @@ namespace OJewelry.Controllers
                 if (worksheetPart.DrawingsPart == null)
                 {
                     dp = worksheetPart.AddNewPart<DrawingsPart>();
-                    imagePart = dp.AddImagePart(type, worksheetPart.GetIdOfPart(dp));
+                    imagePart = dp.AddImagePart(ImagePartType.Jpeg, worksheetPart.GetIdOfPart(dp));
                     wsd = new WorksheetDrawing();
                 }
                 else
                 {
                     dp = worksheetPart.DrawingsPart;
-                    imagePart = dp.AddImagePart(type);
+                    imagePart = dp.AddImagePart(ImagePartType.Jpeg);
                     dp.CreateRelationshipToPart(imagePart);
                     wsd = dp.WorksheetDrawing;
                 }
-                MemoryStream imgStream = new MemoryStream();
-                ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-                Guid imgGuid = codecs.First(c => c.MimeType == type).FormatID;
-                ImageFormat imf = new ImageFormat(imgGuid);
-                ImageFormat png = ImageFormat.Png;
-                ImageFormat jpg = ImageFormat.Jpeg;
-                ImageFormat gif = ImageFormat.Gif;
-                image.Save(imgStream, imf);
-                imgStream.Position = 0;
-                imagePart.FeedData(imgStream);
-                imgStream.Dispose();
+
                 NonVisualDrawingProperties nvdp = new NonVisualDrawingProperties();
                 nvdp.Id = GetNextImageId();
                 nvdp.Name = imgName;
@@ -391,11 +381,19 @@ namespace OJewelry.Controllers
                     string outerXml = "uri=\"{28A0092B-C50C-407E-A947-70E740481C1C}\">";
                 */
                 A14.UseLocalDpi localDpi = new A14.UseLocalDpi();
+                /*
                 ExtensionList extLst = new ExtensionList();
                 Extension extsn = new Extension(localDpi);
                 extsn.Uri = "{28A0092B-C50C-407E-A947-70E740481C1C}";
                 extLst.Append(extsn);
                 blip.Append(extLst);
+                */
+                A.BlipExtensionList blipExtLst = new A.BlipExtensionList();
+                A.BlipExtension blipExt = new A.BlipExtension() { Uri = "{28A0092B-C50C-407E-A947-70E740481C1C}" };
+                localDpi.AddNamespaceDeclaration("a14", "http://schemas.microsoft.com/office/drawing/2010/main");
+                blipExt.Append(localDpi);
+                blipExtLst.Append(blipExt);
+                blip.Append(blipExtLst);
 
                 blip.Append();
                 blipFill.Blip = blip;
@@ -486,6 +484,35 @@ namespace OJewelry.Controllers
                 anchor.Append(picture);
                 anchor.Append(new ClientData());
                 wsd.Append(anchor);
+                {
+                    MemoryStream imgStream = new MemoryStream();
+                    ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+                    ImageCodecInfo codec = codecs.First(c => c.MimeType == type);
+                    Guid imgGuid = codec.FormatID;
+                    ImageFormat imf = new ImageFormat(imgGuid);
+                    float h = image.HorizontalResolution;
+                    float v = image.VerticalResolution;
+
+                    Encoder enc = Encoder.Quality;
+                    EncoderParameters eps = new EncoderParameters(1);
+                    EncoderParameter ep = new EncoderParameter(enc, 80);
+                    eps.Param[0] = ep;
+                    //Bitmap compressedImage = new Bitmap((int)(image.Width / (h / 48)), (int)(image.Height / (v / 48)));//, gr);
+                    Bitmap compressedImage = new Bitmap(96, 96);//, gr);
+                    //Rectangle rect = new Rectangle(0, 0, (int)(image.Width / (h / 48)), (int)(image.Height / (v / 48)));
+                    Rectangle rect = new Rectangle(0, 0, 96, 96);
+                    Graphics gr = Graphics.FromImage(compressedImage);
+                    gr.DrawImage(image, rect);
+                    //compressedImage.SetResolution(96, 96);
+
+                    compressedImage.Save(imgStream, imf);
+                    //compressedImage.Save(imgStream, codec, eps);
+                    gr.Dispose();
+                    compressedImage.Dispose();
+                    imgStream.Position = 0;
+                    imagePart.FeedData(imgStream);
+                    imgStream.Dispose();
+                }
                 if (drawing == null)
                 {
                     drawing = new Drawing();
