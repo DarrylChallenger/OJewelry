@@ -328,9 +328,23 @@ namespace OJewelry.Controllers
 
         private void PlaceImageOnCell(Worksheet worksheet, Bitmap image, int Col, int Row, double colWid, double rowHeight, string type, string imgName="", string imgDesc="")//, float? W, float? H)
         {
+            Dictionary<string, ImagePartType> mimeToImagePartType = new Dictionary<string, ImagePartType>()
+            {
+                { "image/bmp", ImagePartType.Bmp },
+                { "image/gif", ImagePartType.Gif },
+                { "image/jpg", ImagePartType.Jpeg },
+                { "image/jpeg", ImagePartType.Jpeg },
+                { "image/png", ImagePartType.Png },
+                { "image/tiff", ImagePartType.Tiff }           
+            };
             try
             {
                 ImagePart imagePart;
+                ImagePartType ip;
+                if (!mimeToImagePartType.TryGetValue(type, out ip))
+                {
+                    ip = ImagePartType.Jpeg;
+                }
                 WorksheetDrawing wsd;
                 DrawingsPart dp;
                 WorksheetPart worksheetPart = worksheet.WorksheetPart;
@@ -341,13 +355,13 @@ namespace OJewelry.Controllers
                 if (worksheetPart.DrawingsPart == null)
                 {
                     dp = worksheetPart.AddNewPart<DrawingsPart>();
-                    imagePart = dp.AddImagePart(ImagePartType.Jpeg, worksheetPart.GetIdOfPart(dp));
+                    imagePart = dp.AddImagePart(ip, worksheetPart.GetIdOfPart(dp));
                     wsd = new WorksheetDrawing();
                 }
                 else
                 {
                     dp = worksheetPart.DrawingsPart;
-                    imagePart = dp.AddImagePart(ImagePartType.Jpeg);
+                    imagePart = dp.AddImagePart(ip);
                     dp.CreateRelationshipToPart(imagePart);
                     wsd = dp.WorksheetDrawing;
                 }
@@ -493,20 +507,13 @@ namespace OJewelry.Controllers
                     float h = image.HorizontalResolution;
                     float v = image.VerticalResolution;
 
-                    Encoder enc = Encoder.Quality;
-                    EncoderParameters eps = new EncoderParameters(1);
-                    EncoderParameter ep = new EncoderParameter(enc, 80);
-                    eps.Param[0] = ep;
-                    //Bitmap compressedImage = new Bitmap((int)(image.Width / (h / 48)), (int)(image.Height / (v / 48)));//, gr);
-                    Bitmap compressedImage = new Bitmap(96, 96);//, gr);
-                    //Rectangle rect = new Rectangle(0, 0, (int)(image.Width / (h / 48)), (int)(image.Height / (v / 48)));
-                    Rectangle rect = new Rectangle(0, 0, 96, 96);
+                    Bitmap compressedImage = new Bitmap(64, 64);//, gr);
+                    Rectangle rect = new Rectangle(0, 0, 64, 64);
                     Graphics gr = Graphics.FromImage(compressedImage);
                     gr.DrawImage(image, rect);
-                    //compressedImage.SetResolution(96, 96);
+                    compressedImage.SetResolution(48, 48);
 
                     compressedImage.Save(imgStream, imf);
-                    //compressedImage.Save(imgStream, codec, eps);
                     gr.Dispose();
                     compressedImage.Dispose();
                     imgStream.Position = 0;
