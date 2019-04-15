@@ -47,7 +47,7 @@
 }
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
+    @Html.ActionLink("Back to Style", "Index", new { CollectionId = @Model.Style.CollectionId }) |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId)
 </p>
 
