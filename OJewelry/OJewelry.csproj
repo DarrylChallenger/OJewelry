@@ -479,6 +479,10 @@
     <Compile Include="Migrations\201903102123323_v1.6AddNotesToFindingsAndStones.Designer.cs">
       <DependentUpon>201903102123323_v1.6AddNotesToFindingsAndStones.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903202354409_v1.6ExtendStyleNumto25.cs" />
+    <Compile Include="Migrations\201903202354409_v1.6ExtendStyleNumto25.Designer.cs">
+      <DependentUpon>201903202354409_v1.6ExtendStyleNumto25.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -859,6 +863,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903102123323_v1.6AddNotesToFindingsAndStones.resx">
       <DependentUpon>201903102123323_v1.6AddNotesToFindingsAndStones.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903202354409_v1.6ExtendStyleNumto25.resx">
+      <DependentUpon>201903202354409_v1.6ExtendStyleNumto25.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

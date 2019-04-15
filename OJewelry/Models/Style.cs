@@ -22,7 +22,7 @@ namespace OJewelry.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(15)]
+        [StringLength(25)]
         public string StyleNum { get; set; }
 
         [Required]
