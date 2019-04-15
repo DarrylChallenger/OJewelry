@@ -68,7 +68,6 @@ namespace OJewelry.Controllers
             {
                 db.JewelryTypes.Add(jewelryType);
                 db.SaveChanges();
-                return RedirectToAction("Index", new { companyId = jewelryType.CompanyId});
             }
             ViewBag.CompanyId = jewelryType.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(jewelryType.CompanyId)?.Name;

@@ -78,7 +78,6 @@ namespace OJewelry.Controllers
             {
                 db.Stones.Add(stone);
                 db.SaveChanges();
-                return RedirectToAction("Index", new {companyId = stone.CompanyId});
             }
 
             ViewBag.CompanyId = stone.CompanyId;
