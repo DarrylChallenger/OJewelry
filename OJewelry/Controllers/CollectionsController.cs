@@ -206,7 +206,7 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", new { CompanyId = collection.CompanyId });
         }
 
-        public async Task<FileResult> ExportAssortmentReport(int companyId)
+        public async Task<FileResult> ExportCollectionReport(int companyId)
         {
             byte[] b;
             DCTSOpenXML oxl = new DCTSOpenXML();
@@ -321,7 +321,7 @@ namespace OJewelry.Controllers
                     b = memStream.ToArray();
                     string compName = db.FindCompany(companyId).Name;
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        compName + " Assortment as of " + DateTime.Now.ToString() + ".xlsx");
+                        compName + " Collection as of " + DateTime.Now.ToString() + ".xlsx");
                 }
             }
         }
