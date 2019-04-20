@@ -448,6 +448,7 @@ namespace OJewelry.Controllers
 
                 Xdr.FromMarker fromMarker = new Xdr.FromMarker();
                 Xdr.ToMarker toMarker = new Xdr.ToMarker();
+                
                 // From
                 ColumnId columnId1 = new ColumnId();
                 columnId1.Text = Col.ToString();
@@ -458,11 +459,14 @@ namespace OJewelry.Controllers
                 colloff /= 2;
                 colloff = (int)colloff;
                 columnOffset1.Text = colloff.ToString();
-                //columnOffset1.Text = "344968";
+
                 RowId rowId1 = new RowId();
                 rowId1.Text = Row.ToString();
                 RowOffset rowOffset1 = new RowOffset();
-                rowOffset1.Text = ((int)((rowHeight * 72 / 96 * 12700) * (imgMargin / 100))).ToString();
+
+                double rowoff = (int)((rowHeight * 72 / 96 * 12700) * (imgMargin / 100));
+
+                rowOffset1.Text = (rowoff).ToString();
 
                 fromMarker.Append(columnId1);
                 fromMarker.Append(columnOffset1);
@@ -471,16 +475,18 @@ namespace OJewelry.Controllers
 
                 // To
                 ColumnId columnId2 = new ColumnId();
-                //columnId2.Text = (Col + 1).ToString();
-                columnId2.Text = (Col).ToString();
                 ColumnOffset columnOffset2 = new ColumnOffset();
-                //columnOffset2.Text = "0";// "152381";
-                columnOffset2.Text = extents.Cx.ToString();
-                //columnOffset2.Text = (image.Width*1).ToString() + "px";
                 RowId rowId2 = new RowId();
-                rowId2.Text = (Row + 1).ToString();
                 RowOffset rowOffset2 = new RowOffset();
-                rowOffset2.Text = "4572000";//"152381";;
+                
+                columnId2.Text = (Col).ToString();
+                columnOffset2.Text = "0";// "152381";
+                // Margin is accounted for, so take it off the width
+                columnOffset2.Text = (extents.Cx + colloff).ToString();
+
+                rowId2.Text = (Row).ToString();
+                rowOffset2.Text = "4572000";// 4572000 = 12700 (#EMUs/pixel) * 45 (Olivia's cell height in Excel Cell units (aka 60 pixels)) * 8 (???)
+                rowOffset2.Text = (extents.Cy + rowoff).ToString();//
 
                 toMarker.Append(columnId2);
                 toMarker.Append(columnOffset2);
@@ -490,10 +496,11 @@ namespace OJewelry.Controllers
                 //Position pos = new Position(); pos.X = Row; pos.Y = Col;
                 Extent ext = new Extent(); ext.Cx = extents.Cx; ext.Cy = extents.Cy;
 
-                //TwoCellAnchor anchor = new TwoCellAnchor();
-                OneCellAnchor anchor = new OneCellAnchor();
+                TwoCellAnchor anchor = new TwoCellAnchor();
+                //OneCellAnchor anchor = new OneCellAnchor();
                 anchor.Append(fromMarker);
-                anchor.Extent = ext;
+                anchor.Append(toMarker);
+                //anchor.Extent = ext;
                 //anchor.Append(toMarker);
                 anchor.Append(picture);
                 anchor.Append(new ClientData());
