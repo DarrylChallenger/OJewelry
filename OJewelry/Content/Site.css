@@ -120,7 +120,7 @@ textarea {
 
 .bordered {
     border-style: solid;
-    border-color: green;
+    /*border-color: green; */
 }
 
 .ltbordered {
@@ -166,7 +166,7 @@ html input[disabled], locked {
 
 .StyleRightHeader {
     border-color: #e8e8e8;
-    border-color:green;
+    /*border-color:green;*/
     border-style: solid;
     border-width: 1.5px;
     float: right;
@@ -194,7 +194,7 @@ html input[disabled], locked {
 .StyleImage 
 {
     border-style:solid;
-    border-color:red;
+    /*border-color:red;*/
     border-width:2px;
     height:100%;
 }
