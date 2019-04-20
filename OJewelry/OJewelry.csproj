@@ -483,6 +483,10 @@
     <Compile Include="Migrations\201903202354409_v1.6ExtendStyleNumto25.Designer.cs">
       <DependentUpon>201903202354409_v1.6ExtendStyleNumto25.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904201403229_v1.6AddQtyToFindings.cs" />
+    <Compile Include="Migrations\201904201403229_v1.6AddQtyToFindings.Designer.cs">
+      <DependentUpon>201904201403229_v1.6AddQtyToFindings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -866,6 +870,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903202354409_v1.6ExtendStyleNumto25.resx">
       <DependentUpon>201903202354409_v1.6ExtendStyleNumto25.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904201403229_v1.6AddQtyToFindings.resx">
+      <DependentUpon>201904201403229_v1.6AddQtyToFindings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

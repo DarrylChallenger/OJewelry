@@ -66,7 +66,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight,Note")] Finding finding)
+        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight,Qty,Note")] Finding finding)
         {
             if (ModelState.IsValid)
             {
@@ -102,7 +102,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight,Note")] Finding finding)
+        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight,Qty,Note")] Finding finding)
         {
             if (ModelState.IsValid)
             {
@@ -184,6 +184,7 @@ namespace OJewelry.Controllers
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Weight (dwt)"); row.Append(cell);
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Price"); row.Append(cell);
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Vendor"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "Inventory"); row.Append(cell);
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<Finding> Findings = db.Findings.Where(v => v.CompanyId == companyId).OrderBy(f => f.Name).Include("Vendor").ToList();
@@ -205,6 +206,7 @@ namespace OJewelry.Controllers
                         row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, Findings[i].Price); row.Append(cell);
                         loc = "D" + rr; cell = oxl.SetCellVal(loc, Findings[i].Vendor.Name); row.Append(cell);
+                        loc = "E" + rr; cell = oxl.SetCellVal(loc, Findings[i].Qty); row.Append(cell);
                         sd.Append(row);
                     }
                     worksheet.Append(sd);

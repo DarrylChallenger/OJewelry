@@ -45,7 +45,7 @@
         [Column(TypeName = "money")]
         public decimal SettingCost { get; set; }
 
-        public int Qty { get; set; }
+        public int Qty { get; set; } // Inventory
 
         [StringLength(2048)]
         public string Note { get; set; }

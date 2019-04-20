@@ -36,6 +36,8 @@ namespace OJewelry.Models
 
         public decimal? Weight { get; set; }
 
+        public int Qty { get; set; } // Inventory
+
         [StringLength(2048)]
         public string Note { get; set; }
 
