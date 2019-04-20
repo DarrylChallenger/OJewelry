@@ -29,7 +29,9 @@ namespace OJewelry.Models
         public string Email { get; set; }
 
         [StringLength(50)]
-        public string Type { get; set; }
+        public string Notes { get; set; }
+
+        public virtual VendorType Type { get;set; }
 
         public virtual Company Company { get; set; }
 

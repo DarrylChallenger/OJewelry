@@ -408,7 +408,7 @@ namespace OJewelry.Models
 
         [Display(Name = "Notes")]
         [StringLength(50)]
-        public string Type { get; set; }
+        public string Notes { get; set; }
     }
 
     /*

@@ -31,7 +31,7 @@ namespace OJewelry.Controllers
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
 
-            return View(db.Vendors.Where(v => v.CompanyId == companyId).OrderBy(v => v.Name).ToList());
+            return View(db.Vendors.Include("Type").Where(v => v.CompanyId == companyId).OrderBy(v => v.Name).ToList());
         }
 
         // GET: Vendors/Details/5
@@ -54,6 +54,7 @@ namespace OJewelry.Controllers
         {
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+            ViewBag.TypeId = SetVendorTypesDropDown();
 
             return View();
         }
@@ -63,13 +64,14 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,Type,CompanyId")] Vendor vendor)
+        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,TypeId,Notes,CompanyId")] Vendor vendor)
         {
             if (ModelState.IsValid)
             {
                 db.Vendors.Add(vendor);
                 db.SaveChanges();
             }
+            ViewBag.TypeId = SetVendorTypesDropDown();
             ViewBag.CompanyId = vendor.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
 
@@ -90,6 +92,7 @@ namespace OJewelry.Controllers
             }
             ViewBag.CompanyId = vendor.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
+            ViewBag.TypeId = SetVendorTypesDropDown();
             return View(vendor);
         }
 
@@ -98,7 +101,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Phone,Email,Type,CompanyId")] Vendor vendor)
+        public ActionResult Edit([Bind(Include = "Id,Name,Phone,Email,TypeId,Notes,CompanyId")] Vendor vendor)
         {
             if (ModelState.IsValid)
             {
@@ -108,6 +111,7 @@ namespace OJewelry.Controllers
             }
             ViewBag.CompanyId = vendor.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
+            ViewBag.TypeId = SetVendorTypesDropDown();
             return View(vendor);
         }
 
@@ -144,6 +148,13 @@ namespace OJewelry.Controllers
             db.Vendors.Remove(vendor);
             db.SaveChanges();
             return RedirectToAction("Index", new { companyId });
+        }
+
+        protected SelectList SetVendorTypesDropDown()
+        {
+            SelectList s = new SelectList(db.VendorTypes, "Id", "Name");//, "-- Choose a Type --");
+
+            return s;
         }
 
         protected override void Dispose(bool disposing)
@@ -214,7 +225,7 @@ namespace OJewelry.Controllers
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, vendors[i].Name); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, vendors[i].Phone); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, vendors[i].Email); row.Append(cell);
-                        loc = "D" + rr; cell = oxl.SetCellVal(loc, vendors[i].Type); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, vendors[i].Notes); row.Append(cell);
                         sd.Append(row);
                     }
                     worksheet.Append(sd);

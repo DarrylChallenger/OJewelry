@@ -1,5 +1,6 @@
 namespace OJewelry.Migrations
 {
+    using OJewelry.Models;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -26,6 +27,10 @@ namespace OJewelry.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+            context.VendorTypes.Add(new VendorType { Id = 1, Name = "Stone" });
+            context.VendorTypes.Add(new VendorType { Id = 2, Name = "Finding" });
+            context.VendorTypes.Add(new VendorType { Id = 3, Name = "Casting" });
+            context.VendorTypes.Add(new VendorType { Id = 4, Name = "Labor" });
         }
     }
 }

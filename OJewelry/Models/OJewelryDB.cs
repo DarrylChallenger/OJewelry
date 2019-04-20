@@ -111,6 +111,7 @@ namespace OJewelry.Models
         public virtual DbSet<StyleMisc> StyleMiscs { get; set; }
         public virtual DbSet<Style> Styles { get; set; }
         public virtual DbSet<Vendor> Vendors { get; set; }
+        public virtual DbSet<VendorType> VendorTypes { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
