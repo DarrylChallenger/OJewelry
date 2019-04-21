@@ -51,8 +51,12 @@ namespace OJewelry.Controllers
         }
         
         // GET: Stones/Create
-        public ActionResult Create(int companyId)
+        public ActionResult Create(int? companyId)
         {
+            if (companyId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             Company company = db.FindCompany(companyId);
             ViewBag.CompanyId = companyId;
             ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == companyId), "Id", "Name");

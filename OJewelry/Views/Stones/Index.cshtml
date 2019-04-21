@@ -6,11 +6,14 @@
 
 <h2>Stones for the <i>@ViewBag.CompanyName</i> company</h2>
 
-
-<p>
-    @Html.ActionLink("Create New Stone", "Create", new { companyId = ViewBag.CompanyId })
-</p>
-
+<div class="row">
+    <div class="col-xs-3 col-sm-3">
+        @Html.ActionLink("Create New Stone", "Create", new { companyId = ViewBag.CompanyId })
+    </div>
+    <div class="col-xs-3 col-sm-3">
+        @Html.ActionLink("Stone Shapes", "Index", "Shapes", new { CompanyId = Model }, null)
+    </div>
+</div>
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
