@@ -12,7 +12,8 @@
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
-    @Html.ActionLink("Export Collection to Excel", "ExportCollectionReport", new { companyId = Model.CompanyId })
+    @Html.ActionLink("Export by Collection", "ExportCollectionReport", new { companyId = Model.CompanyId }) |
+    @Html.ActionLink("Export by List", "ExportCollectionsByList", new { companyId = Model.CompanyId })
 </p>
 <table class="table">
     <tr>
@@ -84,6 +85,6 @@
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
-    @Html.ActionLink("Export Collection to Excel", "ExportCollectionReport", new { companyId = Model.CompanyId })
-
+    @Html.ActionLink("Export by Collection", "ExportCollectionReport", new { companyId = Model.CompanyId }) |
+    @Html.ActionLink("Export by List", "ExportCollectionsByList", new { companyId = Model.CompanyId }) 
 </p>

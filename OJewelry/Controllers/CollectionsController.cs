@@ -206,6 +206,131 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", new { CompanyId = collection.CompanyId });
         }
 
+        public async Task<FileResult> ExportCollectionsByList(int companyId)
+        {
+            byte[] b;
+            DCTSOpenXML oxl = new DCTSOpenXML();
+            Company company = db.FindCompany(companyId);
+
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
+                {
+
+                    // Build Excel File
+                    WorkbookPart workbookPart = document.AddWorkbookPart();
+                    workbookPart.Workbook = new Workbook();
+
+                    WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    worksheetPart.Worksheet = new Worksheet(new SheetData());
+                    Sheets sheets = document.WorkbookPart.Workbook.AppendChild(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
+                    Sheet sheet = new Sheet()
+                    {
+                        Id = workbookPart.GetIdOfPart(worksheetPart),
+                        SheetId = 1,
+                        Name = company.Name // collection name"
+                    };
+                    sheets.Append(sheet);
+                    // declare locals
+                    Row row;
+                    Cell cell;
+                    string loc;
+                    int rr;
+                    //oxl.columns = columns;
+                    // Clear out the drawing object form each page
+                    drawing = null;
+                    //columns = new Columns();
+                    Columns columns = new Columns();
+                    Worksheet worksheet = new Worksheet();
+                    SheetData sd = new SheetData();
+                    List<Bitmap> images = new List<Bitmap>();
+                    string imageName = "";
+                    // Build sheet
+                    // Headers
+                    row = new Row();
+                    cell = oxl.SetCellVal("A1", ""); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("B1", "Name"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("C1", "Desc"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("D1", "Style No."); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("E1", "Type"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("F1", "Inventory"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 6, Max = 6, BestFit = true, CustomWidth = true });
+                    sd.Append(row);
+                    worksheet.Append(columns);
+                    oxl.columns = columns;
+                    List<Collection> collections = db.Collections.Include("Styles.JewelryType").Where(c => c.CompanyId == companyId).ToList();
+                    //collections.OrderBy(c => c.Name);
+                    List<Style> Styles = new List<Style>();
+                    foreach (Collection collection in collections)
+                    {
+                        Styles.AddRange(collection.Styles);
+                    }
+                    Styles = Styles.OrderBy(s => s.JewelryType.Name).ThenBy(s => s.StyleName).ToList();
+                    // Content
+                    for (int i = 0; i < Styles.Count(); i++)
+                    {
+                        row = new Row();
+                        rr = 2 + i;
+                        Bitmap image;
+                        if (Styles[i].Image == null)
+                        {
+                            image = new Bitmap(Server.MapPath("/Images") + "/logo.png");
+                        }
+                        else
+                        {
+                            // get the file off storage 
+                            image = new Bitmap(await Singletons.azureBlobStorage.Download(Styles[i].Image));
+                            //image = Image.FromFile(Server.MapPath("/Images") + "/logo.png");
+                        }
+                        images.Add(image);
+                        row.Height = oxl.ComputeExcelCellHeight(pixelRowHeight);
+                        row.CustomHeight = true;
+                        loc = "A" + rr; cell = oxl.SetCellVal(loc, image, pixelRowHeight); row.Append(cell);
+                        loc = "B" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleName); row.Append(cell);
+                        loc = "C" + rr; cell = oxl.SetCellVal(loc, Styles[i].Desc); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleNum); row.Append(cell);
+                        loc = "E" + rr; cell = oxl.SetCellVal(loc, Styles[i].JewelryType.Name); row.Append(cell);
+                        loc = "F" + rr; cell = oxl.SetCellVal(loc, Styles[i].Quantity); row.Append(cell);
+                        sd.Append(row);
+                    }
+
+                    worksheet.Append(sd);
+                    worksheetPart.Worksheet = worksheet;
+
+                    // Images
+                    Column col0 = columns.ElementAt(0) as Column;
+                    double col0Width = col0.Width;
+
+                    for (int i = 0; i < Styles.Count(); i++)
+                    {
+                        if (Styles[i].Image == null)
+                        {
+                            imageName = Server.MapPath("/Images") + "/logo.png";
+                        }
+                        else
+                        {
+                            // get the file off storage 
+                            imageName = Styles[i].Image;
+                            //imageName = Server.MapPath("/Images") + "/logo.png";
+
+                        }
+                        rr = 2 + i;
+                        // place images in column A
+                        string contentType = MimeMapping.GetMimeMapping(imageName);
+                        PlaceImageOnCell(worksheet, images[i], 0, rr - 1, col0Width, pixelRowHeight, contentType, Styles[i].StyleName, Styles[i].Desc);
+
+                    }
+                    
+                    workbookPart.Workbook.Save();
+                    document.Close();
+
+                    b = memStream.ToArray();
+                    string compName = db.FindCompany(companyId).Name;
+                    return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        compName + " as of " + DateTime.Now.ToString() + ".xlsx");
+                }
+            }
+        }
+
         public async Task<FileResult> ExportCollectionReport(int companyId)
         {
             byte[] b;
