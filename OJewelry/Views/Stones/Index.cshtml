@@ -11,7 +11,7 @@
         @Html.ActionLink("Create New Stone", "Create", new { companyId = ViewBag.CompanyId })
     </div>
     <div class="col-xs-3 col-sm-3">
-        @Html.ActionLink("Stone Shapes", "Index", "Shapes", new { CompanyId = Model }, null)
+        @Html.ActionLink("Stone Shapes", "Index", "Shapes", new { companyId = ViewBag.CompanyId }, null)
     </div>
 </div>
 <p>
