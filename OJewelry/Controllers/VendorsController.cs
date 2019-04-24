@@ -67,7 +67,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,Type.Id,Notes,CompanyId")] Vendor vendor, int typeId)
+        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,TypeId,Notes,CompanyId")] Vendor vendor)
         {
             if (ModelState.IsValid)
             {

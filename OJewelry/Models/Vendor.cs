@@ -31,6 +31,8 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Notes { get; set; }
 
+        public int? TypeId { get; set; }
+
         public virtual VendorType Type { get;set; }
 
         public virtual Company Company { get; set; }
