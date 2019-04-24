@@ -50,9 +50,14 @@ namespace OJewelry.Controllers
         }
 
         // GET: Shapes/Create
-        public ActionResult Create(int companyId)
+        [HttpGet]
+        public ActionResult Create(int? companyId)
         {
-            ViewBag.CompanyId = companyId;
+            if (companyId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ViewBag.CompanyId = companyId.Value;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
 
             return View();
