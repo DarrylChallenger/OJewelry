@@ -68,6 +68,7 @@ namespace OJewelry.Controllers
             {
                 db.JewelryTypes.Add(jewelryType);
                 db.SaveChanges();
+                return RedirectToAction("Index", new { companyId = jewelryType.CompanyId });
             }
             ViewBag.CompanyId = jewelryType.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(jewelryType.CompanyId)?.Name;
@@ -129,6 +130,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", "Home");
             }
             JewelryType jewelryType = db.JewelryTypes.Find(id);
+            ViewBag.CompanyId = jewelryType.CompanyId;
             if (jewelryType == null)
             {
                 return HttpNotFound();
@@ -146,6 +148,7 @@ namespace OJewelry.Controllers
             if (db.Styles.Where(s => s.JewelryTypeId == id).Count() != 0)
             {
                 ModelState.AddModelError("JewelryType", jewelryType.Name + " is in use by at least one style.");
+                ViewBag.CompanyId = jewelryType.CompanyId;
                 return View(jewelryType);
             }
             int companyId = jewelryType.CompanyId.Value;

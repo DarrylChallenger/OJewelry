@@ -41,7 +41,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Vendor vendor = db.Vendors.Find(id);
+            Vendor vendor = db.Vendors.Include("Type").Where( v => v.Id == id).FirstOrDefault();
             if (vendor == null)
             {
                 return HttpNotFound();
@@ -54,8 +54,11 @@ namespace OJewelry.Controllers
         {
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
-            ViewBag.TypeId = SetVendorTypesDropDown();
-
+            Vendor vendor = new Vendor()
+            {
+                Type = new VendorType()
+            };
+            ViewBag.TypeId = SetVendorTypesDropDown(vendor);
             return View();
         }
 
@@ -64,14 +67,15 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,TypeId,Notes,CompanyId")] Vendor vendor)
+        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,Type.Id,Notes,CompanyId")] Vendor vendor, int typeId)
         {
             if (ModelState.IsValid)
             {
                 db.Vendors.Add(vendor);
                 db.SaveChanges();
+                return RedirectToAction("Index", new { companyId = vendor.CompanyId });
             }
-            ViewBag.TypeId = SetVendorTypesDropDown();
+            ViewBag.TypeId = SetVendorTypesDropDown(vendor);
             ViewBag.CompanyId = vendor.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
 
@@ -85,14 +89,14 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Vendor vendor = db.Vendors.Find(id);
+            Vendor vendor = db.Vendors.Include("Type").Where(v => v.Id == id).FirstOrDefault();
             if (vendor == null)
             {
                 return HttpNotFound();
             }
             ViewBag.CompanyId = vendor.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
-            ViewBag.TypeId = SetVendorTypesDropDown();
+            ViewBag.TypeId = SetVendorTypesDropDown(vendor);
             return View(vendor);
         }
 
@@ -111,7 +115,7 @@ namespace OJewelry.Controllers
             }
             ViewBag.CompanyId = vendor.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
-            ViewBag.TypeId = SetVendorTypesDropDown();
+            ViewBag.TypeId = SetVendorTypesDropDown(vendor);
             return View(vendor);
         }
 
@@ -122,7 +126,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Vendor vendor = db.Vendors.Find(id);
+            Vendor vendor = db.Vendors.Include("Type").Where(v => v.Id == id).FirstOrDefault();
             if (vendor == null)
             {
                 return HttpNotFound();
@@ -135,8 +139,8 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Vendor vendor = db.Vendors.Find(id);
-            
+            Vendor vendor = db.Vendors.Include("Type").Where(v => v.Id == id).FirstOrDefault();
+
             if (db.Castings.Where(c => c.VendorId == id).Count() != 0 ||
                 db.Stones.Where(s => s.VendorId == id).Count() != 0 ||
                 db.Findings.Where(s => s.VendorId == id).Count() != 0)
@@ -150,9 +154,9 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", new { companyId });
         }
 
-        protected SelectList SetVendorTypesDropDown()
+        protected SelectList SetVendorTypesDropDown(Vendor v)
         {
-            SelectList s = new SelectList(db.VendorTypes, "Id", "Name");//, "-- Choose a Type --");
+            SelectList s = new SelectList(db.VendorTypes, "Id", "Name", v.Type.Id);//, "-- Choose a Type --");
 
             return s;
         }
