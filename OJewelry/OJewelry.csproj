@@ -503,6 +503,10 @@
     <Compile Include="Migrations\201904241348214_v1.6AddTypeIdToVendor.Designer.cs">
       <DependentUpon>201904241348214_v1.6AddTypeIdToVendor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904271644568_v1.6NewStoneFields.cs" />
+    <Compile Include="Migrations\201904271644568_v1.6NewStoneFields.Designer.cs">
+      <DependentUpon>201904271644568_v1.6NewStoneFields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -902,6 +906,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904241348214_v1.6AddTypeIdToVendor.resx">
       <DependentUpon>201904241348214_v1.6AddTypeIdToVendor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904271644568_v1.6NewStoneFields.resx">
+      <DependentUpon>201904271644568_v1.6NewStoneFields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

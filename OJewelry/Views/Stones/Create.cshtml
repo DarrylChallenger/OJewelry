@@ -97,10 +97,28 @@
                         </div>
                     </div>
                     <div class="col-sm-5 col-xs-12">
-                        <div class="row">
+                        <div class="form-group">
                             @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-xs-12 col-sm-2" })
                             <div class="col-xs-12 col-sm-10">
-                                @Html.TextAreaFor(model => model.Note, new { @class = "form-control", rows = "18", cols = "80" })
+                                @Html.TextAreaFor(model => model.Note, new { @class = "form-control", rows = "10", cols = "80" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ParentHandle, htmlAttributes: new { @class = "control-label col-xs-12 col-sm-2" })
+                            <div class="col-xs-12 col-sm-10">
+                                @Html.EditorFor(model => model.ParentHandle, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-xs-12 col-sm-2" })
+                            <div class="col-xs-12 col-sm-10">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Tags, htmlAttributes: new { @class = "control-label col-xs-12 col-sm-2" })
+                            <div class="col-xs-12 col-sm-10">
+                                @Html.EditorFor(model => model.Tags, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </div>
                     </div>

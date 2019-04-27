@@ -50,6 +50,16 @@
         [StringLength(2048)]
         public string Note { get; set; }
 
+        [StringLength(1024)]
+        [Display(Name = "Parent Handle")]
+        public string ParentHandle { get; set; }
+
+        [StringLength(128)]
+        public string Title { get; set; }
+
+        [StringLength(1024)]
+        public string Tags { get; set; }
+
         public virtual Company Company { get; set; }
 
         public virtual Vendor Vendor { get; set; }
