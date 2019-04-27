@@ -82,7 +82,7 @@ namespace OJewelry.Controllers
             {
                 db.Stones.Add(stone);
                 db.SaveChanges();
-                return RedirectToAction("Index", new { CompanyId = stone.CompanyId });
+                return RedirectToAction("Edit", new { id = stone.Id });
             }
 
             ViewBag.CompanyId = stone.CompanyId;

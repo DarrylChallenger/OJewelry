@@ -72,7 +72,7 @@ namespace OJewelry.Controllers
             {
                 db.Findings.Add(finding);
                 db.SaveChanges();
-                return RedirectToAction("Index", new { companyId = finding.CompanyId });
+                return RedirectToAction("Edit", new { id = finding.Id });
             }
 
             ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);

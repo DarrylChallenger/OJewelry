@@ -73,7 +73,7 @@ namespace OJewelry.Controllers
             {
                 db.Vendors.Add(vendor);
                 db.SaveChanges();
-                return RedirectToAction("Index", new { companyId = vendor.CompanyId });
+                return RedirectToAction("Edit", new { id = vendor.Id });
             }
             ViewBag.TypeId = SetVendorTypesDropDown(vendor);
             ViewBag.CompanyId = vendor.CompanyId;
