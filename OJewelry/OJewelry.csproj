@@ -507,6 +507,10 @@
     <Compile Include="Migrations\201904271644568_v1.6NewStoneFields.Designer.cs">
       <DependentUpon>201904271644568_v1.6NewStoneFields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904272205385_v1.6AddLabelToStones.cs" />
+    <Compile Include="Migrations\201904272205385_v1.6AddLabelToStones.Designer.cs">
+      <DependentUpon>201904272205385_v1.6AddLabelToStones.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -909,6 +913,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904271644568_v1.6NewStoneFields.resx">
       <DependentUpon>201904271644568_v1.6NewStoneFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904272205385_v1.6AddLabelToStones.resx">
+      <DependentUpon>201904272205385_v1.6AddLabelToStones.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

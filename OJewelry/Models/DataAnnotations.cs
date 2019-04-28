@@ -306,8 +306,11 @@ namespace OJewelry.Models
         public int Id { get; set; }
 
         [Required]
-        [Display(Name = "Name")]
+        [Display(Name = "Stone")]
         public String Name { get; set; }
+
+        [Display(Name = "Name")]
+        public String Label { get; set; }
 
         [Required]
         [Display(Name = "Size")]

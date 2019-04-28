@@ -27,7 +27,10 @@
         public int? VendorId { get; set; }
 
         [StringLength(50)]
-        public string Name { get; set; }
+        public string Name { get; set; } // Refers to Stone Type
+
+        [StringLength(50)]
+        public string Label { get; set; } // Refers to name used by company
 
         [StringLength(50)]
         public string Desc { get; set; }
