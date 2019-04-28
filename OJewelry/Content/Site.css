@@ -482,3 +482,6 @@ html input[disabled], locked {
     text-align:left;
 }
 
+.CreateEditStoneRightBoxLabel {
+    width:100%;
+}
