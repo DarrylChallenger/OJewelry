@@ -326,5 +326,17 @@ namespace OJewelry.Classes
         {
             return (float)heightInPixel * 72 / 96;
         }
+
+        public string GetCellName(UInt32 col, int row)
+        {
+            string cellName = "";
+            if (col < 26)
+            {
+                cellName = (char)(64 + col) + row.ToString();              
+            } else {
+                cellName = (char)(64 + col / 26) + (char)(64 + col % 26) + row.ToString();
+            }
+            return cellName;
+        }
     }
 }
