@@ -229,14 +229,14 @@ html input[disabled], locked {
 .boxfull {
     border-style: solid;
     border-width: 1px;
-    border-color: lightgray;
+    border-color: gray;
 }
 
 .boxme {
     border-top-style:solid;
     border-width:1px;
     border-left-style:solid;
-    border-color:lightgray;
+    border-color:gray;
     margin-bottom: -1px;
 }
 
@@ -397,7 +397,7 @@ html input[disabled], locked {
 .StyleComponentsRowFooter {
     font-size: larger;
     padding-top: .25em;
-    padding-bottom: .25em;
+    padding-bottom: 1em;
 }
 
 .StyleComponentsFooter {
