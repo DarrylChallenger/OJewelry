@@ -1232,7 +1232,7 @@ namespace OJewelry.Controllers
                                                     // error
                                                     error = "The size in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
                                                     ModelState.AddModelError("Size-" + j, error);
-                                                    sim.Errors.Add(error); bEmptyRow = false;
+                                                    sim.Errors.Add(error); 
                                                 }
                                                 else
                                                 {
@@ -1247,7 +1247,7 @@ namespace OJewelry.Controllers
                                                     // error
                                                     error = "The Vendor in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
                                                     ModelState.AddModelError("Vendor-" + j, error);
-                                                    sim.Errors.Add(error); bEmptyRow = false;
+                                                    sim.Errors.Add(error); 
                                                 }
                                                 else
                                                 {
@@ -1271,10 +1271,10 @@ namespace OJewelry.Controllers
                                                     error = "Row [" + j + "] will be ignored - it contains blank cells";
                                                     sim.Warnings.Add(error);
                                                     string s = sim.Errors.Find(x => x == "Stone-" + j);
-                                                    if (ModelState.Remove("Stone-" + j)) sim.Errors.Remove(s); //sim.Errors.RemoveAt(sim.Errors.Count - 2);
-                                                    if (ModelState.Remove("Shape-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
+                                                    if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 4);
+                                                    if (ModelState.Remove("Shape-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 3);
                                                     if (ModelState.Remove("Size-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
-                                                    if (ModelState.Remove("Vendor-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
+                                                    if (ModelState.Remove("Vendor-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 1);
                                                 }
                                                 else
                                                 {
