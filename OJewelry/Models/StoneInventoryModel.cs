@@ -27,6 +27,7 @@ namespace OJewelry.Models
         public string stone;
         public string shape;
         public string size;
+        public string vendorName;
         public int delta;
         public int lineNum;
     }

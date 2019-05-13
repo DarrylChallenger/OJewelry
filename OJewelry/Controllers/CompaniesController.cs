@@ -1182,14 +1182,15 @@ namespace OJewelry.Controllers
                                         (oxl.CellMatches("A1", worksheet, stringtable, "Stone") &&
                                         oxl.CellMatches("B1", worksheet, stringtable, "Shape") &&
                                         oxl.CellMatches("C1", worksheet, stringtable, "Size") &&
-                                        oxl.CellMatches("D1", worksheet, stringtable, "Delta")))
+                                        oxl.CellMatches("D1", worksheet, stringtable, "Vendor") &&
+                                        oxl.CellMatches("E1", worksheet, stringtable, "Delta")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
                                             for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
                                             {
                                                 // Read Stone, Size, Shape
-                                                string stone = "", shape="", size ="";
+                                                string stone = "", shape="", size ="", vendor = "";
                                                 int delta = 0;
                                                 //process each cell in cols 1-4
                                                 bool bEmptyRow = true;
@@ -1238,8 +1239,24 @@ namespace OJewelry.Controllers
                                                     bEmptyRow = false;
                                                 }
 
-                                                // Delta 
+                                                // Vendor 
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) vendor = oxl.GetStringVal(cell, stringtable);
+                                                if (vendor == "")
+                                                {
+                                                    // error
+                                                    error = "The Vendor in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("Vendor-" + j, error);
+                                                    sim.Errors.Add(error); bEmptyRow = false;
+                                                }
+                                                else
+                                                {
+                                                    bEmptyRow = false;
+                                                }
+
+
+                                                // Delta 
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     delta = oxl.GetIntVal(cell);
@@ -1253,9 +1270,11 @@ namespace OJewelry.Controllers
                                                     // Remove last two Model Errors, add warning
                                                     error = "Row [" + j + "] will be ignored - it contains blank cells";
                                                     sim.Warnings.Add(error);
-                                                    if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
+                                                    string s = sim.Errors.Find(x => x == "Stone-" + j);
+                                                    if (ModelState.Remove("Stone-" + j)) sim.Errors.Remove(s); //sim.Errors.RemoveAt(sim.Errors.Count - 2);
                                                     if (ModelState.Remove("Shape-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
-                                                    if (ModelState.Remove("Size-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 1);
+                                                    if (ModelState.Remove("Size-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
+                                                    if (ModelState.Remove("Vendor-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
                                                 }
                                                 else
                                                 {
@@ -1265,6 +1284,7 @@ namespace OJewelry.Controllers
                                                         stone = stone,
                                                         shape = shape,
                                                         size = size,
+                                                        vendorName = vendor,
                                                         delta = delta,
                                                         lineNum = j
                                                     });
@@ -1297,8 +1317,9 @@ namespace OJewelry.Controllers
                             // process deltas
                             foreach (StoneElement s in stoneElements)
                             {
-                                Stone theStone = db.Stones.Include("Shape")
-                                    .Where(x => x.Name == s.stone && x.Shape.Name == s.shape && x.StoneSize == s.size && x.CompanyId == sim.CompanyId).SingleOrDefault();
+                                Stone theStone = db.Stones.Include("Shape").Include("Vendor")
+                                    .Where(x => x.Name == s.stone && x.Shape.Name == s.shape && x.StoneSize == s.size && x.Vendor.Name == s.vendorName &&
+                                        x.CompanyId == sim.CompanyId).SingleOrDefault();
 
                                 if (theStone == null)
                                 {
