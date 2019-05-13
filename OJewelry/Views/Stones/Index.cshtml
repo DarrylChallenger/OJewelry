@@ -17,6 +17,7 @@
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Stone Inventory","ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
     @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
 </p>
 <table class="table">
@@ -96,5 +97,6 @@
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Stone Inventory", "ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
     @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
 </p>

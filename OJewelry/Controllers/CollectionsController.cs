@@ -664,7 +664,7 @@ namespace OJewelry.Controllers
             }
             catch (Exception e)
             {
-
+                ModelState.AddModelError("Caught fatal exception", e);
             }
         }
 

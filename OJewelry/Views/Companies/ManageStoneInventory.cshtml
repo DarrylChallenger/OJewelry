@@ -1,0 +1,66 @@
+﻿@model OJewelry.Models.StoneInventoryModel
+@{
+    ViewBag.Title = "ManageStoneInventory";
+}
+
+<h2>Manage Stone Inventory for <i>@Model.CompanyName</i></h2>
+<br />
+<div>
+    @Html.ActionLink("Companies", "Index") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
+</div>
+<br />
+
+@if (Model.Errors.Count != 0)
+{
+    <li>
+        Errors
+        @foreach (string e in Model.Errors)
+        {
+            <ul class="text-danger">@e</ul>
+        }
+    </li>
+
+}
+
+@if (Model.Warnings.Count != 0)
+{
+    <li>
+        <p>Warnings</p>
+        @foreach (string e in Model.Warnings)
+        {
+            <ul class="text-warning">@e</ul>
+        }
+    </li>
+}
+
+@if (Model.success)
+{
+    <p class="text-success">@ViewBag.Message</p>
+}
+
+@using (Html.BeginForm("ManageStoneInventory", "Companies", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.CompanyId)
+    <div class="row">
+        <div class="col-sm-5">
+            <span>Select File:</span>
+            @Html.TextBoxFor(model => model.PostedFile, new { type = "file" })
+            @Html.ValidationMessageFor(model => model.PostedFile, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-sm-3">
+            <a href="@Url.Action("SaveInventoryTemplate")" class="InvTemplate">Stone Inventory Template <img src="~/Images/MicrosoftExcelLogo.png" /></a>
+        </div>
+    </div>
+    <br />
+    <input type="submit" value="Upload" />
+    <br />
+
+}
+<br />
+<div>
+    @Html.ActionLink("Companies", "Index") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
+    @Html.ActionLink("Inventory Report", "InventoryReport", new { CompanyId = Model.CompanyId })
+</div>

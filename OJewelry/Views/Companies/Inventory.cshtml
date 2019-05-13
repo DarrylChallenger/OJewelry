@@ -5,23 +5,27 @@
 }
 
 <h2>Manage Inventory for the <i>@Model.CompanyName</i> Company</h2>
-
+<div>
+    @Html.ActionLink("Companies", "Index") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
+    @Html.ActionLink("Inventory Report", "InventoryReport", new { CompanyId = Model.CompanyId })
+</div>
 
 <h3>Add Inventory</h3>
 <div class="formborder">
     @using (Html.BeginForm("AddInventory", "Companies", new { CompanyId = Model.CompanyId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.HiddenFor(model => model.CompanyId)
-    <div class="row">
-        <div class="col-sm-5">
-            <span>Select File:</span>
-            @Html.TextBoxFor(model => model.AddPostedFile, new { type = "file" })
-            @Html.ValidationMessageFor(model => model.AddPostedFile, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-sm-5">
+                <span>Select File:</span>
+                @Html.TextBoxFor(model => model.AddPostedFile, new { type = "file" })
+                @Html.ValidationMessageFor(model => model.AddPostedFile, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-sm-3">
+                <a href="@Url.Action("SaveNewStyleTemplate")" class="InvTemplate"> New Inventory Template <img src="~/Images/MicrosoftExcelLogo.png" /></a>
+            </div>
         </div>
-        <div class="col-sm-3">
-            <a href="@Url.Action("SaveNewStyleTemplate")" class="InvTemplate"> New Inventory Template <img src="~/Images/MicrosoftExcelLogo.png" /></a>
-        </div>
-    </div>
         <br />
         <input type="submit" value="Upload" />
         <br />
@@ -34,24 +38,24 @@
     @using (Html.BeginForm("MoveInventory", "Companies", new { CompanyId = Model.CompanyId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.HiddenFor(model => model.CompanyId)
-    <div class="row">
-        <div class="col-sm-5">
-            <div class="form-group">
-                From:
-                @Html.DropDownListFor(model => model.FromLocationId, Model.FromLocations)
-                To:
-                @Html.DropDownListFor(model => model.ToLocationId, Model.ToLocations)
-            </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="form-group">
+                    From:
+                    @Html.DropDownListFor(model => model.FromLocationId, Model.FromLocations)
+                    To:
+                    @Html.DropDownListFor(model => model.ToLocationId, Model.ToLocations)
+                </div>
 
-            <span>Select File:</span>
-            @Html.TextBoxFor(model => model.MovePostedFile, new { type = "file" })
-            @Html.ValidationMessageFor(model => model.MovePostedFile, "", new { @class = "text-danger" })
+                <span>Select File:</span>
+                @Html.TextBoxFor(model => model.MovePostedFile, new { type = "file" })
+                @Html.ValidationMessageFor(model => model.MovePostedFile, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-sm-3">
+                <a href="@Url.Action("SaveMoveStyleTemplate")" class="InvTemplate"> Move Inventory Template <img src="~/Images/MicrosoftExcelLogo.png" /></a>
+            </div>
         </div>
-        <div class="col-sm-3">
-            <a href="@Url.Action("SaveMoveStyleTemplate")" class="InvTemplate" > Move Inventory Template <img src="~/Images/MicrosoftExcelLogo.png" /></a>
-        </div>
-    </div>
-    <br />
+        <br />
         <input type="submit" value="Upload" />
         <br />
     }
