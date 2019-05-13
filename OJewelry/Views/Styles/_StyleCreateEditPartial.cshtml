@@ -92,7 +92,7 @@
     <div class="row StyleBodyBoundingBox">
         <div class="row">
             <div class="col-sm-1 col-xs-1"></div>
-            <div class="col-sm-4 col-xs-4 bold">
+            <div class="col-sm-7 col-xs-7 bold">
                 <p>MEASUREMENTS:</p>
             </div>
             <div class="col-sm-3 col-xs-3">
@@ -102,12 +102,14 @@
                 }
                 else
                 {
+                <span class="boxfull">
                     @Html.LabelFor(model => model.Style.IntroDate, htmlAttributes: new { @class = "control-label" })
-                    if (Model.Style.IntroDate.HasValue)
+                    @if (Model.Style.IntroDate.HasValue)
                     {
                         <text>: </text>
                         @Model.Style.IntroDate.Value.ToShortDateString()
                     }
+                </span>
                 }
             </div>
             <div class="">
@@ -128,77 +130,92 @@
         <div class="row">
             @if (@Model.SVMOp == SVMOperation.Print)
             {
-            <div class="col-sm-1 col-xs-1"></div>
-            <div class="col-sm-10 col-xs-10">
-                @Html.LabelFor(model => model.Style.Length, new { @class = "" })
-                <text>:</text>
-                <span class="boxfull">
-                    &nbsp;@Html.DisplayFor(model => model.Style.Length, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
-                </span>
-                <text> &nbsp;&nbsp;&nbsp;</text>
-                @Html.LabelFor(model => model.Style.Width, new { @class = "" })
-                <text>:</text>
-                <span class="boxfull">
-                    &nbsp;@Html.DisplayFor(model => model.Style.Width, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
-                </span>
-                <text> &nbsp;&nbsp;&nbsp;&nbsp;</text>
-                @Html.LabelFor(model => model.Style.ChainLength, new { @class = "" })
-                <text>:</text>
-                <span class="boxfull">
-                    &nbsp;@Html.DisplayFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
-                </span>
-                <text> &nbsp;&nbsp;&nbsp;&nbsp;</text>
-            </div>
-            }
-            else
-            {
-                @Html.LabelFor(model => model.Style.Length, new { @class = "col-sm-1 col-xs-1" });
-                @Html.EditorFor(model => model.Style.Length, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } });
-            }
-            <div class="">
-                @if (@Model.SVMOp == SVMOperation.Print)
-                {
-                }
-                else
-                {
-                    @Html.LabelFor(model => model.Style.Width, new { @class = "col-sm-1 col-xs-1" })
-                    @Html.EditorFor(model => model.Style.Width, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
-                }
-            </div>
-            <div>
-                @if (@Model.SVMOp == SVMOperation.Print)
-                {
-                }
-                else
-                {
-                    @Html.LabelFor(model => model.Style.ChainLength, new { @class = "col-sm-2 col-xs-2" })
-                    @Html.EditorFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
-                }
-            </div>
-        </div>
+                <div class="col-sm-1 col-xs-1"></div>
+                <div class="col-sm-2 col-xs-2">
+                    <span class="boxfull">
+                        @Html.LabelFor(model => model.Style.Length, new { @class = "" })
+                        <text>:</text>
+                        &nbsp;@Html.DisplayFor(model => model.Style.Length, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
+                    </span>
+                    <text> &nbsp;&nbsp;&nbsp;</text>
+                </div>
+                <div class="col-sm-2 col-xs-2">
+                    @Html.LabelFor(model => model.Style.Width, new { @class = "" })
+                    <text>:</text>
+                    <span class="boxfull">
+                        &nbsp;@Html.DisplayFor(model => model.Style.Width, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
+                    </span>
+                    <text> &nbsp;&nbsp;&nbsp;&nbsp;</text>
+
+                </div>
+                <div class="col-sm-3 col-xs-3"></div>
+                <div class="col-sm-3 col-xs-3">
+                    @Html.LabelFor(model => model.Style.ChainLength, new { @class = "" })
+                    <text>:</text>
+                    <span class="boxfull">
+                        &nbsp;@Html.DisplayFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "boxfull" } })&nbsp;
+                    </span>
+                    <text> &nbsp;&nbsp;&nbsp;&nbsp;</text>
+                </div>
+
+                    }
+                    else
+                    {
+                    @Html.LabelFor(model => model.Style.Length, new { @class = "col-sm-1 col-xs-1" });
+                    @Html.EditorFor(model => model.Style.Length, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } });
+                    }
+                    <div class="">
+                        @if (@Model.SVMOp == SVMOperation.Print)
+                        {
+                        }
+                        else
+                        {
+                            @Html.LabelFor(model => model.Style.Width, new { @class = "col-sm-1 col-xs-1" })
+                            @Html.EditorFor(model => model.Style.Width, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
+                        }
+                    </div>
+                    <div>
+                        @if (@Model.SVMOp == SVMOperation.Print)
+                        {
+                        }
+                        else
+                        {
+                            @Html.LabelFor(model => model.Style.ChainLength, new { @class = "col-sm-2 col-xs-2" })
+                            @Html.EditorFor(model => model.Style.ChainLength, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
+                        }
+                    </div>
+                </div>
         <div class="row">
 
             @if (@Model.SVMOp == SVMOperation.Print)
             {
-            <div class="col-sm-1 col-xs-1"></div>
-            <div class="col-sm-8 col-xs-8">
-                @Html.LabelFor(model => model.Style.MetalWeight, null, htmlAttributes: new { @class = "control-label" })
-                <text>&nbsp;</text>
-                <span class="boxfull">
-                    &nbsp;@Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })&nbsp;
-                </span>
-                <text>&nbsp;</text>
-                @Model.Style.MetalWeightUnit.Unit
-                <text>&nbsp;</text>
-                <text>&nbsp;</text>
-                <text>&nbsp;</text>
-                <span class="rightjustify">
-                    @Html.LabelFor(model => model.Style.MetalWtNote, null, htmlAttributes: new { @class = "" }):
+                <div class="col-sm-1 col-xs-1"></div>
+                <div class="col-sm-2 col-xs-2">
                     <span class="boxfull">
-                        &nbsp;@Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })&nbsp;
+                        @Html.LabelFor(model => model.Style.MetalWeight, null, htmlAttributes: new { @class = "control-label" })
+                        <text>&nbsp;</text>
+                        <span>
+                            &nbsp;@Html.DisplayFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })&nbsp;
+                        </span>
+                        <text>&nbsp;</text>
+                        @Model.Style.MetalWeightUnit.Unit
+                        <text>&nbsp;</text>
+
                     </span>
-                </span>
-            </div>
+                </div>
+                <div class="col-sm-2 col-xs-2">
+
+                </div>
+                <div class="col-sm-3 col-xs-3"></div>
+                <div class="col-sm-3 col-xs-3">
+                    <span class="">
+                        @Html.LabelFor(model => model.Style.MetalWtNote, null, htmlAttributes: new { @class = "" }):
+                        <span class="boxfull">
+                            &nbsp;@Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })&nbsp;
+                        </span>
+                    </span>
+
+                </div>
             }
             else
             {

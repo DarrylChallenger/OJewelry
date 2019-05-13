@@ -179,7 +179,6 @@ namespace OJewelry.Controllers
                     // declare locals
                     Row row;
                     Cell cell;
-                    string loc;
                     int rr;
 
                     Sheet sheet = new Sheet()
@@ -195,14 +194,19 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Headers
                     row = new Row();
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Shape"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Vendor"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Carat"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "Size"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 6, Max = 6, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F1", "Price"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 7, Max = 7, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("G1", "Setting Cost"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 8, Max = 8, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("H1", "Qty"); row.Append(cell);
+                    UInt32 cn = 1;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Name"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Title"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Stone"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Shape"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Vendor"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Carat"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Size"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Price"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Setting Cost"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Qty"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Parent Handle"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Tags"); row.Append(cell); cn++;
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<Stone> Stones = db.Stones.Include("Vendor").Include("Shape").Where(v => v.CompanyId == companyId)
@@ -210,24 +214,30 @@ namespace OJewelry.Controllers
                     // Content
                     for (int i = 0; i < Stones.Count(); i++)
                     {
+                        cn = 1;
                         row = new Row();
                         rr = 2 + i;
-                        loc = "A" + rr; cell = oxl.SetCellVal(loc, Stones[i].Name); row.Append(cell);
-                        loc = "B" + rr; cell = oxl.SetCellVal(loc, Stones[i].Shape.Name); row.Append(cell);
-                        loc = "C" + rr; cell = oxl.SetCellVal(loc, Stones[i].Vendor?.Name); row.Append(cell);
-                        loc = "D" + rr;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Label); row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Title); row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Name); row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Shape.Name); row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Vendor?.Name); row.Append(cell); cn++;
+
                         if (Stones[i].CtWt == null)
                         {
-                            cell = oxl.SetCellVal(loc, "");
+                            cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), "");
                         } else
                         {
-                            cell = oxl.SetCellVal(loc, Stones[i].CtWt.Value);
+                            cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].CtWt.Value);
                         }
-                        row.Append(cell);                       
-                        loc = "E" + rr; cell = oxl.SetCellVal(loc, Stones[i].StoneSize); row.Append(cell);
-                        loc = "F" + rr; cell = oxl.SetCellVal(loc, Stones[i].Price); row.Append(cell);
-                        loc = "G" + rr; cell = oxl.SetCellVal(loc, Stones[i].SettingCost); row.Append(cell);
-                        loc = "H" + rr; cell = oxl.SetCellVal(loc, Stones[i].Qty); row.Append(cell);
+                        row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].StoneSize); row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Price); row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].SettingCost); row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Qty); row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].ParentHandle); row.Append(cell); cn++;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Tags); row.Append(cell); cn++;
+
                         sd.Append(row);
                     }
                     worksheet.Append(sd);

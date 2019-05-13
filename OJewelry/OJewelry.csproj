@@ -545,6 +545,7 @@
     <Compile Include="Models\PresenterViewModel.cs" />
     <Compile Include="Models\SalesLedger.cs" />
     <Compile Include="Models\Shape.cs" />
+    <Compile Include="Models\StoneInventoryModel.cs" />
     <Compile Include="Models\Stones.cs" />
     <Compile Include="Models\Style.cs" />
     <Compile Include="Models\StyleCasting.cs" />
@@ -589,6 +590,7 @@
     </Content>
     <Content Include="Excel\MoveInv.xlsx" />
     <Content Include="Excel\NewInv.xlsx" />
+    <Content Include="Excel\StoneInv.xlsx" />
     <None Include="Properties\PublishProfiles\OJewelry-Stag - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelry-Stag - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Debug Web Deploy.pubxml" />
@@ -735,6 +737,7 @@
     <Content Include="Views\AssemblyCosts\Index.cshtml" />
     <Content Include="Views\Shared\_CompanyNavPartial.cshtml" />
     <Content Include="Views\Account\AdminResetPassword.cshtml" />
+    <Content Include="Views\Companies\ManageStoneInventory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

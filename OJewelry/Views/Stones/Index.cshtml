@@ -17,10 +17,13 @@
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Stone Inventory","ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
     @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
 </p>
 <table class="table">
     <tr>
+        <th>Name</th>
+        <th>Title</th>
         <th>
             Stone
         </th>
@@ -46,43 +49,47 @@
         <th>
             @Html.DisplayNameFor(model => model.Qty)
         </th>
-
+        <th>Parent Handle</th>
+        <th>Tags</th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (OJewelry.Models.Stone item in Model)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Shape.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Vendor.Name)
-            </td>
+    <tr>
+        <td>@Html.DisplayFor(modelItem => item.Label) </td>
+        <td>@Html.DisplayFor(modelItem => item.Title) </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Shape.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Vendor.Name)
+        </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.CtWt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StoneSize)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SettingCost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Qty)
-            </td>
-
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-            </td>
-        </tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CtWt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StoneSize)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SettingCost)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Qty)
+        </td>
+        <td>@Html.DisplayFor(modelItem => item.ParentHandle) </td>
+        <td>@Html.DisplayFor(modelItem => item.Tags) </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+        </td>
+    </tr>
     }
 
 </table>
@@ -90,5 +97,6 @@
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Stone Inventory", "ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
     @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
 </p>

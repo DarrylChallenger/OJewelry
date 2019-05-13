@@ -156,8 +156,15 @@ namespace OJewelry.Controllers
 
         protected SelectList SetVendorTypesDropDown(Vendor v)
         {
-            SelectList s = new SelectList(db.VendorTypes, "Id", "Name", v.Type.Id);//, "-- Choose a Type --");
-
+            SelectList s = null;
+            List<VendorType> VendorTypes = db.VendorTypes.ToList();
+            if (v.Type != null)
+            {
+                s = new SelectList(VendorTypes, "Id", "Name", v.Type.Id);//, "-- Choose a Type --");
+            } else
+            {
+                s = new SelectList(VendorTypes, "Id", "Name", 0);//, "-- Choose a Type --");
+            }
             return s;
         }
 

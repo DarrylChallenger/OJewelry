@@ -901,6 +901,11 @@ namespace OJewelry.Controllers
             return File("~/Excel/MoveInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
+        public FileResult SaveInventoryTemplate()
+        {
+            return File("~/Excel/StoneInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
         public FileResult ExportInventoryReport(int? CompanyId, string currDate)
         {
             if (CompanyId == null)
@@ -1125,6 +1130,205 @@ namespace OJewelry.Controllers
             irm.CompanyName = db.FindCompany(CompanyId).Name;
 
             return irm;
+        }
+
+        public ActionResult ManageStoneInventory(int companyId)
+        {
+            StoneInventoryModel sim = new StoneInventoryModel();
+            sim.CompanyName = db.FindCompany(companyId)?.Name;
+            return View(sim);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ManageStoneInventory(StoneInventoryModel sim)
+
+        {
+            /*
+             * Open the sheet, check for format of headers. 
+             * Then, for each row, find its stone and update the qty with delta.
+             * If item is not found add it to the warnings.
+            */
+            try
+            {
+                DCTSOpenXML oxl = new DCTSOpenXML();
+
+                String error;
+                if (isValidStoneModel())
+                {
+                    using (MemoryStream memstream = new MemoryStream())
+                    {
+                        sim.PostedFile.InputStream.CopyTo(memstream);
+                        Package spreadsheetPackage = Package.Open(memstream, FileMode.Open, FileAccess.Read);
+                        using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(spreadsheetPackage))
+                        {
+                            // validate file as spreadsheet
+                            WorkbookPart wbPart = spreadsheetDocument.WorkbookPart;
+                            Workbook wb = wbPart.Workbook;
+                            SharedStringTablePart stringtable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+                            List<Style> styles = new List<Style>();
+                            List<Collection> colls = new List<Collection>();
+                            List<StoneElement> stoneElements = new List<StoneElement>();
+
+                            foreach (Sheet sheet in wb.Sheets)
+                            {
+                                WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
+                                Worksheet worksheet = wsp.Worksheet;
+                                int rc = worksheet.Descendants<Row>().Count();
+                                if (rc != 0)
+                                {
+                                    int q = worksheet.Descendants<Column>().Count();
+                                    if ((true) && //worksheet.Descendants<Column>().Count() >= 4) &&
+                                        (oxl.CellMatches("A1", worksheet, stringtable, "Stone") &&
+                                        oxl.CellMatches("B1", worksheet, stringtable, "Shape") &&
+                                        oxl.CellMatches("C1", worksheet, stringtable, "Size") &&
+                                        oxl.CellMatches("D1", worksheet, stringtable, "Delta")))
+                                    {
+                                        if (worksheet.Descendants<Row>().Count() >= 2)
+                                        {
+                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                            {
+                                                // Read Stone, Size, Shape
+                                                string stone = "", shape="", size ="";
+                                                int delta = 0;
+                                                //process each cell in cols 1-4
+                                                bool bEmptyRow = true;
+                                                // Stone
+                                                Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) stone = oxl.GetStringVal(cell, stringtable);
+                                                if (stone == "")
+                                                {
+                                                    // error
+                                                    error = "The stone in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("Stone-" + j, error);
+                                                    sim.Errors.Add(error);
+                                                }
+                                                else
+                                                {
+                                                    bEmptyRow = false;
+                                                }
+
+                                                // Shape 
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) shape = oxl.GetStringVal(cell, stringtable);
+                                                if (shape == "")
+                                                {
+                                                    // error
+                                                    error = "The shape in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("Shape-" + j, error);
+                                                    sim.Errors.Add(error);
+                                                }
+                                                else
+                                                {
+                                                    bEmptyRow = false;
+                                                }
+
+                                                // Size 
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) size = oxl.GetStringVal(cell, stringtable);
+                                                if (size == "")
+                                                {
+                                                    // error
+                                                    error = "The size in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("Size-" + j, error);
+                                                    sim.Errors.Add(error); bEmptyRow = false;
+                                                }
+                                                else
+                                                {
+                                                    bEmptyRow = false;
+                                                }
+
+                                                // Delta 
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
+                                                {
+                                                    delta = oxl.GetIntVal(cell);
+                                                    bEmptyRow = false;
+                                                }
+
+
+                                                // if whole row is blank, remove errors and flag as warning, don't add the style.
+                                                if (bEmptyRow)
+                                                {
+                                                    // Remove last two Model Errors, add warning
+                                                    error = "Row [" + j + "] will be ignored - it contains blank cells";
+                                                    sim.Warnings.Add(error);
+                                                    if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
+                                                    if (ModelState.Remove("Shape-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
+                                                    if (ModelState.Remove("Size-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 1);
+                                                }
+                                                else
+                                                {
+                                                    // add to list
+                                                    stoneElements.Add(new StoneElement()
+                                                    {
+                                                        stone = stone,
+                                                        shape = shape,
+                                                        size = size,
+                                                        delta = delta,
+                                                        lineNum = j
+                                                    });
+                                                }
+                                            }
+                                        }
+                                        else
+                                        { // row count < 2
+                                            error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
+                                            sim.Errors.Add(error);
+                                            ModelState.AddModelError("StoneInv-No Rows", error);
+                                        }
+                                    }
+                                    else
+                                    { // incorrect headers
+                                        error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the 'Stone Inventory' Template";
+                                        sim.Errors.Add(error);
+                                        ModelState.AddModelError("StoneInv-No Headers", error);
+                                    }
+                                }
+                                else
+                                {
+                                    // empty sheet
+                                    error = "The sheet [" + sheet.Name + "] is empty. Please use the 'Stone Inventory' Template";
+                                    sim.Errors.Add(error);
+                                    ModelState.AddModelError("StoneInv-Empty Sheet", error);
+                                }
+                            }
+
+                            // process deltas
+                            foreach (StoneElement s in stoneElements)
+                            {
+                                Stone theStone = db.Stones.Include("Shape")
+                                    .Where(x => x.Name == s.stone && x.Shape.Name == s.shape && x.StoneSize == s.size && x.CompanyId == sim.CompanyId).SingleOrDefault();
+
+                                if (theStone == null)
+                                {
+                                    error = "The stone in row [" + s.lineNum + "] is not on record.";
+                                    sim.Errors.Add(error);
+                                    continue;
+                                }
+                                // update quantity
+                                theStone.Qty += s.delta;   
+                            }
+                            // Done processing, update db
+                            if (sim.Errors.Count() == 0)
+                            {
+                                db.SaveChanges();
+                                ViewBag.Message += sim.PostedFile.FileName + " inventory updated";
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                sim.Errors.Add($"Fatal exception:{e.InnerException}\n{e.StackTrace}");
+                ModelState.AddModelError("Caught fatal exception", e);
+            }
+            if (sim.Errors.Count() == 0)
+            {
+                sim.success = true;
+            } else {
+                sim.success = false;
+            }
+            return View(sim);
         }
 
         protected override void Dispose(bool disposing)
@@ -1413,6 +1617,20 @@ namespace OJewelry.Controllers
                     m.Value.Errors.Clear();
                 }
 
+            }
+            return b;
+        }
+
+        bool isValidStoneModel()
+        {
+            bool b = true;
+            // Iterate thru ModelState: if errors in From, To, or Move, then there is a problem
+            foreach (KeyValuePair<string, ModelState> m in ModelState)
+            {
+                if (m.Key == "PostedFile" && m.Value.Errors.Count != 0)
+                {
+                    b = false;
+                }
             }
             return b;
         }

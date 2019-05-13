@@ -30,6 +30,7 @@
         public string Name { get; set; } // Refers to Stone Type
 
         [StringLength(50)]
+        [Display(Name ="Name")]
         public string Label { get; set; } // Refers to name used by company
 
         [StringLength(50)]
