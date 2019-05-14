@@ -529,6 +529,7 @@
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\AssemblyCost.cs" />
     <Compile Include="Models\DataAnnotations.cs" />
+    <Compile Include="Models\FindingInventoryModel.cs" />
     <Compile Include="Models\Findings.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InventoryViewModel.cs" />
@@ -591,6 +592,7 @@
     <Content Include="Excel\MoveInv.xlsx" />
     <Content Include="Excel\NewInv.xlsx" />
     <Content Include="Excel\StoneInv.xlsx" />
+    <Content Include="Excel\FindingInv.xlsx" />
     <None Include="Properties\PublishProfiles\OJewelry-Stag - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelry-Stag - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Debug Web Deploy.pubxml" />
@@ -738,6 +740,7 @@
     <Content Include="Views\Shared\_CompanyNavPartial.cshtml" />
     <Content Include="Views\Account\AdminResetPassword.cshtml" />
     <Content Include="Views\Companies\ManageStoneInventory.cshtml" />
+    <Content Include="Views\Companies\ManageFindingsInventory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

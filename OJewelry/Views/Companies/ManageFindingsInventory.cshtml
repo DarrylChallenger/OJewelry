@@ -1,9 +1,9 @@
-﻿@model OJewelry.Models.StoneInventoryModel
+﻿@model OJewelry.Models.FindingInventoryModel
 @{
-    ViewBag.Title = "Manage Stone Inventory";
+    ViewBag.Title = "Manage Finding Inventory";
 }
 
-<h2>Manage Stone Inventory for <i>@Model.CompanyName</i></h2>
+<h2>Manage Finding Inventory for <i>@Model.CompanyName</i></h2>
 <br />
 <div>
     @Html.ActionLink("Companies", "Index") |
@@ -15,18 +15,20 @@
 {
     <li>
         <p>Errors loading @Model.failedFileName</p>
-            @foreach (string e in Model.Errors)
-            {
-                <ul class="text-danger">@e</ul>
-            }
-</li>
+        @foreach (string e in Model.Errors)
+        {
+            <ul class="text-danger">@e</ul>
+        }
+    </li>
 
 }
 
 @if (Model.Warnings.Count != 0)
 {
     <li>
-        <p>Warnings loading @Model.failedFileName</p>
+        <p>
+            Warnings loading @Model.failedFileName
+        </p>
         @foreach (string e in Model.Warnings)
         {
             <ul class="text-warning">@e</ul>
@@ -39,7 +41,7 @@
     <p class="text-success">@ViewBag.Message</p>
 }
 
-@using (Html.BeginForm("ManageStoneInventory", "Companies", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("ManageFindingsInventory", "Companies", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.CompanyId)
@@ -51,7 +53,7 @@
             @Html.ValidationMessageFor(model => model.PostedFile, "", new { @class = "text-danger" })
         </div>
         <div class="col-sm-3">
-            <a href="@Url.Action("SaveStoneInventoryTemplate")" class="InvTemplate">Stone Inventory Template <img src="~/Images/MicrosoftExcelLogo.png" /></a>
+            <a href="@Url.Action("SaveFindingInventoryTemplate")" class="InvTemplate">Finding Inventory Template <img src="~/Images/MicrosoftExcelLogo.png" /></a>
         </div>
     </div>
     <br />

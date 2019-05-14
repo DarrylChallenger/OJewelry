@@ -12,6 +12,7 @@
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Findings Inventory", "ManageFindingsInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
     @Html.ActionLink("Export Findings to Excel", "ExportFindingsReport", new { companyId = ViewBag.companyId })
 </p>
 <table class="table">
@@ -63,5 +64,6 @@
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
+    @Html.ActionLink("Findings Inventory", "ManageFindingsInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
     @Html.ActionLink("Export Findings to Excel", "ExportFindingsReport", new { companyId = ViewBag.companyId })
 </p>
