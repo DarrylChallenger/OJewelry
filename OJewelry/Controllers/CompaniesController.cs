@@ -901,9 +901,14 @@ namespace OJewelry.Controllers
             return File("~/Excel/MoveInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
-        public FileResult SaveInventoryTemplate()
+        public FileResult SaveStoneInventoryTemplate()
         {
             return File("~/Excel/StoneInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        public FileResult SaveFindingInventoryTemplate()
+        {
+            return File("~/Excel/FindingInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         public FileResult ExportInventoryReport(int? CompanyId, string currDate)
@@ -1142,7 +1147,6 @@ namespace OJewelry.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ManageStoneInventory(StoneInventoryModel sim)
-
         {
             /*
              * Open the sheet, check for format of headers. 
@@ -1159,6 +1163,7 @@ namespace OJewelry.Controllers
                     using (MemoryStream memstream = new MemoryStream())
                     {
                         sim.PostedFile.InputStream.CopyTo(memstream);
+                        sim.failedFileName = sim.PostedFile.FileName;
                         Package spreadsheetPackage = Package.Open(memstream, FileMode.Open, FileAccess.Read);
                         using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(spreadsheetPackage))
                         {
@@ -1183,7 +1188,7 @@ namespace OJewelry.Controllers
                                         oxl.CellMatches("B1", worksheet, stringtable, "Shape") &&
                                         oxl.CellMatches("C1", worksheet, stringtable, "Size") &&
                                         oxl.CellMatches("D1", worksheet, stringtable, "Vendor") &&
-                                        oxl.CellMatches("E1", worksheet, stringtable, "Delta")))
+                                        oxl.CellMatches("E1", worksheet, stringtable, "Qty")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
@@ -1247,7 +1252,7 @@ namespace OJewelry.Controllers
                                                     // error
                                                     error = "The Vendor in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
                                                     ModelState.AddModelError("Vendor-" + j, error);
-                                                    sim.Errors.Add(error); 
+                                                    sim.Warnings.Add(error); 
                                                 }
                                                 else
                                                 {
@@ -1318,8 +1323,10 @@ namespace OJewelry.Controllers
                             foreach (StoneElement s in stoneElements)
                             {
                                 Stone theStone = db.Stones.Include("Shape").Include("Vendor")
-                                    .Where(x => x.Name == s.stone && x.Shape.Name == s.shape && x.StoneSize == s.size && x.Vendor.Name == s.vendorName &&
-                                        x.CompanyId == sim.CompanyId).SingleOrDefault();
+                                    .Where(x => x.Name.Trim() == s.stone.Trim() && x.Shape.Name.Trim() == s.shape.Trim() && x.StoneSize.Trim() == s.size.Trim() && 
+                                        x.CompanyId == sim.CompanyId).Where(x => x.Vendor == null || x.Vendor.Name == null || x.Vendor.Name.Trim() == "" ||
+                                        (x.Vendor != null && x.Vendor.Name.Trim() != "" && x.Vendor.Name.Trim() == s.vendorName.Trim()))
+                                    .SingleOrDefault();
 
                                 if (theStone == null)
                                 {
@@ -1328,7 +1335,13 @@ namespace OJewelry.Controllers
                                     continue;
                                 }
                                 // update quantity
-                                theStone.Qty += s.delta;   
+                                if (theStone.Qty + s.delta >= 0)
+                                {
+                                    theStone.Qty += s.delta;
+                                } else {
+                                    error = $"Insufficient inventory ({theStone.Qty}) to remove ({s.delta}) stones in row {s.lineNum}";
+                                    sim.Errors.Add(error);
+                                }
                             }
                             // Done processing, update db
                             if (sim.Errors.Count() == 0)
@@ -1352,6 +1365,207 @@ namespace OJewelry.Controllers
             return View(sim);
         }
 
+        public ActionResult ManageFindingsInventory(int companyId)
+        {
+            FindingInventoryModel fim = new FindingInventoryModel();
+            fim.CompanyName = db.FindCompany(companyId)?.Name;
+            return View(fim);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ManageFindingsInventory(FindingInventoryModel fim)
+        {
+            /*
+             * Open the sheet, check for format of headers. 
+             * Then, for each row, find its finding and update the qty with delta.
+             * If item is not found add it to the warnings.
+            */
+            try
+            {
+                DCTSOpenXML oxl = new DCTSOpenXML();
+
+                String error;
+                if (isValidFindingModel())
+                {
+                    using (MemoryStream memstream = new MemoryStream())
+                    {
+                        fim.PostedFile.InputStream.CopyTo(memstream);
+                        fim.failedFileName = fim.PostedFile.FileName;
+                        Package spreadsheetPackage = Package.Open(memstream, FileMode.Open, FileAccess.Read);
+                        using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Open(spreadsheetPackage))
+                        {
+                            // validate file as spreadsheet
+                            WorkbookPart wbPart = spreadsheetDocument.WorkbookPart;
+                            Workbook wb = wbPart.Workbook;
+                            SharedStringTablePart stringtable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+                            List<Style> styles = new List<Style>();
+                            List<Collection> colls = new List<Collection>();
+                            List<FindingElement> findingElements = new List<FindingElement>();
+
+                            foreach (Sheet sheet in wb.Sheets)
+                            {
+                                WorksheetPart wsp = (WorksheetPart)wbPart.GetPartById(sheet.Id);
+                                Worksheet worksheet = wsp.Worksheet;
+                                int rc = worksheet.Descendants<Row>().Count();
+                                if (rc != 0)
+                                {
+                                    int q = worksheet.Descendants<Column>().Count();
+                                    if ((true) && //worksheet.Descendants<Column>().Count() >= 4) &&
+                                        (oxl.CellMatches("A1", worksheet, stringtable, "Finding") &&
+                                        oxl.CellMatches("B1", worksheet, stringtable, "Vendor") &&
+                                        oxl.CellMatches("C1", worksheet, stringtable, "Qty")))
+                                    {
+                                        if (worksheet.Descendants<Row>().Count() >= 2)
+                                        {
+                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                            {
+                                                // Read finding
+                                                string finding = "", vendor = "";
+                                                int delta = 0;
+                                                //process each cell in cols 1-3
+                                                bool bEmptyRow = true;
+                                                // Stone
+                                                Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) finding = oxl.GetStringVal(cell, stringtable);
+                                                if (finding == "")
+                                                {
+                                                    // error
+                                                    error = "The finding in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("Finding-" + j, error);
+                                                    fim.Errors.Add(error);
+                                                }
+                                                else
+                                                {
+                                                    bEmptyRow = false;
+                                                }
+
+
+                                                // Vendor 
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
+                                                if (cell != null) vendor = oxl.GetStringVal(cell, stringtable);
+                                                if (vendor == "")
+                                                {
+                                                    // error
+                                                    error = "The Vendor in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("Vendor-" + j, error);
+                                                    fim.Warnings.Add(error);
+                                                }
+                                                else
+                                                {
+                                                    bEmptyRow = false;
+                                                }
+
+
+                                                // Delta 
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
+                                                {
+                                                    delta = oxl.GetIntVal(cell);
+                                                    bEmptyRow = false;
+                                                }
+
+
+                                                // if whole row is blank, remove errors and flag as warning, don't add the style.
+                                                if (bEmptyRow)
+                                                {
+                                                    // Remove last two Model Errors, add warning
+                                                    error = "Row [" + j + "] will be ignored - it contains blank cells";
+                                                    fim.Warnings.Add(error);
+                                                    string s = fim.Errors.Find(x => x == "Stone-" + j);
+                                                    if (ModelState.Remove("Finding-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 2);
+                                                    if (ModelState.Remove("Vendor-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 1);
+                                                }
+                                                else
+                                                {
+                                                    // add to list
+                                                    findingElements.Add(new FindingElement()
+                                                    {
+                                                        finding = finding,
+                                                        vendorName = vendor,
+                                                        delta = delta,
+                                                        lineNum = j
+                                                    });
+                                                }
+                                            }
+                                        }
+                                        else
+                                        { // row count < 2
+                                            error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
+                                            fim.Errors.Add(error);
+                                            ModelState.AddModelError("FindingInv-No Rows", error);
+                                        }
+                                    }
+                                    else
+                                    { // incorrect headers
+                                        error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the 'Finding Inventory' Template";
+                                        fim.Errors.Add(error);
+                                        ModelState.AddModelError("FindingInv-No Headers", error);
+                                    }
+                                }
+                                else
+                                {
+                                    // empty sheet
+                                    error = "The sheet [" + sheet.Name + "] is empty. Please use the 'Finding Inventory' Template";
+                                    fim.Errors.Add(error);
+                                    ModelState.AddModelError("FindingInv-Empty Sheet", error);
+                                }
+                            }
+
+                            // process deltas
+
+                            foreach (FindingElement f in findingElements)
+                            {
+                                List<Finding> these = db.Findings.Include("Vendor")
+                                    .Where(x => x.Name.Trim() == f.finding.Trim() && x.CompanyId == fim.CompanyId)
+                                    .ToList();
+                                Finding theFinding = these.Where(x => x.Vendor == null || x.Vendor.Name == null || x.Vendor.Name.Trim() == "" ||
+                                        (x.Vendor != null && x.Vendor.Name.Trim() != "" && x.Vendor.Name.Trim() == f.vendorName.Trim()))
+                                    .SingleOrDefault();
+
+                                if (theFinding == null)
+                                {
+                                    error = "The finding in row [" + f.lineNum + "] is not on record.";
+                                    fim.Errors.Add(error);
+                                    continue;
+                                }
+                                // update quantity
+                                if (theFinding.Qty + f.delta >= 0)
+                                {
+                                    theFinding.Qty += f.delta;
+                                }
+                                else
+                                {
+                                    error = $"Insufficient inventory ({theFinding.Qty}) to remove ({f.delta}) finding in row {f.lineNum}";
+                                    fim.Errors.Add(error);
+                                }
+                            }
+                            // Done processing, update db
+                            if (fim.Errors.Count() == 0)
+                            {
+                                db.SaveChanges();
+                                ViewBag.Message += fim.PostedFile.FileName + " inventory updated";
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                fim.Errors.Add($"Fatal exception:{e.InnerException}\n{e.StackTrace}");
+                ModelState.AddModelError("Caught fatal exception", e);
+            }
+            if (fim.Errors.Count() == 0)
+            {
+                fim.success = true;
+            }
+            else
+            {
+                fim.success = false;
+            }
+            return View(fim);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -1360,183 +1574,7 @@ namespace OJewelry.Controllers
             }
             base.Dispose(disposing);
         }
-        /*
-        bool oxl.CellMatches(string cellref, Worksheet w, SharedStringTablePart strings, string value)
-        {
-            Cell cell = w.Descendants<Cell>().Where(c => c.CellReference == cellref).First();
-            try
-            {
-                if (cell.DataType != null)
-                {
-                    if (cell.DataType == CellValues.SharedString)
-                    {
-                        if (strings.SharedStringTable.ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText == value)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            } catch
-            {
-                return false;
-            }
-            return false;
-        }
 
-        bool oxl.CellMatches(string cellref, Worksheet w, int value)
-        {
-            Cell cell = w.Descendants<Cell>().Where(c => c.CellReference == cellref).First();
-            try
-            {
-                if (cell.DataType == null)
-                {
-                    if (int.Parse(cell.CellValue.InnerText) == value)
-                    {
-                        return true;
-                    }
-                }
-            }
-            catch
-            {
-                return false;
-            }
-            return false;
-        }
-
-        bool oxl.CellMatches(string cellref, Worksheet w, DateTime value)
-        {
-            Cell cell = w.Descendants<Cell>().Where(c => c.CellReference == cellref).First();
-            try
-            {
-                if (cell.DataType != null)
-                {
-                    if (cell.DataType == CellValues.Date)
-                    {
-                        if ((DateTime.Parse(cell.CellValue.InnerText)) == value)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                return false;
-            }
-            return false;
-        }
-
-        bool oxl.CellMatches(string cellref, Worksheet w, bool value)
-        {
-            Cell cell = w.Descendants<Cell>().Where(c => c.CellReference == cellref).First();
-            try
-            {
-                if (cell.DataType != null)
-                {
-                    if (cell.DataType == CellValues.Boolean)
-                    {
-                        if (Boolean.Parse(cell.CellValue.InnerText) == value)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                return false;
-            }
-            return false;
-        }
-
-        string oxl.GetStringVal(Cell cell, SharedStringTablePart strings)
-        {
-            String str = "";
-            try
-            {
-                if (cell.DataType != null)
-                {
-                    if (cell.DataType == CellValues.SharedString)
-                    {
-                        str = strings.SharedStringTable.ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText;
-                    }
-                    if (cell.DataType == CellValues.String)
-                    {
-                        str = cell.CellValue.Text;
-                    }
-                }
-                else
-                {
-                    str = cell.CellValue.Text;
-                }
-            }
-            catch
-            {
-                str = "";
-            }
-            return str;
-        }
-
-        int GetIntVal(Cell cell)
-        {
-            int i = 0;
-            try
-            {
-                if (cell.DataType == null)
-                {
-                    i = int.Parse(cell.CellValue.InnerText);
-                }
-            }
-            catch
-            {
-                return 0;
-            }
-
-            return i;
-        }
-
-        double GetDoubleVal(Cell cell)
-        {
-            double d = 0;
-            try
-            {
-                if (cell.DataType == null)
-                {
-                    d = double.Parse(cell.CellValue.InnerText);
-                }
-            }
-            catch
-            {
-                return 0;
-            }
-
-            return d;
-        }
-
-        Cell oxl.SetCellVal(string loc, int val)
-        {
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
-            return cell;
-        }
-
-        Cell oxl.SetCellVal(string loc, decimal val)
-        {
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
-            return cell;
-        }
-
-        Cell oxl.SetCellVal(string loc, double val)
-        {
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
-            return cell;
-        }
-
-        Cell oxl.SetCellVal(string loc, string val)
-        {
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.String, CellValue = new CellValue(val) };
-            return cell;
-        }
-        */
         int GetJewelryTypeId(int companyId, string JewelryTypeName)
         {
             JewelryType jt = db.JewelryTypes.Where(j => j.Name == JewelryTypeName && j.CompanyId == companyId).FirstOrDefault();
@@ -1643,6 +1681,20 @@ namespace OJewelry.Controllers
         }
 
         bool isValidStoneModel()
+        {
+            bool b = true;
+            // Iterate thru ModelState: if errors in From, To, or Move, then there is a problem
+            foreach (KeyValuePair<string, ModelState> m in ModelState)
+            {
+                if (m.Key == "PostedFile" && m.Value.Errors.Count != 0)
+                {
+                    b = false;
+                }
+            }
+            return b;
+        }
+
+        bool isValidFindingModel()
         {
             bool b = true;
             // Iterate thru ModelState: if errors in From, To, or Move, then there is a problem

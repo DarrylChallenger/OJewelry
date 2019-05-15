@@ -5,9 +5,9 @@ using System.Web;
 
 namespace OJewelry.Models
 {
-    public class StoneInventoryModel
+    public class FindingInventoryModel
     {
-        public StoneInventoryModel()
+        public FindingInventoryModel()
         {
             success = false;
             Errors = new List<string>();
@@ -23,13 +23,34 @@ namespace OJewelry.Models
         public HttpPostedFileBase PostedFile { get; set; }
     }
 
-    public class StoneElement
+    public class FindingElement
     {
-        public string stone;
-        public string shape;
-        public string size;
+        public string finding;
+
         public string vendorName;
         public int delta;
         public int lineNum;
+    }
+
+    public partial class Finding
+    {
+        public bool VendorMatchesData(string vendorName)
+        {
+            // If the stone or finding has a non-blank vendor name, it must match the name in the sheet
+            if (Vendor != null && Vendor.Name != "" && Vendor.Name != vendorName)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+
+    public class FindingVendorMatcher
+    {
+        public Vendor vendor { get; set; }
+        public string excelVendorName { get; set; }
     }
 }
