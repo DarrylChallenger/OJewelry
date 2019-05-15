@@ -1252,7 +1252,7 @@ namespace OJewelry.Controllers
                                                     // error
                                                     error = "The Vendor in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
                                                     ModelState.AddModelError("Vendor-" + j, error);
-                                                    sim.Errors.Add(error); 
+                                                    sim.Warnings.Add(error); 
                                                 }
                                                 else
                                                 {
@@ -1323,9 +1323,9 @@ namespace OJewelry.Controllers
                             foreach (StoneElement s in stoneElements)
                             {
                                 Stone theStone = db.Stones.Include("Shape").Include("Vendor")
-                                    .Where(x => x.Name == s.stone && x.Shape.Name == s.shape && x.StoneSize == s.size && 
-                                        x.CompanyId == sim.CompanyId).Where(x => x.Vendor == null || x.Vendor.Name == null ||
-                                        (x.Vendor != null && x.Vendor.Name != "" && x.Vendor.Name == s.vendorName))
+                                    .Where(x => x.Name.Trim() == s.stone.Trim() && x.Shape.Name.Trim() == s.shape.Trim() && x.StoneSize.Trim() == s.size.Trim() && 
+                                        x.CompanyId == sim.CompanyId).Where(x => x.Vendor == null || x.Vendor.Name == null || x.Vendor.Name.Trim() == "" ||
+                                        (x.Vendor != null && x.Vendor.Name.Trim() != "" && x.Vendor.Name.Trim() == s.vendorName.Trim()))
                                     .SingleOrDefault();
 
                                 if (theStone == null)
@@ -1339,7 +1339,7 @@ namespace OJewelry.Controllers
                                 {
                                     theStone.Qty += s.delta;
                                 } else {
-                                    error = $"Insufficient inventory ({theStone.Qty}) to remove {s.delta} stones in row {s.lineNum}";
+                                    error = $"Insufficient inventory ({theStone.Qty}) to remove ({s.delta}) stones in row {s.lineNum}";
                                     sim.Errors.Add(error);
                                 }
                             }
@@ -1449,7 +1449,7 @@ namespace OJewelry.Controllers
                                                     // error
                                                     error = "The Vendor in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
                                                     ModelState.AddModelError("Vendor-" + j, error);
-                                                    fim.Errors.Add(error);
+                                                    fim.Warnings.Add(error);
                                                 }
                                                 else
                                                 {
@@ -1517,10 +1517,10 @@ namespace OJewelry.Controllers
                             foreach (FindingElement f in findingElements)
                             {
                                 List<Finding> these = db.Findings.Include("Vendor")
-                                    .Where(x => x.Name == f.finding && x.CompanyId == fim.CompanyId)
+                                    .Where(x => x.Name.Trim() == f.finding.Trim() && x.CompanyId == fim.CompanyId)
                                     .ToList();
-                                Finding theFinding = these.Where(x => x.Vendor == null || x.Vendor.Name == null || 
-                                        (x.Vendor != null && x.Vendor.Name != "" && x.Vendor.Name == f.vendorName))
+                                Finding theFinding = these.Where(x => x.Vendor == null || x.Vendor.Name == null || x.Vendor.Name.Trim() == "" ||
+                                        (x.Vendor != null && x.Vendor.Name.Trim() != "" && x.Vendor.Name.Trim() == f.vendorName.Trim()))
                                     .SingleOrDefault();
 
                                 if (theFinding == null)
@@ -1536,7 +1536,7 @@ namespace OJewelry.Controllers
                                 }
                                 else
                                 {
-                                    error = $"Insufficient inventory ({theFinding.Qty}) to remove {f.delta} finding in row {f.lineNum}";
+                                    error = $"Insufficient inventory ({theFinding.Qty}) to remove ({f.delta}) finding in row {f.lineNum}";
                                     fim.Errors.Add(error);
                                 }
                             }

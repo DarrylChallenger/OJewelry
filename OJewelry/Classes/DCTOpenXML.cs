@@ -123,6 +123,11 @@ namespace OJewelry.Classes
             String str = "";
             try
             {
+                if (cell.DataType == null)
+                {
+                    str = cell.CellValue.InnerText;
+                    return str;
+                }
                 if (cell.DataType != null)
                 {
                     if (cell.DataType == CellValues.SharedString)
@@ -135,7 +140,7 @@ namespace OJewelry.Classes
                     str = cell.CellValue.Text;
                 }
             }
-            catch
+            catch (Exception e)
             {
                 str = "";
             }
