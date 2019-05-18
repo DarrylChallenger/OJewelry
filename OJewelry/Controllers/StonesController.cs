@@ -27,11 +27,12 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            StoneSorter stoneSorter = new StoneSorter();
             companyId = companyId.Value;
             var stones = db.Stones.Where(st => st.CompanyId == companyId).Include(s => s.Company).Include(s => s.Shape).Include(s => s.Vendor);
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
-            return View(stones.OrderBy(g => g.Name).ThenBy(h=>h.Shape.Name).ThenBy(i=>i.StoneSize).ToList());
+            return View(stones.AsEnumerable().OrderBy(g => g.Name).ThenBy(h=>h.Shape.Name).ThenBy(i=>i.StoneSize, stoneSorter).ToList());
         }
 
         // GET: Stones/Details/5
@@ -162,6 +163,7 @@ namespace OJewelry.Controllers
         {
             byte[] b;
             DCTSOpenXML oxl = new DCTSOpenXML();
+            StoneSorter stoneSorter = new StoneSorter();
             using (MemoryStream memStream = new MemoryStream())
             {
                 using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
@@ -210,7 +212,7 @@ namespace OJewelry.Controllers
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<Stone> Stones = db.Stones.Include("Vendor").Include("Shape").Where(v => v.CompanyId == companyId)
-                        .OrderBy(s => s.Name).ThenBy(s => s.Shape).ThenBy(s => s.StoneSize).ToList();
+                        .OrderBy(s => s.Name).ThenBy(s => s.Shape).ThenBy(s => s.StoneSize, stoneSorter).ToList();
                     // Content
                     for (int i = 0; i < Stones.Count(); i++)
                     {
