@@ -77,7 +77,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,CtWt,StoneSize,ShapeId,Price,SettingCost,Qty,Note,ParentHandle,Title,Tags")] Stone stone)
+        public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,SettingCost,Qty,Note,ParentHandle,Title,Label,Tags")] Stone stone)
         {
             if (ModelState.IsValid)
             {
@@ -116,7 +116,7 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,Qty,SettingCost,Qty,Note,ParentHandle,Title,Tags")] Stone stone)
+        public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,Qty,SettingCost,Note,ParentHandle,Title,Label,Tags")] Stone stone)
         {
             if (ModelState.IsValid)
             {
@@ -211,8 +211,9 @@ namespace OJewelry.Controllers
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Tags"); row.Append(cell); cn++;
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
-                    List<Stone> Stones = db.Stones.Include("Vendor").Include("Shape").Where(v => v.CompanyId == companyId)
-                        .OrderBy(s => s.Name).ThenBy(s => s.Shape).ThenBy(s => s.StoneSize, stoneSorter).ToList();
+                    var stones = db.Stones.Where(v => v.CompanyId == companyId).Include("Vendor").Include("Shape");
+                    List<Stone> Stones = stones.AsEnumerable()
+                        .OrderBy(s => s.Name).ThenBy(s => s.Shape.Name).ThenBy(s => s.StoneSize, stoneSorter).ToList();
                     // Content
                     for (int i = 0; i < Stones.Count(); i++)
                     {
