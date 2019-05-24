@@ -42,7 +42,7 @@ namespace OJewelry.Controllers
             }
 
             Company co = db.FindCompany(CompanyId);
-            //co = db.Companies.Include("Collections").Include("Collections.Styles").Include("Collections.Styles.Memos").Where(c => c.Id == CompanyId).SingleOrDefault();
+            List<Collection> collections = db.Collections.Include("Styles").Include("Styles.Memos").Where(c => c.CompanyId == co.Id).ToList();
             if (co == null)
             {
                 return HttpNotFound();
@@ -52,7 +52,7 @@ namespace OJewelry.Controllers
             m.CompanyId = co.Id;
             m.CompanyName = co.Name;
             m.Collections = new List<CollectionModel>();
-            foreach (Collection coll in co.Collections.OrderBy(c=>c.Name))
+            foreach (Collection coll in collections.OrderBy(c=>c.Name))
             {
                 CollectionModel collM = new CollectionModel()
                 {
