@@ -649,7 +649,6 @@
     <None Include="Properties\PublishProfiles\OJewelryDev - Release Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryProd - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryProd - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\OldOJewelryProd - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CreateEditComponents.js" />
     <Content Include="Scripts\FormatPhone.js" />
@@ -669,7 +668,7 @@
     <Content Include="Scripts\SetupContacts-Presenters.js" />
     <Content Include="Scripts\shadowpopup.js" />
     <Content Include="Scripts\Style_ComponentMgt.js" />
-    <None Include="Views\Shared\_ojPopup.cshtml" />
+    <Content Include="Views\Shared\_ojPopup.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
