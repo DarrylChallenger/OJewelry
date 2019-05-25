@@ -612,6 +612,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\shadowpopup.css" />
     <Content Include="DBScripts\AddCascadingDeletes.sql" />
     <Content Include="DBScripts\AddStyleLinkTables.sql" />
     <Content Include="DBScripts\CreateOJDB.sql" />
@@ -666,7 +667,9 @@
     <Content Include="Scripts\RowManager.js" />
     <Content Include="Scripts\SetupContacts-Companies.js" />
     <Content Include="Scripts\SetupContacts-Presenters.js" />
+    <Content Include="Scripts\shadowpopup.js" />
     <Content Include="Scripts\Style_ComponentMgt.js" />
+    <None Include="Views\Shared\_ojPopup.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

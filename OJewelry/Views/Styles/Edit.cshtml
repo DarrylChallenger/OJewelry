@@ -30,18 +30,46 @@
                 <input type="submit" value="Save" class="btn btn-default" />
                 <input type="submit" value="Print" formaction="../Print/@Model.Style.Id" class="btn btn-default" formtarget="_blank" />
                 <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn btn-default" />
-                @Html.ActionLink("Delete", "Delete", new {  id = Model.Style.Id }, new { @class="btn btn-default"})
+                @Html.ActionLink("Delete", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default" })
+                <input type="button" value="Pricing" class="btn btn-default trigger_ojPopup" />
+                @Html.ActionLink("Mechanical", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default disabled" })
+                @Html.ActionLink("Worksheet", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide" })
+                @*<a class="">Pricing</a>*@
             </div>
         </div>
     </div>
 }
-
+    <br />
     <p>
         @Html.ActionLink("Companies", "Index", "Companies") |
         @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
         @Html.Partial("_CompanyNavPartial", Model.CompanyId)
     </p>
 
+    @*<div>
+        <p>----------------------------------------------</p>
+        <div>
+            <h3>Cost for XYZ</h3>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6">Cost x 1.6</div>
+                <div class="col-xs-6 col-sm-6">: value</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6">Cost x 2</div>
+                <div class="col-xs-6 col-sm-6">: value</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6">Cost x 2.2</div>
+                <div class="col-xs-6 col-sm-6">: value</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6">Cost x 2.4</div>
+                <div class="col-xs-6 col-sm-6">: value</div>
+            </div>
+        </div>
+        <p>----------------------------------------------</p>
+    </div>
+    *@
 
 @section Scripts {
     @*@Scripts.Render("~/bundles/jqueryval")*@
@@ -49,5 +77,34 @@
     @Scripts.Render("~/Scripts/CreateEditComponents.js")
 }
 
-
+<script>
+    function ojPopupDraw() {
+        const gt = $("#GrandTotal");
+        const cn = $("#Style_StyleNum").val();
+        $(ojPopUpTContent).html(`
+            <h3>Cost for <i>${cn}</i>: <b>$${gt.html()}</b></h3>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6">Cost x 1.6</div>
+                <div class="col-xs-6 col-sm-6">: $${toQuarter(gt.html() * 1.6)}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6">Cost x 2</div>
+                <div class="col-xs-6 col-sm-6">: $${toQuarter(gt.html() * 2)}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6">Cost x 2.2</div>
+                <div class="col-xs-6 col-sm-6">: $${toQuarter(gt.html() * 2.2)}</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6">Cost x 2.4</div>
+                <div class="col-xs-6 col-sm-6">: $${toQuarter(gt.html() * 2.4)}</div>
+            </div>
+        </div>
+        <br/>
+        `);
+    }
+    function toQuarter(amt) { // show amt * 2 *  multiplier in cost popup
+        return (Math.trunc(amt*2*4)/4).toFixed(2);
+    }
+</script>
 
