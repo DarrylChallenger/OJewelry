@@ -630,6 +630,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Images\logo.png" />
     <Content Include="Images\MicrosoftExcelLogo.png" />
+    <Content Include="Images\OpsMgtSampleNo Hand.png" />
     <Content Include="Images\SquareWithCross.png" />
     <Content Include="Images\stock-photo-jeweler-measuring-a-ring-with-compass-divider-725600938.png" />
     <Content Include="Scripts\bootstrap.js" />
