@@ -98,6 +98,7 @@ namespace OJewelry.Controllers
                         {
                             c.CompanyID = cvm.company.Id;
                             Client client = new Client(c);
+                            client.Phone = GetNormalizedPhone(c.Phone);
                             db.Clients.Add(client);
                         }
                     }

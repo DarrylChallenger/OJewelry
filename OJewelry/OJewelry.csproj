@@ -615,6 +615,7 @@
     <Content Include="Content\shadowpopup.css" />
     <Content Include="DBScripts\AddCascadingDeletes.sql" />
     <Content Include="DBScripts\AddStyleLinkTables.sql" />
+    <Content Include="DBScripts\bad-ring.sql" />
     <Content Include="DBScripts\CreateOJDB.sql" />
     <Content Include="DBScripts\CreateOJSecAspNet.sql" />
     <Content Include="DBScripts\DropCreateOJDatabase.sql" />
