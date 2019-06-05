@@ -14,6 +14,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml;
 using OJewelry.Classes;
+using System.Diagnostics;
 
 namespace OJewelry.Controllers
 {
@@ -869,6 +870,7 @@ namespace OJewelry.Controllers
             catch (Exception e)
             {
                 ViewBag.Message += ("Exception[" + e.ToString() + "]");
+                Trace.TraceError($"OJException: in MoveInventory: {e.Message}");
             }
             finally
             {
@@ -1355,6 +1357,7 @@ namespace OJewelry.Controllers
             } catch (Exception e) {
                 sim.Errors.Add($"Fatal exception:{e.InnerException}\n{e.StackTrace}");
                 ModelState.AddModelError("Caught fatal exception", e);
+                Trace.TraceError($"OJException: ManageStoneInventory: {e.Message}");
             }
             if (sim.Errors.Count() == 0)
             {
@@ -1554,6 +1557,7 @@ namespace OJewelry.Controllers
             {
                 fim.Errors.Add($"Fatal exception:{e.InnerException}\n{e.StackTrace}");
                 ModelState.AddModelError("Caught fatal exception", e);
+                Trace.TraceError($"OJException: ManageFindingsInventory: {e.Message}");
             }
             if (fim.Errors.Count() == 0)
             {

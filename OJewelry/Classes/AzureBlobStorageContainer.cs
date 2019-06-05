@@ -40,7 +40,7 @@ namespace OJewelry.Classes
                 await blockBlob.UploadFromStreamAsync(fb.InputStream);
                 uri = blockBlob.StorageUri.PrimaryUri.ToString();
             } catch (StorageException e){
-                Trace.TraceError($"Exception uploading blob {e.Message}");
+                Trace.TraceError($"OJException uploading blob {e.Message}");
             }
             return uri;
         }
@@ -65,7 +65,7 @@ namespace OJewelry.Classes
                     uri = targetBlob.StorageUri.PrimaryUri.ToString();
                 }
             } catch (StorageException e) {
-                Trace.TraceError($"Exception copying blob {e.Message}");
+                Trace.TraceError($"OJException copying blob {e.Message}");
             }
             return uri;
         }

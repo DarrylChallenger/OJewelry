@@ -20,6 +20,7 @@ using A14 = DocumentFormat.OpenXml.Office2010.Drawing;
 using OJewelry.Classes;
 using OJewelry.Models;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace OJewelry.Controllers
 {
@@ -664,7 +665,8 @@ namespace OJewelry.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("Caught fatal exception", e);
+                ModelState.AddModelError("Caught fatal exception placing image", e);
+                Trace.TraceError($"OJException: Could not place image {e.Message}");
             }
         }
 

@@ -143,7 +143,7 @@ namespace OJewelry.Classes
             }
             catch (Exception e)
             {
-                Trace.TraceError($"exception occurred {e.Message}");
+                Trace.TraceError($"OJException occurred {e.Message}");
                 str = "";
             }
             return str;
