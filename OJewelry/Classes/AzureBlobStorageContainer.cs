@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -31,38 +32,51 @@ namespace OJewelry.Classes
         public async Task<string> Upload(HttpPostedFileBase fb, string fn)
         {
             // check bInitialized
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fn);
-            blockBlob.Properties.ContentType = fb.ContentType;
-            await blockBlob.UploadFromStreamAsync(fb.InputStream);
-            // Make sure file is accessible as URL
-            return blockBlob.StorageUri.PrimaryUri.ToString();
+            string uri = "";
+            try
+            {
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(fn);
+                blockBlob.Properties.ContentType = fb.ContentType;
+                await blockBlob.UploadFromStreamAsync(fb.InputStream);
+                uri = blockBlob.StorageUri.PrimaryUri.ToString();
+            } catch (StorageException e){
+                Trace.TraceError($"Exception uploading blob {e.Message}");
+            }
+            return uri;
         }
 
-        
-        public async Task<Stream> Download(string uri)
-        {
-            // check bInitialized
-            CloudBlockBlob blockBlob = new CloudBlockBlob(new Uri(uri));
-            MemoryStream m = new MemoryStream();
-            await blockBlob.DownloadToStreamAsync(m);           
-            return m;
-        }
         /*
         public void Move(string fnSource, string fnTarget) { }
         */
 
         public async Task<string> Copy(string uriSource, string fnTarget)
         {
-            CloudBlockBlob sourceBlob = container.GetBlockBlobReference(uriSource);
-            CloudBlockBlob targetBlob = container.GetBlockBlobReference(fnTarget);
-            using (MemoryStream sourceStream = new MemoryStream())
+            string uri = "";
+            try
             {
-                await sourceBlob.DownloadToStreamAsync(sourceStream);         
-                targetBlob.Properties.ContentType = sourceBlob.Properties.ContentType;
-                sourceStream.Seek(0, SeekOrigin.Begin);
-                await targetBlob.UploadFromStreamAsync(sourceStream);             
+                CloudBlockBlob sourceBlob = container.GetBlockBlobReference(uriSource);
+                CloudBlockBlob targetBlob = container.GetBlockBlobReference(fnTarget);
+                using (MemoryStream sourceStream = new MemoryStream())
+                {
+                    await sourceBlob.DownloadToStreamAsync(sourceStream);
+                    targetBlob.Properties.ContentType = sourceBlob.Properties.ContentType;
+                    sourceStream.Seek(0, SeekOrigin.Begin);
+                    await targetBlob.UploadFromStreamAsync(sourceStream);
+                    uri = targetBlob.StorageUri.PrimaryUri.ToString();
+                }
+            } catch (StorageException e) {
+                Trace.TraceError($"Exception copying blob {e.Message}");
             }
-            return targetBlob.StorageUri.PrimaryUri.ToString();
+            return uri;
+        }
+
+        public async Task<Stream> Download(string uri)
+        {
+            // check bInitialized
+            CloudBlockBlob blockBlob = new CloudBlockBlob(new Uri(uri));
+            MemoryStream m = new MemoryStream();
+            await blockBlob.DownloadToStreamAsync(m);
+            return m;
         }
 
         public void Delete(string uriSource)

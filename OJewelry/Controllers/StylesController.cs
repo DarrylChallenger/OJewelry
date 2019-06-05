@@ -959,7 +959,7 @@ namespace OJewelry.Controllers
                 {
                     filename = env + "StyleImg_" + svm.CompanyId.ToString() + "_" + svm.Style.Id.ToString() + "_" + Path.GetExtension(svm.PostedImageFile.FileName);
                 }
-                Trace.TraceInformation("Uploading {0} to {1}", svm.PostedImageFile, filename);
+                Trace.TraceInformation("Uploading {0} to {1}", svm.PostedImageFile.FileName, filename);
                 svm.Style.Image = await Singletons.azureBlobStorage.Upload(svm.PostedImageFile, filename);
                 Trace.TraceInformation("Done uploading, image=[{0}]", svm.Style.Image);
             } else { // same image

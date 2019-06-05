@@ -8,6 +8,7 @@ using DocumentFormat.OpenXml;
 using System.IO.Packaging;
 using System.IO;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace OJewelry.Classes
 {
@@ -142,6 +143,7 @@ namespace OJewelry.Classes
             }
             catch (Exception e)
             {
+                Trace.TraceError($"exception occurred {e.Message}");
                 str = "";
             }
             return str;
