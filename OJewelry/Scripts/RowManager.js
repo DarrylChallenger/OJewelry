@@ -31,32 +31,34 @@ function AddRow(index) {
 
     // Search for "<getoptions>" id; call backend with value. Replace element with the set of returned options
     var getops = $(nr).find("#getoptions");
-    console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
+    // console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
 
-    fetch('/api/DropdownApi?companyId=' + companyId.val() + '&dropdown=' + getops.val())
-        .then(function (response) {
-            if (response.ok) {
-                return response.json();
-            } else {
-                // Replace choose with msg indicating there are no vendors
-                console.error(`No vendors found for company ${companyId.val()}`);
-                return null;
-            }
-        }).then(function (options_string) {
-            // unpack options
-            let options = JSON.parse(options_string);
-            //console.log(`options: ${JSON.stringify(options)}`);
-            if (options) {
-                for (var opt of options) {
-                    $("#getoptions").before(`<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`);
-                    //console.log(`added id[${opt.Value !== 0 ? opt.Value : ""}], val[${opt.Text}], getops:${JSON.stringify(getops)}`);
+    if (getops.val()) {
+        fetch('/api/DropdownApi?companyId=' + companyId.val() + '&dropdown=' + getops.val())
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    // Replace choose with msg indicating there are no vendors
+                    console.error(`No ${getops.val()} found for company ${companyId.val()}`);
+                    return null;
                 }
-                $("#getoptions").remove();
-            }
-        }).catch(function (e) {
-            console.error(`DropdownApi: Error retrieving options for ${getops.val()}`, e);
-            UpdateStoneSettingRow(i, 0, false);
-        });
+            }).then(function (options_string) {
+                // unpack options
+                let options = JSON.parse(options_string);
+                //console.log(`options: ${JSON.stringify(options)}`);
+                if (options) {
+                    for (var opt of options) {
+                        $("#getoptions").before(`<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`);
+                        //console.log(`added id[${opt.Value !== 0 ? opt.Value : ""}], val[${opt.Text}], getops:${JSON.stringify(getops)}`);
+                    }
+                    $("#getoptions").remove();
+                }
+            }).catch(function (e) {
+                console.error(`DropdownApi: Error retrieving options for ${getops.val()}`, e);
+                UpdateStoneSettingRow(i, 0, false);
+            });
+    }
 
     // insert new row (find last row by class)
     if (index === -1)

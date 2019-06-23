@@ -56,6 +56,16 @@ namespace OJewelry.Models
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             LaborItem item = (LaborItem)validationContext.ObjectInstance;
+            var property = validationContext.ObjectType.GetProperty("State");
+            if (property != null)
+            {
+                var state = property.GetValue(validationContext.ObjectInstance, null);
+                if (state.ToString() == "Unadded" || state.ToString() == "Deleted")
+                {
+                    return ValidationResult.Success;
+                }
+            }
+
             if ((item.pph != null && item.ppp != null) || (item.pph == null && item.ppp == null))
             {
                 return new ValidationResult("Please specify either $/hour or $/piece, but not both");
