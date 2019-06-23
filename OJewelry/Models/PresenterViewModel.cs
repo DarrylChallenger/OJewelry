@@ -6,6 +6,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using static OJewelry.Classes.Validations;
 
     public enum PVCMState { Clean, Dirty, Added, Deleted, Unadded }
 

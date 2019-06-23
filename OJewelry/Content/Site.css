@@ -488,3 +488,7 @@ html input[disabled], locked {
 .CreateEditStoneRightBoxLabel {
     width:100%;
 }
+
+.TableRowContainer {
+    margin-bottom:0;
+}

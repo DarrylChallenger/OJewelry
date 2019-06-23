@@ -25,8 +25,38 @@ function AddRow(index) {
     var contentRowClass = px + "TableRowContent";
     var state = "." + px + "State";
 
+    var companyId = $("#CompanyId");
     // hide the '+' btn
     $("." + addBtnClass).addClass("hidden");
+
+    // Search for "<getoptions>" id; call backend with value. Replace element with the set of returned options
+    var getops = $(nr).find("#getoptions");
+    //console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
+
+    fetch('/api/DropdownApi?companyId=' + companyId.val() + '&dropdown=' + getops.val())
+        .then(function (response) {
+            if (response.ok) {
+                return response.json();
+            } else {
+                // Replace choose with msg indicating there are no vendors
+                console.error(`No vendors found for company ${companyId}`);
+                return null;
+            }
+        }).then(function (options_string) {
+            // unpack options
+            let options = JSON.parse(options_string);
+            //console.log(`options: ${JSON.stringify(options)}`);
+            if (options) {
+                for (var opt of options) {
+                    $("#getoptions").before(`<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`);
+                    //console.log(`added id[${opt.Value !== 0 ? opt.Value : ""}], val[${opt.Text}], getops:${JSON.stringify(getops)}`);
+                }
+                $("#getoptions").remove();
+            }
+        }).catch(function (e) {
+            console.error(`DropdownApi: Error retrieving options for ${getops.val()}`, e);
+            UpdateStoneSettingRow(i, 0, false);
+        });
 
     // insert new row (find last row by class)
     if (index === -1)
@@ -40,12 +70,14 @@ function AddRow(index) {
     
     // wrap it...
     var newRow = $(rowClass).last();
-    newRow.after(vr);
+    //console.log(`vr: ${vr}`);
     WrapRow(px, newRow);
+    // Insert validation after TableRowContainer
+    $("." + tableRowClass).last().append(vr);
 
     // state = "Added"
     //console.log("tlc=", tableRowClass);
-    $("." + tableRowClass).last().children("." + px + "State").val("Added");
+    $("." + tableRowClass).last().find("." + px + "State").val("Added");
 
     // Show the button
     $("." + addBtnClass).last().removeClass("hidden");
@@ -63,12 +95,13 @@ function AddRow(index) {
     });
     name = $(newRow.parents("." + tableRowClass)).find(state).attr("name");
     $(newRow.parents("." + tableRowClass)).find(state).attr("name", ds + "[" + newIndex + "]." + name).attr("id", ds + "_" + newIndex + "__" + name);
-    // add validation
+    // set names/values validation
     valRows = $("." + valRowContent).last().children();
     $.each(valRows, function (i, value) {
         name = value.getAttribute("name");
         value.setAttribute("data-valmsg-for", ds + "[" + newIndex + "]." + name);
     });
+
     resetValidation(px);
     //console.log("AddRow Done");
 }
@@ -87,10 +120,10 @@ function DelRow(index) {
     //console.log("old children:", $($("." + tableRowClass)[index]).children());
     //console.log("old state:", $($("." + tableRowClass)[index]).children(state));
     //console.log("old state val:", $($("." + tableRowClass)[index]).children(state).val());
-    if ($($("." + tableRowClass)[index]).children(state).val() === "Added") {
-        $($("." + tableRowClass)[index]).children(state).val("Unadded");
+    if ($($("." + tableRowClass)[index]).find(state).val() === "Added") {
+        $($("." + tableRowClass)[index]).find(state).val("Unadded");
     } else {
-        $($("." + tableRowClass)[index]).children(state).val("Deleted");
+        $($("." + tableRowClass)[index]).find(state).val("Deleted");
     }
     //console.log("new state:" + $($("." + tableRowClass)[index]).children(state).val());
     // hide Container
@@ -117,11 +150,11 @@ function WrapHeader(headerId) {
     $(headerId)
         .wrapAll('<div class="row"></div>')
         .before('<div class="col-sm-1 ">' + addBtn + "</div>")
-        .wrapAll('<div class="col-sm-10 ContactHeaderS2"></div>');
+        .wrapAll(`<div class="col-sm-10 ${px}Header"></div>`);
     //console.log("WrapHeader Done");
 }
 
-function WrapRow(px, rows) {
+function WrapRow(px, rows, bltBordered= "") {
     //console.log("WrapRow", rows);
     var addBtnClass = px + "AddBtn";
     var delBtnClass = px + "DelBtn";
@@ -133,10 +166,10 @@ function WrapRow(px, rows) {
     //console.log("rows.length:", $(rows).length);
     $.each($(rows), function () {
         var element = $(this);
-        element.wrapAll('<div class="row ' + contentRowClass + '"></div>')
+        element.wrapAll(`<div class="row ${contentRowClass} ${bltBordered}"></div>`)
             .before('<div class="col-sm-1 ">' + addBtn + "</div>")
             .after("<div class=col-sm-1>" + delBtn + "</div>")
-            .wrapAll('<div class="col-sm-10 ContactTableS2"></div>');
+            .wrapAll(`<div class="col-sm-10 ${px}Table"></div>`);
     });
     
     //console.log("WrapRow Done");
@@ -193,7 +226,7 @@ function WrapRows(px) {
     };
 })(jQuery);
 
-$(function () { // set name = field name in each cell;don't include id
+$(function () { 
     //console.log("Ready called.");
     var px = sessionStorage.getItem("DCTS.tablePrefix");
     var tableRowClass = px + "TableRowContainer";
@@ -205,7 +238,7 @@ $(function () { // set name = field name in each cell;don't include id
             return true;
         }
         return rt = $.validator.methods.required.call(this, value, element);
-    }, "Client name should not be blank.");
+    });
     //console.log("Ready done.");
 });
 

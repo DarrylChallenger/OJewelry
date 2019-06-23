@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel;
 using System.Text;
+using static OJewelry.Classes.Validations;
 
 namespace OJewelry.Models
 {

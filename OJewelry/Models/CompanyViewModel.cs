@@ -5,6 +5,7 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using static OJewelry.Classes.Validations;
 
 namespace OJewelry.Models
 {
@@ -94,19 +95,4 @@ namespace OJewelry.Models
         }
     }
 
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class RequiredIfNotRemoved : ValidationAttribute
-    { //This logic needs to be refactored. Needs to be in separate module and implementaion needs to be able to handle all cases
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-            List<string> items = new List<string>();
-
-            if (value == null || value.ToString().Trim() == "")
-            {
-                //return new ValidationResult(validationContext.MemberName + " Validation error.");
-            }
-            // Everything OK.
-            return ValidationResult.Success;
-        }
-    }
 }
