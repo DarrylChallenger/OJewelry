@@ -1,0 +1,83 @@
+﻿@model OJewelry.Models.LaborTableModel
+@using OJewelry.Models
+@{
+    ViewBag.Title = "Index";
+}
+<h2>Labor Table for <i>@Model.CompanyName</i></h2>
+
+@using (Html.BeginForm("Index", "LaborTable", FormMethod.Post, new { id = "LaborsForm" }))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal RowManager">
+    <hr />
+    @Html.HiddenFor(model => model.CompanyId)
+    @Html.HiddenFor(model => model.CompanyName)
+    <div id="LaborsTableHeader" class="form-group">
+        @Html.LabelFor(model => model.Labors[0].Name, htmlAttributes: new { @class = "control-label contorl-label-left col-md-3" })
+        @Html.LabelFor(model => model.Labors[0].pph, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
+        @Html.LabelFor(model => model.Labors[0].ppp, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
+        @Html.LabelFor(model => model.Labors[0].VendorId, htmlAttributes: new { @class = "control-label contorl-label-left col-md-3" })
+    </div>
+    <div id="LaborsTableData">
+        @for (int i = 0; i < Model.Labors.Count; i++)
+        {
+            var bHideRow = (Model.Labors[i].State == LMState.Unadded || Model.Labors[i].State == LMState.Deleted) ? "hidden" : "";
+        <div class="row LaborsTableRowContainer @bHideRow">
+            <div class="TableRowContainer ltbordered">
+                @Html.HiddenFor(model => model.Labors[i].State, new { @class = "LaborsState" })
+                <div class="row LaborsTableRowData">
+                    @Html.HiddenFor(model => model.Labors[i].Id)
+                    @Html.HiddenFor(model => model.Labors[i].CompanyId)
+                    <div>
+                        @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-3" } })
+                    </div>
+                    <div>
+                        @Html.EditorFor(model => model.Labors[i].pph, new { htmlAttributes = new { @class = "col-md-2" } })
+                    </div>
+                    <div>
+                        @Html.EditorFor(model => model.Labors[i].ppp, new { htmlAttributes = new { @class = "col-md-2" } })
+                    </div>
+                    <div>
+                        @if (Model.Labors[i].State == LMState.Added)
+                        {
+                            @Html.DropDownListFor(model => model.Labors[i].VendorId, Model.Labors[i].selectList, "Choose a Vendor", new { @class = "col-md-3" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.Labors[i].VendorId, Model.Labors[i].selectList, new { @class = "col-md-3" })
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row LaborsTableRowValidation">
+                @Html.ValidationMessageFor(model => model.Labors[i].Name, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Labors[i].pph, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Labors[i].ppp, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Labors[i].VendorId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        }
+    </div>
+    <br />
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+            <input type="submit" value="Cancel" class="btn btn-default" formmethod="get" formaction="/Companies/Index/@Model.CompanyId" />
+        </div>
+    </div>
+
+</div>
+}
+<br />
+<p>
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int) Model.CompanyId)
+</p>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/RowManager.js")
+    @Scripts.Render("~/Scripts/SetupLaborTable.js")
+}

@@ -97,6 +97,7 @@ namespace OJewelry.Models
         public virtual DbSet<Contact> Contacts { get; set; }
         public virtual DbSet<JewelryType> JewelryTypes { get; set; }
         public virtual DbSet<Labor> Labors { get; set; }
+        public virtual DbSet<LaborItem> LaborTable { get; set; }
         public virtual DbSet<Memo> Memos { get; set; }
         public virtual DbSet<MetalCode> MetalCodes { get; set; }
         public virtual DbSet<MetalWeightUnit> MetalWeightUnits { get; set; }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security.Facebook;
+using static OJewelry.Classes.Validations;
 
 namespace OJewelry.Models
 {

@@ -5,11 +5,13 @@ namespace OJewelry.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using static OJewelry.Classes.Validations;
 
     public partial class ClientViewModel
     {
         public int Id { get; set; }
 
+        [RequiredIfNotRemoved]
         public string Name { get; set; }
 
         public string Phone { get; set; }

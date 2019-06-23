@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel;
 using System.Text;
+using static OJewelry.Classes.Validations;
 
 namespace OJewelry.Models
 {
@@ -54,7 +55,6 @@ namespace OJewelry.Models
     {
         [Display(Name = "Name")]
         //[Required(ErrorMessage = "Name is required.")]
-        [RequiredIfNotRemoved]
         public String Name { get; set; }
 
         [DisplayName("Phone")]
@@ -178,7 +178,6 @@ namespace OJewelry.Models
 
         [Display(Name = "Name")]
         //[Required(ErrorMessage = "Name is required.")]
-        [RequiredIfNotRemoved]
         public String Name { get; set; }
 
         [DataType(DataType.PhoneNumber)]
@@ -281,7 +280,6 @@ namespace OJewelry.Models
     public partial class PresenterMetaData
     {
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
 
         [Display(Name ="Phone")]
