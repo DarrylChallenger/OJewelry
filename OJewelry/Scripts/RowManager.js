@@ -31,7 +31,7 @@ function AddRow(index) {
 
     // Search for "<getoptions>" id; call backend with value. Replace element with the set of returned options
     var getops = $(nr).find("#getoptions");
-    //console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
+    console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
 
     fetch('/api/DropdownApi?companyId=' + companyId.val() + '&dropdown=' + getops.val())
         .then(function (response) {
@@ -39,7 +39,7 @@ function AddRow(index) {
                 return response.json();
             } else {
                 // Replace choose with msg indicating there are no vendors
-                console.error(`No vendors found for company ${companyId}`);
+                console.error(`No vendors found for company ${companyId.val()}`);
                 return null;
             }
         }).then(function (options_string) {
