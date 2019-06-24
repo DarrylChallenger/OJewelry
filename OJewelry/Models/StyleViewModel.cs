@@ -514,6 +514,51 @@ namespace OJewelry.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
     }
+
+    public class LaborItemComponent
+    {
+        private LaborItem _laborItem = new LaborItem();
+        public SVMStateEnum SVMState { get; set; }
+        public LaborItemComponent() { Init(); }
+
+        public LaborItemComponent(LaborItemComponent lic)
+        {
+            Init();
+            pph = lic.pph;
+            ppp = lic.ppp;
+            Name = lic.Name;
+            Qty = lic.Qty;
+            Total = (ppp.GetValueOrDefault() + ppp.GetValueOrDefault()) * Qty.GetValueOrDefault();
+        }
+        public LaborItemComponent(LaborItem li) { _laborItem = li; Init(); }
+        void Init()
+        {
+            SVMState = SVMStateEnum.Dirty;
+        }
+        // PRICE/HR	PRICE/PC
+
+        [Display(Name = "$/Hour")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
+        public decimal? pph { get { return _laborItem.pph ?? 0; } set { _laborItem.pph = value; } }
+
+        [Display(Name = "$/Piece")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
+        public decimal? ppp { get { return _laborItem.ppp ?? 0; } set { _laborItem.ppp = value; } }
+
+        public int Id { get { return _laborItem.Id; } set { _laborItem.Id = value; } }
+
+        //[Required]
+        [RequiredIfNotRemoved]
+        public String Name { get { return _laborItem.Name; } set { _laborItem.Name = value; } }
+
+        [Display(Name = "Quantity")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
+        public int? Qty { get; set; }
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        public decimal Total { get; set; }
+    }
+
     public class MiscComponent
     {
         private Misc _misc = new Misc();
@@ -664,6 +709,8 @@ namespace OJewelry.Models
         public List<FindingsComponent> Findings { get; set; }
 
         public List<LaborComponent> Labors { get; set; }
+        public List<LaborItemComponent> LaborItems { get; set;
+        }
         public List<MiscComponent> Miscs { get; set; }
         public decimal MetalsTotal { get; set; }
         public decimal StonesTotal { get; set; }
@@ -808,16 +855,6 @@ namespace OJewelry.Models
                 fiscm.SetFindingsList(jsFindings, fiscm.Id ?? 0); //fiscm.SetFindingsList(jsFindings, fiscm.Id.Value);
             }
         }
-
-        /*public void GetSettingsCosts(OJewelryDB db)
-        {
-            assemblyCost = db.AssemblyCosts.Find(CompanyId);
-            if (assemblyCost == null)
-            {
-                assemblyCost = new AssemblyCost();
-            }
-            assemblyCost.Load(db, CompanyId);
-        }*/
 
         public void PopulateComputedValues()
         {
@@ -1048,22 +1085,31 @@ namespace OJewelry.Models
             }
             Total += FindingsTotal;
 
-            foreach (LaborComponent l in Labors)
-            {
-                if (l.Name == "FINISHING LABOR") // FINISHING LABOR
+            if (Style.JewelryType.bUseLaborTable) {
+                foreach (LaborItemComponent li in LaborItems)
                 {
-                    l.PPP = jt.FinishingCost;
+                    t = (li.ppp.Value + li.pph.Value) * li.Qty.Value;
+                    li.Total = t;
+                    LaborsTotal += li.Total;
                 }
-                t = l.PPH ?? 0;
-                t2 = l.PPP ?? 0;
-                l.Total = l.Qty.Value * (t + t2);
-                LaborsTotal += l.Total;
+            } else {
+                foreach (LaborComponent l in Labors)
+                {
+                    if (l.Name == "FINISHING LABOR") // FINISHING LABOR (default entry)
+                    {
+                        l.PPP = jt.FinishingCost;
+                    }
+                    t = l.PPH.Value;
+                    t2 = l.PPP.Value;
+                    l.Total = l.Qty.Value * (t + t2);
+                    LaborsTotal += l.Total;
+                }
+                Total += LaborsTotal;
             }
-            Total += LaborsTotal;
 
             foreach (MiscComponent m in Miscs)
             {
-                if (m.Name == "PACKAGING") // PACKAGING
+                if (m.Name == "PACKAGING") // PACKAGING (default entry)
                 {
                     m.PPP = jt.PackagingCost;
                 }
@@ -1243,6 +1289,23 @@ namespace OJewelry.Models
             PricePerHour = c.PPH;
             PricePerPiece = c.PPP;
             Qty = c.Qty;
+        }
+    }
+
+    public partial class LaborItem
+    {
+        public LaborItem(LaborItemComponent c)
+        {
+            Set(c);
+        }
+
+        public void Set(LaborItemComponent c)
+        {
+            //Id = c.Id;
+            Name = c.Name;
+            pph = c.pph;
+            ppp = c.ppp;
+            //Qty = c.Qty; there is no inventory of a labor
         }
     }
 

@@ -569,6 +569,14 @@
     <Compile Include="Migrations\201906231509032_v1.7RemovePresenterNameReq.Designer.cs">
       <DependentUpon>201906231509032_v1.7RemovePresenterNameReq.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906232056121_1.7AddJTOption.cs" />
+    <Compile Include="Migrations\201906232056121_1.7AddJTOption.Designer.cs">
+      <DependentUpon>201906232056121_1.7AddJTOption.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906242253130_v1.7AddStyleLaborTable.cs" />
+    <Compile Include="Migrations\201906242253130_v1.7AddStyleLaborTable.Designer.cs">
+      <DependentUpon>201906242253130_v1.7AddStyleLaborTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -613,6 +621,7 @@
     <Compile Include="Models\StyleComponent.cs" />
     <Compile Include="Models\StyleFinding.cs" />
     <Compile Include="Models\StyleLabor.cs" />
+    <Compile Include="Models\StyleLaborTable.cs" />
     <Compile Include="Models\StyleMisc.cs" />
     <Compile Include="Models\StyleStone.cs" />
     <Compile Include="Models\StyleViewModel.cs" />
@@ -995,6 +1004,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906231509032_v1.7RemovePresenterNameReq.resx">
       <DependentUpon>201906231509032_v1.7RemovePresenterNameReq.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906232056121_1.7AddJTOption.resx">
+      <DependentUpon>201906232056121_1.7AddJTOption.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906242253130_v1.7AddStyleLaborTable.resx">
+      <DependentUpon>201906242253130_v1.7AddStyleLaborTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

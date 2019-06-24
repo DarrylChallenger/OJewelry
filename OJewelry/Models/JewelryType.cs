@@ -22,6 +22,9 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Name { get; set; }
 
+        [Display(Name ="Use Labor Table")]
+        public bool bUseLaborTable { get; set; }
+
         [Required]
         [DataType(DataType.Currency)]
         public decimal PackagingCost { get; set; }

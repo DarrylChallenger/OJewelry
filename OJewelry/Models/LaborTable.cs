@@ -10,11 +10,12 @@ using static OJewelry.Classes.Validations;
 namespace OJewelry.Models
 {
     [Table("LaborTable")]
-    public class LaborItem
+    public partial class LaborItem
     {
         public LaborItem()
         {
             State = LMState.Dirty;
+            StyleLaborItems = new HashSet<StyleLaborTable>();
         }
 
         [Key]
@@ -48,6 +49,10 @@ namespace OJewelry.Models
 
         public virtual Company Company { get; set; }
         public virtual Vendor Vendor { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StyleLaborTable> StyleLaborItems { get; set; }
+
     }
 
     [AttributeUsage(AttributeTargets.Property)]

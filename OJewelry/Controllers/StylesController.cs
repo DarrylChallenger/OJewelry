@@ -494,6 +494,59 @@ namespace OJewelry.Controllers
                         }
                     }
                 }
+
+
+                // Labor Table
+                if (svm.LaborItems != null)
+                {
+                    i = -1;
+                    foreach (LaborItemComponent c in svm.LaborItems)
+                    {
+                        i++;
+                        LaborItem labor;
+                        StyleLaborTable sl;
+                        try
+                        {
+                            ValidLabor(c);
+                        }
+                        catch (OjMissingLaborException e)
+                        {
+                            ModelState.AddModelError("LaborsItems[" + i + "].Name", e.Message);
+                            continue;
+                        }
+
+                        switch (c.SVMState)
+                        {
+                            case SVMStateEnum.Added:
+                                AddLabor(c, svm, i);
+                                break;
+                            case SVMStateEnum.Deleted:
+                                sl = db.StyleLaborItems.Where(x => x.StyleId == svm.Style.Id && x.LaborTableId == c.Id).Single();
+                                RemoveLabor(sl);
+                                break;
+                            case SVMStateEnum.Dirty:
+                            case SVMStateEnum.Fixed:
+                                if (c.Id <= 0)
+                                {
+                                    AddLabor(c, svm, i);
+                                }
+                                else
+                                {
+                                    labor = db.LaborTable.Find(c.Id);
+                                    labor.Set(c);
+                                }
+
+                                /*
+                                sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
+                                */
+                                break;
+                            case SVMStateEnum.Unadded: // No updates
+                            default:
+                                break;
+                        }
+                    }
+                }
+
                 // Misc
                 if (svm.Miscs != null)
                 {
@@ -665,6 +718,17 @@ namespace OJewelry.Controllers
         {
             if (lc.SVMState == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(lc.Name))
+            {
+                throw new OjMissingLaborException("You must enter a Name!");
+            }
+
+            return true;
+        }
+
+        public bool ValidLabor(LaborItemComponent lic)
+        {
+            if (lic.SVMState == SVMStateEnum.Unadded) return true;
+            if (string.IsNullOrEmpty(lic.Name))
             {
                 throw new OjMissingLaborException("You must enter a Name!");
             }
@@ -915,10 +979,25 @@ namespace OJewelry.Controllers
             db.StyleLabors.Add(sl);
         }
 
+        void AddLabor(LaborItemComponent c, StyleViewModel svm, int keyVal)
+        {
+            LaborItem laborItem = new LaborItem(c);
+            laborItem.Id = c.Id == 0 ? keyVal : c.Id;
+            db.LaborTable.Add(laborItem);
+            StyleLaborTable sl = new StyleLaborTable() { StyleId = svm.Style.Id, LaborTableId = laborItem.Id };
+            db.StyleLaborItems.Add(sl);
+        }
+
         void RemoveLabor(StyleLabor sl)
         {
             db.Labors.Remove(sl.Labor);
             db.StyleLabors.Remove(sl);
+        }
+
+        void RemoveLabor(StyleLaborTable sl)
+        {
+            db.LaborTable.Remove(sl.LaborItem);
+            db.StyleLaborItems.Remove(sl);
         }
 
         void AddMisc(MiscComponent m, StyleViewModel svm, int keyVal)
