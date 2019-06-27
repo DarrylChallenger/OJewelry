@@ -1,6 +1,7 @@
 ﻿
-function AddComponentRow(type, index)
+async function AddComponentRow(type, index)
 {
+    console.log(`type: ${type}`);
     // " + len +  is the row that was pressed
     idHeaderBtn = type + "AddBtn";
     idRowBtn = type + "AddBtn_" + index;
@@ -21,7 +22,7 @@ function AddComponentRow(type, index)
     // reset components values on select; totals
     // move ltbordered values into function
     // fix ltbordered values to match CostComponentPartial
-
+    var ltbordered;
     idBreakName = type + "Break";
     idBreak = "#" + idBreakName;
 
@@ -126,14 +127,30 @@ function AddComponentRow(type, index)
         laborsltbordered = getLaborsHTML(type, len);
         ltbordered = laborsltbordered.replace(/INDEX/g, len);
     }
+    if (type === "LaborItems") {
+        laboritemsltbordered = getLaborItemsHTML(type, len);
+        //console.log(`laboritemsltbordered: [${JSON.stringify(laboritemsltbordered)}]`);
+        console.log(`laboritemsltbordered: [${laboritemsltbordered}]`);
+        var dropdown = await PopulateDropdowns(laboritemsltbordered); // async problem here
+        console.log(`*** dropdown: [${dropdown}]`);
+        console.log(`laboritemsltbordered2: [${laboritemsltbordered}]`);
+        // replace #getoption with dropdown
+        //ltbordered = laboritemsltbordered;
+        //ltbordered = $(laboritemsltbordered).find("#getoptions").parent().replaceWith(`${dropdown}`);
+        var t1 = $(laboritemsltbordered).find("#getoptions").parent();
+        console.log(`t1: [${t1.html()}]`);
+        ltbordered = $(laboritemsltbordered).html().replace(t1.html(), dropdown);
+        //console.log(`t2: [${t2}]`);
+        console.log(`li-ltbordered: [${$(ltbordered).html()}]`);
+    }
     if (type === "Miscs") {
         miscsltbordered = getMiscsHTML(type, len);
         ltbordered = miscsltbordered.replace(/INDEX/g, len);
     }
-    //console.log(ltbordered)
     var str = newState.add(ltbordered);
-    // add after last row or header
+    // add after last row or header ***
     $(idBreak).before(str);
+
     if (type === "Stones") {
         StoneChanged(len);
         AddStoneSettingRowHTML(len);
@@ -189,6 +206,43 @@ function RemoveComponentRow(type, i)
     if (type === "Stones") {
         RemoveStoneSettingRow(i);
     }
+}
+
+async function PopulateDropdowns(nr) {
+    console.log(`PopulateDropdowns: nr: ${JSON.stringify(nr)}`);
+    // Search for "<getoptions>" id; call backend with value. Replace element with the set of returned options
+    var getops = $(nr).find("#getoptions");
+    console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
+    const companyId = $("#CompanyId");
+    var drp = '';
+    if (getops.val()) {
+        await fetch('/api/DropdownApi?companyId=' + companyId.val() + '&dropdown=' + getops.val())
+        .then(function (response) {
+            if (response.ok) {
+                return response.json();
+            } else {
+                // Replace choose with msg indicating there are no vendors
+                console.error(`No ${getops.val()} found for company ${companyId.val()}`);
+                return null;
+            }
+        }).then(function (options_string) {
+            // unpack options
+            let options = JSON.parse(options_string);
+            //console.log(`options: ${JSON.stringify(options)}`);
+            if (options) {
+                for (var opt of options) {
+                    drp+=`<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`;
+                    //console.log(`added id[${opt.Value !== 0 ? opt.Value : ""}], val[${opt.Text}], getops:${JSON.stringify(getops)}`);
+                }
+                console.log(`final drp: ${JSON.stringify(drp)}`);
+            }
+        }).catch(function (e) {
+            console.error(`DropdownApi: Error retrieving options for ${getops.val()}`, e);
+            //UpdateStoneSettingRow(i, 0, false);
+        });
+    }
+    // console.log(`outside drp: ${JSON.stringify(drp)}`);
+    return drp;
 }
 
 function CalcRowTotal(type, rowId)
@@ -610,6 +664,41 @@ function getLaborsHTML(type, len) {
     </div > ';
 }
 
+function getLaborItemsHTML(type, len) {
+    return '\
+    <div id="LaborItemsRow_' + len + '" class="LaborItemsRow">\
+        <div class="row ltbordered">\
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "LaborItems_' + len + '__Id" name= "LaborItems[' + len + '].Id" type= "hidden" value= "0" />\
+            <div class="col-sm-1 ">\
+                <div class="row StyleComponentsRowHeaderBtn ">\
+                    <div class="col-sm-6 ">\
+                        <button type="button" id="LaborItemsAddBtn_' + len + '" class="btn btn-default ' + type + 'AddBtn" onclick="AddComponentRow(\'LaborItems\', ' + len + ')">\
+                            <span class="glyphicon glyphicon-plus"></span>\
+                        </button>\
+                    </div>'
+        + leftDelBtn +
+        '</div>\
+            </div>\
+            <!--<input class="col-sm-3 text-box single-line requiredifnotremoved" placeholder="Name" data-val="true" data-val-required="The Labors Name field is required." id="LaborItems_' + len + '__Name" name="LaborItems[' + len + '].Name" type="text" value="" />-->\
+            <select name="LaborItems[' + len + '].VendorId" id="LaborItems_' + len + '__VendorId" data-val-required="Please select a Labor. " data-val-number="The Vendor field is required. " data-val="true" class="col-sm-3">\
+                <option id="getoptions" value="LaborTableItems">LOAD OPTIONS HERE</option>\
+            </select>\
+            <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Hour must be a number." id="LaborItems_' + len + '__pph" name="LaborItems[' + len + '].pph" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Piece must be a number." id="LaborItems_' + len + '__ppp" name="LaborItems[' + len + '].ppp" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <input class="locked col-sm-2" disabled="disabled" value="VENDOR"\>\
+            <div class="col-sm-1"></div>\
+            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="LaborItems_' + len + '__Qty" name="LaborItems[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
+            <div id="LaborItemsRowTotalValue_' + len + '" class="col-sm-1 LaborItemsRowTotal">0.00</div>\
+            ' + rightDelBtn + '\
+        </div >\
+        <div class="row">\
+        <!--Validations Here-->\
+            <span class="field-validation-valid text-danger" data-valmsg-for="LaborItems[' + len + '].VendorId" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="LaborItems[' + len + '].Qty" data-valmsg-replace="true"></span>\
+        </div >\
+    </div > ';
+}
+
 function getStoneSettingsHTML(type, len) {
     return '\
         <div class="row ltbordered">\
@@ -687,6 +776,7 @@ $(function () { //
     setAddBtn("Stones");
     setAddBtn("Findings");
     setAddBtn("Labors");
+    setAddBtn("LaborItems");
     setAddBtn("Miscs");
     CalcSubtotals("Castings");
     CalcSubtotals("Stones");

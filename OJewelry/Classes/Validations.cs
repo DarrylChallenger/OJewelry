@@ -18,7 +18,8 @@ namespace OJewelry.Classes
                 List<string> items = new List<string>();
                 var property = validationContext.ObjectType.GetProperty("State");
                 var otherValue = property.GetValue(validationContext.ObjectInstance, null);
-                if ((value == null || value.ToString().Trim() == "") && (otherValue.ToString() != "Deleted" && otherValue.ToString() != "Unadded"))
+                if ((value == null || value.ToString().Trim() == "") && 
+                    (otherValue.ToString() != "Deleted" && otherValue.ToString() != "Unadded") && otherValue.ToString() != "Fixed")
                 {
                     return new ValidationResult(validationContext.DisplayName + " cannot be blank.");
                 }

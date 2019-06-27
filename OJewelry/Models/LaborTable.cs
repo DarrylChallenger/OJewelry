@@ -15,7 +15,9 @@ namespace OJewelry.Models
         public LaborItem()
         {
             State = LMState.Dirty;
-            StyleLaborItems = new HashSet<StyleLaborTable>();
+            StyleLaborItems = new HashSet<StyleLaborTableItem>();
+            ppp = null;
+            pph = null;
         }
 
         [Key]
@@ -51,7 +53,7 @@ namespace OJewelry.Models
         public virtual Vendor Vendor { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StyleLaborTable> StyleLaborItems { get; set; }
+        public virtual ICollection<StyleLaborTableItem> StyleLaborItems { get; set; }
 
     }
 
@@ -65,13 +67,13 @@ namespace OJewelry.Models
             if (property != null)
             {
                 var state = property.GetValue(validationContext.ObjectInstance, null);
-                if (state.ToString() == "Unadded" || state.ToString() == "Deleted")
+                if (state.ToString() == "Unadded" || state.ToString() == "Deleted" || state.ToString() == "Fixed")
                 {
                     return ValidationResult.Success;
                 }
             }
 
-            if ((item.pph != null && item.ppp != null) || (item.pph == null && item.ppp == null))
+            if (((item.pph != null && item.ppp != null) && (item.pph !=0 && item.ppp !=0)) || (item.pph == null && item.ppp == null))
             {
                 return new ValidationResult("Please specify either $/hour or $/piece, but not both");
             }

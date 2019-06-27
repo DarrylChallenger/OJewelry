@@ -259,9 +259,18 @@ html input[disabled], locked {
     padding-left: 5px;
 }
 
+.HideLabors {
+    /display: none;
+    color: lightgray;
+}
+
+.HideLaborItems {
+    //display: none;
+    color: lightgray;
+}
 
 .ssdata {
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .floatleft {

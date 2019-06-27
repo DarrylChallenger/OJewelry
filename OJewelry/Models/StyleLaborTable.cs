@@ -7,13 +7,15 @@
     using System.Data.Entity.Spatial;
 
     [Table("StyleLaborTable")]
-    public partial class StyleLaborTable
+    public partial class StyleLaborTableItem
     {
         public int Id { get; set; }
 
         public int StyleId { get; set; }
 
         public int LaborTableId { get; set; }
+
+        public decimal Qty { get; set; }
 
         public virtual LaborItem LaborItem { get; set; }
 

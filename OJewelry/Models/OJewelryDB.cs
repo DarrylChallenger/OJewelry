@@ -109,7 +109,7 @@ namespace OJewelry.Models
         public virtual DbSet<StyleStone> StyleStones { get; set; }
         public virtual DbSet<StyleFinding> StyleFindings { get; set; }
         public virtual DbSet<StyleLabor> StyleLabors { get; set; }
-        public virtual DbSet<StyleLaborTable> StyleLaborItems { get; set; }
+        public virtual DbSet<StyleLaborTableItem> StyleLaborItems { get; set; }
         public virtual DbSet<StyleMisc> StyleMiscs { get; set; }
         public virtual DbSet<Style> Styles { get; set; }
         public virtual DbSet<Vendor> Vendors { get; set; }

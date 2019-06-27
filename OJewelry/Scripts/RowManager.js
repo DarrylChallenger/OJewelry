@@ -26,13 +26,24 @@ function AddRow(index) {
     var state = "." + px + "State";
 
     var companyId = $("#CompanyId");
+    console.log(`nr: ${nr}`);
     // hide the '+' btn
     $("." + addBtnClass).addClass("hidden");
+
+    // insert new row (find last row by class)
+    if (index === -1)
+    {
+        // add after header
+        $("#" + tableClass).last().append(nr);
+   } else {
+        // add after last row
+        $("#" + tableClass).last().append(nr);
+    }
 
     // Search for "<getoptions>" id; call backend with value. Replace element with the set of returned options
     var getops = $(nr).find("#getoptions");
     // console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
-
+    console.log(`***: ${JSON.stringify($("#getoptions"))} `);
     if (getops.val()) {
         fetch('/api/DropdownApi?companyId=' + companyId.val() + '&dropdown=' + getops.val())
             .then(function (response) {
@@ -56,20 +67,9 @@ function AddRow(index) {
                 }
             }).catch(function (e) {
                 console.error(`DropdownApi: Error retrieving options for ${getops.val()}`, e);
-                UpdateStoneSettingRow(i, 0, false);
             });
     }
 
-    // insert new row (find last row by class)
-    if (index === -1)
-    {
-        // add after header
-        $("#" + tableClass).last().append(nr);
-   } else {
-        // add after last row
-        $("#" + tableClass).last().append(nr);
-    }
-    
     // wrap it...
     var newRow = $(rowClass).last();
     //console.log(`vr: ${vr}`);

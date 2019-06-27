@@ -5,7 +5,7 @@ using System.Web;
 
 namespace OJewelry.Models
 {
-    public enum LMState { Clean, Dirty, Added, Deleted, Unadded }
+    public enum LMState { Clean, Dirty, Added, Deleted, Unadded, Fixed }
 
     public class LaborTableModel
     {

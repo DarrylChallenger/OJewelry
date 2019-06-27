@@ -55,7 +55,7 @@
                     }
                     else
                     {
-                        @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "width100 ", onchange = "JewelryTypeChanged(" + Model.CompanyId + ")" })
+                        @Html.DropDownList("JewelryTypeId", null, "Choose a Jewelry Type", htmlAttributes: new { @class = "width100 ", onchange = "JewelryTypeChanged(" + Model.CompanyId + ")" })
                     }
                 </div>
             </div>

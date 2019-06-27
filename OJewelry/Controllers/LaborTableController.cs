@@ -76,11 +76,12 @@ namespace OJewelry.Controllers
                             break;
                         case LMState.Unadded:
                         case LMState.Clean:
+                        case LMState.Fixed:
                             break;
                     }
                 }
                 db.SaveChanges();
-                return RedirectToAction("Index", "Companies");
+                //return RedirectToAction("Index", "Companies");
             }
             List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == ltm.CompanyId).ToList();
 

@@ -44,7 +44,7 @@ namespace OJewelry.Models
         }
         void Init()
         {
-            SVMState = SVMStateEnum.Dirty;
+            State = SVMStateEnum.Dirty;
         }
         public int Id { get { return _casting.Id; } set { _casting.Id = value; } }
 
@@ -108,7 +108,7 @@ namespace OJewelry.Models
             set { _casting.MetalCodeID = value; }
         }
 
-        public SVMStateEnum SVMState { get; set; }
+        public SVMStateEnum State { get; set; }
 
         
         [Display(Name="Vendor")]
@@ -173,7 +173,7 @@ namespace OJewelry.Models
     public class StoneComponent 
     {
         private Stone _stone = new Stone();
-        public SVMStateEnum SVMState { get; set; }
+        public SVMStateEnum State { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
@@ -225,7 +225,7 @@ namespace OJewelry.Models
         }
         void Init()
         {
-            SVMState = SVMStateEnum.Dirty;
+            State = SVMStateEnum.Dirty;
         }
 
         //[Required(ErrorMessage = "You must select a stone!")]
@@ -368,7 +368,7 @@ namespace OJewelry.Models
     public class FindingsComponent
     {
         private Finding _finding = new Finding();
-        public SVMStateEnum SVMState { get; set; }
+        public SVMStateEnum State { get; set; }
 
         [Display(Name = "Quantity")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
@@ -410,7 +410,7 @@ namespace OJewelry.Models
 
         void Init()
         {
-            SVMState = SVMStateEnum.Dirty;
+            State = SVMStateEnum.Dirty;
         }
         
         //[Required(ErrorMessage = "You must select a finding!")]
@@ -472,7 +472,7 @@ namespace OJewelry.Models
     public class LaborComponent
     {
         private Labor _labor = new Labor();
-        public SVMStateEnum SVMState { get; set; }
+        public LMState State { get; set; }
         public LaborComponent() { Init(); }
 
         public LaborComponent(LaborComponent lc)
@@ -488,7 +488,7 @@ namespace OJewelry.Models
         public LaborComponent(Labor l) { _labor = l; Init(); }
         void Init()
         {
-            SVMState = SVMStateEnum.Dirty;
+            State = LMState.Dirty;
         }
         // PRICE/HR	PRICE/PC
 
@@ -518,12 +518,13 @@ namespace OJewelry.Models
     public class LaborItemComponent
     {
         private LaborItem _laborItem = new LaborItem();
-        public SVMStateEnum SVMState { get; set; }
+        public LMState State { get; set; }
         public LaborItemComponent() { Init(); }
 
         public LaborItemComponent(LaborItemComponent lic)
         {
             Init();
+            _laborItem = lic._laborItem;
             pph = lic.pph;
             ppp = lic.ppp;
             Name = lic.Name;
@@ -533,7 +534,7 @@ namespace OJewelry.Models
         public LaborItemComponent(LaborItem li) { _laborItem = li; Init(); }
         void Init()
         {
-            SVMState = SVMStateEnum.Dirty;
+            State = LMState.Dirty;
         }
         // PRICE/HR	PRICE/PC
 
@@ -551,9 +552,11 @@ namespace OJewelry.Models
         [RequiredIfNotRemoved]
         public String Name { get { return _laborItem.Name; } set { _laborItem.Name = value; } }
 
+        public String Vendor { get { return _laborItem.Vendor.Name; }  }
+
         [Display(Name = "Quantity")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
-        public int? Qty { get; set; }
+        public decimal? Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
@@ -563,10 +566,10 @@ namespace OJewelry.Models
     {
         private Misc _misc = new Misc();
         public MiscComponent() {  Init(); }
-        public SVMStateEnum SVMState { get; set; }
+        public SVMStateEnum State { get; set; }
         void Init()
         {
-            SVMState = SVMStateEnum.Dirty;
+            State = SVMStateEnum.Dirty;
         }
 
         public MiscComponent(MiscComponent mc)
@@ -601,7 +604,7 @@ namespace OJewelry.Models
     }
 
     public enum SVMStateEnum { Dirty, Added, Deleted, Unadded, Fixed }
-    public enum SVMCCTypeEnum { Castings, Stones, Findings, Labors, Miscs }
+    public enum SVMCCTypeEnum { Castings, Stones, Findings, Labors, LaborItems, Miscs }
     public enum SVMDelButtonPos { Left, Right }
     public enum SVMOperation { Create, Edit, Print }
 
@@ -655,8 +658,8 @@ namespace OJewelry.Models
                 CastingComponent c = new CastingComponent(x, v)
                 {
 
-                    //SVMState = SVMStateEnum.Added
-                    SVMState = (bCreating) ? SVMStateEnum.Added: x.SVMState
+                    //State = SVMStateEnum.Added
+                    State = (bCreating) ? SVMStateEnum.Added: x.State
                 };
                 return c;
             }).ToList();
@@ -664,8 +667,8 @@ namespace OJewelry.Models
             {
                 StoneComponent s = new StoneComponent(x)
                 {
-                    //SVMState = SVMStateEnum.Added
-                    SVMState = (bCreating) ? SVMStateEnum.Added : x.SVMState
+                    //State = SVMStateEnum.Added
+                    State = (bCreating) ? SVMStateEnum.Added : x.State
                 };
                 return s;
             })).ToList();
@@ -673,8 +676,8 @@ namespace OJewelry.Models
             {
                 FindingsComponent f = new FindingsComponent(x)
                 {
-                    //SVMState = SVMStateEnum.Added
-                    SVMState = (bCreating) ? SVMStateEnum.Added : x.SVMState
+                    //State = SVMStateEnum.Added
+                    State = (bCreating) ? SVMStateEnum.Added : x.State
                 };
                 return f;
             })).ToList();
@@ -682,8 +685,17 @@ namespace OJewelry.Models
             {
                 LaborComponent l = new LaborComponent(x)
                 {
-                    //SVMState = x.SVMState == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : SVMStateEnum.Added
-                    SVMState = x.SVMState == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : ((bCreating) ? SVMStateEnum.Added : x.SVMState)
+                    //State = x.State == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : SVMStateEnum.Added
+                    State = x.State == LMState.Fixed ? LMState.Fixed : ((bCreating) ? LMState.Added : x.State)
+                };
+                return l;
+            })).ToList();
+            LaborItems = oldModel.LaborItems.ConvertAll((x =>
+            {
+                LaborItemComponent l = new LaborItemComponent(x)
+                {
+                    //State = x.State == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : SVMStateEnum.Added
+                    State = x.State == LMState.Fixed ? LMState.Fixed : ((bCreating) ? LMState.Added : x.State)
                 };
                 return l;
             })).ToList();
@@ -691,8 +703,8 @@ namespace OJewelry.Models
             {
                 MiscComponent m = new MiscComponent(x)
                 {
-                    //SVMState = x.SVMState == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : SVMStateEnum.Added
-                    SVMState = x.SVMState == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : ((bCreating) ? SVMStateEnum.Added : x.SVMState)
+                    //State = x.State == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : SVMStateEnum.Added
+                    State = x.State == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : ((bCreating) ? SVMStateEnum.Added : x.State)
                 };
                 return m;
             })).ToList();
@@ -752,7 +764,7 @@ namespace OJewelry.Models
             {
                 if (Labors[0].Name == StyleViewModel.FinishingLaborName)
                 {
-                    Labors[0].SVMState = SVMStateEnum.Fixed;
+                    Labors[0].State = LMState.Fixed;
                 }
             }
 
@@ -760,7 +772,7 @@ namespace OJewelry.Models
             {
                 if (Miscs[0].Name == StyleViewModel.PackagingName)
                 {
-                    Miscs[0].SVMState = SVMStateEnum.Fixed;
+                    Miscs[0].State = SVMStateEnum.Fixed;
                 }
             }
 
@@ -774,7 +786,7 @@ namespace OJewelry.Models
         public void ComputePackaging(CostData cd)
         {
 
-            if (Miscs.Count > 0 && Miscs[0].SVMState == SVMStateEnum.Fixed && Miscs[0].Name == PackagingName) // is there a packaging entry?
+            if (Miscs.Count > 0 && Miscs[0].State == SVMStateEnum.Fixed && Miscs[0].Name == PackagingName) // is there a packaging entry?
             {
                 Miscs[0].PPP = cd.packagingCosts[Style.JewelryType.Name];
             }
@@ -783,7 +795,7 @@ namespace OJewelry.Models
 
         public void ComputeFinishing(CostData cd)
         {
-            if (Labors.Count > 0 && Labors[0].SVMState == SVMStateEnum.Fixed && Labors[0].Name == FinishingLaborName)
+            if (Labors.Count > 0 && Labors[0].State == SVMStateEnum.Fixed && Labors[0].Name == FinishingLaborName)
             {
                 Labors[0].PPP = cd.finishingCosts[Style.JewelryType.Name];
             }
@@ -879,7 +891,7 @@ namespace OJewelry.Models
             foreach (StoneComponent sc in Stones)
             {
                 i++;
-                switch (sc.SVMState)
+                switch (sc.State)
                 {
                     case SVMStateEnum.Added:
                         sc.VendorName = Stones[i].VendorName;
@@ -907,7 +919,7 @@ namespace OJewelry.Models
                         sc.Total = 0;
                         sc.Desc = "";
 
-                        //sc.SVMState = SVMStateEnum.Added;
+                        //sc.State = SVMStateEnum.Added;
                         break;
                     case SVMStateEnum.Dirty:
                     case SVMStateEnum.Fixed:
@@ -937,7 +949,7 @@ namespace OJewelry.Models
             foreach (FindingsComponent fc in Findings)
             {
                 i++;
-                switch (fc.SVMState)
+                switch (fc.State)
                 {
                     case SVMStateEnum.Added:
                         fc.VendorName = Findings[i].VendorName;
@@ -1042,7 +1054,7 @@ namespace OJewelry.Models
             List<Finding> findingSet = db.Findings.Where(st => st.CompanyId == this.CompanyId).ToList();
             JewelryType jt = db.JewelryTypes.Find(Style.JewelryTypeId);
 
-            foreach (CastingComponent c in Castings.Where(x => x.SVMState == SVMStateEnum.Added || x.SVMState == SVMStateEnum.Dirty))
+            foreach (CastingComponent c in Castings.Where(x => x.State == SVMStateEnum.Added || x.State == SVMStateEnum.Dirty))
             {
                 MetalCode mc = db.MetalCodes.Find(c.MetalCodeId);
                 c.MetalCode = mc.Code;
@@ -1127,6 +1139,7 @@ namespace OJewelry.Models
             Stones = new List<StoneComponent>();
             Findings = new List<FindingsComponent>();
             Labors = new List<LaborComponent>();
+            LaborItems = new List<LaborItemComponent>();
             Miscs = new List<MiscComponent>();
 
             PopulateDropDownData(db);
@@ -1146,6 +1159,7 @@ namespace OJewelry.Models
                 Style.StyleFindings = db.StyleFindings.Where(x => x.StyleId == Style.Id).ToList();
                 // Get Labor Links
                 Style.StyleLabors = db.StyleLabors.Where(x => x.StyleId == Style.Id).ToList(); ;
+                Style.StyleLaborItems = db.StyleLaborItems.Where(x => x.StyleId == Style.Id).ToList();
                 // Get Misc Links
                 Style.StyleMiscs = db.StyleMiscs.Where(x => x.StyleId == Style.Id).ToList(); ;
                 // get components for each link
@@ -1176,10 +1190,24 @@ namespace OJewelry.Models
                 }
 
                 PopulateComponents(db);
+                // LaborItems
+                foreach (StyleLaborTableItem sli in Style.StyleLaborItems)
+                {
+                    LaborItem li = db.LaborTable.Find(sli.LaborTableId);
+                    LaborItemComponent liscm = new LaborItemComponent(li);
+                    //liscm.Qty = sli.LaborItem.Qty ?? 0; Don't need here, no inventory for labor items
+                    t = liscm.pph.GetValueOrDefault();
+                    t2 = liscm.ppp.GetValueOrDefault();
+                    liscm.Qty = sli.Qty;
+                    liscm.Total = liscm.Qty.GetValueOrDefault() * (t + t2);
+                    LaborsTotal += liscm.Total;
+                    LaborItems.Add(liscm);
+                    if (Style.JewelryType.bUseLaborTable) Total += liscm.Total;
+                }
                 // Labor
                 foreach (StyleLabor sl in Style.StyleLabors)
                 {
-                    Labor lb = db.Labors.Find(sl.LaborId); 
+                    Labor lb = db.Labors.Find(sl.LaborId);
                     LaborComponent liscm = new LaborComponent(lb);
                     liscm.Qty = sl.Labor.Qty ?? 0;
                     //liscm.PPP = Style.JewelryType.FinishingCost;
@@ -1188,7 +1216,7 @@ namespace OJewelry.Models
                     liscm.Total = liscm.Qty.Value * (t + t2);
                     LaborsTotal += liscm.Total;
                     Labors.Add(liscm);
-                    Total += liscm.Total;
+                    if (!Style.JewelryType.bUseLaborTable) Total += liscm.Total;
                 }
                 // Misc
                 foreach (StyleMisc sms in Style.StyleMiscs)
@@ -1306,6 +1334,8 @@ namespace OJewelry.Models
             pph = c.pph;
             ppp = c.ppp;
             //Qty = c.Qty; there is no inventory of a labor
+            //State = c.State;
+            State = c.State;
         }
     }
 
@@ -1625,8 +1655,51 @@ namespace OJewelry.Models
             }
             m.LaborsTotal = subtotal;
             total += m.LaborsTotal;
-            
+
+
+            // build LaborsItems
             subtotal = 0;
+            if (m.LaborItems == null)
+            { m.LaborItems = new List<LaborItemComponent>(); }
+            else
+            {
+                for (int i = 0; i < m.LaborItems.Count; i++)
+                {
+                    sb.Clear();
+                    sb.AppendFormat("LaborItems[{0}].Id", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int id);
+                    m.Labors[i].Id = id;
+
+                    sb.Clear();
+                    sb.AppendFormat("LaborItems[{0}].Name", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.Labors[i].Name = s;
+
+                    sb.Clear();
+                    sb.AppendFormat("LaborItems[{0}].pph", i);
+                    s = request.Form.Get(sb.ToString());
+                    Decimal.TryParse(s, out decimal pph);
+                    m.Labors[i].PPH = pph;
+
+                    sb.Clear();
+                    sb.AppendFormat("LaborItems[{0}].ppp", i);
+                    s = request.Form.Get(sb.ToString());
+                    Decimal.TryParse(s, out decimal ppc);
+                    m.Labors[i].PPP = ppc;
+
+                    sb.Clear();
+                    sb.AppendFormat("LaborItems[{0}].Qty", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int q);
+                    m.Labors[i].Qty = q;
+                    m.Labors[i].Total = q * (ppc + pph);
+                    subtotal += m.Labors[i].Total;
+                }
+            }
+            m.LaborsTotal = subtotal;
+            total += m.LaborsTotal; subtotal = 0;
+            
             // build Miscs
             if (m.Miscs == null)
             { m.Miscs = new List<MiscComponent>();  }
@@ -1691,7 +1764,7 @@ namespace OJewelry.Models
                 {
                     if (scl[i].Id == -1)
                     {
-                        if (scl[i].SVMState != SVMStateEnum.Unadded)
+                        if (scl[i].State != SVMStateEnum.Unadded)
                         {
                             items.Add("[" + i+ "].Id");
                         }
@@ -1704,7 +1777,7 @@ namespace OJewelry.Models
                 {
                     if (fcl[i].Id == -1)
                     {
-                        if (fcl[i].SVMState != SVMStateEnum.Unadded)
+                        if (fcl[i].State != SVMStateEnum.Unadded)
                         {
                             items.Add("[" + i + "].Id");
                         }

@@ -96,18 +96,17 @@ namespace OJewelry.Controllers
             {
                 Id = -1,
                 Name = StyleViewModel.FinishingLaborName,
-                SVMState = SVMStateEnum.Fixed,
+                State = LMState.Fixed,
                 PPP = flPrice,
                 Qty = 1,
-                Total = flPrice
-                
+                Total = flPrice 
             };
             svm.Labors.Add(lc);
             MiscComponent mc = new MiscComponent
             {
                 Id = -1,
                 Name = StyleViewModel.PackagingName,
-                SVMState = SVMStateEnum.Fixed,
+                State = SVMStateEnum.Fixed,
                 PPP = packPrice,
                 Qty = 1,
                 Total = packPrice
@@ -291,7 +290,7 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (c.SVMState)
+                        switch (c.State)
                         {
                             case SVMStateEnum.Added:
                                 casting = new Casting(c);
@@ -356,7 +355,7 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (sc.SVMState)
+                        switch (sc.State)
                         {
                             case SVMStateEnum.Added:
                                 //stone = new Stone(sc);
@@ -406,7 +405,7 @@ namespace OJewelry.Controllers
                             ModelState.AddModelError("Findings[" + i + "].Id", e.Message);
                             continue;
                         }
-                        switch (c.SVMState)
+                        switch (c.State)
                         {
                             case SVMStateEnum.Added:
                                 /*
@@ -463,17 +462,16 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (c.SVMState)
+                        switch (c.State)
                         {
-                            case SVMStateEnum.Added:
+                            case LMState.Added:
                                 AddLabor(c, svm, i);
                                 break;
-                            case SVMStateEnum.Deleted:
+                            case LMState.Deleted:
                                 sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
                                 RemoveLabor(sl);
                                 break;
-                            case SVMStateEnum.Dirty:
-                            case SVMStateEnum.Fixed:
+                            case LMState.Dirty:
                                 if (c.Id <= 0)
                                 {
                                     AddLabor(c, svm, i);
@@ -488,7 +486,8 @@ namespace OJewelry.Controllers
                                 sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
                                 */
                                 break;
-                            case SVMStateEnum.Unadded: // No updates
+                            case LMState.Fixed:
+                            case LMState.Unadded: // No updates
                             default:
                                 break;
                         }
@@ -504,10 +503,10 @@ namespace OJewelry.Controllers
                     {
                         i++;
                         LaborItem labor;
-                        StyleLaborTable sl;
+                        StyleLaborTableItem sl;
                         try
                         {
-                            ValidLabor(c);
+                            ValidLaborItem(c);
                         }
                         catch (OjMissingLaborException e)
                         {
@@ -515,20 +514,20 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (c.SVMState)
+                        switch (c.State)
                         {
-                            case SVMStateEnum.Added:
-                                AddLabor(c, svm, i);
+                            case LMState.Added:
+                                AddLaborItem(c, svm, i);
                                 break;
-                            case SVMStateEnum.Deleted:
+                            case LMState.Deleted:
                                 sl = db.StyleLaborItems.Where(x => x.StyleId == svm.Style.Id && x.LaborTableId == c.Id).Single();
-                                RemoveLabor(sl);
+                                RemoveLaborItem(sl);
                                 break;
-                            case SVMStateEnum.Dirty:
-                            case SVMStateEnum.Fixed:
+                            case LMState.Dirty:
+                            case LMState.Fixed:
                                 if (c.Id <= 0)
                                 {
-                                    AddLabor(c, svm, i);
+                                    AddLaborItem(c, svm, i);
                                 }
                                 else
                                 {
@@ -540,7 +539,7 @@ namespace OJewelry.Controllers
                                 sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
                                 */
                                 break;
-                            case SVMStateEnum.Unadded: // No updates
+                            case LMState.Unadded: // No updates
                             default:
                                 break;
                         }
@@ -566,7 +565,7 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (c.SVMState)
+                        switch (c.State)
                         {
                             case SVMStateEnum.Added:
                                 AddMisc(c, svm, i);
@@ -670,7 +669,7 @@ namespace OJewelry.Controllers
 
         public bool ValidCasting(CastingComponent cc)
         {
-            if (cc.SVMState == SVMStateEnum.Unadded) return true;
+            if (cc.State == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(cc.Name))
             {
                 throw new OjMissingCastingException("You must enter a Name!");
@@ -681,7 +680,7 @@ namespace OJewelry.Controllers
 
         public int ValidStone(StoneComponent sc)
         {
-            if (sc.SVMState != SVMStateEnum.Unadded)
+            if (sc.State != SVMStateEnum.Unadded)
             {
                 // Make sure a stone was selected in the dropdown
                 if (sc.Name == null || sc.ShId == null || sc.SzId == null)
@@ -706,7 +705,7 @@ namespace OJewelry.Controllers
         public bool ValidFinding(FindingsComponent fc, int i)
         {
             // Make sure a stone was selected in the dropdown
-            if (fc.SVMState == SVMStateEnum.Unadded) return true;
+            if (fc.State == SVMStateEnum.Unadded) return true;
             if (fc.Id == 0)
             {
                 throw new OjMissingFindingException("You must enter a Name!");
@@ -716,7 +715,7 @@ namespace OJewelry.Controllers
 
         public bool ValidLabor(LaborComponent lc)
         {
-            if (lc.SVMState == SVMStateEnum.Unadded) return true;
+            if (lc.State == LMState.Unadded) return true;
             if (string.IsNullOrEmpty(lc.Name))
             {
                 throw new OjMissingLaborException("You must enter a Name!");
@@ -725,9 +724,9 @@ namespace OJewelry.Controllers
             return true;
         }
 
-        public bool ValidLabor(LaborItemComponent lic)
+        public bool ValidLaborItem(LaborItemComponent lic)
         {
-            if (lic.SVMState == SVMStateEnum.Unadded) return true;
+            if (lic.State == LMState.Unadded) return true;
             if (string.IsNullOrEmpty(lic.Name))
             {
                 throw new OjMissingLaborException("You must enter a Name!");
@@ -738,7 +737,7 @@ namespace OJewelry.Controllers
 
         public bool ValidMisc(MiscComponent mc)
         {
-            if (mc.SVMState == SVMStateEnum.Unadded) return true;
+            if (mc.State == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(mc.Name))
             {
                 throw new OjMissingMiscException("You must enter a Name!");
@@ -979,12 +978,14 @@ namespace OJewelry.Controllers
             db.StyleLabors.Add(sl);
         }
 
-        void AddLabor(LaborItemComponent c, StyleViewModel svm, int keyVal)
+        void AddLaborItem(LaborItemComponent c, StyleViewModel svm, int keyVal)
         {
-            LaborItem laborItem = new LaborItem(c);
-            laborItem.Id = c.Id == 0 ? keyVal : c.Id;
-            db.LaborTable.Add(laborItem);
-            StyleLaborTable sl = new StyleLaborTable() { StyleId = svm.Style.Id, LaborTableId = laborItem.Id };
+            int laborItemId = c.Id == 0 ? keyVal : c.Id;
+            StyleLaborTableItem sl = new StyleLaborTableItem() {
+                StyleId = svm.Style.Id,
+                LaborTableId = laborItemId,
+                Qty = c.Qty.Value
+            };
             db.StyleLaborItems.Add(sl);
         }
 
@@ -994,7 +995,7 @@ namespace OJewelry.Controllers
             db.StyleLabors.Remove(sl);
         }
 
-        void RemoveLabor(StyleLaborTable sl)
+        void RemoveLaborItem(StyleLaborTableItem sl)
         {
             db.LaborTable.Remove(sl.LaborItem);
             db.StyleLaborItems.Remove(sl);
