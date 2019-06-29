@@ -576,10 +576,10 @@ COST:
                                 @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                 if (bDisabled)
                                 {
-                                    @Html.HiddenFor(model => model.Labors[i].PPP, new { @class = "finishingPPP" })
-                                    @Html.HiddenFor(model => model.Labors[i].Qty, new { @class = "finishingQty" })
                                     @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 finishingPPP", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                     @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1 finishingQty", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                                    @Html.HiddenFor(model => model.Labors[i].PPP, new { @class = "finishingPPP" })
+                                    @Html.HiddenFor(model => model.Labors[i].Qty, new { @class = "finishingQty" })
                                 }
                                 else
                                 {
@@ -731,7 +731,7 @@ COST:
                     @{Model.CCLastRow = false;
                         Model.CCHeaderRow = false;
                         Model.CCRowIndex = i;
-                        }
+                    }
                     @if (i == Model.Miscs.Count - 1)
                     {
                         Model.CCLastRow = true;
@@ -741,7 +741,9 @@ COST:
                         if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Miscs[i].Id == cc.Id))
                         {
                             boxbot = "boxbot";
-                        } else {
+                        }
+                        else
+                        {
                             boxbot = "";
                         }
                     }
@@ -763,10 +765,10 @@ COST:
                         <div class="col-sm-3 col-xs-3 "></div>
                         if (bDisabled)
                         {
-                            @Html.HiddenFor(model => model.Miscs[i].PPP, new { @class = "miscsPPP" })
-                            @Html.HiddenFor(model => model.Miscs[i].Qty, new { @class = "miscsQty" })
                             @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 miscsPPP", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                             @Html.TextBoxFor(model => model.Miscs[i].Qty, new { @class = "col-sm-1 col-xs-1 miscsQty", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                            @Html.HiddenFor(model => model.Miscs[i].PPP, new { @class = "miscsPPP" })
+                            @Html.HiddenFor(model => model.Miscs[i].Qty, new { @class = "miscsQty" })
                         }
                         else
                         {

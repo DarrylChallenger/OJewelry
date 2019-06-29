@@ -390,14 +390,14 @@ function CalcTotals()
 }
 
 function SetFinishingCost(finishingVal) {
-    if ($("#Labors_0__Name").val() === "FINISHING LABOR" && $("#Labors_0__SVMState").val() === "Fixed") {
+    if ($("#Labors_0__Name").val() === "FINISHING LABOR" && $("#Labors_0__State").val() === "Fixed") {
         $(".finishingPPP").val(finishingVal.toFixed(2));
         CalcRowTotal("Labors", 0);
     }
 }
 
 function SetPackagingCost(packagingVal) {
-    if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__SVMState").val() === "Fixed") {
+    if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__State").val() === "Fixed") {
         $(".miscsPPP").val(packagingVal.toFixed(2));
         CalcRowTotal("Miscs", 0);
     }
@@ -421,55 +421,57 @@ async function LaborItemsDropdownChanged(rowId) {
 
 // Rework this: Always call jtApi. If !bUseLT, get assembly costs.
 function JewelryTypeChanged(companyId) { 
-    //if ($("#Style_JewelryType_bUseLaborTable").val() !== "True") {
-    if ($("#Style_JewelryType_bUseLaborTable").val() === "Trucccce") {
-        fetch('/api/AssemblyCostsApi?companyId=' + companyId)
-        .then(function (response) {
-                return response.json();
-            })
-        .then(function (cdJSON) {
-                // unpack CostData
-                var costData = JSON.parse(cdJSON);
+    var jtid = $("#Style_JewelryTypeId :selected").val();
+    fetch('/api/JewelryTypesApi?id=' + jtid)
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (jewelryTypeJSON) {
+        const jewelryType = JSON.parse(jewelryTypeJSON);
+        //console.log(`jewelryType: ${JSON.stringify(jewelryType)}`);
+        if (jewelryType.bUseLaborTable === false) {
+            // toggle .HideLabors
+            //$(`.StyleLaborItemsSection`).hide();
+            //$(`.StyleLaborsSection`).show();
+            $(`.StyleLaborItemsSection`).css("opacity", ".4");
+            $(`.StyleLaborsSection`).css("opacity", "1");
+
+            $("#Style_JewelryType_bUseLaborTable").val(false);
+            //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
             var jt = $("#Style_JewelryTypeId :selected").text();
-                var finishingVal = costData.finishingCosts[jt];
-                var packagingVal = costData.packagingCosts[jt];
-                SetFinishingCost(finishingVal);
-                SetPackagingCost(packagingVal);
-            }).catch(function (e) {
-            console.log("Error retrieving assembly cost data (jtc)", e);
-            });
-    } else {
-        var jtid = $("#Style_JewelryTypeId :selected").val();
-        fetch('/api/JewelryTypesApi?id=' + jtid)
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (jewelryTypeJSON) {
-                const jewelryType = JSON.parse(jewelryTypeJSON);
-                //console.log(`jewelryType: ${JSON.stringify(jewelryType)}`);
-                if (jewelryType.bUseLaborTable === false) {
-                    // toggle .HideLabors
-                    //$(`.StyleLaborItemsSection`).hide();
-                    //$(`.StyleLaborsSection`).show();
-                    $(`.StyleLaborItemsSection`).css("opacity", ".4");
-                    $(`.StyleLaborsSection`).css("opacity", "1");
-                    $("#Style_JewelryType_bUseLaborTable").val(false);
-                    //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
-                    CalcSubtotals("Labors");
-                } else {
-                    // toggle .HideLaborItems
-                    //$(`.StyleLaborsSection`).hide();
-                    //$(`.StyleLaborItemsSection`).show();
-                    $(`.StyleLaborsSection`).css("opacity", ".4");
-                    $(`.StyleLaborItemsSection`).css("opacity", "1");
-                    $("#Style_JewelryType_bUseLaborTable").val(true);
-                    //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
-                    CalcSubtotals("LaborItems");
-                }
-            }).catch(function (e) {
-                console.log("Error retrieving jewelry type data (jtc)", e);
-            });
-    }
+            console.log(`jt: [${jt}]`);
+            var finishingVal = jewelryType.costData.finishingCosts[jt];
+            var packagingVal = jewelryType.costData.packagingCosts[jt];
+
+            if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__State").val() === "Fixed") {
+                $("#Miscs_0__Qty").val(0);
+                console.log(` $("#Miscs_0__Qty"): ${$("#Miscs_0__Qty").val()}`);
+                CalcRowTotal("Miscs", 0);
+            }
+
+            SetFinishingCost(finishingVal);
+            SetPackagingCost(packagingVal);
+            CalcSubtotals("Labors");
+        } else {
+            // toggle .HideLaborItems
+            //$(`.StyleLaborsSection`).hide();
+            //$(`.StyleLaborItemsSection`).show();
+            $(`.StyleLaborsSection`).css("opacity", ".4");
+            $(`.StyleLaborItemsSection`).css("opacity", "1");
+
+            $("#Style_JewelryType_bUseLaborTable").val(true);
+            //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
+            if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__State").val() === "Fixed") {
+                $("#Miscs_0__Qty").val(1);
+                CalcRowTotal("Miscs", 0);
+            }
+
+            CalcSubtotals("LaborItems");
+        }
+    }).catch(function (e) {
+        console.log("Error retrieving jewelry type data (jtc)", e);
+    });
+
 }
 
 function StoneChanged(i) {

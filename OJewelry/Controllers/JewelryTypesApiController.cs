@@ -17,13 +17,15 @@ namespace OJewelry.Controllers
     [DataContract]
     public class JewelryTypeJSON
     {
-        public JewelryTypeJSON(JewelryType jewelryType)
+        public JewelryTypeJSON(JewelryType jewelryType, CostData cd)
         {
             id = jewelryType.Id;
             bUseLaborTable = jewelryType.bUseLaborTable;
+            costData = cd;
         }
         [DataMember] int id { get; set; }
         [DataMember] bool bUseLaborTable { get; set; }
+        [DataMember] CostData costData { get; set; }
     }
     
 public class JewelryTypesApiController : ApiController
@@ -39,7 +41,46 @@ public class JewelryTypesApiController : ApiController
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
-            JewelryTypeJSON jt = new JewelryTypeJSON(jewelryType);
+            CostData cd = new CostData();
+            cd.companyId = jewelryType.CompanyId.Value;
+            // two dictionaries, one for each market & multiplier
+            Dictionary<string, decimal> metalMarketPrice = new Dictionary<string, decimal>();  // one for each metal type
+            Dictionary<string, float> metalMultiplier = new Dictionary<string, float>();  // one for each metal type
+
+            // assign market and multiplier for each metalcode
+            // Metal Costs
+            foreach (MetalCode m in db.MetalCodes.Where(x => x.CompanyId == jewelryType.CompanyId)) // add company ID!!!
+            {
+                // Metal Market Price
+                if (cd.metalMarketPrice.Where(k => k.Key == m.Code).Count() == 0)
+                {
+                    cd.metalMarketPrice.Add(m.Code, m.Market);
+                }
+                // Metal Multiplier
+                if (cd.metalMultiplier.Where(k => k.Key == m.Code).Count() == 0)
+                {
+                    cd.metalMultiplier.Add(m.Code, m.Multiplier);
+                }
+            }
+            if (!jewelryType.bUseLaborTable)
+            {
+                // Finishing and Packaging Costs
+                foreach (JewelryType j in db.JewelryTypes.Where(x => x.CompanyId == jewelryType.CompanyId))
+                {
+                    // Finishing Costs: per Jewelry Type
+                    if (cd.finishingCosts.Where(k => k.Key == j.Name).Count() == 0)
+                    {
+                        cd.finishingCosts.Add(j.Name, j.FinishingCost);
+                    }
+                    // Packaging Costs: per Jewelry Type
+                    if (cd.packagingCosts.Where(k => k.Key == j.Name).Count() == 0)
+                    {
+                        cd.packagingCosts.Add(j.Name, j.PackagingCost);
+                    }
+                }
+            }
+
+            JewelryTypeJSON jt = new JewelryTypeJSON(jewelryType, cd);
             string json = JsonConvert.SerializeObject(jt);
             return json;
         }
