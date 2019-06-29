@@ -11,7 +11,6 @@ namespace OJewelry.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public JewelryType()
         {
-            Styles = new HashSet<Style>();
         }
 
         public int Id { get; set; }
@@ -31,9 +30,6 @@ namespace OJewelry.Models
 
         [Required]
         public decimal FinishingCost { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Style> Styles { get; set; }
 
         public virtual Company Company { get; set; }
     }

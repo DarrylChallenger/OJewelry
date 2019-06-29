@@ -259,14 +259,22 @@ html input[disabled], locked {
     padding-left: 5px;
 }
 
+.StyleLaborsSection {
+    //color: blue;
+}
+
+.StyleLaborItemsSection {
+    //color: red;
+}
+
 .HideLabors {
-    /display: none;
-    color: lightgray;
+    //display: none;
+    //color: lightcoral;
 }
 
 .HideLaborItems {
     //display: none;
-    color: lightgray;
+    //color: lightseagreen;
 }
 
 .ssdata {

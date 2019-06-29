@@ -130,18 +130,18 @@ async function AddComponentRow(type, index)
     if (type === "LaborItems") {
         laboritemsltbordered = getLaborItemsHTML(type, len);
         //console.log(`laboritemsltbordered: [${JSON.stringify(laboritemsltbordered)}]`);
-        console.log(`laboritemsltbordered: [${laboritemsltbordered}]`);
+        //console.log(`laboritemsltbordered: [${laboritemsltbordered}]`);
         var dropdown = await PopulateDropdowns(laboritemsltbordered); // async problem here
-        console.log(`*** dropdown: [${dropdown}]`);
-        console.log(`laboritemsltbordered2: [${laboritemsltbordered}]`);
+        //console.log(`*** dropdown: [${dropdown}]`);
+        //console.log(`laboritemsltbordered2: [${laboritemsltbordered}]`);
         // replace #getoption with dropdown
         //ltbordered = laboritemsltbordered;
         //ltbordered = $(laboritemsltbordered).find("#getoptions").parent().replaceWith(`${dropdown}`);
         var t1 = $(laboritemsltbordered).find("#getoptions").parent();
-        console.log(`t1: [${t1.html()}]`);
+        //console.log(`t1: [${t1.html()}]`);
         ltbordered = $(laboritemsltbordered).html().replace(t1.html(), dropdown);
         //console.log(`t2: [${t2}]`);
-        console.log(`li-ltbordered: [${$(ltbordered).html()}]`);
+        //console.log(`li-ltbordered: [${$(ltbordered).html()}]`);
     }
     if (type === "Miscs") {
         miscsltbordered = getMiscsHTML(type, len);
@@ -247,7 +247,7 @@ async function PopulateDropdowns(nr) {
 
 function CalcRowTotal(type, rowId)
 {
-    var ry, qty;
+    var rv, qty;
     // Iterate through row and compute the row total
     if (type === "Castings")
     {
@@ -274,6 +274,12 @@ function CalcRowTotal(type, rowId)
     {
         // (PPH + PPP) * qty
         total = +$("#" + type + "_" + rowId + "__PPH").val() + +$("#" + type + "_" + rowId + "__PPP").val();
+        qty = total * $("#" + type + "_" + rowId + "__Qty").val();
+        rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
+    }
+    if (type === "LaborItems") { 
+        // (pph + ppp) * qty
+        total = +$("#" + type + "_" + rowId + "__pph").val() + +$("#" + type + "_" + rowId + "__ppp").val();
         qty = total * $("#" + type + "_" + rowId + "__Qty").val();
         rv = $("#" + type + "RowTotalValue_" + rowId).text(qty.toFixed(2));
     }
@@ -338,28 +344,46 @@ function CalcStonesSettingsRow(stoneRow, price, qty) {
 }
 
 function CalcSubtotals(type) {
+    //console.log(`CalcSubtotals type : ${type}`);
     // Iterate through row totals and compute the type total 
     var rows = $("." + type + "RowTotal");
     var total = +0;
+    let rv;
     rows.each(function () {
         rv = +$(this).html();
         total = +total + rv;
     });
+    //console.log(`total: ${total}`);
     if (isNaN(total)) total = 0;
-    $("#" + type + "TotalValue").html(total.toFixed(2));
+    if (type === "LaborItems" || type === "Labors") {
+        //$("#" + type + "SectionSubtotal").html(total.toFixed(2));
+        if ($(Style_JewelryType_bUseLaborTable).val() !== "true") {
+            //$("#LaborsTotalValue").html($("#LaborsSectionSubtotal").html());
+            $("#LaborsTotalValue").html(total.toFixed(2));
+        } else {
+            //$("#LaborsTotalValue").html($("#LaborItemsSectionSubtotal").html());
+            $("#LaborsTotalValue").html(total.toFixed(2));
+        }
+    } else {
+        $("#" + type + "TotalValue").html(total.toFixed(2));
+    }
     CalcTotals();
 }
 
 function CalcTotals()
 {
-    //console.log("Calc totals");
-    total = 0;
+    //console.log(`Calc totals bUseLT: ${ $("#Style_JewelryType_bUseLaborTable").val() === "true" ? true : false}`);
+    let total = +0;
+    let lbrtl = $("#Style_JewelryType_bUseLaborTable").val() === "true" ? $("#LaborItemsSectionSubtotal").html() : $("#LaborsSectionSubtotal").html();
+    //console.log(`lbrtl: ${lbrtl}`);
     total = total + +$("#CastingsTotalValue").html() +
         +$("#StonesTotalValue").html() +
         +$("#FindingsTotalValue").html() +
         +$("#LaborsTotalValue").html() +
         +$("#MiscsTotalValue").html();
+//    console.log(`total: ${total}`);
     if (isNaN(total)) total = 0;
+    //console.log(`total2: ${total}`);
     $("#GrandTotal").html(total.toFixed(2));
     $("#GrandTotal2").html(total.toFixed(2));
     // Iterate thru each total to get the grand total
@@ -379,22 +403,73 @@ function SetPackagingCost(packagingVal) {
     }
 }
 
-function JewelryTypeChanged(companyId) {
-    fetch('/api/AssemblyCostsApi?companyId=' + companyId)
+async function LaborItemsDropdownChanged(rowId) {
+    let selectedItemId = $(`#LaborItems_${rowId}__laborItemId`).val();
+    //console.log(`rowId: ${rowId}, selectedItemId: ${selectedItemId}`);
+    if (selectedItemId) {
+        const response = await fetch('/api/LaborItemsApi?id=' + selectedItemId);
+        const laborItemString = await response.json();
+        //console.log(`laborItemString: ${laborItemString}`);
+        const laborItem = JSON.parse(laborItemString);
+        //console.log(`laborItem: ${JSON.stringify(laborItem)}`);
+        $(`#LaborItems_${rowId}__pph`).val(laborItem.pph);
+        $(`#LaborItems_${rowId}__ppp`).val(laborItem.ppp);
+        $(`#LaborItems_${rowId}__Vendor`).val(laborItem.Vendor);
+        CalcRowTotal("LaborItems", rowId);
+    }
+}
+
+// Rework this: Always call jtApi. If !bUseLT, get assembly costs.
+function JewelryTypeChanged(companyId) { 
+    //if ($("#Style_JewelryType_bUseLaborTable").val() !== "True") {
+    if ($("#Style_JewelryType_bUseLaborTable").val() === "Trucccce") {
+        fetch('/api/AssemblyCostsApi?companyId=' + companyId)
         .then(function (response) {
-            return response.json();
-        })
+                return response.json();
+            })
         .then(function (cdJSON) {
-            // unpack CostData
-            var jt = $("#JewelryTypeId :selected").text();
-            var costData = JSON.parse(cdJSON);
-            var finishingVal = costData.finishingCosts[jt];
-            var packagingVal = costData.packagingCosts[jt];
-            SetFinishingCost(finishingVal);
-            SetPackagingCost(packagingVal);
-        }).catch(function (e) {
+                // unpack CostData
+                var costData = JSON.parse(cdJSON);
+            var jt = $("#Style_JewelryTypeId :selected").text();
+                var finishingVal = costData.finishingCosts[jt];
+                var packagingVal = costData.packagingCosts[jt];
+                SetFinishingCost(finishingVal);
+                SetPackagingCost(packagingVal);
+            }).catch(function (e) {
             console.log("Error retrieving assembly cost data (jtc)", e);
-        });
+            });
+    } else {
+        var jtid = $("#Style_JewelryTypeId :selected").val();
+        fetch('/api/JewelryTypesApi?id=' + jtid)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (jewelryTypeJSON) {
+                const jewelryType = JSON.parse(jewelryTypeJSON);
+                //console.log(`jewelryType: ${JSON.stringify(jewelryType)}`);
+                if (jewelryType.bUseLaborTable === false) {
+                    // toggle .HideLabors
+                    //$(`.StyleLaborItemsSection`).hide();
+                    //$(`.StyleLaborsSection`).show();
+                    $(`.StyleLaborItemsSection`).css("opacity", ".4");
+                    $(`.StyleLaborsSection`).css("opacity", "1");
+                    $("#Style_JewelryType_bUseLaborTable").val(false);
+                    //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
+                    CalcSubtotals("Labors");
+                } else {
+                    // toggle .HideLaborItems
+                    //$(`.StyleLaborsSection`).hide();
+                    //$(`.StyleLaborItemsSection`).show();
+                    $(`.StyleLaborsSection`).css("opacity", ".4");
+                    $(`.StyleLaborItemsSection`).css("opacity", "1");
+                    $("#Style_JewelryType_bUseLaborTable").val(true);
+                    //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
+                    CalcSubtotals("LaborItems");
+                }
+            }).catch(function (e) {
+                console.log("Error retrieving jewelry type data (jtc)", e);
+            });
+    }
 }
 
 function StoneChanged(i) {
@@ -669,6 +744,7 @@ function getLaborItemsHTML(type, len) {
     <div id="LaborItemsRow_' + len + '" class="LaborItemsRow">\
         <div class="row ltbordered">\
             <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id= "LaborItems_' + len + '__Id" name= "LaborItems[' + len + '].Id" type= "hidden" value= "0" />\
+            <input data-val="true" data-val-number="The field linkId must be a number." data-val-required="The linkId field is required." id= "LaborItems_' + len + '__linkId" name= "LaborItems[' + len + '].linkId" type= "hidden" value= "0" />\
             <div class="col-sm-1 ">\
                 <div class="row StyleComponentsRowHeaderBtn ">\
                     <div class="col-sm-6 ">\
@@ -680,12 +756,12 @@ function getLaborItemsHTML(type, len) {
         '</div>\
             </div>\
             <!--<input class="col-sm-3 text-box single-line requiredifnotremoved" placeholder="Name" data-val="true" data-val-required="The Labors Name field is required." id="LaborItems_' + len + '__Name" name="LaborItems[' + len + '].Name" type="text" value="" />-->\
-            <select name="LaborItems[' + len + '].VendorId" id="LaborItems_' + len + '__VendorId" data-val-required="Please select a Labor. " data-val-number="The Vendor field is required. " data-val="true" class="col-sm-3">\
+            <select name="LaborItems[' + len + '].laborItemId" id="LaborItems_' + len + '__laborItemId" data-val-required="Please select a Labor. " data-val-number="The Labor field is required. " data-val="true" class="col-sm-3" onchange="LaborItemsDropdownChanged(' + len + ')">\
                 <option id="getoptions" value="LaborTableItems">LOAD OPTIONS HERE</option>\
             </select>\
-            <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Hour must be a number." id="LaborItems_' + len + '__pph" name="LaborItems[' + len + '].pph" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Piece must be a number." id="LaborItems_' + len + '__ppp" name="LaborItems[' + len + '].ppp" type="text" value="0.00" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
-            <input class="locked col-sm-2" disabled="disabled" value="VENDOR"\>\
+            <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Hour must be a number." id="LaborItems_' + len + '__pph" name="LaborItems[' + len + '].pph" type="text" value="" />\
+            <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Piece must be a number." id="LaborItems_' + len + '__ppp" name="LaborItems[' + len + '].ppp" type="text" value="" />\
+            <input class="locked col-sm-2 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Hour must be a number." id="LaborItems_' + len + '__Vendor" name="LaborItems[' + len + '].Vendor" type="text" value="" />\
             <div class="col-sm-1"></div>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="LaborItems_' + len + '__Qty" name="LaborItems[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="LaborItemsRowTotalValue_' + len + '" class="col-sm-1 LaborItemsRowTotal">0.00</div>\
@@ -693,7 +769,7 @@ function getLaborItemsHTML(type, len) {
         </div >\
         <div class="row">\
         <!--Validations Here-->\
-            <span class="field-validation-valid text-danger" data-valmsg-for="LaborItems[' + len + '].VendorId" data-valmsg-replace="true"></span>\
+            <span class="field-validation-valid text-danger" data-valmsg-for="LaborItems[' + len + '].laborItemId" data-valmsg-replace="true"></span>\
             <span class="field-validation-valid text-danger" data-valmsg-for="LaborItems[' + len + '].Qty" data-valmsg-replace="true"></span>\
         </div >\
     </div > ';

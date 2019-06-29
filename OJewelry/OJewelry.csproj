@@ -336,7 +336,9 @@
     <Compile Include="Controllers\DropdownApiController.cs" />
     <Compile Include="Controllers\FindingsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\JewelryTypesApiController.cs" />
     <Compile Include="Controllers\JewelryTypesController.cs" />
+    <Compile Include="Controllers\LaborItemsApiController.cs" />
     <Compile Include="Controllers\LaborTableController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MetalCodesController.cs" />

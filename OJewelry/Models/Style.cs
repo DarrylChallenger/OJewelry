@@ -33,6 +33,7 @@ namespace OJewelry.Models
         [StringLength(150)]
         public string Desc { get; set; }
 
+        [GreaterThanZero]
         public int? JewelryTypeId { get; set; }
 
         public int CollectionId { get; set; }

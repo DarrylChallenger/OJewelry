@@ -530,6 +530,7 @@ namespace OJewelry.Models
             Name = lic.Name;
             Qty = lic.Qty;
             Total = (ppp.GetValueOrDefault() + ppp.GetValueOrDefault()) * Qty.GetValueOrDefault();
+            Vendor = lic.Vendor;
         }
         public LaborItemComponent(LaborItem li) { _laborItem = li; Init(); }
         void Init()
@@ -537,6 +538,10 @@ namespace OJewelry.Models
             State = LMState.Dirty;
         }
         // PRICE/HR	PRICE/PC
+
+        public int linkId { get; set; }
+
+        public int laborItemId { get; set; }
 
         [Display(Name = "$/Hour")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
@@ -552,7 +557,7 @@ namespace OJewelry.Models
         [RequiredIfNotRemoved]
         public String Name { get { return _laborItem.Name; } set { _laborItem.Name = value; } }
 
-        public String Vendor { get { return _laborItem.Vendor.Name; }  }
+        public String Vendor { get { return _laborItem.Vendor.Name; } set { _laborItem.Vendor.Name = value; }  }
 
         [Display(Name = "Quantity")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
@@ -604,6 +609,7 @@ namespace OJewelry.Models
     }
 
     public enum SVMStateEnum { Dirty, Added, Deleted, Unadded, Fixed }
+    public enum LMState { Clean, Dirty, Added, Deleted, Unadded, Fixed }
     public enum SVMCCTypeEnum { Castings, Stones, Findings, Labors, LaborItems, Miscs }
     public enum SVMDelButtonPos { Left, Right }
     public enum SVMOperation { Create, Edit, Print }
@@ -738,6 +744,9 @@ namespace OJewelry.Models
         public SVMOperation SVMOp { get; set; }
         public int CompanyId { get; set; }
         public HttpPostedFileBase PostedImageFile { get; set; }
+
+        public List<JewelryType> drpJewelryTypes { get; set; }
+        public List<LaborItem> drpLaborItems { get; set; }
 
         public List<Vendor> jsVendors { get; set; }
         public List<MetalCode> jsMetals { get; set; }
@@ -886,6 +895,8 @@ namespace OJewelry.Models
 
             // Get Settings
             //GetSettingsCosts(db);
+            drpJewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == CompanyId).ToList();
+            drpLaborItems = db.LaborTable.Where(li => li.CompanyId == CompanyId).ToList();
 
             int i = -1;
             foreach (StoneComponent sc in Stones)
@@ -946,6 +957,24 @@ namespace OJewelry.Models
             }
 
             i = -1;
+            foreach (LaborItemComponent lic in LaborItems)
+            {
+                LaborItem li = db.LaborTable.Find(lic.Id);
+                lic.Vendor = db.Vendors.Find(li.VendorId).Name;
+                i++;
+                switch (lic.State)
+                {
+                    case LMState.Added:
+                    case LMState.Clean:
+                    case LMState.Deleted:
+                    case LMState.Dirty:
+                    case LMState.Fixed:
+                    case LMState.Unadded:
+                    default:
+                        break;
+                }
+            }
+            i = -1;
             foreach (FindingsComponent fc in Findings)
             {
                 i++;
@@ -987,6 +1016,9 @@ namespace OJewelry.Models
         
         public void PopulateComponents(OJewelryDB db)
         {
+            drpJewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == CompanyId).ToList();
+            drpLaborItems = db.LaborTable.Where(li => li.CompanyId == CompanyId).ToList();
+
             decimal t;
             // Stones
             foreach (StyleStone ss in Style.StyleStones)
@@ -1196,6 +1228,8 @@ namespace OJewelry.Models
                     LaborItem li = db.LaborTable.Find(sli.LaborTableId);
                     LaborItemComponent liscm = new LaborItemComponent(li);
                     //liscm.Qty = sli.LaborItem.Qty ?? 0; Don't need here, no inventory for labor items
+                    liscm.linkId = sli.Id;
+                    liscm.laborItemId = sli.LaborTableId;
                     t = liscm.pph.GetValueOrDefault();
                     t2 = liscm.ppp.GetValueOrDefault();
                     liscm.Qty = sli.Qty;
@@ -1379,10 +1413,10 @@ namespace OJewelry.Models
             
             // JewelryTypeID
             sb.Clear();
-            sb.AppendFormat("JewelryTypeID");
+            sb.AppendFormat("JewelryTypeId");
             s = request.Form.Get(sb.ToString());
             Int32.TryParse(s, out int jtid);
-            m.Style.JewelryTypeId = jtid;
+            //m.Style.JewelryTypeId = jtid; unneeded
             // Metal Weight Id
             sb.Clear();
             sb.AppendFormat("MetalWtUnitId");
@@ -1656,11 +1690,11 @@ namespace OJewelry.Models
             m.LaborsTotal = subtotal;
             total += m.LaborsTotal;
 
-
             // build LaborsItems
             subtotal = 0;
             if (m.LaborItems == null)
             { m.LaborItems = new List<LaborItemComponent>(); }
+            /*
             else
             {
                 for (int i = 0; i < m.LaborItems.Count; i++)
@@ -1669,37 +1703,43 @@ namespace OJewelry.Models
                     sb.AppendFormat("LaborItems[{0}].Id", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int id);
-                    m.Labors[i].Id = id;
+                    m.LaborItems[i].Id = id;
+
+                    sb.Clear();
+                    sb.AppendFormat("LaborItems[{0}].linkId", i);
+                    s = request.Form.Get(sb.ToString());
+                    Int32.TryParse(s, out int linkid);
+                    m.LaborItems[i].Id = linkid;
 
                     sb.Clear();
                     sb.AppendFormat("LaborItems[{0}].Name", i);
                     s = request.Form.Get(sb.ToString());
-                    m.Labors[i].Name = s;
+                    m.LaborItems[i].Name = s;
 
                     sb.Clear();
                     sb.AppendFormat("LaborItems[{0}].pph", i);
                     s = request.Form.Get(sb.ToString());
                     Decimal.TryParse(s, out decimal pph);
-                    m.Labors[i].PPH = pph;
+                    m.LaborItems[i].pph = pph;
 
                     sb.Clear();
                     sb.AppendFormat("LaborItems[{0}].ppp", i);
                     s = request.Form.Get(sb.ToString());
                     Decimal.TryParse(s, out decimal ppc);
-                    m.Labors[i].PPP = ppc;
+                    m.LaborItems[i].ppp = ppc;
 
                     sb.Clear();
                     sb.AppendFormat("LaborItems[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int q);
-                    m.Labors[i].Qty = q;
-                    m.Labors[i].Total = q * (ppc + pph);
-                    subtotal += m.Labors[i].Total;
+                    m.LaborItems[i].Qty = q;
+                    m.LaborItems[i].Total = q * (ppc + pph);
+                    subtotal += m.LaborItems[i].Total;
                 }
             }
             m.LaborsTotal = subtotal;
             total += m.LaborsTotal; subtotal = 0;
-            
+            */
             // build Miscs
             if (m.Miscs == null)
             { m.Miscs = new List<MiscComponent>();  }
@@ -1782,6 +1822,16 @@ namespace OJewelry.Models
                             items.Add("[" + i + "].Id");
                         }
                     }
+                }
+            }
+            if (validationContext.MemberName == "JewelryTypeId" )
+            {
+                int? jtId = value as int?;
+                if (jtId.Value == 0)
+                {
+                    return new ValidationResult("Validation error", items);
+                } else {
+                    return ValidationResult.Success;
                 }
             }
 

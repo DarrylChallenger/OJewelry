@@ -15,9 +15,10 @@ namespace OJewelry.Models
         public LaborItem()
         {
             State = LMState.Dirty;
-            StyleLaborItems = new HashSet<StyleLaborTableItem>();
             ppp = null;
             pph = null;
+            Vendor = new Vendor();
+            StyleLaborItems = new HashSet<StyleLaborTableItem>();
         }
 
         [Key]

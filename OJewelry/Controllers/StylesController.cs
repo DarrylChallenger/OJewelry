@@ -197,6 +197,7 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            svm.Style.JewelryType = db.JewelryTypes.Find(svm.Style.JewelryTypeId);
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
             svm.Style.MetalWeightUnit = new MetalWeightUnit
@@ -266,10 +267,11 @@ namespace OJewelry.Controllers
             int i;
             //ModelState.Clear();
             // Save the Style and all edited components; add the new ones and remove the deleted ones
-            if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
+            //if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
             //await SaveImageInStorage(svm);
             if (ModelState.IsValid)
             {
+                db.Entry(svm.Style);
                 // Iterate thru the components
                 // Castings
                 if (svm.Castings != null)
@@ -520,7 +522,7 @@ namespace OJewelry.Controllers
                                 AddLaborItem(c, svm, i);
                                 break;
                             case LMState.Deleted:
-                                sl = db.StyleLaborItems.Where(x => x.StyleId == svm.Style.Id && x.LaborTableId == c.Id).Single();
+                                sl = db.StyleLaborItems.Where(x => x.Id == c.linkId).SingleOrDefault();
                                 RemoveLaborItem(sl);
                                 break;
                             case LMState.Dirty:
@@ -625,6 +627,8 @@ namespace OJewelry.Controllers
             }
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
+            svm.Style.JewelryType = db.JewelryTypes.Find(svm.Style.JewelryTypeId);
+            //svm.Style.
             svm.PopulateDropDownData(db);
             svm.PopulateDropDowns(db);
             svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
