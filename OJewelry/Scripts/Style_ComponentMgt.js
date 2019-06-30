@@ -1,7 +1,7 @@
 ﻿
 async function AddComponentRow(type, index)
 {
-    console.log(`type: ${type}`);
+    //console.log(`type: ${type}`);
     // " + len +  is the row that was pressed
     idHeaderBtn = type + "AddBtn";
     idRowBtn = type + "AddBtn_" + index;
@@ -131,7 +131,7 @@ async function AddComponentRow(type, index)
         laboritemsltbordered = getLaborItemsHTML(type, len);
         //console.log(`laboritemsltbordered: [${JSON.stringify(laboritemsltbordered)}]`);
         //console.log(`laboritemsltbordered: [${laboritemsltbordered}]`);
-        var dropdown = await PopulateDropdowns(laboritemsltbordered); // async problem here
+        var dropdown = await PopulateDropdowns(laboritemsltbordered); 
         //console.log(`*** dropdown: [${dropdown}]`);
         //console.log(`laboritemsltbordered2: [${laboritemsltbordered}]`);
         // replace #getoption with dropdown
@@ -139,7 +139,7 @@ async function AddComponentRow(type, index)
         //ltbordered = $(laboritemsltbordered).find("#getoptions").parent().replaceWith(`${dropdown}`);
         var t1 = $(laboritemsltbordered).find("#getoptions").parent();
         //console.log(`t1: [${t1.html()}]`);
-        ltbordered = $(laboritemsltbordered).html().replace(t1.html(), dropdown);
+        ltbordered = laboritemsltbordered.replace(t1.html(), dropdown);
         //console.log(`t2: [${t2}]`);
         //console.log(`li-ltbordered: [${$(ltbordered).html()}]`);
     }
@@ -149,6 +149,7 @@ async function AddComponentRow(type, index)
     }
     var str = newState.add(ltbordered);
     // add after last row or header ***
+    //console.log(`adding row: ${JSON.stringify(str)}`);
     $(idBreak).before(str);
 
     if (type === "Stones") {
@@ -173,7 +174,7 @@ function RemoveComponentRow(type, i)
     hide = $(rowId).addClass("hidden");
     btnClass = "." + type + "AddBtn";
     rowClass = "." + type + "Row";
-    styleClass = ".style" + type;
+    styleClass = ".style" + type; if (type === "LaborItems") { styleClass = ".styleLabors"; }
     thisState = "#" + type + "_" + i + "__State";
     //console.log(str, btnClass)
 
@@ -209,10 +210,10 @@ function RemoveComponentRow(type, i)
 }
 
 async function PopulateDropdowns(nr) {
-    console.log(`PopulateDropdowns: nr: ${JSON.stringify(nr)}`);
+    //console.log(`PopulateDropdowns: nr: ${JSON.stringify(nr)}`);
     // Search for "<getoptions>" id; call backend with value. Replace element with the set of returned options
     var getops = $(nr).find("#getoptions");
-    console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
+    //console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
     const companyId = $("#CompanyId");
     var drp = '';
     if (getops.val()) {
@@ -234,7 +235,7 @@ async function PopulateDropdowns(nr) {
                     drp+=`<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`;
                     //console.log(`added id[${opt.Value !== 0 ? opt.Value : ""}], val[${opt.Text}], getops:${JSON.stringify(getops)}`);
                 }
-                console.log(`final drp: ${JSON.stringify(drp)}`);
+                //console.log(`final drp: ${JSON.stringify(drp)}`);
             }
         }).catch(function (e) {
             console.error(`DropdownApi: Error retrieving options for ${getops.val()}`, e);
@@ -431,21 +432,20 @@ function JewelryTypeChanged() {
         //console.log(`jewelryType: ${JSON.stringify(jewelryType)}`);
         if (jewelryType.bUseLaborTable === false) {
             // toggle .HideLabors
-            //$(`.StyleLaborItemsSection`).hide();
-            //$(`.StyleLaborsSection`).show();
-            $(`.StyleLaborItemsSection`).css("opacity", ".4");
-            $(`.StyleLaborsSection`).css("opacity", "1");
+            $(`.StyleLaborItemsSection`).hide();
+            $(`.StyleLaborsSection`).show();
+            //$(`.StyleLaborItemsSection`).css("opacity", ".4");
+            //$(`.StyleLaborsSection`).css("opacity", "1");
 
             $("#Style_JewelryType_bUseLaborTable").val(false);
             //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
             var jt = $("#Style_JewelryTypeId :selected").text();
-            console.log(`jt: [${jt}]`);
+            //console.log(`jt: [${jt}]`);
             var finishingVal = jewelryType.costData.finishingCosts[jt];
             var packagingVal = jewelryType.costData.packagingCosts[jt];
 
             if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__State").val() === "Fixed") {
                 $("#Miscs_0__Qty").val(0);
-                console.log(` $("#Miscs_0__Qty"): ${$("#Miscs_0__Qty").val()}`);
                 CalcRowTotal("Miscs", 0);
             }
 
@@ -454,10 +454,10 @@ function JewelryTypeChanged() {
             CalcSubtotals("Labors");
         } else {
             // toggle .HideLaborItems
-            //$(`.StyleLaborsSection`).hide();
-            //$(`.StyleLaborItemsSection`).show();
-            $(`.StyleLaborsSection`).css("opacity", ".4");
-            $(`.StyleLaborItemsSection`).css("opacity", "1");
+            $(`.StyleLaborsSection`).hide();
+            $(`.StyleLaborItemsSection`).show();
+            //$(`.StyleLaborsSection`).css("opacity", ".4");
+            //$(`.StyleLaborItemsSection`).css("opacity", "1");
 
             $("#Style_JewelryType_bUseLaborTable").val(true);
             //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
@@ -764,6 +764,7 @@ function getLaborItemsHTML(type, len) {
             <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Hour must be a number." id="LaborItems_' + len + '__pph" name="LaborItems[' + len + '].pph" type="text" value="" />\
             <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Piece must be a number." id="LaborItems_' + len + '__ppp" name="LaborItems[' + len + '].ppp" type="text" value="" />\
             <input class="locked col-sm-2 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Hour must be a number." id="LaborItems_' + len + '__VendorName" name="LaborItems[' + len + '].VendorName" type="text" value="" />\
+            <input class="hidden" id="LaborItems_' + len + '__Name" name="LaborItems[' + len + '].Name" type="text" value="FILLER" />\
             <div class="col-sm-1"></div>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="LaborItems_' + len + '__Qty" name="LaborItems[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="LaborItemsRowTotalValue_' + len + '" class="col-sm-1 LaborItemsRowTotal">0.00</div>\

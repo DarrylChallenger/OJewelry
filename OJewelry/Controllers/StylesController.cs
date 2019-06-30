@@ -475,6 +475,7 @@ namespace OJewelry.Controllers
                                 sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == lc.Id).Single();
                                 RemoveLabor(sl);
                                 break;
+                            case LMState.Fixed:
                             case LMState.Dirty:
                                 if (lc.Id <= 0)
                                 {
@@ -490,7 +491,6 @@ namespace OJewelry.Controllers
                                 sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
                                 */
                                 break;
-                            case LMState.Fixed:
                             case LMState.Unadded: // No updates
                             default:
                                 break;
@@ -988,7 +988,7 @@ namespace OJewelry.Controllers
             int laborItemId = c.Id == 0 ? keyVal : c.Id;
             StyleLaborTableItem sl = new StyleLaborTableItem() {
                 StyleId = svm.Style.Id,
-                LaborTableId = laborItemId,
+                LaborTableId = c.laborItemId,
                 Qty = c.Qty.Value
             };
             db.StyleLaborItems.Add(sl);

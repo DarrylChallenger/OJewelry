@@ -459,10 +459,11 @@ COST:
                             @if (Model.SVMOp != SVMOperation.Print)
                             {
                                 @*@Html.EditorFor(model => model.LaborItems[i].Name, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3 requiredifnotremoved", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })*@
-                                @Html.DropDownListFor(model => model.LaborItems[i].laborItemId, new SelectList(Model.drpLaborItems, "Id", "Name"), "Choose a Labor", new { @class = "col-sm-3 col-xs-3 requiredifnotremoved", @data_val_required = "The Labor Name field is required."  })
+                                @Html.DropDownListFor(model => model.LaborItems[i].laborItemId, new SelectList(Model.drpLaborItems, "Id", "Name", Model.LaborItems[i].laborItemId), "Choose a Labor", new { @class = "col-sm-3 col-xs-3 requiredifnotremoved", @data_val_required = "The Labor Name field is required."  })
                                 @Html.EditorFor(model => model.LaborItems[i].pph, new { htmlAttributes = new { disabled = "disabled", @class = "locked col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                 @Html.EditorFor(model => model.LaborItems[i].ppp, new { htmlAttributes = new { disabled = "disabled", @class = "locked col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                 @Html.EditorFor(model => model.LaborItems[i].VendorName, new { htmlAttributes = new { disabled = "disabled", @class = "locked col-sm-2 col-xs-2", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
+                                @Html.HiddenFor(model => model.LaborItems[i].Name)
 
                                 <div class="col-sm-1 col-xs-1 "></div>
                                 @Html.TextBoxFor(model => model.LaborItems[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })

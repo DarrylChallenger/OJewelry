@@ -2,7 +2,7 @@
 @model OJewelry.Models.StyleViewModel
     
 <div class="StyleSheetPartial">
-    @Html.ValidationSummary(false, "", htmlAttributes: new { @class = "text-danger" })
+    @*@Html.ValidationSummary(false, "", htmlAttributes: new { @class = "text-danger" })*@
     <div class="row StyleHeader ">
         @Html.HiddenFor(model => model.Style.Quantity)
         @Html.HiddenFor(model => model.Style.RetailPrice)
