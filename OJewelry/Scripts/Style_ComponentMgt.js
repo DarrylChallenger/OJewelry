@@ -44,7 +44,7 @@ async function AddComponentRow(type, index)
                         </button>';
     }
     classhtml = $(stateClass).html();
-    var hiddenState = "<input name='" + type + "[" + len + "].SVMState' id='" + type + "_" + len + "__SVMState' type='hidden' value='Added' data-val-required='The SVMState field is required.' data-val='true'>";
+    var hiddenState = "<input name='" + type + "[" + len + "].State' id='" + type + "_" + len + "__State' type='hidden' value='Added' data-val-required='The State field is required.' data-val='true'>";
     var newState = $("<div class='" + stateClassName + "'></div>").append(hiddenState);
     // handle dropdown data, id, name (etc), add validation in code
     if (type === "Castings") {
@@ -174,7 +174,7 @@ function RemoveComponentRow(type, i)
     btnClass = "." + type + "AddBtn";
     rowClass = "." + type + "Row";
     styleClass = ".style" + type;
-    thisState = "#" + type + "_" + i + "__SVMState";
+    thisState = "#" + type + "_" + i + "__State";
     //console.log(str, btnClass)
 
     curState = $(thisState).attr("value");
@@ -414,13 +414,13 @@ async function LaborItemsDropdownChanged(rowId) {
         //console.log(`laborItem: ${JSON.stringify(laborItem)}`);
         $(`#LaborItems_${rowId}__pph`).val(laborItem.pph);
         $(`#LaborItems_${rowId}__ppp`).val(laborItem.ppp);
-        $(`#LaborItems_${rowId}__Vendor`).val(laborItem.Vendor);
+        $(`#LaborItems_${rowId}__VendorName`).val(laborItem.Vendor);
         CalcRowTotal("LaborItems", rowId);
     }
 }
 
 // Rework this: Always call jtApi. If !bUseLT, get assembly costs.
-function JewelryTypeChanged(companyId) { 
+function JewelryTypeChanged() { 
     var jtid = $("#Style_JewelryTypeId :selected").val();
     fetch('/api/JewelryTypesApi?id=' + jtid)
     .then(function (response) {
@@ -763,7 +763,7 @@ function getLaborItemsHTML(type, len) {
             </select>\
             <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Hour must be a number." id="LaborItems_' + len + '__pph" name="LaborItems[' + len + '].pph" type="text" value="" />\
             <input class="locked col-sm-1 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Piece must be a number." id="LaborItems_' + len + '__ppp" name="LaborItems[' + len + '].ppp" type="text" value="" />\
-            <input class="locked col-sm-2 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Hour must be a number." id="LaborItems_' + len + '__Vendor" name="LaborItems[' + len + '].Vendor" type="text" value="" />\
+            <input class="locked col-sm-2 text-box single-line" disabled="disabled" data-val="true" data-val-number="The field $/Hour must be a number." id="LaborItems_' + len + '__VendorName" name="LaborItems[' + len + '].VendorName" type="text" value="" />\
             <div class="col-sm-1"></div>\
             <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." id="LaborItems_' + len + '__Qty" name="LaborItems[' + len + '].Qty" type="text" value="0" onblur="CalcRowTotal(\'' + type + '\', ' + len + ')\"/>\
             <div id="LaborItemsRowTotalValue_' + len + '" class="col-sm-1 LaborItemsRowTotal">0.00</div>\
@@ -862,7 +862,8 @@ $(function () { //
     CalcSubtotals("Labors");
     CalcSubtotals("Miscs");
     CalcTotals();
-
+    JewelryTypeChanged();
+    $("#Style_JewelryType_Name").val("TEMP");
     $(".LaborsState :first-child[value]").each(function (i, e)
     {
         //console.log(`i: ${i} State: ${$(JSON.stringify(e)).val()}`);

@@ -17,7 +17,7 @@ namespace OJewelry.Models
 
         public int? CompanyId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Jewelry Type Name is required")]
         [StringLength(50)]
         public string Name { get; set; }
 

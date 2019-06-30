@@ -73,7 +73,7 @@ namespace OJewelry.Controllers
             svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == svm.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == companyId), "Id", "Name", svm.Style.JewelryTypeId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == companyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             return View("Create", svm);
         }
@@ -132,7 +132,7 @@ namespace OJewelry.Controllers
             newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.JewelryTypeId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", newsvm.Style.MetalWtUnitId);
             return View(newsvm);
         }
@@ -206,7 +206,7 @@ namespace OJewelry.Controllers
             };
             svm.Populate(id, db);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             return View(svm);
         }
@@ -271,7 +271,9 @@ namespace OJewelry.Controllers
             //await SaveImageInStorage(svm);
             if (ModelState.IsValid)
             {
-                db.Entry(svm.Style);
+                svm.Style.JewelryType = null;
+
+                if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
                 // Iterate thru the components
                 // Castings
                 if (svm.Castings != null)
@@ -449,14 +451,14 @@ namespace OJewelry.Controllers
                 if (svm.Labors != null)
                 {
                     i = -1;
-                    foreach (LaborComponent c in svm.Labors)
+                    foreach (LaborComponent lc in svm.Labors)
                     {
                         i++;
                         Labor labor;
                         StyleLabor sl;
                         try
                         {
-                            ValidLabor(c);
+                            ValidLabor(lc);
                         }
                         catch (OjMissingLaborException e)
                         {
@@ -464,24 +466,24 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (c.State)
+                        switch (lc.State)
                         {
                             case LMState.Added:
-                                AddLabor(c, svm, i);
+                                AddLabor(lc, svm, i);
                                 break;
                             case LMState.Deleted:
-                                sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
+                                sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == lc.Id).Single();
                                 RemoveLabor(sl);
                                 break;
                             case LMState.Dirty:
-                                if (c.Id <= 0)
+                                if (lc.Id <= 0)
                                 {
-                                    AddLabor(c, svm, i);
+                                    AddLabor(lc, svm, i);
                                 }
                                 else
                                 {
-                                    labor = db.Labors.Find(c.Id);
-                                    labor.Set(c);
+                                    labor = db.Labors.Find(lc.Id);
+                                    labor.Set(lc);
                                 }
 
                                 /*
@@ -495,20 +497,18 @@ namespace OJewelry.Controllers
                         }
                     }
                 }
-
-
                 // Labor Table
                 if (svm.LaborItems != null)
                 {
                     i = -1;
-                    foreach (LaborItemComponent c in svm.LaborItems)
+                    foreach (LaborItemComponent lic in svm.LaborItems)
                     {
                         i++;
                         LaborItem labor;
                         StyleLaborTableItem sl;
                         try
                         {
-                            ValidLaborItem(c);
+                            ValidLaborItem(lic);
                         }
                         catch (OjMissingLaborException e)
                         {
@@ -516,25 +516,25 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (c.State)
+                        switch (lic.State)
                         {
                             case LMState.Added:
-                                AddLaborItem(c, svm, i);
+                                AddLaborItem(lic, svm, i);
                                 break;
                             case LMState.Deleted:
-                                sl = db.StyleLaborItems.Where(x => x.Id == c.linkId).SingleOrDefault();
+                                sl = db.StyleLaborItems.Where(x => x.Id == lic.linkId).SingleOrDefault();
                                 RemoveLaborItem(sl);
                                 break;
                             case LMState.Dirty:
                             case LMState.Fixed:
-                                if (c.Id <= 0)
+                                if (lic.Id <= 0)
                                 {
-                                    AddLaborItem(c, svm, i);
+                                    AddLaborItem(lic, svm, i);
                                 }
                                 else
                                 {
-                                    labor = db.LaborTable.Find(c.Id);
-                                    labor.Set(c);
+                                    labor = db.LaborTable.Find(lic.Id);
+                                    labor.Set(lic);
                                 }
 
                                 /*
@@ -628,12 +628,13 @@ namespace OJewelry.Controllers
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
             svm.Style.JewelryType = db.JewelryTypes.Find(svm.Style.JewelryTypeId);
+            
             //svm.Style.
             svm.PopulateDropDownData(db);
             svm.PopulateDropDowns(db);
             svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             // iterate thru modelstate errors, display on page
             return View(svm);

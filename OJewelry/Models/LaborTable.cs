@@ -17,7 +17,7 @@ namespace OJewelry.Models
             State = LMState.Dirty;
             ppp = null;
             pph = null;
-            Vendor = new Vendor();
+            //Vendor = new Vendor();
             StyleLaborItems = new HashSet<StyleLaborTableItem>();
         }
 

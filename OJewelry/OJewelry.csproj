@@ -652,6 +652,7 @@
     <Content Include="DBScripts\CreateOJSecAspNet.sql" />
     <Content Include="DBScripts\DropCreateOJDatabase.sql" />
     <Content Include="DBScripts\InvReport.sql" />
+    <Content Include="DBScripts\LaborTable.sql" />
     <Content Include="DBScripts\Locations.sql" />
     <Content Include="DBScripts\Memo.sql" />
     <Content Include="DBScripts\OJewelryDBTablesV0.2.sql" />

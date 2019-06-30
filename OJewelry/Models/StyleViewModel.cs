@@ -517,9 +517,9 @@ namespace OJewelry.Models
 
     public class LaborItemComponent
     {
-        private LaborItem _laborItem = new LaborItem();
+        public LaborItem _laborItem { get; set; }
         public LMState State { get; set; }
-        public LaborItemComponent() { Init(); }
+        public LaborItemComponent() { Init(); _laborItem = new LaborItem(); }
 
         public LaborItemComponent(LaborItemComponent lic)
         {
@@ -530,7 +530,7 @@ namespace OJewelry.Models
             Name = lic.Name;
             Qty = lic.Qty;
             Total = (ppp.GetValueOrDefault() + ppp.GetValueOrDefault()) * Qty.GetValueOrDefault();
-            Vendor = lic.Vendor;
+            VendorName = lic.VendorName;
         }
         public LaborItemComponent(LaborItem li) { _laborItem = li; Init(); }
         void Init()
@@ -545,11 +545,11 @@ namespace OJewelry.Models
 
         [Display(Name = "$/Hour")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? pph { get { return _laborItem.pph ?? 0; } set { _laborItem.pph = value; } }
+        public decimal? pph { get { return _laborItem.pph; } set { _laborItem.pph = value; } }
 
         [Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
-        public decimal? ppp { get { return _laborItem.ppp ?? 0; } set { _laborItem.ppp = value; } }
+        public decimal? ppp { get { return _laborItem.ppp; } set { _laborItem.ppp = value; } }
 
         public int Id { get { return _laborItem.Id; } set { _laborItem.Id = value; } }
 
@@ -557,7 +557,7 @@ namespace OJewelry.Models
         [RequiredIfNotRemoved]
         public String Name { get { return _laborItem.Name; } set { _laborItem.Name = value; } }
 
-        public String Vendor { get { return _laborItem.Vendor.Name; } set { _laborItem.Vendor.Name = value; }  }
+        public String VendorName { get { return _laborItem.Vendor.Name; } set { _laborItem.Vendor.Name = value; }  }
 
         [Display(Name = "Quantity")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
@@ -812,6 +812,8 @@ namespace OJewelry.Models
         */
         public void PopulateDropDownData(OJewelryDB db)
         {
+            drpJewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == CompanyId).ToList();
+            drpLaborItems = db.LaborTable.Where(li => li.CompanyId == CompanyId).ToList();
 
             jsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId).ToList();
             jsMetals = db.MetalCodes.Where(x => x.CompanyId == CompanyId).OrderByDescending(m => m.Code).ToList();
@@ -959,17 +961,25 @@ namespace OJewelry.Models
             i = -1;
             foreach (LaborItemComponent lic in LaborItems)
             {
-                LaborItem li = db.LaborTable.Find(lic.Id);
-                lic.Vendor = db.Vendors.Find(li.VendorId).Name;
                 i++;
+                LaborItem li = db.LaborTable.Find(lic.laborItemId);
+
                 switch (lic.State)
                 {
                     case LMState.Added:
-                    case LMState.Clean:
+                        lic._laborItem = li;
+                        lic.VendorName = li.Vendor.Name;
+                        lic.pph = li.pph;
+                        lic.ppp = li.ppp;
+                        break;
+                    case LMState.Unadded:
+                        break;
+                    case LMState.Fixed:
                     case LMState.Deleted:
                     case LMState.Dirty:
-                    case LMState.Fixed:
-                    case LMState.Unadded:
+                        lic.VendorName = db.Vendors.Find(li.VendorId).Name;
+                        break;
+                    case LMState.Clean:
                     default:
                         break;
                 }
@@ -1016,8 +1026,6 @@ namespace OJewelry.Models
         
         public void PopulateComponents(OJewelryDB db)
         {
-            drpJewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == CompanyId).ToList();
-            drpLaborItems = db.LaborTable.Where(li => li.CompanyId == CompanyId).ToList();
 
             decimal t;
             // Stones
@@ -1827,9 +1835,9 @@ namespace OJewelry.Models
             if (validationContext.MemberName == "JewelryTypeId" )
             {
                 int? jtId = value as int?;
-                if (jtId.Value == 0)
+                if (jtId == null)
                 {
-                    return new ValidationResult("Validation error", items);
+                    return new ValidationResult("Please choose a Jewelry Type", items);
                 } else {
                     return ValidationResult.Success;
                 }
