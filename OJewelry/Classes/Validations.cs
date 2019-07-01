@@ -28,5 +28,30 @@ namespace OJewelry.Classes
             }
         }
     }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public sealed class HourlyXORStatic : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            LaborItem item = (LaborItem)validationContext.ObjectInstance;
+            var property = validationContext.ObjectType.GetProperty("State");
+            if (property != null)
+            {
+                var state = property.GetValue(validationContext.ObjectInstance, null);
+                if (state.ToString() == "Unadded" || state.ToString() == "Deleted" || state.ToString() == "Fixed")
+                {
+                    return ValidationResult.Success;
+                }
+            }
+
+            if (((item.pph != null && item.ppp != null) && (item.pph != 0 && item.ppp != 0)) || (item.pph == null && item.ppp == null))
+            {
+                return new ValidationResult("Please specify either $/hour or $/piece, but not both");
+            }
+            return ValidationResult.Success;
+        }
+    }
+
 }
 

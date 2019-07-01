@@ -99,7 +99,7 @@ namespace OJewelry.Controllers
                 State = LMState.Fixed,
                 PPP = flPrice,
                 Qty = 1,
-                Total = flPrice 
+                Total = flPrice
             };
             svm.Labors.Add(lc);
             MiscComponent mc = new MiscComponent
@@ -172,7 +172,7 @@ namespace OJewelry.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Create([Bind(Include = "Id,Name,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
-        public async Task <ActionResult> Create(StyleViewModel svm)
+        public async Task<ActionResult> Create(StyleViewModel svm)
         {
             svm.SVMOp = SVMOperation.Create;
             bool b = CheckForNameAndNumberUniqueness(svm);
@@ -265,10 +265,10 @@ namespace OJewelry.Controllers
         {
             CheckForNameAndNumberUniqueness(svm);
             int i;
-            //ModelState.Clear();
+            // check Model State for errors
+
+            CheckModelState(svm.Style.StyleNum);
             // Save the Style and all edited components; add the new ones and remove the deleted ones
-            //if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
-            //await SaveImageInStorage(svm);
             if (ModelState.IsValid)
             {
                 svm.Style.JewelryType = null;
@@ -545,6 +545,7 @@ namespace OJewelry.Controllers
                             default:
                                 break;
                         }
+                        db.Entry(lic._laborItem).State = EntityState.Detached;
                     }
                 }
 
@@ -609,7 +610,12 @@ namespace OJewelry.Controllers
                 if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
                 {
                     // Save changes, go to Home
-                    db.SaveChanges(); // need the styleId for the image name
+                    try {
+                        db.SaveChanges(); // need the styleId for the image name
+                    } catch (Exception e)
+                    {
+                        Trace.TraceError($"Error saving style {svm.Style.StyleNum}, msg: {e.Message}");
+                    }
                     Trace.TraceInformation("Operation: {0}, svmId:{1}", svm.SVMOp.ToString(), svm.Style.Id);
                     await SaveImageInStorage(db, svm);
                     db.Entry(svm.Style);
@@ -628,7 +634,7 @@ namespace OJewelry.Controllers
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
             svm.Style.JewelryType = db.JewelryTypes.Find(svm.Style.JewelryTypeId);
-            
+
             //svm.Style.
             svm.PopulateDropDownData(db);
             svm.PopulateDropDowns(db);
@@ -775,10 +781,10 @@ namespace OJewelry.Controllers
                 Qty = style.Quantity,
                 Memod = style.Memos.Sum(s => s.Quantity)
             };
-            
+
             m.Memos = new List<MemoModel>();
             m.numPresentersWithStyle = 0;
-            
+
             foreach (Memo i in db.Memos.Where(x => x.StyleID == style.Id).Include(x => x.Presenter))
             {
                 MemoModel mm = new MemoModel()
@@ -794,7 +800,7 @@ namespace OJewelry.Controllers
                 m.Memos.Add(mm);
                 m.numPresentersWithStyle++;
             }
-            
+
             m.Presenters = new List<SelectListItem>();
             m.CompanyId = style.Collection.CompanyId;
             m.NewExistingPresenterRadio = 2;
@@ -811,7 +817,7 @@ namespace OJewelry.Controllers
             }
             m.SendReturnMemoRadio = 1;
             m.PresenterName = "";
-            
+
             ViewBag.CollectionId = style.CollectionId;
             return View(m);
         }
@@ -1073,7 +1079,7 @@ namespace OJewelry.Controllers
             return true;
         }
 
-        
+
         private void RemoveImageFromStorage(string imageName)
         {
             if (imageName == null) return;
@@ -1082,7 +1088,21 @@ namespace OJewelry.Controllers
             Singletons.azureBlobStorage.Delete(blobFile);
             return;
         }
-        
+
+        public void CheckModelState(string stylenum)
+        {
+            foreach (string k in ModelState.Keys)
+            {
+                ModelState st = ModelState[k];
+                if (st.Errors.Count > 0)
+                {
+                    foreach (ModelError er in st.Errors)
+                    {
+                        Trace.TraceInformation($"Edit Sytle {stylenum}, key: {k}, msg: {er.ErrorMessage}, exception: {er.Exception}");
+                    }
+                }
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {

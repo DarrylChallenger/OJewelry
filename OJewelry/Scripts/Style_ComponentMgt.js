@@ -445,7 +445,7 @@ function JewelryTypeChanged() {
             var packagingVal = jewelryType.costData.packagingCosts[jt];
 
             if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__State").val() === "Fixed") {
-                $("#Miscs_0__Qty").val(0);
+                $("#Miscs_0__Qty").val(1);
                 CalcRowTotal("Miscs", 0);
             }
 
@@ -462,7 +462,7 @@ function JewelryTypeChanged() {
             $("#Style_JewelryType_bUseLaborTable").val(true);
             //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
             if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__State").val() === "Fixed") {
-                $("#Miscs_0__Qty").val(1);
+                $("#Miscs_0__Qty").val(0);
                 CalcRowTotal("Miscs", 0);
             }
 

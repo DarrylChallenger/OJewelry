@@ -517,9 +517,9 @@ namespace OJewelry.Models
 
     public class LaborItemComponent
     {
-        public LaborItem _laborItem { get; set; }
+        public LaborItem _laborItem = new LaborItem();
         public LMState State { get; set; }
-        public LaborItemComponent() { Init(); _laborItem = new LaborItem(); }
+        public LaborItemComponent() { Init(); _laborItem.Vendor = new Vendor(); }
 
         public LaborItemComponent(LaborItemComponent lic)
         {

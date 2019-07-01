@@ -152,6 +152,11 @@ html input[disabled], locked {
     cursor: not-allowed;
 }
 
+.nocursor {
+    background-color: #e0e0ff;
+    cursor: not-allowed;
+}
+
 .StyleSheetPartial input {
     font-weight: 700;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
