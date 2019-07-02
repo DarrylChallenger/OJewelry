@@ -52,6 +52,5 @@ namespace OJewelry.Classes
             return ValidationResult.Success;
         }
     }
-
 }
 
