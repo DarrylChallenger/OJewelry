@@ -55,19 +55,31 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index(LaborTableModel ltm)
         {
+            List<Vendor> vendors;
             if (ModelState.IsValid)
             {
+                int i = -1;
                 //db.Entry(cvm.company).State = EntityState.Modified;
 
                 foreach (LaborItem li in ltm.Labors)
                 {
+                    i++;
                     switch (li.State)
                     {
                         case LMState.Added:
                             li.CompanyId = ltm.CompanyId;
                             db.LaborTable.Add(li);
+                            li.State = LMState.Dirty;
                             break;
                         case LMState.Deleted:
+                            // Make sure its not used. If it is, reset to "Dirty" and add an error message
+                            if (db.StyleLaborItems.Where(sli => sli.LaborTableId == li.Id).Count() > 0)
+                            {
+                                li.State = LMState.Dirty;
+                                ModelState.SetModelValue($"Labors[{i}].State", new ValueProviderResult("Dirty", "", System.Globalization.CultureInfo.InvariantCulture));
+                                ModelState.AddModelError($"Labors[{i}].Name", $"You cannot delete {li.Name}: it is used by styles.");
+                                break;
+                            }
                             db.Entry(li).State = EntityState.Deleted;
                             db.LaborTable.Remove(li);
                             break;
@@ -80,10 +92,29 @@ namespace OJewelry.Controllers
                             break;
                     }
                 }
-                db.SaveChanges();
-                //return RedirectToAction("Index", "Companies");
+
             }
-            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == ltm.CompanyId).ToList();
+            if (ModelState.IsValid)
+            {
+                db.SaveChanges();
+                int CompanyId = ltm.CompanyId;
+                string CompanyName = ltm.CompanyName;
+                ModelState.Clear();
+                ltm = new LaborTableModel()
+                {
+                    Labors = db.LaborTable.Where(l => l.CompanyId == CompanyId).ToList(),
+                    CompanyId = CompanyId,
+                    CompanyName = CompanyName,
+                };
+                vendors = db.Vendors.Where(v => v.CompanyId == ltm.CompanyId).ToList();
+                foreach (LaborItem li in ltm.Labors)
+                {
+                    li.selectList = new SelectList(vendors, "Id", "Name", li.VendorId);
+
+                }
+                return View(ltm);
+            }
+            vendors = db.Vendors.Where(v => v.CompanyId == ltm.CompanyId).ToList();
 
             foreach (LaborItem li in ltm.Labors)
             {

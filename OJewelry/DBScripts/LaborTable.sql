@@ -17,3 +17,13 @@ join LaborTable l on l.Id = sl.LaborTableId
 where s.id = 49097
 
 update StyleLaborTable set LaborTableId = 5013 where styleid = 49095
+
+
+
+select sl.LaborTableId, * from styles s
+join StyleLaborTable sl on sl.StyleId = s.id
+/*join LaborTable lt on sl.LaborTableId = lt.id*/
+/*where s.id =  */
+
+
+select * from LaborTable where companyid = 11003

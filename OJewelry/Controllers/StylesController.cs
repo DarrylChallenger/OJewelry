@@ -534,6 +534,8 @@ namespace OJewelry.Controllers
                                 else
                                 {
                                     labor = db.LaborTable.Find(lic.Id);
+                                    sl = db.StyleLaborItems.Where(x => x.Id == lic.linkId).SingleOrDefault();
+                                    sl.Qty = lic.Qty.GetValueOrDefault();
                                     labor.Set(lic);
                                 }
 
