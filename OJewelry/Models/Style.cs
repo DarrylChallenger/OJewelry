@@ -1,5 +1,6 @@
 namespace OJewelry.Models
 {
+    using OJewelry.Classes;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;

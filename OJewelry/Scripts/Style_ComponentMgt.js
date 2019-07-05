@@ -398,6 +398,7 @@ function SetFinishingCost(finishingVal) {
 }
 
 function SetPackagingCost(packagingVal) {
+    //console.log(`packagingVal: ${packagingVal}`);
     if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__State").val() === "Fixed") {
         $(".miscsPPP").val(packagingVal.toFixed(2));
         CalcRowTotal("Miscs", 0);
@@ -427,9 +428,11 @@ function JewelryTypeChanged() {
     .then(function (response) {
         return response.json();
     })
-    .then(function (jewelryTypeJSON) {
+        .then(function (jewelryTypeJSON) {
+        var packagingVal;
         const jewelryType = JSON.parse(jewelryTypeJSON);
         //console.log(`jewelryType: ${JSON.stringify(jewelryType)}`);
+        var jt = $("#Style_JewelryTypeId :selected").text();
         if (jewelryType.bUseLaborTable === false) {
             // toggle .HideLabors
             $(`.StyleLaborItemsSection`).hide();
@@ -439,15 +442,9 @@ function JewelryTypeChanged() {
 
             $("#Style_JewelryType_bUseLaborTable").val(false);
             //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
-            var jt = $("#Style_JewelryTypeId :selected").text();
             //console.log(`jt: [${jt}]`);
             var finishingVal = jewelryType.costData.finishingCosts[jt];
-            var packagingVal = jewelryType.costData.packagingCosts[jt];
-
-            if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__State").val() === "Fixed") {
-                $("#Miscs_0__Qty").val(1);
-                CalcRowTotal("Miscs", 0);
-            }
+            packagingVal = jewelryType.costData.packagingCosts[jt];
 
             SetFinishingCost(finishingVal);
             SetPackagingCost(packagingVal);
@@ -461,11 +458,8 @@ function JewelryTypeChanged() {
 
             $("#Style_JewelryType_bUseLaborTable").val(true);
             //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
-            if ($("#Miscs_0__Name").val() === "PACKAGING" && $("#Miscs_0__State").val() === "Fixed") {
-                $("#Miscs_0__Qty").val(0);
-                CalcRowTotal("Miscs", 0);
-            }
-
+            packagingVal = jewelryType.costData.packagingCosts[jt];
+            SetPackagingCost(packagingVal);
             CalcSubtotals("LaborItems");
         }
     }).catch(function (e) {
@@ -850,6 +844,10 @@ function setAddBtn(type)
     }
 }
 
+$(window).load(function () {
+    JewelryTypeChanged();
+});
+
 $(function () { // 
     setAddBtn("Castings");
     setAddBtn("Stones");
@@ -863,13 +861,8 @@ $(function () { //
     CalcSubtotals("Labors");
     CalcSubtotals("Miscs");
     CalcTotals();
-    JewelryTypeChanged();
-    $("#Style_JewelryType_Name").val("TEMP");
-    $(".LaborsState :first-child[value]").each(function (i, e)
-    {
-        //console.log(`i: ${i} State: ${$(JSON.stringify(e)).val()}`);
-    });
-    //console.log($(".LaborState"));
+    
+
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
         //console.log(`validating ${elementId}`);

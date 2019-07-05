@@ -62,7 +62,7 @@ public class JewelryTypesApiController : ApiController
                     cd.metalMultiplier.Add(m.Code, m.Multiplier);
                 }
             }
-            if (!jewelryType.bUseLaborTable)
+            //if (!jewelryType.bUseLaborTable)
             {
                 // Finishing and Packaging Costs
                 foreach (JewelryType j in db.JewelryTypes.Where(x => x.CompanyId == jewelryType.CompanyId))

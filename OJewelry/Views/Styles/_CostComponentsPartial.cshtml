@@ -397,7 +397,7 @@ COST:
 
     <div class="styleLabors">
         <!-- Labor Items -->
-
+        @if (Model.SVMOp != SVMOperation.Print || Model.Style.JewelryType.bUseLaborTable) {
         <div class="StyleLaborItemsSection">
             <div class="row StyleComponentsRowHeader">
                 @{Model.CCLastRow = false;
@@ -459,7 +459,7 @@ COST:
                             @if (Model.SVMOp != SVMOperation.Print)
                             {
                                 @*@Html.EditorFor(model => model.LaborItems[i].Name, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3 requiredifnotremoved", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })*@
-                                @Html.DropDownListFor(model => model.LaborItems[i].laborItemId, new SelectList(Model.drpLaborItems, "Id", "Name", Model.LaborItems[i].laborItemId), "Choose a Labor", new { @class = "col-sm-3 col-xs-3 requiredifnotremoved", onchange="LaborItemsDropdownChanged(" + i + ")", @data_val_required = "The Labor Name field is required."  })
+                                @Html.DropDownListFor(model => model.LaborItems[i].laborItemId, new SelectList(Model.drpLaborItems, "Id", "Name", Model.LaborItems[i].laborItemId), "Choose a Labor", new { @class = "col-sm-3 col-xs-3 requiredifnotremoved", onchange = "LaborItemsDropdownChanged(" + i + ")", @data_val_required = "The Labor Name field is required." })
                                 @Html.EditorFor(model => model.LaborItems[i].pph, new { htmlAttributes = new { @class = "nocursor col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                 @Html.EditorFor(model => model.LaborItems[i].ppp, new { htmlAttributes = new { @class = "nocursor col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                 @Html.EditorFor(model => model.LaborItems[i].VendorName, new { htmlAttributes = new { @class = "nocursor col-sm-2 col-xs-2", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
@@ -471,9 +471,21 @@ COST:
                             else
                             {
                                 <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.LaborItems[i].Name</div>
-                                <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.LaborItems[i].pph.Value.ToString("F02")</div>
-                                <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.LaborItems[i].ppp.Value.ToString("F02")</div>
-                                <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3"></div>
+                                if (Model.LaborItems[i].pph != null)
+                                {
+                                    <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.LaborItems[i].pph.Value.ToString("F02")</div>
+                                }
+                                else
+                                {
+                                    <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">&nbsp;</div>
+                                }
+                                if (Model.LaborItems[i].ppp != null)
+                                {
+                                    <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.LaborItems[i].ppp.Value.ToString("F02")</div>
+                                } else {
+                                    <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">&nbsp;</div>
+                                }
+                                <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">&nbsp;</div>
                                 <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.LaborItems[i].Qty</div>
                             }
                             @if (Model.SVMOp != SVMOperation.Print)
@@ -488,7 +500,7 @@ COST:
                             }
                             else
                             {
-                                <div id="LaborItemsRowTotalValue_@i" class="@boxme @boxbot ssdata  @boxright col-sm-2 col-xs-2 LaborItemsRowTotal">@Model.Labors[i].Total.ToString("F02")</div>
+                                <div id="LaborItemsRowTotalValue_@i" class="@boxme @boxbot ssdata  @boxright col-sm-2 col-xs-2 LaborItemsRowTotal">@Model.LaborItems[i].Total.ToString("F02")</div>
                             }
                         </div>
                         @if (Model.SVMOp != SVMOperation.Print)
@@ -501,10 +513,13 @@ COST:
                             </div>
                         }
                     </div>
-                }
+                                }
                 <div id="LaborItemsBreak"></div>
             </div>
         </div>
+        }
+        @if(Model.SVMOp != SVMOperation.Print || !Model.Style.JewelryType.bUseLaborTable)
+        {
         <div class="StyleLaborsSection">
             <div class="row StyleComponentsRowHeader">
                 @{Model.CCLastRow = false;
@@ -625,7 +640,8 @@ COST:
                 <div id="LaborsBreak"></div>
             </div>
         </div>
-        
+        }
+        <div class="StyleLaborStoneSettingsSection">
         @* add a setting for each stone with data-stonerow*@
         @{
             int lc = Model.Labors.Count;
@@ -674,8 +690,7 @@ COST:
                 else
                 {
                     <div class="@boxme @boxbot ssdata col-sm-4 col-xs-4">@stName</div>
-                    <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">&nbsp;</div>
-                    <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">&nbsp;</div>
+                    <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">&nbsp;</div>
                     <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].SettingCost.ToString("F02")</div>
                     <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].Qty</div>
                     StoneSettingTotal += (Model.Stones[j].SettingCost * Model.Stones[j].Qty);
@@ -684,12 +699,13 @@ COST:
             </div>
             j++;
         }
+        </div>
         <div id="LaborsTotal">
             <div class="row StyleComponentsRowFooter">
                 <div class="col-sm-1 col-xs-1"></div>
                 <div class="col-sm-4 col-xs-4"><b>TOTAL LABOR</b></div>
                 <div class="col-sm-5 col-xs-5"></div>
-                <div id="LaborsTotalValue" class="col-sm-2 col-xs-2">@((Model.LaborsTotal + StoneSettingTotal).ToString("F02"))</div>
+                <div id="LaborsTotalValue" class="col-sm-2 col-xs-2">@(((Model.Style.JewelryType.bUseLaborTable ? Model.LaborItemsTotal : Model.LaborsTotal) + StoneSettingTotal).ToString("F02"))</div>
             </div>
         </div>
 
@@ -783,7 +799,7 @@ COST:
                         <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Miscs[i].Desc&nbsp;</div>
                         <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3 ">&nbsp;</div>
                         <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Miscs[i].PPP.ToString("F02")</div>
-                        <div class="@boxme @boxbot ssdata @boxright col-sm-1 col-xs-1">@Model.Miscs[i].Qty</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Miscs[i].Qty</div>
                     }
                     @if (Model.SVMOp != SVMOperation.Print)
                     {

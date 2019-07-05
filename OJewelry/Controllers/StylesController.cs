@@ -504,7 +504,7 @@ namespace OJewelry.Controllers
                     foreach (LaborItemComponent lic in svm.LaborItems)
                     {
                         i++;
-                        LaborItem labor;
+                        LaborItem laborItem;
                         StyleLaborTableItem sl;
                         try
                         {
@@ -533,10 +533,10 @@ namespace OJewelry.Controllers
                                 }
                                 else
                                 {
-                                    labor = db.LaborTable.Find(lic.Id);
+                                    //laborItem = db.LaborTable.Find(lic.laborItemId);
                                     sl = db.StyleLaborItems.Where(x => x.Id == lic.linkId).SingleOrDefault();
                                     sl.Qty = lic.Qty.GetValueOrDefault();
-                                    labor.Set(lic);
+                                    //laborItem.Set(lic);
                                 }
 
                                 /*

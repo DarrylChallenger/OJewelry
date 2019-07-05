@@ -9,6 +9,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security.Facebook;
+using OJewelry.Classes;
 using static OJewelry.Classes.Validations;
 
 namespace OJewelry.Models
@@ -734,6 +735,7 @@ namespace OJewelry.Models
         public decimal StonesTotal { get; set; }
         public decimal FindingsTotal { get; set; }
         public decimal LaborsTotal { get; set; }
+        public decimal LaborItemsTotal { get; set; }
         public decimal MiscsTotal { get; set; }
         public string CopiedStyleName { get; set; }
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
@@ -1140,10 +1142,11 @@ namespace OJewelry.Models
             if (Style.JewelryType.bUseLaborTable) {
                 foreach (LaborItemComponent li in LaborItems)
                 {
-                    t = (li.ppp.Value + li.pph.Value) * li.Qty.Value;
+                    t = (li.ppp.GetValueOrDefault() + li.pph.GetValueOrDefault()) * li.Qty.Value;
                     li.Total = t;
-                    LaborsTotal += li.Total;
+                    LaborItemsTotal += li.Total;
                 }
+                Total += LaborItemsTotal;
             } else {
                 foreach (LaborComponent l in Labors)
                 {
@@ -1242,7 +1245,7 @@ namespace OJewelry.Models
                     t2 = liscm.ppp.GetValueOrDefault();
                     liscm.Qty = sli.Qty;
                     liscm.Total = liscm.Qty.GetValueOrDefault() * (t + t2);
-                    LaborsTotal += liscm.Total;
+                    LaborItemsTotal += liscm.Total;
                     LaborItems.Add(liscm);
                     if (Style.JewelryType.bUseLaborTable) Total += liscm.Total;
                 }
@@ -1696,15 +1699,14 @@ namespace OJewelry.Models
                 }
             }
             m.LaborsTotal = subtotal;
-            total += m.LaborsTotal;
+            if (!m.Style.JewelryType.bUseLaborTable) total += m.LaborsTotal;
 
-            // build LaborsItems
+            // build LaborItems
             subtotal = 0;
             if (m.LaborItems == null)
-            { m.LaborItems = new List<LaborItemComponent>(); }
-            /*
-            else
             {
+                m.LaborItems = new List<LaborItemComponent>();
+            } else {
                 for (int i = 0; i < m.LaborItems.Count; i++)
                 {
                     sb.Clear();
@@ -1739,15 +1741,15 @@ namespace OJewelry.Models
                     sb.Clear();
                     sb.AppendFormat("LaborItems[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
-                    Int32.TryParse(s, out int q);
+                    Decimal.TryParse(s, out decimal q);
                     m.LaborItems[i].Qty = q;
                     m.LaborItems[i].Total = q * (ppc + pph);
                     subtotal += m.LaborItems[i].Total;
                 }
             }
-            m.LaborsTotal = subtotal;
-            total += m.LaborsTotal; subtotal = 0;
-            */
+            m.LaborItemsTotal = subtotal;
+            if (m.Style.JewelryType.bUseLaborTable) total += m.LaborsTotal; subtotal = 0;
+            
             // build Miscs
             if (m.Miscs == null)
             { m.Miscs = new List<MiscComponent>();  }
@@ -1782,8 +1784,7 @@ namespace OJewelry.Models
                     s = request.Form.Get(sb.ToString());
                     Int32.TryParse(s, out int q);
                     m.Miscs[i].Qty = q;
-
-                    subtotal += m.Miscs[i].Total;
+                    subtotal += m.Miscs[i].Total*m.Miscs[i].Qty.Value;
                 }
             }
             m.MiscsTotal = subtotal;
@@ -1791,64 +1792,6 @@ namespace OJewelry.Models
             
             m.Total = total;
             return m;
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class GreaterThanZeroAttribute : ValidationAttribute
-    {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-            List<CastingComponent> ccl = value as List<CastingComponent>;
-            List<StoneComponent> scl =  value as List<StoneComponent>;
-            List<FindingsComponent> fcl = value as List<FindingsComponent>;
-            List<LaborComponent> lcl = value as List<LaborComponent>;
-            List<MiscComponent> mcl = value as List<MiscComponent>;
-
-            List<string> items = new List<string>();
-            if (validationContext.MemberName == "Stones" && scl != null)
-            {
-                for (int i = 0; i < scl.Count; i++)
-                {
-                    if (scl[i].Id == -1)
-                    {
-                        if (scl[i].State != SVMStateEnum.Unadded)
-                        {
-                            items.Add("[" + i+ "].Id");
-                        }
-                    }
-                }
-            }
-            if (validationContext.MemberName == "Findings" && fcl != null)
-            {
-                for (int i = 0; i < fcl.Count; i++)
-                {
-                    if (fcl[i].Id == -1)
-                    {
-                        if (fcl[i].State != SVMStateEnum.Unadded)
-                        {
-                            items.Add("[" + i + "].Id");
-                        }
-                    }
-                }
-            }
-            if (validationContext.MemberName == "JewelryTypeId" )
-            {
-                int? jtId = value as int?;
-                if (jtId == null)
-                {
-                    return new ValidationResult("Please choose a Jewelry Type", items);
-                } else {
-                    return ValidationResult.Success;
-                }
-            }
-
-            if (items.Count != 0)
-            {
-                return new ValidationResult("Validation error", items);
-            }
-            // Everything OK.
-            return ValidationResult.Success;
         }
     }
 
