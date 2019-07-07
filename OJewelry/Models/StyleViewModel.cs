@@ -920,6 +920,7 @@ namespace OJewelry.Models
                         sc.Size = Stones[i].SzId;
                         sc.Qty = Stones[i].Qty;
                         sc.Price = Stones[i].Price;
+                        //sc.Price = sc.ComputePrice(mc.Market, mc.Multiplier, db.MetalWeightUnits.Find(c.MetalWtUnitId)?.Unit);
                         sc.SettingCost = Stones[i].SettingCost;
                         sc.SetStonesList(jsStonesWithDefault, null);
                         sc.SetShapesList(jsShapesWithDefault, null);
@@ -1098,7 +1099,7 @@ namespace OJewelry.Models
         public void LookupComponents(OJewelryDB db) // call only for copy & print
         {
             decimal t = 0, t2 = 0;
-
+            Total = MetalsTotal = StonesTotal = FindingsTotal = LaborItemsTotal = LaborsTotal = MiscsTotal = 0;
             List<Casting> castingSet = db.Castings.ToList();
             List<Stone> stoneSet = db.Stones.Where(st => st.CompanyId == this.CompanyId).Include(st => st.Shape).Include(st => st.Vendor).ToList();
             List<Finding> findingSet = db.Findings.Where(st => st.CompanyId == this.CompanyId).ToList();

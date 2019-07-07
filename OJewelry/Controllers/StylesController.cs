@@ -504,7 +504,6 @@ namespace OJewelry.Controllers
                     foreach (LaborItemComponent lic in svm.LaborItems)
                     {
                         i++;
-                        LaborItem laborItem;
                         StyleLaborTableItem sl;
                         try
                         {
@@ -640,7 +639,14 @@ namespace OJewelry.Controllers
             //svm.Style.
             svm.PopulateDropDownData(db);
             svm.PopulateDropDowns(db);
-            svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            if (svm.SVMOp == SVMOperation.Create)
+            {
+                svm.LookupComponents(db);
+            }
+            else
+            {
+                svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            }
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
             //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);

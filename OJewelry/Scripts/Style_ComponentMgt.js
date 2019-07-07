@@ -361,7 +361,7 @@ function CalcSubtotals(type) {
         var ssTotal = +0;
         $(".StoneSettingRowTotal").each(function () {
             ssTotal += +$(this).html();
-            console.log(`[this: ${$(this).html()}, ssTotal: ${ssTotal}]`);
+            //console.log(`[this: ${$(this).html()}, ssTotal: ${ssTotal}]`);
         });
         total += ssTotal;
         if ($(Style_JewelryType_bUseLaborTable).val() !== "true") {
@@ -432,11 +432,13 @@ function JewelryTypeChanged() {
     .then(function (response) {
         return response.json();
     })
-        .then(function (jewelryTypeJSON) {
+    .then(function (jewelryTypeJSON)
+    {
         var packagingVal;
         const jewelryType = JSON.parse(jewelryTypeJSON);
         //console.log(`jewelryType: ${JSON.stringify(jewelryType)}`);
         var jt = $("#Style_JewelryTypeId :selected").text();
+        $("#Style_JewelryType_Name").val(jt);
         if (jewelryType.bUseLaborTable === false) {
             // toggle .HideLabors
             $(`.StyleLaborItemsSection`).hide();
@@ -466,10 +468,10 @@ function JewelryTypeChanged() {
             SetPackagingCost(packagingVal);
             CalcSubtotals("LaborItems");
         }
-    }).catch(function (e) {
-        console.log("Error retrieving jewelry type data (jtc)", e);
+        }).catch(function (e) {
+            $("#Style_JewelryType_Name").val("");
+            console.log("Error retrieving jewelry type data (jtc)", e);
     });
-
 }
 
 function StoneChanged(i) {
