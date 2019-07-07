@@ -705,7 +705,14 @@ COST:
                 <div class="col-sm-1 col-xs-1"></div>
                 <div class="col-sm-4 col-xs-4"><b>TOTAL LABOR</b></div>
                 <div class="col-sm-5 col-xs-5"></div>
-                <div id="LaborsTotalValue" class="col-sm-2 col-xs-2">@(((Model.Style.JewelryType.bUseLaborTable ? Model.LaborItemsTotal : Model.LaborsTotal) + StoneSettingTotal).ToString("F02"))</div>
+                @{
+                    decimal lt = 0;
+                    if (Model.Style.JewelryType != null)
+                    {
+                        lt = Model.Style.JewelryType.bUseLaborTable ? Model.LaborItemsTotal : Model.LaborsTotal;
+                    }
+                }
+                <div id="LaborsTotalValue" class="col-sm-2 col-xs-2">@((lt + StoneSettingTotal).ToString("F02"))</div>
             </div>
         </div>
 
