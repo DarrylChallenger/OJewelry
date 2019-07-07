@@ -357,12 +357,16 @@ function CalcSubtotals(type) {
     //console.log(`total: ${total}`);
     if (isNaN(total)) total = 0;
     if (type === "LaborItems" || type === "Labors") {
-        //$("#" + type + "SectionSubtotal").html(total.toFixed(2));
+        // Add in the Stone settings costs
+        var ssTotal = +0;
+        $(".StoneSettingRowTotal").each(function () {
+            ssTotal += +$(this).html();
+            console.log(`[this: ${$(this).html()}, ssTotal: ${ssTotal}]`);
+        });
+        total += ssTotal;
         if ($(Style_JewelryType_bUseLaborTable).val() !== "true") {
-            //$("#LaborsTotalValue").html($("#LaborsSectionSubtotal").html());
             $("#LaborsTotalValue").html(total.toFixed(2));
         } else {
-            //$("#LaborsTotalValue").html($("#LaborItemsSectionSubtotal").html());
             $("#LaborsTotalValue").html(total.toFixed(2));
         }
     } else {
@@ -855,12 +859,14 @@ $(function () { //
     setAddBtn("Labors");
     setAddBtn("LaborItems");
     setAddBtn("Miscs");
+    /*
     CalcSubtotals("Castings");
     CalcSubtotals("Stones");
     CalcSubtotals("Findings");
     CalcSubtotals("Labors");
     CalcSubtotals("Miscs");
-    CalcTotals();
+    //CalcTotals();
+    */
     
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?

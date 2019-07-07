@@ -526,6 +526,7 @@ namespace OJewelry.Models
         {
             Init();
             _laborItem = lic._laborItem;
+            laborItemId = lic.laborItemId;
             pph = lic.pph;
             ppp = lic.ppp;
             Name = lic.Name;
@@ -788,12 +789,17 @@ namespace OJewelry.Models
             }
 
         }
-        /*
-        public void AddStoneCosts(CostData cd) // add a labor setting cost for each stone - this is implemented only on front end
-        {
-            return;
-        }
         
+        public decimal AddStoneSettingCosts() 
+        {
+            decimal sum = 0;
+            foreach (StoneComponent sc in Stones)
+            {
+                sum+=sc.SettingCost;
+            }
+            return sum;
+        }
+        /*
         public void ComputePackaging(CostData cd)
         {
 
@@ -1024,6 +1030,8 @@ namespace OJewelry.Models
                         break;
                 }
             }
+            // Add stone setting costs to total
+            Total += AddStoneSettingCosts();
         }
         
         public void PopulateComponents(OJewelryDB db)
@@ -1173,6 +1181,8 @@ namespace OJewelry.Models
                 MiscsTotal += m.Total;
             }
             Total += MiscsTotal;
+            // Add stone setting costs to total
+            Total += AddStoneSettingCosts();
         }
 
         public void Populate(int? id, OJewelryDB db)
@@ -1277,16 +1287,9 @@ namespace OJewelry.Models
                     Total += miscm.Total;
                 }
                 MarkDefaultEntriesAsFixed();
-                /*
-                AssemblyCostX costX = db.AssemblyCosts.Where(x => x.companyId == CompanyId).FirstOrDefault();
-                if (cost != null)
-                {
-                    CostData cd = cost.GetCostDataFromJSON();
-                    AddStoneCosts(cd);
-                    ComputeFinishing(cd);
-                    ComputePackaging(cd);
-                }
-                */
+                // Add stone setting costs to total
+                Total += AddStoneSettingCosts();
+
                 PopulateDropDowns(db);
             }
         }
