@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -16,6 +17,7 @@ namespace OJewelry.Controllers
         // GET api/<controller>/5
         public string Get(int companyId, string dropdown)
         {
+            Trace.TraceInformation($"DropdownAPI: called with companyId: {companyId}, key: [{dropdown}]");
             SelectList list = null;
             // LaborTableVendors
             if (dropdown == "LaborTableVendors") {
@@ -37,6 +39,7 @@ namespace OJewelry.Controllers
             }
 
             string json = JsonConvert.SerializeObject(list);
+            Trace.TraceInformation($"DropdownAPI: returns {json}");
             return json;
         }
     }
