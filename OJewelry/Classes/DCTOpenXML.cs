@@ -197,6 +197,18 @@ namespace OJewelry.Classes
             return cell;
         }
 
+        public Cell SetCellVal(string loc, bool val, bool bSetCellWidth = true)
+        {
+
+            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.String, CellValue = new CellValue(val.ToString()) };
+            if (bSetCellWidth)
+            {
+                SetColumnWidth(loc, val.ToString());
+                //columns.ElementAt(); // this is how to index the columns
+            }
+            return cell;
+        }
+
         public Cell SetCellVal(string loc, decimal val, bool bSetCellWidth = true)
         {
 

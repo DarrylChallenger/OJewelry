@@ -73,7 +73,7 @@
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int) Model.CompanyId) |
-    @Html.ActionLink("Export Labor Table", "ExportLaborTable", new { companyId = Model.CompanyId })
+    @Html.ActionLink("Export Labor Table to Excel", "ExportLaborTable", new { companyId = Model.CompanyId })
 </p>
 
 

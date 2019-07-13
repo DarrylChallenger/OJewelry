@@ -197,6 +197,7 @@ namespace OJewelry.Controllers
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Packaging Cost"); row.Append(cell);
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Finishing Cost"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Use Labor Table"); row.Append(cell);
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<JewelryType> JewelryTypes = db.JewelryTypes.Where(v => v.CompanyId == companyId).OrderBy(j => j.Name).ToList();
@@ -208,6 +209,7 @@ namespace OJewelry.Controllers
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, JewelryTypes[i].Name); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, JewelryTypes[i].PackagingCost); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, JewelryTypes[i].FinishingCost); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, JewelryTypes[i].bUseLaborTable); row.Append(cell);
                         sd.Append(row);
                     }
                     worksheet.Append(sd);
