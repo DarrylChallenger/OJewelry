@@ -17,7 +17,8 @@ namespace OJewelry
 
                 bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                             "~/Scripts/jquery.validate.min.js",
-                            "~/Scripts/jquery.validate.unobtrusive.min.js"));
+                            "~/Scripts/jquery.validate.unobtrusive.min.js",
+                            "~/Scripts/RowManager.js"));
 
                 bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                             "~/Scripts/shadowpopup.js",
@@ -34,7 +35,8 @@ namespace OJewelry
 
                 bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                             "~/Scripts/jquery.validate.js",
-                            "~/Scripts/jquery.validate.unobtrusive.js"));
+                            "~/Scripts/jquery.validate.unobtrusive.js",
+                            "~/Scripts/RowManager.js"));
 
                 bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                             "~/Scripts/shadowpopup.js",
