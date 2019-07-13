@@ -34,6 +34,18 @@ namespace OJewelry.Migrations
                 context.VendorTypes.Add(new VendorType { Id = 3, Name = "Casting" });
                 context.VendorTypes.Add(new VendorType { Id = 4, Name = "Labor" });
             }
+            /*
+            if (context.LaborTable.Count() == 0)
+            {
+                foreach (Company co in context.Companies) {
+                    LaborItem li = context.LaborTable.Add(new LaborItem() {
+                        CompanyId = co.Id,
+                        Name = "CUSTOM",
+                        State = LMState.Fixed
+                    });
+                }
+            }
+            */
         }
     }
 }

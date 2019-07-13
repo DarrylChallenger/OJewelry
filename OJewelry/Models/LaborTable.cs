@@ -6,15 +6,20 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Web.Mvc;
 using static OJewelry.Classes.Validations;
+using OJewelry.Classes;
 
 namespace OJewelry.Models
 {
     [Table("LaborTable")]
-    public class LaborItem
+    public partial class LaborItem
     {
         public LaborItem()
         {
             State = LMState.Dirty;
+            ppp = null;
+            pph = null;
+            //Vendor = new Vendor();
+            StyleLaborItems = new HashSet<StyleLaborTableItem>();
         }
 
         [Key]
@@ -31,9 +36,11 @@ namespace OJewelry.Models
 
         [HourlyXORStatic]
         [Display(Name = "$/PC")]
+        [DataType(DataType.Currency)]
         public decimal? pph { get; set; }
 
         [Display(Name = "$/HR")]
+        [DataType(DataType.Currency)]
         public decimal? ppp { get; set; }
 
         [RequiredIfNotRemoved]
@@ -48,31 +55,9 @@ namespace OJewelry.Models
 
         public virtual Company Company { get; set; }
         public virtual Vendor Vendor { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<StyleLaborTableItem> StyleLaborItems { get; set; }
+
     }
-
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class HourlyXORStatic : ValidationAttribute
-    {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-            LaborItem item = (LaborItem)validationContext.ObjectInstance;
-            var property = validationContext.ObjectType.GetProperty("State");
-            if (property != null)
-            {
-                var state = property.GetValue(validationContext.ObjectInstance, null);
-                if (state.ToString() == "Unadded" || state.ToString() == "Deleted")
-                {
-                    return ValidationResult.Success;
-                }
-            }
-
-            if ((item.pph != null && item.ppp != null) || (item.pph == null && item.ppp == null))
-            {
-                return new ValidationResult("Please specify either $/hour or $/piece, but not both");
-            }
-            return ValidationResult.Success;
-        }
-    }
-
-
 }

@@ -17,13 +17,13 @@ namespace OJewelry.Models
     public partial class BuyerMetaData
     {
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "Name is required.")]
+        [Required(ErrorMessage = "Buyer Name is required.")]
         String Name { get; set; }
 
         [DisplayName("Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Buyer Phone number")]
         public String Phone { get; set; }
 
         [Display(Name = "Email")]
@@ -60,7 +60,7 @@ namespace OJewelry.Models
         [DisplayName("Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Client Phone number")]
         public String Phone { get; set; }
 
         [Display(Name = "Email")]
@@ -90,7 +90,7 @@ namespace OJewelry.Models
     public partial class CompanyMetaData
     {
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "Name is required.")]
+        [Required(ErrorMessage = "Company Name is required.")]
         public String Name { get; set; }
 
         [Display(Name = "Addr 1")]
@@ -110,7 +110,7 @@ namespace OJewelry.Models
         [DisplayName("Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Company Phone number")]
         public String Phone { get; set; }
 
     }
@@ -182,7 +182,7 @@ namespace OJewelry.Models
 
         [DataType(DataType.PhoneNumber)]
         [Phone]
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Contact Phone number")]
         public String Phone { get; set; }
 
         [Display(Name = "Email")]
@@ -221,7 +221,7 @@ namespace OJewelry.Models
         public int Id { get; set; }
 
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "Name is required.")]
+        [Required(ErrorMessage = "Jewelry Type Name is required.")]
         public String Name { get; set; }
 
         [Required]
@@ -285,7 +285,7 @@ namespace OJewelry.Models
         [Display(Name ="Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Location Phone number")]
         public String Phone { get; set; }
 
         [Display(Name = "Email")]
@@ -339,7 +339,7 @@ namespace OJewelry.Models
         public string StyleNum { get; set; }
 
         [Display(Name = "STYLE NAME")]
-        [Required(ErrorMessage = "Name is required.")]
+        [Required(ErrorMessage = "Style Name is required.")]
         public string StyleName { get; set; }
 
         [Display(Name = "DESC")]
@@ -400,7 +400,7 @@ namespace OJewelry.Models
         [DisplayName("Vendor Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Vendor Phone number")]
         public String Phone { get; set; }
 
         [Display(Name="Vendor Email")]

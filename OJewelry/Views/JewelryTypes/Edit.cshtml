@@ -21,20 +21,30 @@
             @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
         </div>
     </div>
-
     <div class="form-group">
-        @Html.LabelFor(model => model.PackagingCost, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.bUseLaborTable, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.PackagingCost, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.PackagingCost, "", new { @class = "text-danger" })
+            @Html.CheckBoxFor(model => model.bUseLaborTable, new { htmlAttributes = new { @class = "form-control" }, onclick = "bUseLaborTableClicked()" })
         </div>
     </div>
+    @{
+        string nocursor = Model.bUseLaborTable == true ? "nocursor" : "";
+    }
+    <div class="JewelryCostsGroup">
+        <div class="form-group">
+            @Html.LabelFor(model => model.PackagingCost, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PackagingCost, new { htmlAttributes = new { @class = "form-control " + nocursor } })
+                @Html.ValidationMessageFor(model => model.PackagingCost, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.FinishingCost, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.FinishingCost, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.FinishingCost, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.FinishingCost, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FinishingCost, new { htmlAttributes = new { @class = "form-control " } })
+                @Html.ValidationMessageFor(model => model.FinishingCost, "", new { @class = "text-danger" })
+            </div>
         </div>
     </div>
 
@@ -56,4 +66,5 @@
 </p>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/JewelryType.js")
 }

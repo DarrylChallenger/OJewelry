@@ -152,6 +152,12 @@ html input[disabled], locked {
     cursor: not-allowed;
 }
 
+.nocursor {
+    background-color: #e0e0ff;
+    cursor: not-allowed;
+    
+}
+
 .StyleSheetPartial input {
     font-weight: 700;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -257,11 +263,28 @@ html input[disabled], locked {
 
 .styleCastings .sslabel {
     padding-left: 5px;
+}/*
+
+.StyleLaborsSection {
+    //color: blue;
 }
 
+.StyleLaborItemsSection {
+    //color: red;
+}
 
+.HideLabors {
+    //display: none;
+    //color: lightcoral;
+}
+
+.HideLaborItems {
+    //display: none;
+    //color: lightseagreen;
+}
+*/
 .ssdata {
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .floatleft {

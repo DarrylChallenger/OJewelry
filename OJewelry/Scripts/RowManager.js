@@ -9,7 +9,7 @@
  */
 
 /// OnAdd
-function AddRow(index) {
+async function AddRow(index) {
     //console.log("AddRow", index);
     var px = sessionStorage.getItem("DCTS.tablePrefix");
     var ds = sessionStorage.getItem("DCTS." + px + ".dataStructName");
@@ -26,39 +26,9 @@ function AddRow(index) {
     var state = "." + px + "State";
 
     var companyId = $("#CompanyId");
+    console.log(`nr: ${nr}`);
     // hide the '+' btn
     $("." + addBtnClass).addClass("hidden");
-
-    // Search for "<getoptions>" id; call backend with value. Replace element with the set of returned options
-    var getops = $(nr).find("#getoptions");
-    // console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
-
-    if (getops.val()) {
-        fetch('/api/DropdownApi?companyId=' + companyId.val() + '&dropdown=' + getops.val())
-            .then(function (response) {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    // Replace choose with msg indicating there are no vendors
-                    console.error(`No ${getops.val()} found for company ${companyId.val()}`);
-                    return null;
-                }
-            }).then(function (options_string) {
-                // unpack options
-                let options = JSON.parse(options_string);
-                //console.log(`options: ${JSON.stringify(options)}`);
-                if (options) {
-                    for (var opt of options) {
-                        $("#getoptions").before(`<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`);
-                        //console.log(`added id[${opt.Value !== 0 ? opt.Value : ""}], val[${opt.Text}], getops:${JSON.stringify(getops)}`);
-                    }
-                    $("#getoptions").remove();
-                }
-            }).catch(function (e) {
-                console.error(`DropdownApi: Error retrieving options for ${getops.val()}`, e);
-                UpdateStoneSettingRow(i, 0, false);
-            });
-    }
 
     // insert new row (find last row by class)
     if (index === -1)
@@ -69,7 +39,37 @@ function AddRow(index) {
         // add after last row
         $("#" + tableClass).last().append(nr);
     }
-    
+
+    // Search for "<getoptions>" id; call backend with value. Replace element with the set of returned options
+    var getops = $(nr).find("#getoptions");
+    // console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
+    console.log(`***: ${JSON.stringify($("#getoptions"))} `);
+    $(".ltbordered").last().css("border-color", "yellow");
+    if (getops.val()) {
+        try {
+            $("#getoptions").last().html(`Retrieving options for ${getops.val()}`);
+            $(".ltbordered").last().css("border-color", "blue");
+            let response = await fetch('/api/DropdownApi?companyId=' + companyId.val() + '&dropdown=' + getops.val());
+            let options_string = await response.json();
+            let options = JSON.parse(options_string);
+            if (options) {
+                $(".ltbordered").last().css("border-color", "#cccccc");
+                for (let opt of options) {
+                    $("#getoptions").before(`<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`);
+                    //console.log(`added id[${opt.Value !== 0 ? opt.Value : ""}], val[${opt.Text}], getops:${JSON.stringify(getops)}`);
+                }
+                $("#getoptions").remove();
+            }
+            //$(".ltbordered").last().css("border-color", "orange");
+        } catch (e) {
+            console.error(`DropdownApi: Error retrieving options for ${getops.val()}`, e);
+            //alert(`DropdownApi: Error retrieving options for ${getops.val()}`);
+            $("#getoptions").last().html(`DropdownApi: Error retrieving options for ${getops.val()}`);
+            $(".ltbordered").last().css("border-color", "red");
+
+        }
+    }
+
     // wrap it...
     var newRow = $(rowClass).last();
     //console.log(`vr: ${vr}`);

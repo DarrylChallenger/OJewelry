@@ -63,7 +63,7 @@
     <div class="form-group">
         <div class="col-md-10">
             <input type="submit" value="Save" class="btn btn-default" />
-            <input type="submit" value="Cancel" class="btn btn-default" formmethod="get" formaction="/Companies/Index/@Model.CompanyId" />
+            <input type="submit" value="Cancel" formnovalidate="formnovalidate" class="btn btn-default" formaction="/Companies/Index" />
         </div>
     </div>
 
@@ -72,12 +72,12 @@
 <br />
 <p>
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.Partial("_CompanyNavPartial", (int) Model.CompanyId)
+    @Html.Partial("_CompanyNavPartial", (int) Model.CompanyId) |
+    @Html.ActionLink("Export Labor Table to Excel", "ExportLaborTable", new { companyId = Model.CompanyId })
 </p>
 
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/Scripts/RowManager.js")
     @Scripts.Render("~/Scripts/SetupLaborTable.js")
 }

@@ -336,7 +336,9 @@
     <Compile Include="Controllers\DropdownApiController.cs" />
     <Compile Include="Controllers\FindingsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\JewelryTypesApiController.cs" />
     <Compile Include="Controllers\JewelryTypesController.cs" />
+    <Compile Include="Controllers\LaborItemsApiController.cs" />
     <Compile Include="Controllers\LaborTableController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MetalCodesController.cs" />
@@ -569,6 +571,22 @@
     <Compile Include="Migrations\201906231509032_v1.7RemovePresenterNameReq.Designer.cs">
       <DependentUpon>201906231509032_v1.7RemovePresenterNameReq.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906232056121_1.7AddJTOption.cs" />
+    <Compile Include="Migrations\201906232056121_1.7AddJTOption.Designer.cs">
+      <DependentUpon>201906232056121_1.7AddJTOption.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906242253130_v1.7AddStyleLaborTable.cs" />
+    <Compile Include="Migrations\201906242253130_v1.7AddStyleLaborTable.Designer.cs">
+      <DependentUpon>201906242253130_v1.7AddStyleLaborTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906250203428_v1.7AddStyleLaborTableAddCUSTOMSeed.cs" />
+    <Compile Include="Migrations\201906250203428_v1.7AddStyleLaborTableAddCUSTOMSeed.Designer.cs">
+      <DependentUpon>201906250203428_v1.7AddStyleLaborTableAddCUSTOMSeed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906251817185_v1.7UpdateLaborTableDBModel.cs" />
+    <Compile Include="Migrations\201906251817185_v1.7UpdateLaborTableDBModel.Designer.cs">
+      <DependentUpon>201906251817185_v1.7UpdateLaborTableDBModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -613,6 +631,7 @@
     <Compile Include="Models\StyleComponent.cs" />
     <Compile Include="Models\StyleFinding.cs" />
     <Compile Include="Models\StyleLabor.cs" />
+    <Compile Include="Models\StyleLaborTable.cs" />
     <Compile Include="Models\StyleMisc.cs" />
     <Compile Include="Models\StyleStone.cs" />
     <Compile Include="Models\StyleViewModel.cs" />
@@ -633,6 +652,7 @@
     <Content Include="DBScripts\CreateOJSecAspNet.sql" />
     <Content Include="DBScripts\DropCreateOJDatabase.sql" />
     <Content Include="DBScripts\InvReport.sql" />
+    <Content Include="DBScripts\LaborTable.sql" />
     <Content Include="DBScripts\Locations.sql" />
     <Content Include="DBScripts\Memo.sql" />
     <Content Include="DBScripts\OJewelryDBTablesV0.2.sql" />
@@ -667,6 +687,7 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CreateEditComponents.js" />
     <Content Include="Scripts\FormatPhone.js" />
+    <Content Include="Scripts\JewelryType.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -995,6 +1016,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906231509032_v1.7RemovePresenterNameReq.resx">
       <DependentUpon>201906231509032_v1.7RemovePresenterNameReq.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906232056121_1.7AddJTOption.resx">
+      <DependentUpon>201906232056121_1.7AddJTOption.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906242253130_v1.7AddStyleLaborTable.resx">
+      <DependentUpon>201906242253130_v1.7AddStyleLaborTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906250203428_v1.7AddStyleLaborTableAddCUSTOMSeed.resx">
+      <DependentUpon>201906250203428_v1.7AddStyleLaborTableAddCUSTOMSeed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906251817185_v1.7UpdateLaborTableDBModel.resx">
+      <DependentUpon>201906251817185_v1.7UpdateLaborTableDBModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

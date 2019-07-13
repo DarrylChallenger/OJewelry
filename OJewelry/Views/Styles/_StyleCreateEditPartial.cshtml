@@ -2,6 +2,7 @@
 @model OJewelry.Models.StyleViewModel
     
 <div class="StyleSheetPartial">
+    @*@Html.ValidationSummary(false, "", htmlAttributes: new { @class = "text-danger" })*@
     <div class="row StyleHeader ">
         @Html.HiddenFor(model => model.Style.Quantity)
         @Html.HiddenFor(model => model.Style.RetailPrice)
@@ -47,6 +48,8 @@
                 </div>
             </div>
             <div class="row">
+                @Html.HiddenFor(model => model.Style.JewelryType.bUseLaborTable)
+                @Html.HiddenFor(model => model.Style.JewelryType.Name)
                 @Html.LabelFor(model => model.Style.JewelryTypeId, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
                 <div class="col-sm-4 col-xs-4">
                     @if (@Model.SVMOp == SVMOperation.Print)
@@ -55,7 +58,9 @@
                     }
                     else
                     {
-                        @Html.DropDownList("JewelryTypeId", null, htmlAttributes: new { @class = "width100 ", onchange = "JewelryTypeChanged(" + Model.CompanyId + ")" })
+                        //@Html.DropDownList("JewelryTypeId", null, "Choose a Jewelry Type", htmlAttributes: new { @class = "width100 ", onchange = "JewelryTypeChanged(" + Model.CompanyId + ")" })
+                        @Html.DropDownListFor(model => model.Style.JewelryTypeId, new SelectList(Model.drpJewelryTypes, "Id","Name", Model.Style.JewelryTypeId),
+                               "Choose a Jewelry Type", htmlAttributes: new { @class = "width100 ", onchange = "JewelryTypeChanged(" + Model.CompanyId + ")" })
                     }
                 </div>
             </div>

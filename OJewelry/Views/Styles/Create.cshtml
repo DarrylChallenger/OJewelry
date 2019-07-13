@@ -7,8 +7,7 @@
 <h2>Create style for the <i>@Model.Style.Collection.Name</i> collection</h2>
 
 @{
-    SelectList j = ViewBag.JewelryTypeId;
-    if (j.Count() == 0)
+    if (Model.drpJewelryTypes.Count() == 0)
     {
         using (Html.BeginForm("CreateOnAddStyle", "JewelryTypes", new { companyId = Model.CompanyId }, FormMethod.Post, null))
         {

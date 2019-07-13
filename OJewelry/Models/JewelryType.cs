@@ -11,16 +11,18 @@ namespace OJewelry.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public JewelryType()
         {
-            Styles = new HashSet<Style>();
         }
 
         public int Id { get; set; }
 
         public int? CompanyId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Jewelry Type Name is required")]
         [StringLength(50)]
         public string Name { get; set; }
+
+        [Display(Name ="Use Labor Table")]
+        public bool bUseLaborTable { get; set; }
 
         [Required]
         [DataType(DataType.Currency)]
@@ -28,9 +30,6 @@ namespace OJewelry.Models
 
         [Required]
         public decimal FinishingCost { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Style> Styles { get; set; }
 
         public virtual Company Company { get; set; }
     }

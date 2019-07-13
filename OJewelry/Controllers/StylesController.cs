@@ -73,7 +73,7 @@ namespace OJewelry.Controllers
             svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == svm.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == companyId), "Id", "Name", svm.Style.JewelryTypeId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == companyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             return View("Create", svm);
         }
@@ -96,18 +96,17 @@ namespace OJewelry.Controllers
             {
                 Id = -1,
                 Name = StyleViewModel.FinishingLaborName,
-                SVMState = SVMStateEnum.Fixed,
+                State = LMState.Fixed,
                 PPP = flPrice,
                 Qty = 1,
                 Total = flPrice
-                
             };
             svm.Labors.Add(lc);
             MiscComponent mc = new MiscComponent
             {
                 Id = -1,
                 Name = StyleViewModel.PackagingName,
-                SVMState = SVMStateEnum.Fixed,
+                State = SVMStateEnum.Fixed,
                 PPP = packPrice,
                 Qty = 1,
                 Total = packPrice
@@ -133,7 +132,7 @@ namespace OJewelry.Controllers
             newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
 
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.JewelryTypeId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == newsvm.CompanyId), "Id", "Name", newsvm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", newsvm.Style.MetalWtUnitId);
             return View(newsvm);
         }
@@ -173,7 +172,7 @@ namespace OJewelry.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Create([Bind(Include = "Id,Name,StyleNum,StyleName,Desc,JewelryTypeId,CollectionId,IntroDate,Image,Width,Length,ChainLength,RetailRatio,RedlineRatio,Quantity")] Style style)
-        public async Task <ActionResult> Create(StyleViewModel svm)
+        public async Task<ActionResult> Create(StyleViewModel svm)
         {
             svm.SVMOp = SVMOperation.Create;
             bool b = CheckForNameAndNumberUniqueness(svm);
@@ -198,6 +197,7 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
+            svm.Style.JewelryType = db.JewelryTypes.Find(svm.Style.JewelryTypeId);
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
             svm.Style.MetalWeightUnit = new MetalWeightUnit
@@ -206,58 +206,11 @@ namespace OJewelry.Controllers
             };
             svm.Populate(id, db);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             return View(svm);
         }
 
-
-        public ActionResult Print(int? id)
-        {
-            StyleViewModel sm = new StyleViewModel();
-            if (id == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            sm.Style = db.Styles.Find(id);
-            if (sm.Style == null)
-            {
-                return HttpNotFound();
-            }
-            sm.Style.Collection = db.Collections.Find(sm.Style.CollectionId);
-            sm.Style.JewelryType = db.JewelryTypes.Find(sm.Style.JewelryTypeId);
-
-            sm.CompanyId = sm.Style.Collection.CompanyId;
-            sm.Populate(id, db);
-            sm.SVMOp = SVMOperation.Print;
-            return View(sm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Print(StyleViewModel svm)
-        {
-            // First, save the data
-            svm.SVMOp = SVMOperation.Print;
-            ModelState.Clear();
-            StyleViewModel newsvm = new StyleViewModel(svm, db);
-            await SaveImageInStorage(db, newsvm, true);
-            //newsvm.assemblyCost.Load(db, svm.CompanyId);
-            // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
-            newsvm.SVMOp = SVMOperation.Print;
-            newsvm.Style.StyleNum = svm.Style.StyleNum;
-            newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
-            newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
-            newsvm.CopiedStyleName = svm.Style.StyleName;
-            //svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
-            newsvm.Style.JewelryType = db.JewelryTypes.Find(newsvm.Style.JewelryTypeId);
-            newsvm.Style.MetalWeightUnit = db.MetalWeightUnits.Find(newsvm.Style.MetalWtUnitId);
-            newsvm.PopulateDropDownData(db);
-            newsvm.PopulateDropDowns(db);
-            newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
-
-            return View(newsvm);
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -265,12 +218,15 @@ namespace OJewelry.Controllers
         {
             CheckForNameAndNumberUniqueness(svm);
             int i;
-            //ModelState.Clear();
+            // check Model State for errors
+
+            CheckModelState(svm.Style.StyleNum);
             // Save the Style and all edited components; add the new ones and remove the deleted ones
-            if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
-            //await SaveImageInStorage(svm);
             if (ModelState.IsValid)
             {
+                svm.Style.JewelryType = null;
+
+                if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
                 // Iterate thru the components
                 // Castings
                 if (svm.Castings != null)
@@ -291,7 +247,7 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (c.SVMState)
+                        switch (c.State)
                         {
                             case SVMStateEnum.Added:
                                 casting = new Casting(c);
@@ -356,7 +312,7 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (sc.SVMState)
+                        switch (sc.State)
                         {
                             case SVMStateEnum.Added:
                                 //stone = new Stone(sc);
@@ -406,7 +362,7 @@ namespace OJewelry.Controllers
                             ModelState.AddModelError("Findings[" + i + "].Id", e.Message);
                             continue;
                         }
-                        switch (c.SVMState)
+                        switch (c.State)
                         {
                             case SVMStateEnum.Added:
                                 /*
@@ -448,14 +404,14 @@ namespace OJewelry.Controllers
                 if (svm.Labors != null)
                 {
                     i = -1;
-                    foreach (LaborComponent c in svm.Labors)
+                    foreach (LaborComponent lc in svm.Labors)
                     {
                         i++;
                         Labor labor;
                         StyleLabor sl;
                         try
                         {
-                            ValidLabor(c);
+                            ValidLabor(lc);
                         }
                         catch (OjMissingLaborException e)
                         {
@@ -463,37 +419,90 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (c.SVMState)
+                        switch (lc.State)
                         {
-                            case SVMStateEnum.Added:
-                                AddLabor(c, svm, i);
+                            case LMState.Added:
+                                AddLabor(lc, svm, i);
                                 break;
-                            case SVMStateEnum.Deleted:
-                                sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
+                            case LMState.Deleted:
+                                sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == lc.Id).Single();
                                 RemoveLabor(sl);
                                 break;
-                            case SVMStateEnum.Dirty:
-                            case SVMStateEnum.Fixed:
-                                if (c.Id <= 0)
+                            case LMState.Fixed:
+                            case LMState.Dirty:
+                                if (lc.Id <= 0)
                                 {
-                                    AddLabor(c, svm, i);
+                                    AddLabor(lc, svm, i);
                                 }
                                 else
                                 {
-                                    labor = db.Labors.Find(c.Id);
-                                    labor.Set(c);
+                                    labor = db.Labors.Find(lc.Id);
+                                    labor.Set(lc);
                                 }
 
                                 /*
                                 sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
                                 */
                                 break;
-                            case SVMStateEnum.Unadded: // No updates
+                            case LMState.Unadded: // No updates
                             default:
                                 break;
                         }
                     }
                 }
+                // Labor Table
+                if (svm.LaborItems != null)
+                {
+                    i = -1;
+                    foreach (LaborItemComponent lic in svm.LaborItems)
+                    {
+                        i++;
+                        StyleLaborTableItem sl;
+                        try
+                        {
+                            ValidLaborItem(lic);
+                        }
+                        catch (OjMissingLaborException e)
+                        {
+                            ModelState.AddModelError("LaborsItems[" + i + "].Name", e.Message);
+                            continue;
+                        }
+
+                        switch (lic.State)
+                        {
+                            case LMState.Added:
+                                AddLaborItem(lic, svm, i);
+                                break;
+                            case LMState.Deleted:
+                                sl = db.StyleLaborItems.Where(x => x.Id == lic.linkId).SingleOrDefault();
+                                RemoveLaborItem(sl);
+                                break;
+                            case LMState.Dirty:
+                            case LMState.Fixed:
+                                if (lic.Id <= 0)
+                                {
+                                    AddLaborItem(lic, svm, i);
+                                }
+                                else
+                                {
+                                    //laborItem = db.LaborTable.Find(lic.laborItemId);
+                                    sl = db.StyleLaborItems.Where(x => x.Id == lic.linkId).SingleOrDefault();
+                                    sl.Qty = lic.Qty.GetValueOrDefault();
+                                    //laborItem.Set(lic);
+                                }
+
+                                /*
+                                sl = db.StyleLabors.Where(x => x.StyleId == svm.Style.Id && x.LaborId == c.Id).Single();
+                                */
+                                break;
+                            case LMState.Unadded: // No updates
+                            default:
+                                break;
+                        }
+                        db.Entry(lic._laborItem).State = EntityState.Detached;
+                    }
+                }
+
                 // Misc
                 if (svm.Miscs != null)
                 {
@@ -513,7 +522,7 @@ namespace OJewelry.Controllers
                             continue;
                         }
 
-                        switch (c.SVMState)
+                        switch (c.State)
                         {
                             case SVMStateEnum.Added:
                                 AddMisc(c, svm, i);
@@ -555,7 +564,14 @@ namespace OJewelry.Controllers
                 if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
                 {
                     // Save changes, go to Home
-                    db.SaveChanges(); // need the styleId for the image name
+                    try
+                    {
+                        db.SaveChanges(); // need the styleId for the image name
+                    }
+                    catch (Exception e)
+                    {
+                        Trace.TraceError($"Error saving style {svm.Style.StyleNum}, msg: {e.Message}");
+                    }
                     Trace.TraceInformation("Operation: {0}, svmId:{1}", svm.SVMOp.ToString(), svm.Style.Id);
                     await SaveImageInStorage(db, svm);
                     db.Entry(svm.Style);
@@ -573,14 +589,71 @@ namespace OJewelry.Controllers
             }
             Collection co = db.Collections.Find(svm.Style.CollectionId);
             svm.CompanyId = co.CompanyId;
+            svm.Style.JewelryType = db.JewelryTypes.Find(svm.Style.JewelryTypeId);
+
+            //svm.Style.
             svm.PopulateDropDownData(db);
             svm.PopulateDropDowns(db);
-            svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            if (svm.SVMOp == SVMOperation.Create)
+            {
+                svm.LookupComponents(db);
+            }
+            else
+            {
+                svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            }
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
-            ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
+            //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             // iterate thru modelstate errors, display on page
             return View(svm);
+        }
+
+        public ActionResult Print(int? id)
+        {
+            StyleViewModel sm = new StyleViewModel();
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            sm.Style = db.Styles.Find(id);
+            if (sm.Style == null)
+            {
+                return HttpNotFound();
+            }
+            sm.Style.Collection = db.Collections.Find(sm.Style.CollectionId);
+            sm.Style.JewelryType = db.JewelryTypes.Find(sm.Style.JewelryTypeId);
+
+            sm.CompanyId = sm.Style.Collection.CompanyId;
+            sm.Populate(id, db);
+            sm.SVMOp = SVMOperation.Print;
+            return View(sm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Print(StyleViewModel svm)
+        {
+            // First, save the data
+            svm.SVMOp = SVMOperation.Print;
+            ModelState.Clear();
+            StyleViewModel newsvm = new StyleViewModel(svm, db);
+            await SaveImageInStorage(db, newsvm, true);
+            //newsvm.assemblyCost.Load(db, svm.CompanyId);
+            // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
+            newsvm.SVMOp = SVMOperation.Print;
+            newsvm.Style.StyleNum = svm.Style.StyleNum;
+            newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
+            newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
+            newsvm.CopiedStyleName = svm.Style.StyleName;
+            //svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            newsvm.Style.JewelryType = db.JewelryTypes.Find(newsvm.Style.JewelryTypeId);
+            newsvm.Style.MetalWeightUnit = db.MetalWeightUnits.Find(newsvm.Style.MetalWtUnitId);
+            newsvm.PopulateDropDownData(db);
+            newsvm.PopulateDropDowns(db);
+            newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
+
+            return View(newsvm);
         }
 
         // GET: Styles/Delete/5
@@ -617,7 +690,7 @@ namespace OJewelry.Controllers
 
         public bool ValidCasting(CastingComponent cc)
         {
-            if (cc.SVMState == SVMStateEnum.Unadded) return true;
+            if (cc.State == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(cc.Name))
             {
                 throw new OjMissingCastingException("You must enter a Name!");
@@ -628,7 +701,7 @@ namespace OJewelry.Controllers
 
         public int ValidStone(StoneComponent sc)
         {
-            if (sc.SVMState != SVMStateEnum.Unadded)
+            if (sc.State != SVMStateEnum.Unadded)
             {
                 // Make sure a stone was selected in the dropdown
                 if (sc.Name == null || sc.ShId == null || sc.SzId == null)
@@ -653,7 +726,7 @@ namespace OJewelry.Controllers
         public bool ValidFinding(FindingsComponent fc, int i)
         {
             // Make sure a stone was selected in the dropdown
-            if (fc.SVMState == SVMStateEnum.Unadded) return true;
+            if (fc.State == SVMStateEnum.Unadded) return true;
             if (fc.Id == 0)
             {
                 throw new OjMissingFindingException("You must enter a Name!");
@@ -663,8 +736,19 @@ namespace OJewelry.Controllers
 
         public bool ValidLabor(LaborComponent lc)
         {
-            if (lc.SVMState == SVMStateEnum.Unadded) return true;
+            if (lc.State == LMState.Unadded) return true;
             if (string.IsNullOrEmpty(lc.Name))
+            {
+                throw new OjMissingLaborException("You must enter a Name!");
+            }
+
+            return true;
+        }
+
+        public bool ValidLaborItem(LaborItemComponent lic)
+        {
+            if (lic.State == LMState.Unadded) return true;
+            if (string.IsNullOrEmpty(lic.Name))
             {
                 throw new OjMissingLaborException("You must enter a Name!");
             }
@@ -674,7 +758,7 @@ namespace OJewelry.Controllers
 
         public bool ValidMisc(MiscComponent mc)
         {
-            if (mc.SVMState == SVMStateEnum.Unadded) return true;
+            if (mc.State == SVMStateEnum.Unadded) return true;
             if (string.IsNullOrEmpty(mc.Name))
             {
                 throw new OjMissingMiscException("You must enter a Name!");
@@ -707,10 +791,10 @@ namespace OJewelry.Controllers
                 Qty = style.Quantity,
                 Memod = style.Memos.Sum(s => s.Quantity)
             };
-            
+
             m.Memos = new List<MemoModel>();
             m.numPresentersWithStyle = 0;
-            
+
             foreach (Memo i in db.Memos.Where(x => x.StyleID == style.Id).Include(x => x.Presenter))
             {
                 MemoModel mm = new MemoModel()
@@ -726,7 +810,7 @@ namespace OJewelry.Controllers
                 m.Memos.Add(mm);
                 m.numPresentersWithStyle++;
             }
-            
+
             m.Presenters = new List<SelectListItem>();
             m.CompanyId = style.Collection.CompanyId;
             m.NewExistingPresenterRadio = 2;
@@ -743,7 +827,7 @@ namespace OJewelry.Controllers
             }
             m.SendReturnMemoRadio = 1;
             m.PresenterName = "";
-            
+
             ViewBag.CollectionId = style.CollectionId;
             return View(m);
         }
@@ -915,10 +999,27 @@ namespace OJewelry.Controllers
             db.StyleLabors.Add(sl);
         }
 
+        void AddLaborItem(LaborItemComponent c, StyleViewModel svm, int keyVal)
+        {
+            int laborItemId = c.Id == 0 ? keyVal : c.Id;
+            StyleLaborTableItem sl = new StyleLaborTableItem() {
+                StyleId = svm.Style.Id,
+                LaborTableId = c.laborItemId,
+                Qty = c.Qty.Value
+            };
+            db.StyleLaborItems.Add(sl);
+        }
+
         void RemoveLabor(StyleLabor sl)
         {
             db.Labors.Remove(sl.Labor);
             db.StyleLabors.Remove(sl);
+        }
+
+        void RemoveLaborItem(StyleLaborTableItem sl)
+        {
+            db.LaborTable.Remove(sl.LaborItem);
+            db.StyleLaborItems.Remove(sl);
         }
 
         void AddMisc(MiscComponent m, StyleViewModel svm, int keyVal)
@@ -988,7 +1089,7 @@ namespace OJewelry.Controllers
             return true;
         }
 
-        
+
         private void RemoveImageFromStorage(string imageName)
         {
             if (imageName == null) return;
@@ -997,7 +1098,21 @@ namespace OJewelry.Controllers
             Singletons.azureBlobStorage.Delete(blobFile);
             return;
         }
-        
+
+        public void CheckModelState(string stylenum)
+        {
+            foreach (string k in ModelState.Keys)
+            {
+                ModelState st = ModelState[k];
+                if (st.Errors.Count > 0)
+                {
+                    foreach (ModelError er in st.Errors)
+                    {
+                        Trace.TraceInformation($"Edit Sytle {stylenum}, key: {k}, msg: {er.ErrorMessage}, exception: {er.Exception}");
+                    }
+                }
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {

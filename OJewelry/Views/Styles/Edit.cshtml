@@ -1,10 +1,10 @@
 ﻿@model OJewelry.Models.StyleViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit " + Model.Style.StyleName;
 }
 
-<h2><i>@Model.Style.StyleName</i> Cost Sheet</h2>
+<h2>Edit the <i>@Model.Style.StyleName</i> Cost Sheet</h2>
 
 
 @using (Html.BeginForm("Edit", "Styles", FormMethod.Post, new { id = "StylesForm", enctype = "multipart/form-data" }))
@@ -15,7 +15,6 @@
         <hr />
         @Html.HiddenFor(model => model.Style.Id)
         @Html.HiddenFor(model => model.Style.CollectionId)
-        @Html.HiddenFor(model => model.Style.JewelryTypeId)
         @Html.HiddenFor(model => model.Style.MetalWtUnitId)
         @Html.HiddenFor(model => model.CompanyId)
 
