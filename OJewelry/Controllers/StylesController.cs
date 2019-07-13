@@ -212,53 +212,6 @@ namespace OJewelry.Controllers
         }
 
 
-        public ActionResult Print(int? id)
-        {
-            StyleViewModel sm = new StyleViewModel();
-            if (id == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            sm.Style = db.Styles.Find(id);
-            if (sm.Style == null)
-            {
-                return HttpNotFound();
-            }
-            sm.Style.Collection = db.Collections.Find(sm.Style.CollectionId);
-            sm.Style.JewelryType = db.JewelryTypes.Find(sm.Style.JewelryTypeId);
-
-            sm.CompanyId = sm.Style.Collection.CompanyId;
-            sm.Populate(id, db);
-            sm.SVMOp = SVMOperation.Print;
-            return View(sm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Print(StyleViewModel svm)
-        {
-            // First, save the data
-            svm.SVMOp = SVMOperation.Print;
-            ModelState.Clear();
-            StyleViewModel newsvm = new StyleViewModel(svm, db);
-            await SaveImageInStorage(db, newsvm, true);
-            //newsvm.assemblyCost.Load(db, svm.CompanyId);
-            // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
-            newsvm.SVMOp = SVMOperation.Print;
-            newsvm.Style.StyleNum = svm.Style.StyleNum;
-            newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
-            newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
-            newsvm.CopiedStyleName = svm.Style.StyleName;
-            //svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
-            newsvm.Style.JewelryType = db.JewelryTypes.Find(newsvm.Style.JewelryTypeId);
-            newsvm.Style.MetalWeightUnit = db.MetalWeightUnits.Find(newsvm.Style.MetalWtUnitId);
-            newsvm.PopulateDropDownData(db);
-            newsvm.PopulateDropDowns(db);
-            newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
-
-            return View(newsvm);
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(StyleViewModel svm)
@@ -611,9 +564,11 @@ namespace OJewelry.Controllers
                 if (true) // if the modelstate only has validation errors on "Clean" components, then allow the DB update
                 {
                     // Save changes, go to Home
-                    try {
+                    try
+                    {
                         db.SaveChanges(); // need the styleId for the image name
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         Trace.TraceError($"Error saving style {svm.Style.StyleNum}, msg: {e.Message}");
                     }
@@ -652,6 +607,53 @@ namespace OJewelry.Controllers
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
             // iterate thru modelstate errors, display on page
             return View(svm);
+        }
+
+        public ActionResult Print(int? id)
+        {
+            StyleViewModel sm = new StyleViewModel();
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            sm.Style = db.Styles.Find(id);
+            if (sm.Style == null)
+            {
+                return HttpNotFound();
+            }
+            sm.Style.Collection = db.Collections.Find(sm.Style.CollectionId);
+            sm.Style.JewelryType = db.JewelryTypes.Find(sm.Style.JewelryTypeId);
+
+            sm.CompanyId = sm.Style.Collection.CompanyId;
+            sm.Populate(id, db);
+            sm.SVMOp = SVMOperation.Print;
+            return View(sm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Print(StyleViewModel svm)
+        {
+            // First, save the data
+            svm.SVMOp = SVMOperation.Print;
+            ModelState.Clear();
+            StyleViewModel newsvm = new StyleViewModel(svm, db);
+            await SaveImageInStorage(db, newsvm, true);
+            //newsvm.assemblyCost.Load(db, svm.CompanyId);
+            // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
+            newsvm.SVMOp = SVMOperation.Print;
+            newsvm.Style.StyleNum = svm.Style.StyleNum;
+            newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
+            newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
+            newsvm.CopiedStyleName = svm.Style.StyleName;
+            //svm.RepopulateComponents(db); // iterate thru the data and repopulate the links
+            newsvm.Style.JewelryType = db.JewelryTypes.Find(newsvm.Style.JewelryTypeId);
+            newsvm.Style.MetalWeightUnit = db.MetalWeightUnits.Find(newsvm.Style.MetalWtUnitId);
+            newsvm.PopulateDropDownData(db);
+            newsvm.PopulateDropDowns(db);
+            newsvm.LookupComponents(db); // iterate thru the data and repopulate the data
+
+            return View(newsvm);
         }
 
         // GET: Styles/Delete/5
