@@ -21,7 +21,7 @@ namespace OJewelry.Controllers
             SelectList list = null;
             // LaborTableVendors
             if (dropdown == "LaborTableVendors") {
-            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId).ToList();
+            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId && v.Name !="").ToList();
                 vendors.Insert(0, new Vendor() {
                     Name = "Choose a Vendor"
                 });
