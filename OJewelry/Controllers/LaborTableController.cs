@@ -169,6 +169,7 @@ namespace OJewelry.Controllers
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "$/Hour"); row.Append(cell);
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "$/Piece"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Vendor"); row.Append(cell);
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<LaborItem> LaborTableItems = db.LaborTable.Where(lt => lt.CompanyId == companyId).OrderBy(lt => lt.Name).ToList();
@@ -180,6 +181,7 @@ namespace OJewelry.Controllers
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, LaborTableItems[i].Name); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, LaborTableItems[i].pph.GetValueOrDefault()); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, LaborTableItems[i].ppp.GetValueOrDefault()); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, LaborTableItems[i].Vendor.Name); row.Append(cell);
                         sd.Append(row);
                     }
                     worksheet.Append(sd);
