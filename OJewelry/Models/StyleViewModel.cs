@@ -1743,6 +1743,11 @@ namespace OJewelry.Models
                     m.LaborItems[i].ppp = ppc;
 
                     sb.Clear();
+                    sb.AppendFormat("LaborItems[{0}].VendorName", i);
+                    s = request.Form.Get(sb.ToString());
+                    m.LaborItems[i].Name = s;
+
+                    sb.Clear();
                     sb.AppendFormat("LaborItems[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
                     Decimal.TryParse(s, out decimal q);

@@ -418,9 +418,9 @@ async function LaborItemsDropdownChanged(rowId) {
         //console.log(`laborItemString: ${laborItemString}`);
         const laborItem = JSON.parse(laborItemString);
         //console.log(`laborItem: ${JSON.stringify(laborItem)}`);
-        $(`#LaborItems_${rowId}__pph`).val(laborItem.pph);
-        $(`#LaborItems_${rowId}__ppp`).val(laborItem.ppp);
-        $(`#LaborItems_${rowId}__VendorName`).val(laborItem.Vendor);
+        $(`[name='LaborItems[${rowId}].pph']`).val(laborItem.pph);
+        $(`[name='LaborItems[${rowId}].ppp']`).val(laborItem.ppp);
+        $(`[name='LaborItems[${rowId}].VendorName']`).val(laborItem.Vendor);
         CalcRowTotal("LaborItems", rowId);
     }
 }
