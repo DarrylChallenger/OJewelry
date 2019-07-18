@@ -74,21 +74,27 @@ namespace OJewelry.Controllers
                 sec = new ApplicationDbContext();
                 ApplicationUser user = sec.Users.Where(x => x.UserName == loggedOnUserName).FirstOrDefault();
                 // Get Phone Number
-                cvm.company.Phone = GetNormalizedPhone(cvm.company.Phone);
+                cvm.Phone = SetFormattedPhone(cvm.Phone);
+                cvm.Phone = GetNormalizedPhone(cvm.Phone);
                 CompanyUser cu = new CompanyUser()
                 {
-                    CompanyId = cvm.company.Id,
+                    CompanyId = cvm.Id,
                     UserId = user.Id
                 };
-                cvm.company.CompanyUsers.Add(cu);
+                db.CompaniesUsers.Add(cu);
                 Vendor vendor = new Vendor
                 {
                     Name = "",
-                    CompanyId = cvm.company.Id
+                    CompanyId = cvm.Id
                 };
-
+                Collection collection = new Collection()
+                {
+                    CompanyId = cvm.Id,
+                    Name = "ASSORTMENT",
+                    Notes = $"Default collection for {cvm.Name}"
+                };
                 db.Vendors.Add(vendor);
-                db.AddCompany(cvm.company);
+                db.AddCompany(new Company(cvm));
 
                 foreach (CompanyViewClientModel c in cvm.clients)
                 {
@@ -96,7 +102,7 @@ namespace OJewelry.Controllers
                     {
                         if (c.Name != null)
                         {
-                            c.CompanyID = cvm.company.Id;
+                            c.CompanyID = cvm.Id;
                             Client client = new Client(c);
                             client.Phone = GetNormalizedPhone(c.Phone);
                             db.Clients.Add(client);
@@ -118,20 +124,14 @@ namespace OJewelry.Controllers
                 // add location
                 Presenter presenter = new Presenter
                 {
-                    Id = cvm.company.Id,
-                    Name = cvm.company.Name,
-                    ShortName = cvm.company.Name,
-                    Phone = cvm.company.Phone,
-                    Email = cvm.company.Email
+                    Id = cvm.Id,
+                    Name = cvm.Name,
+                    ShortName = cvm.Name.Substring(0, 3),
+                    Phone = cvm.Phone,
+                    Email = cvm.Email
                 };
                 db.Presenters.Add(presenter);
                 db.SaveChanges();
-
-                Company company = db.FindCompany(cvm.company.Id);
-                company.defaultStoneVendor = vendor.Id;
-                db.SaveChanges();
-
-
                 return RedirectToAction("Index");
             }
             return View(cvm);
@@ -149,11 +149,22 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            CompanyViewModel cvm = new CompanyViewModel();
-            cvm.company = company;
-            cvm.company.Phone = SetFormattedPhone(company.Phone);
+            CompanyViewModel cvm = new CompanyViewModel()
+            {
+                Id = company.Id,
+                Name = company.Name,
+                Phone = company.Phone,
+                Email = company.Email,
+                StreetAddr = company.StreetAddr,
+                Addr2 = company.Addr2,
+                defaultStoneVendor = company.defaultStoneVendor,
+                Website = company.Website
+            };
+            cvm.Id = id.Value;
+            //cvm.SetCompany(company);
+            cvm.Phone = SetFormattedPhone(company.Phone);
 
-            List<Client> clients = db.Clients.Where(x => x.CompanyID == cvm.company.Id).ToList();
+            List<Client> clients = db.Clients.Where(x => x.CompanyID == cvm.Id).ToList();
             foreach(Client c in clients)
             {
                 CompanyViewClientModel cvcm =  new CompanyViewClientModel(c);
@@ -172,13 +183,15 @@ namespace OJewelry.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(cvm.company).State = EntityState.Modified;
-                cvm.company.Phone = GetNormalizedPhone(cvm.company.Phone);
+                Company company = db.FindCompany(cvm.Id);
+                company.Set(cvm);
+                db.Entry(company).State = EntityState.Modified;
+                cvm.Phone = GetNormalizedPhone(cvm.Phone);
 
                 foreach (CompanyViewClientModel c in cvm.clients)
                 {
                     Client client;
-                    client = new Client(c, cvm.company.Id);
+                    client = new Client(c, cvm.Id);
                     client.Phone = GetNormalizedPhone(c.Phone);
 
                     switch (c.State)
@@ -1614,7 +1627,7 @@ namespace OJewelry.Controllers
                 Collection c = new Collection()
                 {
                     CompanyId = ivm.CompanyId,
-                    Name = ivm.CompanyName,
+                    Name = "ASSORTMENT",
                 };
                 colls.Add(c);
                 ivm.bCC_CompCollCreated = true;

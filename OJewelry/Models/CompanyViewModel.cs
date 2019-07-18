@@ -61,15 +61,137 @@ namespace OJewelry.Models
     {
         public CompanyViewModel()
         {
-            company = new Company();
+            //company = new Company();
             clients = new List<CompanyViewClientModel>();
         }
-        public Company company { get; set; }
+        //private Company company { get; set; }
+        /*
+         * public Company GetCompany()
+        {
+            return company;
+        }
+        public void SetCompany(Company value)
+        {
+            company = value;
+        }*/
+        public int Id { get; set; }
+        /*
+        {
+            get { return company.Id; }
+            set { company.Id = value; }
+        }*/
+
+        [StringLength(50)]
+        [Display(Name = "Name")]
+        [Required(ErrorMessage = "A Name is required.")]
+        public string Name { get; set; }
+        /*
+        {
+            get { return company.Name; }
+            set { company.Name = value; }
+        }
+        */
+        [DisplayName("Phone")]
+        [DataType(DataType.PhoneNumber)]
+        [Phone]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid Phone number")]
+        [Required(ErrorMessage = "A Phone Number  is required.")]
+        public string Phone { get; set; }
+        /*
+        {
+            get { return company.Phone; }
+            set { company.Phone = value; }
+        }
+        */
+        [StringLength(50)]
+        [Display(Name = "Email")]
+        [DataType(DataType.EmailAddress)]
+        [Required(ErrorMessage = "An Email Address is required.")]
+        public string Email { get; set; }
+        /*
+        {
+            get { return company.Email; }
+            set { company.Email = value; }
+        }
+        */
+        public string StreetAddr { get; set; }
+        /*
+        {
+            get { return company.StreetAddr; }
+            set { company.StreetAddr = value; }
+        }*/
+
+        public string Addr2 { get; set; }
+        /*
+        {
+            get { return company.Addr2; }
+            set { company.Addr2 = value; }
+        }
+        */
+        public string Website { get; set; }
+        /*
+        {
+            get { return company.Website; }
+            set { company.Website = value; }
+        }
+        */
+        /*
+        public ICollection<CompanyUser> CompanyUsers
+        {
+            get { return company.CompanyUsers; }
+            set { company.CompanyUsers = value; }
+        }
+        public ICollection<Client> Clients
+        {
+            get { return company.Clients; }
+            set { company.Clients = value; }
+        }   
+        */
+        public int? defaultStoneVendor { get; set; }
+        /*
+        {
+            get { return company.defaultStoneVendor; }
+            set { company.defaultStoneVendor = value; }
+        }
+        */
+        /*
+        public 
+        {
+            get { return company.; }
+            set { company. = value; }
+        };
+        */
         public List<CompanyViewClientModel> clients { get; set; }
         // Default location (Presenter[0])
 
     }
 
+    public partial class Company
+    {
+        public Company(CompanyViewModel cvm)
+        {
+            Id = cvm.Id;
+            Name = cvm.Name;
+            Phone = cvm.Phone;
+            Email = cvm.Email;
+            StreetAddr = cvm.StreetAddr;
+            Addr2 = cvm.Addr2;
+            Website = cvm.Website;
+            defaultStoneVendor = cvm.defaultStoneVendor;
+        }
+
+        public void Set(CompanyViewModel cvm)
+        {
+            Id = cvm.Id;
+            Name = cvm.Name;
+            Phone = cvm.Phone;
+            Email = cvm.Email;
+            StreetAddr = cvm.StreetAddr;
+            Addr2 = cvm.Addr2;
+            Website = cvm.Website;
+            defaultStoneVendor = cvm.defaultStoneVendor;
+        }
+    }
     public partial class Client
     {
         public Client() { }
