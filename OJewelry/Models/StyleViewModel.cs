@@ -823,7 +823,7 @@ namespace OJewelry.Models
             drpJewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == CompanyId).ToList();
             drpLaborItems = db.LaborTable.Where(li => li.CompanyId == CompanyId).ToList();
 
-            jsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId).ToList();
+            jsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId).OrderBy(v => v.Name).ToList();
             jsMetals = db.MetalCodes.Where(x => x.CompanyId == CompanyId).OrderByDescending(m => m.Code).ToList();
 
             jsStones = db.Stones.Where(x => x.CompanyId == CompanyId)

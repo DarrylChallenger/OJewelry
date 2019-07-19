@@ -587,6 +587,14 @@
     <Compile Include="Migrations\201906251817185_v1.7UpdateLaborTableDBModel.Designer.cs">
       <DependentUpon>201906251817185_v1.7UpdateLaborTableDBModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907191208158_v1.7AddRequiredFields.cs" />
+    <Compile Include="Migrations\201907191208158_v1.7AddRequiredFields.Designer.cs">
+      <DependentUpon>201907191208158_v1.7AddRequiredFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201907191454419_v1.7VendorTypeId.cs" />
+    <Compile Include="Migrations\201907191454419_v1.7VendorTypeId.Designer.cs">
+      <DependentUpon>201907191454419_v1.7VendorTypeId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -1029,6 +1037,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906251817185_v1.7UpdateLaborTableDBModel.resx">
       <DependentUpon>201906251817185_v1.7UpdateLaborTableDBModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907191208158_v1.7AddRequiredFields.resx">
+      <DependentUpon>201907191208158_v1.7AddRequiredFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907191454419_v1.7VendorTypeId.resx">
+      <DependentUpon>201907191454419_v1.7VendorTypeId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

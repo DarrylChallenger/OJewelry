@@ -87,7 +87,7 @@ namespace OJewelry.Models
     public partial class Company
     {
     }
-    public partial class CompanyMetaData
+    public class CompanyMetaData
     {
         [Display(Name = "Name")]
         [Required(ErrorMessage = "Company Name is required.")]
@@ -209,6 +209,9 @@ namespace OJewelry.Models
         
         [Display(Name = "WT(dwt)")]
         public decimal? Weight { get; set; }
+
+        [Display(Name ="Vendor")]
+        public int? VendorId { get; set; }
     }
 
     [MetadataType(typeof(JewelryTypeMetaData))]   //Jewelry Type
@@ -291,6 +294,9 @@ namespace OJewelry.Models
         [Display(Name = "Email")]
         [DataType(DataType.EmailAddress)]
         public String Email { get; set; }
+
+        [Display(Name = "Code")]
+        public string ShortName;
     }
 
     
@@ -303,16 +309,20 @@ namespace OJewelry.Models
         [Required(ErrorMessage = "You must select a stone.")]
         public int Id { get; set; }
 
-        [Required]
-        [Display(Name = "Stone")]
-        public String Name { get; set; }
-
         [Display(Name = "Name")]
         public String Label { get; set; }
 
         [Required]
+        [Display(Name = "Stone")]
+        public String Name { get; set; }
+
+        [Required]
         [Display(Name = "Size")]
         public string StoneSize { get; set; }
+
+        [Required]
+        [Display(Name = "Shape")]
+        public int? ShapeId { get; set; }
 
         [Display(Name = "CT")]
         public int? CtWt { get; set; }
@@ -389,12 +399,12 @@ namespace OJewelry.Models
     {
     }
 
-    public partial class VendorMetaData
+    public class VendorMetaData
     {
         [Display(Name ="Vendors")]
         public int Id { get; set; }
 
-        //[Required(ErrorMessage = "Name is required.")]
+        [Required(ErrorMessage = "Name is required.")]
         public String Name { get; set; }
 
         [DisplayName("Vendor Phone")]
@@ -410,6 +420,10 @@ namespace OJewelry.Models
         [Display(Name = "Notes")]
         [StringLength(50)]
         public string Notes { get; set; }
+
+        [Required(ErrorMessage = "Type is required.")] 
+        [Display(Name = "Type")]
+        public int TypeId { get; set; }
     }
 
     /*

@@ -27,7 +27,7 @@ namespace OJewelry.Models
                 if (shortname == null || shortname.Trim() =="")
                 {
                     if (Name == null) return "";
-                    return Name.PadRight(10).Substring(0, 10);
+                    return Name.PadRight(10).Substring(0, 3);
                 } else {
                     return shortname.Trim();
                 }
@@ -35,7 +35,7 @@ namespace OJewelry.Models
             set {
                 if (value != null)
                 {
-                    shortname = value.PadRight(10).Substring(0, 10);
+                    shortname = value.PadRight(10).Substring(0, 3);
                 }
             } }
 

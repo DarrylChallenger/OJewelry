@@ -114,13 +114,14 @@ namespace OJewelry.Models
             set { company.Email = value; }
         }
         */
+        [Display(Name = "Addr 1")]
         public string StreetAddr { get; set; }
         /*
         {
             get { return company.StreetAddr; }
             set { company.StreetAddr = value; }
         }*/
-
+        [Display(Name = "Addr 2")]
         public string Addr2 { get; set; }
         /*
         {

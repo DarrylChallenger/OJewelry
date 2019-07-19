@@ -52,6 +52,7 @@
         public int Qty { get; set; } // Inventory
 
         [StringLength(2048)]
+        [Display(Name = "Notes")]
         public string Note { get; set; }
 
         [StringLength(1024)]
