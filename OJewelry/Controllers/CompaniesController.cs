@@ -93,7 +93,7 @@ namespace OJewelry.Controllers
                     Name = "ASSORTMENT",
                     Notes = $"Default collection for {cvm.Name}"
                 };
-                db.Vendors.Add(vendor);
+                // db.Vendors.Add(vendor); - not sure why we do this 7/20/19
                 db.AddCompany(new Company(cvm));
 
                 foreach (CompanyViewClientModel c in cvm.clients)

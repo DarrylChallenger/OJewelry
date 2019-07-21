@@ -224,7 +224,8 @@ namespace OJewelry.Controllers
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             if (ModelState.IsValid)
             {
-                svm.Style.JewelryType = null;
+                bool bUseLaborTable = svm.Style.JewelryType.bUseLaborTable;
+                svm.Style.JewelryType = null; // hack to avoid maismatch of JewelryTypeId error!!!
 
                 if (db.Entry(svm.Style).State != EntityState.Added) db.Entry(svm.Style).State = EntityState.Modified;
                 // Iterate thru the components
@@ -401,7 +402,7 @@ namespace OJewelry.Controllers
                     }
                 }
                 // Labors
-                if (svm.Labors != null)
+                if (svm.Labors != null  && bUseLaborTable == false)
                 {
                     i = -1;
                     foreach (LaborComponent lc in svm.Labors)
@@ -451,7 +452,7 @@ namespace OJewelry.Controllers
                     }
                 }
                 // Labor Table
-                if (svm.LaborItems != null)
+                if (svm.LaborItems != null && bUseLaborTable == true)
                 {
                     i = -1;
                     foreach (LaborItemComponent lic in svm.LaborItems)
