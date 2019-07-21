@@ -1,10 +1,10 @@
 ﻿@model OJewelry.Models.StyleViewModel
 
 @{
-    ViewBag.Title = "Copy";
+    ViewBag.Title = $"Copy Style - {@Model.CopiedStyleName}";
 }
 
-<h2>Copy of (@Model.CopiedStyleName) style for the <i>@Model.Style.Collection.Name</i> collection</h2>
+<h2>Copy of <i>(@Model.CopiedStyleName)</i> style</h2>
 
 @using (Html.BeginForm("Create", "Styles", FormMethod.Post, new { id = "StylesForm", enctype = "multipart/form-data" }))
 {

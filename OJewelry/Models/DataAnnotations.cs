@@ -79,7 +79,7 @@ namespace OJewelry.Models
     public partial class CollectionMetaData
     {
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "Name is required.")]
+        [Required(ErrorMessage = "Collection Name is required.")]
         public String Name { get; set; }
     }
 
@@ -404,7 +404,7 @@ namespace OJewelry.Models
         [Display(Name ="Vendors")]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Name is required.")]
+        [Required(ErrorMessage = "Vendor Name is required.")]
         public String Name { get; set; }
 
         [DisplayName("Vendor Phone")]

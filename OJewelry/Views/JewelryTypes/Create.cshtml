@@ -1,10 +1,10 @@
 ﻿@model OJewelry.Models.JewelryType
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = $"{@ViewBag.CompanyName} - Create Jewelry Type";
 }
 
-<h2>Create a new Jewelry Type for <i>@ViewBag.CompanyName</i></h2>
+<h2>Create a Jewelry Type for <i>@ViewBag.CompanyName</i></h2>
 
 
 @using (Html.BeginForm())

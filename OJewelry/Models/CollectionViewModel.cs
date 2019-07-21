@@ -29,6 +29,7 @@ namespace OJewelry.Models
     {
         public int Id { get; set; }
         public int CompanyId { get; set; }
+        [Required]
         public String Name { get; set; }
         public String Notes { get; set; }
         public List<StyleModel> Styles { get; set;}

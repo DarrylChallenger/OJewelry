@@ -1,10 +1,10 @@
 ﻿@model OJewelry.Models.Vendor
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = $"{@ViewBag.CompanyName} - Create Vendor";
 }
 
-<h2>Create a new Vendor for <i>@ViewBag.CompanyName</i></h2>
+<h2>Create a Vendor for <i>@ViewBag.CompanyName</i></h2>
 
 @using (Html.BeginForm())
 {

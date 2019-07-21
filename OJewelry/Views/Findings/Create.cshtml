@@ -1,10 +1,10 @@
 ﻿@model OJewelry.Models.Finding
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = $"{@ViewBag.CompanyName} - Create Finding";
 }
 
-<h2>Create a Finding for the <i>@ViewBag.CompanyName</i> company</h2>
+<h2>Create a Finding for <i>@ViewBag.CompanyName</i></h2>
 
 @using (Html.BeginForm()) 
 {
