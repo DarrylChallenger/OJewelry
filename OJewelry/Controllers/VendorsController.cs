@@ -50,16 +50,26 @@ namespace OJewelry.Controllers
         }
 
         // GET: Vendors/Create
-        public ActionResult Create(int companyId)
+        public ActionResult Create(int? companyId)
         {
+            if (companyId == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewBag.CompanyId = companyId;
-            ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+            Company company = db.FindCompany(companyId);
+            if (company == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            ViewBag.CompanyName = company?.Name;
             Vendor vendor = new Vendor()
             {
                 Type = new VendorType()
             };
             ViewBag.TypeId = SetVendorTypesDropDown(vendor);
-            return View();
+            vendor.TypeId = db.VendorTypes.First().Id; // until we implement TypeId
+            return View(vendor);
         }
 
         // POST: Vendors/Create
@@ -76,6 +86,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Edit", new { id = vendor.Id });
             }
             ViewBag.TypeId = SetVendorTypesDropDown(vendor);
+            vendor.TypeId = db.VendorTypes.First().Id; // until we implement TypeId
             ViewBag.CompanyId = vendor.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
 
@@ -89,14 +100,22 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
             Vendor vendor = db.Vendors.Include("Type").Where(v => v.Id == id).FirstOrDefault();
             if (vendor == null)
             {
                 return HttpNotFound();
             }
             ViewBag.CompanyId = vendor.CompanyId;
-            ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
+            Company company = db.FindCompany(vendor.CompanyId);
+            if (company == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            ViewBag.CompanyName = company?.Name;
+
             ViewBag.TypeId = SetVendorTypesDropDown(vendor);
+            vendor.TypeId = db.VendorTypes.First().Id; // until we implement TypeId
             return View(vendor);
         }
 
@@ -116,6 +135,7 @@ namespace OJewelry.Controllers
             ViewBag.CompanyId = vendor.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
             ViewBag.TypeId = SetVendorTypesDropDown(vendor);
+            vendor.TypeId = db.VendorTypes.First().Id; // until we implement TypeId
             return View(vendor);
         }
 

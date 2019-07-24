@@ -21,7 +21,7 @@ namespace OJewelry.Classes
                 if ((value == null || value.ToString().Trim() == "") && 
                     (otherValue.ToString() != "Deleted" && otherValue.ToString() != "Unadded") && otherValue.ToString() != "Fixed")
                 {
-                    return new ValidationResult(validationContext.DisplayName + " cannot be blank.");
+                    return new ValidationResult(validationContext.DisplayName + " is required.");
                 }
                 // Everything OK.
                 return ValidationResult.Success;

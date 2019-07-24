@@ -79,6 +79,12 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,SettingCost,Qty,Note,ParentHandle,Title,Label,Tags")] Stone stone)
         {
+            Stone extisingStone = db.Stones.Where(s => s.CompanyId == stone.CompanyId && s.Name == stone.Name && s.StoneSize == stone.StoneSize && s.ShapeId == stone.ShapeId).FirstOrDefault();
+            if (extisingStone != null)
+            {
+                Shape shape = db.Shapes.Find(stone.ShapeId);
+                ModelState.AddModelError("Name", $"A stone with {stone.Name}/{stone.StoneSize}/{shape.Name} already exists. ");
+            }
             if (ModelState.IsValid)
             {
                 db.Stones.Add(stone);
@@ -118,6 +124,13 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,Qty,SettingCost,Note,ParentHandle,Title,Label,Tags")] Stone stone)
         {
+            // Don't allow an existing combo to be entered
+            Stone extisingStone = db.Stones.Where(s => s.Id != stone.Id && s.CompanyId == stone.CompanyId && s.Name == stone.Name && s.StoneSize == stone.StoneSize && s.ShapeId == stone.ShapeId).FirstOrDefault();
+            if (extisingStone != null)
+            {
+                Shape shape = db.Shapes.Find(stone.ShapeId);
+                ModelState.AddModelError("Name", $"A stone with {stone.Name}/{stone.StoneSize}/{shape.Name} already exists. ");
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(stone).State = EntityState.Modified;

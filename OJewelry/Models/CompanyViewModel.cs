@@ -83,7 +83,7 @@ namespace OJewelry.Models
 
         [StringLength(50)]
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "A Name is required.")]
+        [Required(ErrorMessage = "A Company Name is required.")]
         public string Name { get; set; }
         /*
         {

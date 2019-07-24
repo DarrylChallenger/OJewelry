@@ -39,7 +39,8 @@
             @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
         </div>
     </div>
-
+    <div>@Html.HiddenFor(model => model.TypeId)</div>
+    @*
     <div class="form-group">
         @Html.LabelFor(model => model.TypeId, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-4">
@@ -47,7 +48,7 @@
             @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
         </div>
     </div>
-
+    *@
     <div class="form-group">
         @Html.LabelFor(model => model.Notes, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
