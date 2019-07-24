@@ -50,8 +50,17 @@ namespace OJewelry.Controllers
         }
 
         // GET: Findings/Create
-        public ActionResult Create(int companyId)
+        public ActionResult Create(int? companyId)
         {
+            if (companyId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Company company = db.FindCompany(companyId);
+            if (company == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == companyId), "Id", "Name");
             Finding finding = new Finding
             {
@@ -68,6 +77,11 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight,Qty,Note")] Finding finding)
         {
+            Finding existingFinding = db.Findings.Where(f => f.CompanyId == finding.CompanyId && f.Name == finding.Name).FirstOrDefault();
+            if (existingFinding != null)
+            {
+                ModelState.AddModelError("Name", $"A finding named '{finding.Name}' already exists. ");
+            }
             if (ModelState.IsValid)
             {
                 db.Findings.Add(finding);
@@ -105,6 +119,11 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,Price,Weight,Qty,Note")] Finding finding)
         {
+            Finding existingFinding = db.Findings.Where(f => f.Id != finding.Id && f.CompanyId == finding.CompanyId && f.Name == finding.Name).FirstOrDefault();
+            if (existingFinding != null)
+            {
+                ModelState.AddModelError("Name", $"A finding named '{finding.Name}' already exists. ");
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(finding).State = EntityState.Modified;
