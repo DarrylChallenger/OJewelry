@@ -163,6 +163,37 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", new { companyId = companyId });
         }
 
+        [HttpPost, ActionName("ShowCopy")]
+        [ValidateAntiForgeryToken]
+        public ActionResult ShowCopy(Finding finding)
+        {
+            Finding newFinding = new Finding(finding);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
+            return View("Copy", newFinding);
+        }
+
+        [HttpPost, ActionName("Copy")]
+        [ValidateAntiForgeryToken]
+        public ActionResult Copy(Finding finding)
+        {
+            Finding newFinding = new Finding(finding);
+            Finding existingFinding = db.Findings.Where(f => f.CompanyId == finding.CompanyId && f.Name == finding.Name).FirstOrDefault();
+            if (existingFinding != null)
+            {
+                ModelState.AddModelError("Name", $"A finding named '{finding.Name}' already exists. ");
+            }
+            if (ModelState.IsValid)
+            {
+                db.Findings.Add(finding);
+                db.SaveChanges();
+                return RedirectToAction("Index", new { companyId = finding.CompanyId });
+            }
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
+            return View(finding);
+        }
+
         public FileResult ExportFindingsReport(int companyId)
         {
             byte[] b;

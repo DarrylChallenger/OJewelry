@@ -619,6 +619,7 @@
     <Compile Include="Models\DataAnnotations.cs" />
     <Compile Include="Models\FindingInventoryModel.cs" />
     <Compile Include="Models\Findings.cs" />
+    <Compile Include="Models\HelperFunctions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InventoryViewModel.cs" />
     <Compile Include="Models\JewelryType.cs" />
@@ -853,6 +854,8 @@
     <Content Include="Views\Companies\ManageStoneInventory.cshtml" />
     <Content Include="Views\Companies\ManageFindingsInventory.cshtml" />
     <Content Include="Views\LaborTable\Index.cshtml" />
+    <Content Include="Views\Findings\Copy.cshtml" />
+    <Content Include="Views\Stones\Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -79,8 +79,8 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,SettingCost,Qty,Note,ParentHandle,Title,Label,Tags")] Stone stone)
         {
-            Stone extisingStone = db.Stones.Where(s => s.CompanyId == stone.CompanyId && s.Name == stone.Name && s.StoneSize == stone.StoneSize && s.ShapeId == stone.ShapeId).FirstOrDefault();
-            if (extisingStone != null)
+            Stone existingStone = db.Stones.Where(s => s.CompanyId == stone.CompanyId && s.Name == stone.Name && s.StoneSize == stone.StoneSize && s.ShapeId == stone.ShapeId).FirstOrDefault();
+            if (existingStone != null)
             {
                 Shape shape = db.Shapes.Find(stone.ShapeId);
                 ModelState.AddModelError("Name", $"A stone with {stone.Name}/{stone.StoneSize}/{shape.Name} already exists. ");
@@ -170,6 +170,38 @@ namespace OJewelry.Controllers
             db.Stones.Remove(stone);
             db.SaveChanges();
             return RedirectToAction("Index", new { companyId = companyId});
+        }
+
+        [HttpPost, ActionName("ShowCopy")]
+        [ValidateAntiForgeryToken]
+        public ActionResult ShowCopy(Stone stone)
+        {
+            Stone newStone = new Stone(stone);
+            ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name; return View("Copy", newStone);
+        }
+
+        [HttpPost, ActionName("Copy")]
+        [ValidateAntiForgeryToken]
+        public ActionResult Copy(Stone stone)
+        {
+            Stone existingStone = db.Stones.Where(s => s.CompanyId == stone.CompanyId && s.Name == stone.Name && s.StoneSize == stone.StoneSize && s.ShapeId == stone.ShapeId).FirstOrDefault();
+            if (existingStone != null)
+            {
+                Shape shape = db.Shapes.Find(stone.ShapeId);
+                ModelState.AddModelError("Name", $"A stone with {stone.Name}/{stone.StoneSize}/{shape.Name} already exists. ");
+            }
+            if (ModelState.IsValid)
+            {
+                db.Stones.Add(stone);
+                db.SaveChanges();
+                return RedirectToAction("Index", new { companyId = stone.CompanyId });
+            }
+            ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
+            ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
+            return View(stone);
         }
 
         public FileResult ExportStonesReport(int companyId)
