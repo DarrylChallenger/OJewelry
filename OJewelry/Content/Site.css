@@ -56,6 +56,10 @@ textarea {
     background-color: yellow;
 }
 
+.OldStagingBGColor {
+    background-color: red;
+}
+
 .DevBGcolor {
     background-color: lightblue;
 }
@@ -132,6 +136,11 @@ textarea {
     border-color: #cccccc;
 }
 
+.MainMenu {
+    //font-size: medium;  
+    //font-weight:700;
+}
+
 .ContactPageSpacing 
 {
     padding-bottom:30em;
@@ -141,7 +150,7 @@ textarea {
 }
 
 .red {
-    color: red;
+    color: red; 
 }
 
 .bold {
@@ -159,10 +168,15 @@ html input[disabled], locked {
     
 }
 
-
-MainMenu {
-    font-weight:700;
+.input-validation-error {
+    border-color: red;
 }
+
+.input-validation-error:focus {
+    border-color: red;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.075), 0px 0px 8px rgba(255,0,0,0.6);
+}
+
 
 .StyleSheetPartial input {
     font-weight: 700;

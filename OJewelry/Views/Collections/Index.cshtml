@@ -9,12 +9,12 @@
 <p>
     @Html.ActionLink("Create New Collection", "Create", new { id = Model.CompanyId })
 </p>
-<p>
+<div class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
     @Html.ActionLink("Export by Collection", "ExportCollectionReport", new { companyId = Model.CompanyId }) |
     @Html.ActionLink("Export by List", "ExportCollectionsByList", new { companyId = Model.CompanyId })
-</p>
+</div>
 <table class="table">
     <tr>
         @* Put style titles here
