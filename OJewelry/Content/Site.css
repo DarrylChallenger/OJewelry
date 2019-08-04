@@ -159,6 +159,11 @@ html input[disabled], locked {
     
 }
 
+
+MainMenu {
+    font-weight:700;
+}
+
 .StyleSheetPartial input {
     font-weight: 700;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
