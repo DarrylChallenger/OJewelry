@@ -8,7 +8,7 @@
 <p>
     @Html.ActionLink("Create New Shape", "Create", new { @companyId = ViewBag.companyId })
 </p>
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Export Stone Shapes to Excel", "ExportStoneShapesReport", new { companyId = ViewBag.companyId })
@@ -35,7 +35,7 @@
 
 </table>
 
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Export Stone Shapes to Excel", "ExportStoneShapesReport", new { companyId = ViewBag.companyId })

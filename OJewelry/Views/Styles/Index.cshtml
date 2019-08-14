@@ -10,7 +10,7 @@
     @Html.ActionLink("Create New Style", "Create", new { CollectionId = @ViewBag.CollectionID }) 
 
 </p>
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Edit", "Edit", "Collections", new { id = @ViewBag.CollectionID }, null) |
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) 
@@ -70,7 +70,7 @@
     }
 
 </table>
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) 
 </p>

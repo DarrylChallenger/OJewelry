@@ -9,7 +9,7 @@
 <p>
     @Html.ActionLink("Create New Finding", "Create", new { companyId = ViewBag.CompanyId })
 </p>
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Findings Inventory", "ManageFindingsInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
@@ -61,7 +61,7 @@
     }
 
 </table>
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Findings Inventory", "ManageFindingsInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |

@@ -14,7 +14,7 @@
         @Html.ActionLink("Stone Shapes", "Index", "Shapes", new { companyId = ViewBag.CompanyId }, null)
     </div>
 </div>
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Stone Inventory","ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
@@ -94,7 +94,7 @@
 
 </table>
 
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Stone Inventory", "ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |

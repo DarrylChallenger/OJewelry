@@ -22,7 +22,7 @@
         <td>
             @Html.DisplayFor(modelItem => item.Name)
         </td>
-        <td>
+        <td  class="MainMenu">
             @Html.ActionLink("Contact", "Edit", new { id = item.Id }) |
             @Html.Partial("_CompanyNavPartial", item.Id) 
         </td>

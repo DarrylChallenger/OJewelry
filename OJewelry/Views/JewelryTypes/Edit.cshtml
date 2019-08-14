@@ -60,7 +60,7 @@
 <div>
     @Html.ActionLink("Jewelry Types", "Index", new { @companyId = ViewBag.companyId })
 </div>
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId)
 </p>

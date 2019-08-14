@@ -5,7 +5,7 @@
 }
 
 <h2>Manage Inventory for the <i>@Model.CompanyName</i> Company</h2>
-<div>
+<div class="MainMenu">
     @Html.ActionLink("Companies", "Index") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
     @Html.ActionLink("Inventory Report", "InventoryReport", new { CompanyId = Model.CompanyId })

@@ -5,7 +5,7 @@
 
 <h2>Manage Finding Inventory for <i>@Model.CompanyName</i></h2>
 <br />
-<div>
+<div class="MainMenu">
     @Html.ActionLink("Companies", "Index") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
 </div>
@@ -62,7 +62,7 @@
 
 }
 <br />
-<div>
+<div class="MainMenu">
     @Html.ActionLink("Companies", "Index") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
     @Html.ActionLink("Inventory Report", "InventoryReport", new { CompanyId = Model.CompanyId })

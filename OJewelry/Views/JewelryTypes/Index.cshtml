@@ -12,7 +12,7 @@
         <text>@Html.ActionLink("Create New Jewelry Type", "Create", new { @companyId = ViewBag.companyId })</text>
     }
 </p>
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
@@ -57,7 +57,7 @@
 
 </table>
 
-<p>
+<p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
