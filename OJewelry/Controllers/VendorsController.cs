@@ -50,6 +50,7 @@ namespace OJewelry.Controllers
         }
 
         // GET: Vendors/Create
+        [HttpGet]
         public ActionResult Create(int? companyId)
         {
             if (companyId == null)

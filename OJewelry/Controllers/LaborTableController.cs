@@ -41,18 +41,7 @@ namespace OJewelry.Controllers
             {
                 li.selectList = new SelectList(vendors, "Id", "Name", li.VendorId);
             }
-
-            /*
-            ltm.Labors.Add(new LaborItem
-            {
-                Name = "test",
-                pph = 10.01M,
-                ppp = 20.02M,
-                State = LMState.Added,
-                CompanyId = CompanyId.Value,
-                selectList = new SelectList(db.Vendors.Where(x => x.CompanyId == CompanyId), "Id", "Name", 0)
-            });
-            */
+            ltm.bHasVendors = vendors.Count != 0;
             return View(ltm);
         }
 

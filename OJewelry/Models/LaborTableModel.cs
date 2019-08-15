@@ -15,5 +15,6 @@ namespace OJewelry.Models
         public string CompanyName { get; set; }
         public int CompanyId { get; set; }
         public int linkId { get; set; }
+        public bool bHasVendors { get; set; }
     }
 }

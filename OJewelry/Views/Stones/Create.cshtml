@@ -12,6 +12,7 @@
     <h4>Stone</h4>
     <hr />
     @{
+        SelectList vd = ViewBag.VendorId;
         SelectList sh = ViewBag.ShapeId;
         if (sh.Count() == 0)
         {
@@ -20,6 +21,18 @@
                 @Html.HiddenFor(model => model.CompanyId)
                 <p class="text-danger">You must have a Stone Shape to create a Stone!</p>
                 <input type="submit" value="Create" class="btn btn-default" />
+                <br />
+                <br />
+            }
+        }
+        else if (vd.Count() == 0)
+        {
+            using (Html.BeginForm("Create", "Vendors", method: FormMethod.Get))
+            {
+                @Html.HiddenFor(model => model.CompanyId)
+                <p class="text-danger">You must have a Vendor to create a Finding!</p>
+                <input type="submit" value="Create Vendor" class="btn btn-default" />
+                @Html.ActionLink("Cancel", "Index", "Stones", new { companyId = Model.CompanyId }, new { @class = "btn btn-default" })
                 <br />
                 <br />
             }
