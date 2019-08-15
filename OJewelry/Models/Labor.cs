@@ -27,7 +27,7 @@ namespace OJewelry.Models
 
         public decimal? PricePerPiece { get; set; }
 
-        public int? Qty { get; set; }
+        public decimal? Qty { get; set; }
 
         //public bool Auto { get; set; }
 

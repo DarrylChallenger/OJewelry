@@ -599,6 +599,10 @@
     <Compile Include="Migrations\201907242145199_v1.7MakePresenterNameRequired.Designer.cs">
       <DependentUpon>201907242145199_v1.7MakePresenterNameRequired.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201908152237031_v1.7MakeLaborQtyFractional.cs" />
+    <Compile Include="Migrations\201908152237031_v1.7MakeLaborQtyFractional.Designer.cs">
+      <DependentUpon>201908152237031_v1.7MakeLaborQtyFractional.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -1053,6 +1057,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907242145199_v1.7MakePresenterNameRequired.resx">
       <DependentUpon>201907242145199_v1.7MakePresenterNameRequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908152237031_v1.7MakeLaborQtyFractional.resx">
+      <DependentUpon>201908152237031_v1.7MakeLaborQtyFractional.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -510,7 +510,7 @@ namespace OJewelry.Models
 
         [Display(Name = "Quantity")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
-        public int? Qty { get; set; }
+        public decimal? Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
@@ -1696,7 +1696,7 @@ namespace OJewelry.Models
                     sb.Clear();
                     sb.AppendFormat("Labors[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
-                    Int32.TryParse(s, out int q);
+                    Decimal.TryParse(s, out decimal q);
                     m.Labors[i].Qty = q;
                     m.Labors[i].Total = q * (ppc + pph);
                     subtotal += m.Labors[i].Total;
