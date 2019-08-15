@@ -88,6 +88,7 @@ namespace OJewelry.Controllers
                 }
 
             }
+            vendors = db.Vendors.Where(v => v.CompanyId == ltm.CompanyId).ToList();
             if (ModelState.IsValid)
             {
                 db.SaveChanges();
@@ -100,21 +101,20 @@ namespace OJewelry.Controllers
                     CompanyId = CompanyId,
                     CompanyName = CompanyName,
                 };
-                vendors = db.Vendors.Where(v => v.CompanyId == ltm.CompanyId).ToList();
                 foreach (LaborItem li in ltm.Labors)
                 {
                     li.selectList = new SelectList(vendors, "Id", "Name", li.VendorId);
 
                 }
+                ltm.bHasVendors = vendors.Count != 0;
                 return View(ltm);
             }
-            vendors = db.Vendors.Where(v => v.CompanyId == ltm.CompanyId).ToList();
-
             foreach (LaborItem li in ltm.Labors)
             {
                 li.selectList = new SelectList(vendors, "Id", "Name", li.VendorId);
 
             }
+            ltm.bHasVendors = vendors.Count != 0;
             return View(ltm);
         }
 
