@@ -264,7 +264,7 @@ namespace OJewelry.Controllers
                 ModelState.AddModelError("Company", company.Name + " has at least one Jewelry Type that is not empty.");
                 return View(company);
             }
-            // Remove collections, locations, clients, components
+            // Remove collections, locations, clients, components, shapes
 //            List<Collection> collections = db.Collections.Where(col => col.CompanyId == id).ToList();
   //          db.Collections.RemoveRange(collections);
             if (company.defaultStoneVendor.HasValue && company.defaultStoneVendor != 0)
@@ -277,6 +277,7 @@ namespace OJewelry.Controllers
             db.Collections.RemoveRange(company.Collections);
             db.Presenters.RemoveRange(company.Presenters);
             db.Clients.RemoveRange(company.Clients);
+            db.Shapes.RemoveRange(company.Shapes);
             //db.Components.RemoveRange(company.Components);
             db.Stones.RemoveRange(company.Stones);
             db.Findings.RemoveRange(company.Findings);

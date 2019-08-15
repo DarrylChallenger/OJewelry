@@ -700,8 +700,6 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
-    <None Include="Properties\PublishProfiles\OJewelry-Stag - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\OJewelry-Stag - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Debug Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Release Web Deploy.pubxml" />
