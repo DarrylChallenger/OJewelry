@@ -474,6 +474,20 @@ function JewelryTypeChanged() {
     });
 }
 
+function SetStonesWarning(i, stoneCtl, shapeCtl, sizeCtl) {
+    stoneCtl.addClass("badStone");
+    shapeCtl.addClass("badStone");
+    sizeCtl.addClass("badStone");
+    stName = "Invalid stone combination";//"Setting for stone " + (parseInt(i) + 1);
+    $("#StoneSettingName_" + i).val(stName);
+    $(`#Stones_${i}__CtWt`).val('');
+    $(`#Stones_${i}__VendorName`).val('');
+    $("#StonesRowTotalValue_" + i).html("0.00");
+    $("div[name='StoneSettingRowTotalValue_" + i + "']").addClass("badTotal");
+    $("#Stones_" + i + "__Price").val("0.00");
+    var qty = $("#Stones_" + i + "__Qty").val();
+}
+
 function StoneChanged(i) {
     // pass the stone, shape, and size to StoneMatchingController. Process the result or handle not found 
     var stoneCtl = $("#Stones_" + i + "__Name");
@@ -484,25 +498,21 @@ function StoneChanged(i) {
     var shape = shapeCtl.val();
     var size =  sizeCtl.val();
     var companyid = $("#CompanyId").val();
+    console.log('fetching /api/StoneMatchingApi: companyId=[' + companyid + '] stone=[' + stone + '] shape=[' + shape + '] size=[' + size + ']');
     fetch('/api/StoneMatchingApi?companyId=' + companyid + '&stone=' + stone + '&shape=' + shape + '&size=' + size)
         .then(function (response) {
-            if (response.ok) {
+            console.log(`response: ${JSON.stringify(response)}`);
+            if (response && response.ok) {
                 return response.json();
             } else {
                 // Put the controls in warning mode
-                //console.log("Put the controls in warning mode");
-                stoneCtl.addClass("badStone");
-                shapeCtl.addClass("badStone");
-                sizeCtl.addClass("badStone");
-                stName = "Invalid stone combination";//"Setting for stone " + (parseInt(i) + 1);
-                $("#StoneSettingName_" + i).val(stName);
-                $("div[name='StoneSettingRowTotalValue_" + i + "']").addClass("badTotal");
-                $("#Stones_" + i + "__Price").val("0.00");
-                var qty = $("#Stones_" + i + "__Qty").val();
+                console.log("Put the controls in warning mode");
+                SetStonesWarning(i, stoneCtl, shapeCtl, sizeCtl);
                 UpdateStoneSettingRow(i, 0, false);
                 return null;
             }
         }).then(function (stonedata) {
+            console.log('stonedata', stonedata);
             // unpack stonedata
             if (stonedata) {
                 //console.log("Valid Combo result", stonedata);
@@ -854,6 +864,12 @@ $(window).load(function () {
     JewelryTypeChanged();
 });
 
+function ValidateStones() {
+    $(".StonesState").each((i) => {
+        console.log(`validating stone ${i}`);
+        StoneChanged(i);
+    });
+}
 $(function () { // 
     setAddBtn("Castings");
     setAddBtn("Stones");
@@ -861,6 +877,7 @@ $(function () { //
     setAddBtn("Labors");
     setAddBtn("LaborItems");
     setAddBtn("Miscs");
+    ValidateStones();
     /*
     CalcSubtotals("Castings");
     CalcSubtotals("Stones");

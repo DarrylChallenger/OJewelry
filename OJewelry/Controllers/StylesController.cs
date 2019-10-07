@@ -297,7 +297,7 @@ namespace OJewelry.Controllers
                         int stoneId = 0;
                         try
                         {
-                            stoneId = ValidStone(sc);
+                            stoneId = ValidStone(svm.CompanyId, sc);
                             sc.Id = stoneId;
                         }
                         catch (OjInvalidStoneComboException e)
@@ -700,7 +700,7 @@ namespace OJewelry.Controllers
             return true;
         }
 
-        public int ValidStone(StoneComponent sc)
+        public int ValidStone(int companyId, StoneComponent sc)
         {
             if (sc.State != SVMStateEnum.Unadded)
             {
@@ -712,7 +712,7 @@ namespace OJewelry.Controllers
 
                 // Ensure combo of stone, shape, size is valid (db.stone.where...)
                 Stone stone = db.Stones
-                    .Where(st => st.Name == sc.Name && st.Shape.Name == sc.ShId && st.StoneSize == sc.SzId)
+                    .Where(st => st.Name == sc.Name && st.Shape.Name == sc.ShId && st.StoneSize == sc.SzId && st.CompanyId == companyId)
                     .FirstOrDefault();
                 if (stone == null)
                 {
