@@ -37,11 +37,11 @@ namespace OJewelry.Models
         [HourlyXORStatic]
         [Display(Name = "$/PC")]
         [DataType(DataType.Currency)]
-        public decimal? pph { get; set; }
+        public decimal? ppp { get; set; }
 
         [Display(Name = "$/HR")]
         [DataType(DataType.Currency)]
-        public decimal? ppp { get; set; }
+        public decimal? pph { get; set; }
 
         [RequiredIfNotRemoved]
         [Display(Name ="Vendor")]

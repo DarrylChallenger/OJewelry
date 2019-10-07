@@ -498,21 +498,21 @@ function StoneChanged(i) {
     var shape = shapeCtl.val();
     var size =  sizeCtl.val();
     var companyid = $("#CompanyId").val();
-    console.log('fetching /api/StoneMatchingApi: companyId=[' + companyid + '] stone=[' + stone + '] shape=[' + shape + '] size=[' + size + ']');
+    //console.log('fetching /api/StoneMatchingApi: companyId=[' + companyid + '] stone=[' + stone + '] shape=[' + shape + '] size=[' + size + ']');
     fetch('/api/StoneMatchingApi?companyId=' + companyid + '&stone=' + stone + '&shape=' + shape + '&size=' + size)
         .then(function (response) {
-            console.log(`response: ${JSON.stringify(response)}`);
+            //console.log(`response: ${JSON.stringify(response)}`);
             if (response && response.ok) {
                 return response.json();
             } else {
                 // Put the controls in warning mode
-                console.log("Put the controls in warning mode");
+                //console.log("Put the controls in warning mode");
                 SetStonesWarning(i, stoneCtl, shapeCtl, sizeCtl);
                 UpdateStoneSettingRow(i, 0, false);
                 return null;
             }
         }).then(function (stonedata) {
-            console.log('stonedata', stonedata);
+            //console.log('stonedata', stonedata);
             // unpack stonedata
             if (stonedata) {
                 //console.log("Valid Combo result", stonedata);
@@ -866,7 +866,6 @@ $(window).load(function () {
 
 function ValidateStones() {
     $(".StonesState").each((i) => {
-        console.log(`validating stone ${i}`);
         StoneChanged(i);
     });
 }
