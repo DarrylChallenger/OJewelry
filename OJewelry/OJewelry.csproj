@@ -334,6 +334,7 @@
     <Compile Include="Controllers\ComponentsController.cs" />
     <Compile Include="Controllers\ComponentTypesController.cs" />
     <Compile Include="Controllers\DropdownApiController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FindingsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JewelryTypesApiController.cs" />
@@ -858,6 +859,7 @@
     <Content Include="Views\LaborTable\Index.cshtml" />
     <Content Include="Views\Findings\Copy.cshtml" />
     <Content Include="Views\Stones\Copy.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
