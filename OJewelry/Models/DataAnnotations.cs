@@ -421,9 +421,9 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Notes { get; set; }
 
-        [Required(ErrorMessage = "Type is required.")] 
+        /*[Required(ErrorMessage = "Type is required.")] 
         [Display(Name = "Type")]
-        public int TypeId { get; set; }
+        public int TypeId { get; set; }*/
     }
 
     /*

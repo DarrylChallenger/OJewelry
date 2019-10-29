@@ -604,6 +604,10 @@
     <Compile Include="Migrations\201908152237031_v1.7MakeLaborQtyFractional.Designer.cs">
       <DependentUpon>201908152237031_v1.7MakeLaborQtyFractional.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910230329466_v2.0_AddVendorTypeEnum.cs" />
+    <Compile Include="Migrations\201910230329466_v2.0_AddVendorTypeEnum.Designer.cs">
+      <DependentUpon>201910230329466_v2.0_AddVendorTypeEnum.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -654,7 +658,8 @@
     <Compile Include="Models\StyleStone.cs" />
     <Compile Include="Models\StyleViewModel.cs" />
     <Compile Include="Models\Vendor.cs" />
-    <Compile Include="Models\VendorType.cs" />
+    <Compile Include="Classes\VendorType.cs" />
+    <Compile Include="Models\VendorViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Controllers\StoneMatchingApiController.cs" />
@@ -1062,6 +1067,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908152237031_v1.7MakeLaborQtyFractional.resx">
       <DependentUpon>201908152237031_v1.7MakeLaborQtyFractional.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910230329466_v2.0_AddVendorTypeEnum.resx">
+      <DependentUpon>201910230329466_v2.0_AddVendorTypeEnum.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

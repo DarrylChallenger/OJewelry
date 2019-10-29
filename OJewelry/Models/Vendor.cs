@@ -5,6 +5,7 @@ namespace OJewelry.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using OJewelry.Classes;
 
     public partial class Vendor
     {
@@ -31,9 +32,11 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Notes { get; set; }
 
-        public int TypeId { get; set; }
+        //public int TypeId { get; set; } // Don't use this one
 
-        public virtual VendorType Type { get;set; }
+        public VendorType Type { get; set;  }
+
+        //public virtual VendorType Type { get;set; }
 
         public virtual Company Company { get; set; }
 
@@ -42,5 +45,10 @@ namespace OJewelry.Models
         public virtual ICollection<Component> Components { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Component> Components { get; set; }*/
+
+        public IEnumerable<VendorTypeEnumObj> GetEnumOjbs()
+        {
+            return Type.GetEnumOjbs();
+        }
     }
 }

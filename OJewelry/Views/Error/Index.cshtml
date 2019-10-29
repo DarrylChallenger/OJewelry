@@ -8,8 +8,20 @@
 <div class="syserr">
     <h2 class="centered">Error!</h2>
     <div class="syserrBox">
-        <h3>An error occurred while processing your request.</h3> 
+        <h3>An error occurred while processing your request.</h3>
         <p>The error has been recorded and will be diagnosed.</p>
+        @if (Model != null)
+        {
+            <p>Controller:@Model.ControllerName</p>
+            <p>Action:@Model.ActionName</p>
+            <p>Exception:@Model.Exception</p>
+            <p>Details:@Model.Exception.Message</p>
+            <p>Source:@Model.Exception.Source</p>
+            if (Model.Exception.InnerException != null)
+            {
+            <p>Inner:@Model.Exception.InnerException.Message</p>
+            }
+        }
     </div>
 </div>
 

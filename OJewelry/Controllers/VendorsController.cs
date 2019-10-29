@@ -31,7 +31,7 @@ namespace OJewelry.Controllers
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
 
-            return View(db.Vendors.Include("Type").Where(v => v.CompanyId == companyId).OrderBy(v => v.Name).ToList());
+            return View(db.Vendors.Where(v => v.CompanyId == companyId).OrderBy(v => v.Name).ToList());
         }
 
         // GET: Vendors/Details/5
@@ -41,7 +41,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Vendor vendor = db.Vendors.Include("Type").Where( v => v.Id == id).FirstOrDefault();
+            Vendor vendor = db.Vendors.Where( v => v.Id == id).FirstOrDefault();
             if (vendor == null)
             {
                 return HttpNotFound();
@@ -57,20 +57,16 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.CompanyId = companyId;
             Company company = db.FindCompany(companyId);
             if (company == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.CompanyName = company?.Name;
-            Vendor vendor = new Vendor()
-            {
-                Type = new VendorType()
-            };
-            ViewBag.TypeId = SetVendorTypesDropDown(vendor);
-            vendor.TypeId = db.VendorTypes.First().Id; // until we implement TypeId
-            return View(vendor);
+            Vendor vendor = new Vendor();
+            VendorViewModel vvm = new VendorViewModel(vendor);
+            vvm.CompanyName = company?.Name;
+            vvm.CompanyId = companyId;
+            return View(vvm);
         }
 
         // POST: Vendors/Create
@@ -78,20 +74,17 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Phone,Email,TypeId,Notes,CompanyId")] Vendor vendor)
+        public ActionResult Create(VendorViewModel vvm)
         {
             if (ModelState.IsValid)
             {
+                Vendor vendor = new Vendor(vvm);
                 db.Vendors.Add(vendor);
                 db.SaveChanges();
                 return RedirectToAction("Edit", new { id = vendor.Id });
             }
-            ViewBag.TypeId = SetVendorTypesDropDown(vendor);
-            vendor.TypeId = db.VendorTypes.First().Id; // until we implement TypeId
-            ViewBag.CompanyId = vendor.CompanyId;
-            ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
 
-            return View(vendor);
+            return View(vvm);
         }
 
         // GET: Vendors/Edit/5
@@ -101,23 +94,20 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-
-            Vendor vendor = db.Vendors.Include("Type").Where(v => v.Id == id).FirstOrDefault();
+            Vendor vendor = db.Vendors.Where(v => v.Id == id).FirstOrDefault();
             if (vendor == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CompanyId = vendor.CompanyId;
+            VendorViewModel vvm = new VendorViewModel(vendor);
             Company company = db.FindCompany(vendor.CompanyId);
             if (company == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.CompanyName = company?.Name;
+            vvm.CompanyName = company?.Name;
 
-            ViewBag.TypeId = SetVendorTypesDropDown(vendor);
-            vendor.TypeId = db.VendorTypes.First().Id; // until we implement TypeId
-            return View(vendor);
+            return View(vvm);
         }
 
         // POST: Vendors/Edit/5
@@ -125,19 +115,16 @@ namespace OJewelry.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Phone,Email,TypeId,Notes,CompanyId")] Vendor vendor)
+        public ActionResult Edit(VendorViewModel vvm)
         {
             if (ModelState.IsValid)
             {
+                Vendor vendor = new Vendor(vvm);
                 db.Entry(vendor).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index", new { companyId = vendor.CompanyId });
             }
-            ViewBag.CompanyId = vendor.CompanyId;
-            ViewBag.CompanyName = db._Companies.Find(vendor.CompanyId)?.Name;
-            ViewBag.TypeId = SetVendorTypesDropDown(vendor);
-            vendor.TypeId = db.VendorTypes.First().Id; // until we implement TypeId
-            return View(vendor);
+            return View(vvm);
         }
 
         // GET: Vendors/Delete/5
@@ -147,7 +134,7 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Vendor vendor = db.Vendors.Include("Type").Where(v => v.Id == id).FirstOrDefault();
+            Vendor vendor = db.Vendors.Where(v => v.Id == id).FirstOrDefault();
             if (vendor == null)
             {
                 return HttpNotFound();
@@ -160,7 +147,7 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Vendor vendor = db.Vendors.Include("Type").Where(v => v.Id == id).FirstOrDefault();
+            Vendor vendor = db.Vendors.Where(v => v.Id == id).FirstOrDefault();
 
             if (db.Castings.Where(c => c.VendorId == id).Count() != 0 ||
                 db.Stones.Where(s => s.VendorId == id).Count() != 0 ||
@@ -178,10 +165,11 @@ namespace OJewelry.Controllers
         protected SelectList SetVendorTypesDropDown(Vendor v)
         {
             SelectList s = null;
-            List<VendorType> VendorTypes = db.VendorTypes.ToList();
+            IEnumerable<VendorTypeEnumObj> VendorTypes = v.GetEnumOjbs();
+
             if (v.Type != null)
             {
-                s = new SelectList(VendorTypes, "Id", "Name", v.Type.Id);//, "-- Choose a Type --");
+                s = new SelectList(VendorTypes, "Id", "Name", v.Type);//, "-- Choose a Type --");
             } else
             {
                 s = new SelectList(VendorTypes, "Id", "Name", 0);//, "-- Choose a Type --");
