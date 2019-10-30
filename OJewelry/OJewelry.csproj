@@ -354,10 +354,9 @@
     <Compile Include="Controllers\StonesController.cs" />
     <Compile Include="Controllers\StylesController.cs" />
     <Compile Include="Controllers\VendorsController.cs" />
-    <Compile Include="DBScripts\SqlDatabaseSetup.cs" />
-    <Compile Include="DBScripts\Vendors.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Content Include="DBScripts\Vendors.sql">
+      <SubType>Designer</SubType>
+    </Content>
     <Compile Include="ErrorHandler\AiHandleErrorAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -720,7 +719,6 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
-    <Content Include="DBScripts\app.config" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Debug Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\OJewelryDev - Release Web Deploy.pubxml" />
