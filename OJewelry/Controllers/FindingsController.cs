@@ -168,7 +168,9 @@ namespace OJewelry.Controllers
         public ActionResult ShowCopy(Finding finding)
         {
             Finding newFinding = new Finding(finding);
+            ModelState.Clear();
             newFinding.Name = "Copy of " + finding.Name;
+            newFinding.Qty = 0;
             ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId && ((v.Type.Type & vendorTypeEnum.Finding) == vendorTypeEnum.Finding)), "Id", "Name", finding.VendorId);
             ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View("Copy", newFinding);

@@ -177,10 +177,14 @@ namespace OJewelry.Controllers
         public ActionResult ShowCopy(Stone stone)
         {
             Stone newStone = new Stone(stone);
+            ModelState.Clear();
             newStone.Name = "Copy of " + stone.Name;
+            newStone.Label = "Copy of " + stone.Label;
+            newStone.Qty = 0;
             ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
             ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId && ((v.Type.Type & vendorTypeEnum.Stone) == vendorTypeEnum.Stone)), "Id", "Name", stone.VendorId);
-            ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name; return View("Copy", newStone);
+            ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
+            return View("Copy", newStone);
         }
 
         [HttpPost, ActionName("Copy")]
