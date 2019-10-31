@@ -30,7 +30,7 @@
             using (Html.BeginForm("Create", "Vendors", method: FormMethod.Get))
             {
                 @Html.HiddenFor(model => model.CompanyId)
-                <p class="text-danger">You must have a Vendor to create a Finding!</p>
+                <p class="text-danger">You must have a Vendor that sells stones to create a Stone!</p>
                 <input type="submit" value="Create Vendor" class="btn btn-default" />
                 @Html.ActionLink("Cancel", "Index", "Stones", new { companyId = Model.CompanyId }, new { @class = "btn btn-default" })
                 <br />

@@ -61,7 +61,7 @@ namespace OJewelry.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == companyId), "Id", "Name");
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == companyId && ((v.Type.Type & vendorTypeEnum.Finding) == vendorTypeEnum.Finding)), "Id", "Name");
             Finding finding = new Finding
             {
                 CompanyId = companyId
@@ -89,7 +89,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Edit", new { id = finding.Id });
             }
 
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId && (v.Type.Type & vendorTypeEnum.Finding) == vendorTypeEnum.Finding), "Id", "Name", finding.VendorId);
             ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }
@@ -107,7 +107,7 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId && (v.Type.Type & vendorTypeEnum.Finding) == vendorTypeEnum.Finding), "Id", "Name", finding.VendorId);
             ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }
@@ -131,7 +131,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", new { companyId = finding.CompanyId });
             }
             //ViewBag.MetalCodeId = new SelectList(db.MetalCodes, "Id", "Code", finding.MetalCodeId);
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId && ((v.Type.Type & vendorTypeEnum.Finding) == vendorTypeEnum.Finding)), "Id", "Name", finding.VendorId);
             ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }
@@ -168,7 +168,8 @@ namespace OJewelry.Controllers
         public ActionResult ShowCopy(Finding finding)
         {
             Finding newFinding = new Finding(finding);
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
+            newFinding.Name = "Copy of " + finding.Name;
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId && ((v.Type.Type & vendorTypeEnum.Finding) == vendorTypeEnum.Finding)), "Id", "Name", finding.VendorId);
             ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View("Copy", newFinding);
         }
@@ -189,7 +190,7 @@ namespace OJewelry.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index", new { companyId = finding.CompanyId });
             }
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId), "Id", "Name", finding.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == finding.CompanyId && ((v.Type.Type & vendorTypeEnum.Finding) == vendorTypeEnum.Finding)), "Id", "Name", finding.VendorId);
             ViewBag.CompanyName = db._Companies.Find(finding.CompanyId)?.Name;
             return View(finding);
         }

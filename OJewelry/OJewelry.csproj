@@ -354,7 +354,7 @@
     <Compile Include="Controllers\StonesController.cs" />
     <Compile Include="Controllers\StylesController.cs" />
     <Compile Include="Controllers\VendorsController.cs" />
-    <Content Include="DBScripts\Vendors.sql">
+    <Content Include="DBScripts\AddStoneAndFindingsVendors.sql">
       <SubType>Designer</SubType>
     </Content>
     <Compile Include="ErrorHandler\AiHandleErrorAttribute.cs" />

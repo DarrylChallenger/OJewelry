@@ -61,7 +61,7 @@ namespace OJewelry.Controllers
             Company company = db.FindCompany(companyId);
             ViewBag.CompanyId = companyId;
             ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == companyId), "Id", "Name");
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == companyId), "Id", "Name", company.defaultStoneVendor);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == companyId && ((v.Type.Type & vendorTypeEnum.Stone) == vendorTypeEnum.Stone)), "Id", "Name", company.defaultStoneVendor);
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
             Stone stone = new Stone
             {
@@ -94,7 +94,7 @@ namespace OJewelry.Controllers
 
             ViewBag.CompanyId = stone.CompanyId;
             ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId && ((v.Type.Type & vendorTypeEnum.Stone) == vendorTypeEnum.Stone)), "Id", "Name", stone.VendorId);
             ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
             return View(stone);
         }
@@ -112,7 +112,7 @@ namespace OJewelry.Controllers
                 return HttpNotFound();
             }
             ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId && ((v.Type.Type & vendorTypeEnum.Stone) == vendorTypeEnum.Stone)), "Id", "Name", stone.VendorId);
             ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
             return View(stone);
         }
@@ -139,7 +139,7 @@ namespace OJewelry.Controllers
             }
             ViewBag.CompanyId = stone.CompanyId;
             ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId && ((v.Type.Type & vendorTypeEnum.Stone) == vendorTypeEnum.Stone)), "Id", "Name", stone.VendorId);
             ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
 
             return View(stone);
@@ -177,8 +177,9 @@ namespace OJewelry.Controllers
         public ActionResult ShowCopy(Stone stone)
         {
             Stone newStone = new Stone(stone);
+            newStone.Name = "Copy of " + stone.Name;
             ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId && ((v.Type.Type & vendorTypeEnum.Stone) == vendorTypeEnum.Stone)), "Id", "Name", stone.VendorId);
             ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name; return View("Copy", newStone);
         }
 
@@ -199,7 +200,7 @@ namespace OJewelry.Controllers
                 return RedirectToAction("Index", new { companyId = stone.CompanyId });
             }
             ViewBag.ShapeId = new SelectList(db.Shapes.Where(s => s.CompanyId == stone.CompanyId), "Id", "Name", stone.ShapeId);
-            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId), "Id", "Name", stone.VendorId);
+            ViewBag.VendorId = new SelectList(db.Vendors.Where(v => v.CompanyId == stone.CompanyId && ((v.Type.Type & vendorTypeEnum.Stone) == vendorTypeEnum.Stone)), "Id", "Name", stone.VendorId);
             ViewBag.CompanyName = db._Companies.Find(stone.CompanyId)?.Name;
             return View(stone);
         }
