@@ -617,6 +617,10 @@
     <Compile Include="Migrations\201910230329466_v2.0_AddVendorTypeEnum.Designer.cs">
       <DependentUpon>201910230329466_v2.0_AddVendorTypeEnum.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911010145387_v2.0AddVendorToLaborAndMisc.cs" />
+    <Compile Include="Migrations\201911010145387_v2.0AddVendorToLaborAndMisc.Designer.cs">
+      <DependentUpon>201911010145387_v2.0AddVendorToLaborAndMisc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -1079,6 +1083,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910230329466_v2.0_AddVendorTypeEnum.resx">
       <DependentUpon>201910230329466_v2.0_AddVendorTypeEnum.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911010145387_v2.0AddVendorToLaborAndMisc.resx">
+      <DependentUpon>201911010145387_v2.0AddVendorToLaborAndMisc.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

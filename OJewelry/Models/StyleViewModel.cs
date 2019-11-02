@@ -482,6 +482,7 @@ namespace OJewelry.Models
             PPH = lc.PPH;
             PPP = lc.PPP;
             Name = lc.Name;
+            Vendor = lc.Vendor;
             Desc = lc.Desc;
             Qty = lc.Qty;
             Total = (PPP.GetValueOrDefault() + PPH.GetValueOrDefault()) * Qty.GetValueOrDefault();
@@ -497,6 +498,7 @@ namespace OJewelry.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? PPH { get { return _labor.PricePerHour ?? 0; } set { _labor.PricePerHour = value; } }
 
+
         [Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? PPP { get { return _labor.PricePerPiece ?? 0; } set { _labor.PricePerPiece = value; } }
@@ -507,6 +509,9 @@ namespace OJewelry.Models
         [RequiredIfNotRemoved]
         public String Name { get { return _labor.Name; } set { _labor.Name = value; } }
         public string Desc { get { return _labor.Desc; } set { _labor.Desc = value; } }
+
+        [StringLength(50)]
+        public String Vendor { get { return _labor.Vendor; } set { _labor.Vendor = value; } }
 
         [Display(Name = "Quantity")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
@@ -585,6 +590,7 @@ namespace OJewelry.Models
             PPP = mc.PPP;
             Name = mc.Name;
             Desc = mc.Desc;
+            Vendor = mc.Vendor;
             Qty = mc.Qty;
             Total = PPP * Qty.GetValueOrDefault();
         }
@@ -600,6 +606,7 @@ namespace OJewelry.Models
 
         [RequiredIfNotRemoved]
         public String Name { get { return _misc.Name; } set { _misc.Name = value; } }
+        public string Vendor { get { return _misc.Vendor; } set { _misc.Vendor = value; } }
         public string Desc { get { return _misc.Desc; } set { _misc.Desc = value; } }
 
         [Display(Name = "Quantity")]
@@ -1365,6 +1372,7 @@ namespace OJewelry.Models
             Desc = c.Desc;
             PricePerHour = c.PPH;
             PricePerPiece = c.PPP;
+            Vendor = c.Vendor;
             Qty = c.Qty;
         }
     }
@@ -1399,6 +1407,7 @@ namespace OJewelry.Models
         {
             //8Id = c.Id;
             Name = c.Name;
+            Vendor = c.Vendor;
             Desc = c.Desc;
             PricePerPiece = c.PPP;
             Qty = c.Qty;

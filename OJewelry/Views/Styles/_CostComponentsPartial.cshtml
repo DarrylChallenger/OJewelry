@@ -542,8 +542,9 @@ COST:
                 }
                 @Html.Partial("_CostComponentCol1")
 
-                <div class="col-sm-3 col-xs-3">LABOR</div>
-                <div class="col-sm-3 col-xs-3">Desc</div>
+                <div class="col-sm-2 col-xs-2">LABOR</div>
+                <div class="col-sm-2 col-xs-2">Vendor</div>
+                <div class="col-sm-2 col-xs-2">Desc</div>
                 <div class="col-sm-1 col-xs-1">$/HR</div>
                 <div class="col-sm-1 col-xs-1">$/PC</div>
                 <div class="col-sm-1 col-xs-1">QTY</div>
@@ -586,13 +587,14 @@ COST:
                                 if (bDisabled)
                                 {
                                     @Html.HiddenFor(model => model.Labors[i].Name)
-                                    @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "locked col-sm-3 col-xs-3 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
+                                    @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "locked col-sm-2 col-xs-2 requiredifnotremoved", @disabled = "disabled", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
                                 }
                                 else
                                 {
-                                    @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3 requiredifnotremoved", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
+                                    @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
                                 }
-                                @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-3 col-xs-3" } })
+                                @Html.EditorFor(model => model.Labors[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
+                                @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                                 @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                 if (bDisabled)
                                 {
@@ -605,12 +607,13 @@ COST:
                                 {
                                     @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                     @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.Labors[i].Name</div>
-                                <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.Labors[i].Desc&nbsp;</div>
+                                else
+                                {
+                                <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Labors[i].Name</div>
+                                <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Labors[i].Vendor</div>
+                                <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Labors[i].Desc&nbsp;</div>
                                 <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPH.Value.ToString("F02")</div>
                                 <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPP.Value.ToString("F02")</div>
                                 <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].Qty</div>
@@ -741,8 +744,9 @@ COST:
             }
             @Html.Partial("_CostComponentCol1")
             <div class="col-sm-2 col-xs-2">MISC</div>
+            <div class="col-sm-2 col-xs-2">Vendor</div>
             <div class="col-sm-2 col-xs-2">Desc</div>
-            <div class="col-sm-3 col-xs-3">&nbsp;</div>
+            <div class="col-sm-1 col-xs-1">&nbsp;</div>
             <div class="col-sm-1 col-xs-1">$/PC</div>
             <div class="col-sm-1 col-xs-1">QTY</div>
             <div class=" col-sm-2 col-xs-2">TOTAL COST</div>
@@ -789,8 +793,9 @@ COST:
                         {
                             @Html.EditorFor(model => model.Miscs[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Misc Name field is required.", @placeholder = "Name" } })
                         }
+                        @Html.EditorFor(model => model.Miscs[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                         @Html.EditorFor(model => model.Miscs[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
-                        <div class="col-sm-3 col-xs-3 "></div>
+                        <div class="col-sm-1 col-xs-1 "></div>
                         if (bDisabled)
                         {
                             @Html.EditorFor(model => model.Miscs[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 miscsPPP", @disabled = "disabled", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
@@ -807,8 +812,9 @@ COST:
                     else
                     {
                         <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Miscs[i].Name</div>
+                        <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Miscs[i].Vendor</div>
                         <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Miscs[i].Desc&nbsp;</div>
-                        <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3 ">&nbsp;</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1 ">&nbsp;</div>
                         <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Miscs[i].PPP.ToString("F02")</div>
                         <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Miscs[i].Qty</div>
                     }

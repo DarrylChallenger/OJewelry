@@ -21,6 +21,9 @@ namespace OJewelry.Models
         public string Name { get; set; }
 
         [StringLength(50)]
+        public string Vendor { get; set; }
+
+        [StringLength(50)]
         public string Desc { get; set; }
 
         public decimal? PricePerPiece { get; set; }
