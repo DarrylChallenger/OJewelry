@@ -23,7 +23,6 @@
 <table class="table">
     <tr>
         <th>Name</th>
-        <th>Title</th>
         <th>
             Stone
         </th>
@@ -49,8 +48,6 @@
         <th>
             @Html.DisplayNameFor(model => model.Qty)
         </th>
-        <th>Parent Handle</th>
-        <th>Tags</th>
         <th></th>
     </tr>
 
@@ -58,7 +55,6 @@
     {
     <tr>
         <td>@Html.DisplayFor(modelItem => item.Label) </td>
-        <td>@Html.DisplayFor(modelItem => item.Title) </td>
         <td>
             @Html.DisplayFor(modelItem => item.Name)
         </td>
@@ -84,8 +80,6 @@
         <td>
             @Html.DisplayFor(modelItem => item.Qty)
         </td>
-        <td>@Html.DisplayFor(modelItem => item.ParentHandle) </td>
-        <td>@Html.DisplayFor(modelItem => item.Tags) </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id = item.Id })
         </td>
