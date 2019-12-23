@@ -136,7 +136,7 @@ namespace OJewelry.Controllers
             {
                 db.Collections.Add(collection);
                 db.SaveChanges();
-                return RedirectToAction("Edit", new { id = collection.Id });
+                return RedirectToAction("Index", new { CompanyId = collection.CompanyId });
             }
 
             ViewBag.CompanyId = new SelectList(db.Companies, "Id", "Name", collection.CompanyId);

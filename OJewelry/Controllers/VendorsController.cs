@@ -81,7 +81,7 @@ namespace OJewelry.Controllers
                 Vendor vendor = new Vendor(vvm);
                 db.Vendors.Add(vendor);
                 db.SaveChanges();
-                return RedirectToAction("Edit", new { id = vendor.Id });
+                return RedirectToAction("Index", new { companyId = vendor.CompanyId });
             }
 
             return View(vvm);
