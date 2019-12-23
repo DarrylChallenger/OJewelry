@@ -1,10 +1,10 @@
 ﻿@model OJewelry.Models.InventoryViewModel
 
 @{
-    ViewBag.Title = "Inventory";
+    ViewBag.Title = @Model.CompanyName + " - Inventory";
 }
 
-<h2>Manage Inventory for the <i>@Model.CompanyName</i> Company</h2>
+<h2>Manage Inventory for <i>@Model.CompanyName</i></h2>
 <div class="MainMenu">
     @Html.ActionLink("Companies", "Index") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |

@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<OJewelry.Models.ClientViewModel>
 
 @{
-    ViewBag.Title = "Clients";
+    ViewBag.Title = $"{@Html.DisplayNameFor(model => model.CompanyName)} - Clients";
 }
 
-<h2 class="red">ClientList</h2>
+<h2 class="red">Client List</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create", "Clients")

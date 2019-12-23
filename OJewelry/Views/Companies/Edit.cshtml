@@ -1,10 +1,10 @@
 ﻿@model OJewelry.Models.CompanyViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = @Model.Name + " - Edit Company";
 }
 
-<h2>Edit the <i>@Model.Name</i> Company</h2>
+<h2>Edit Company - <i>@Model.Name</i></h2>
 
 @using (Html.BeginForm("Edit", "Companies", FormMethod.Post, new { id = "CompaniesForm" }))
 {

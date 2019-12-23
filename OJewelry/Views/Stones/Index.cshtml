@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<OJewelry.Models.Stone>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = $"{ViewBag.CompanyName} - Stones";
 }
 
-<h2>Stones for the <i>@ViewBag.CompanyName</i> company</h2>
+<h2>Stones for <i>@ViewBag.CompanyName</i></h2>
 
 <div class="row">
     <div class="col-xs-3 col-sm-3">

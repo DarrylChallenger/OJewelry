@@ -1,10 +1,10 @@
 ﻿@model OJewelry.Models.CollectionViewModel
 
 @{
-    ViewBag.Title = "Collections";
+    ViewBag.Title = $"{Model.CompanyName} - Collections";
 }
 
-<h2>The <i>@Model.CompanyName</i> Collection</h2>
+<h2><i>@Model.CompanyName</i> Collection</h2>
 
 <p>
     @Html.ActionLink("Create New Collection", "Create", new { id = Model.CompanyId })

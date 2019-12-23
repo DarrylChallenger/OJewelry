@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<OJewelry.Models.Finding>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = $"{ViewBag.CompanyName} - Findings";
 }
 
-<h2>Findings for the <i>@ViewBag.CompanyName</i> company</h2>
+<h2>Findings for Company - <i>@ViewBag.CompanyName</i></h2>
 
 <p>
     @Html.ActionLink("Create New Finding", "Create", new { companyId = ViewBag.CompanyId })
