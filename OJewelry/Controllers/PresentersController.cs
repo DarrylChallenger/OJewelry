@@ -314,7 +314,11 @@ namespace OJewelry.Controllers
         {
             if (phone == "" || phone == null) { return phone; }
             string[] newPhone = Regex.Split(phone, "[.()-]");
-            string finPhone = newPhone[0] + newPhone[1] + newPhone[2];
+            string finPhone = "";
+            for (int i =0; i < newPhone.Length; i++)
+            {
+                finPhone += newPhone[i];
+            }
             return finPhone;
         }
 

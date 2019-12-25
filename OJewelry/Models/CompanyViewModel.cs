@@ -63,6 +63,7 @@ namespace OJewelry.Models
         {
             //company = new Company();
             clients = new List<CompanyViewClientModel>();
+            isAdminUser = System.Web.HttpContext.Current.User.IsInRole("Admin");
         }
         //private Company company { get; set; }
         /*
@@ -164,6 +165,7 @@ namespace OJewelry.Models
         */
         public List<CompanyViewClientModel> clients { get; set; }
         // Default location (Presenter[0])
+        public bool isAdminUser { get; }
 
     }
 

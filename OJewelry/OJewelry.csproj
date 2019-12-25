@@ -878,6 +878,7 @@
     <Content Include="Views\Findings\Copy.cshtml" />
     <Content Include="Views\Stones\Copy.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Companies\ForcedDelete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

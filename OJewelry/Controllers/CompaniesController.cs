@@ -234,6 +234,7 @@ namespace OJewelry.Controllers
         }
 
         // GET: Companies/Delete/5
+        [Authorize(Roles ="Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -248,7 +249,24 @@ namespace OJewelry.Controllers
             return View(company);
         }
 
+        // GET: Companies/Delete/5
+        [Authorize(Roles = "Admin")]
+        public ActionResult ForcedDelete(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            Company company = db.FindCompany(id);
+            if (company == null)
+            {
+                return HttpNotFound();
+            }
+            return View(company);
+        }
+
         // POST: Companies/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -265,8 +283,8 @@ namespace OJewelry.Controllers
                 return View(company);
             }
             // Remove collections, locations, clients, components, shapes
-//            List<Collection> collections = db.Collections.Where(col => col.CompanyId == id).ToList();
-  //          db.Collections.RemoveRange(collections);
+            //            List<Collection> collections = db.Collections.Where(col => col.CompanyId == id).ToList();
+            //          db.Collections.RemoveRange(collections);
             if (company.defaultStoneVendor.HasValue && company.defaultStoneVendor != 0)
             {
                 Vendor defaultStoneVendor = db.Vendors.Find(company.defaultStoneVendor);
@@ -281,6 +299,60 @@ namespace OJewelry.Controllers
             //db.Components.RemoveRange(company.Components);
             db.Stones.RemoveRange(company.Stones);
             db.Findings.RemoveRange(company.Findings);
+            db.RemoveCompany(company);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        // POST: Companies/Delete/5
+        [Authorize(Roles = "Admin")]
+        [HttpPost, ActionName("ForcedDelete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForcedDeleteConfirmed(int id)
+        {
+            Company company = db.FindCompany(id);
+            // Delete collections
+            if (db.Collections.Where(col => col.CompanyId == id && col.Styles.Count() != 0).Count() != 0)
+            {
+                // Delete Styles
+                foreach (Collection col in db.Collections.Where(c => c.CompanyId == id))
+                {
+                    foreach (Style sty in db.Styles.Where(s => s.CollectionId == col.Id))
+                    {
+                        // remove components
+                        db.Castings.RemoveRange(db.StyleCastings.Where(sc => sc.StyleId == sty.Id).Select(sc => sc.Casting).ToList());
+                        db.Labors.RemoveRange(db.StyleLabors.Where(sl => sl.StyleId == sty.Id).Select(sl => sl.Labor).ToList());
+                        db.LaborTable.RemoveRange(db.StyleLaborItems.Where(sli => sli.StyleId == sty.Id).Select(sli => sli.LaborItem).ToList());
+                        db.Miscs.RemoveRange(db.StyleMiscs.Where(sm => sm.StyleId == sty.Id).Select(sm => sm.Misc).ToList());
+                        // remove links
+                        db.StyleCastings.RemoveRange(sty.StyleCastings);                   
+                        db.StyleFindings.RemoveRange(sty.StyleFindings);
+                        db.StyleLaborItems.RemoveRange(sty.StyleLaborItems);
+                        db.StyleLabors.RemoveRange(sty.StyleLabors);
+                        db.StyleMiscs.RemoveRange(sty.StyleMiscs);
+                        db.StyleStones.RemoveRange(sty.StyleStones);
+                        db.Styles.Remove(sty);
+                    }
+                }
+                //return View(company);
+            }
+            // Delete Jewelry Types
+            List<JewelryType> jts = db.JewelryTypes.Where(jt => jt.CompanyId == id).ToList();
+            db.JewelryTypes.RemoveRange(jts);
+            if (company.defaultStoneVendor.HasValue && company.defaultStoneVendor != 0)
+            {
+                Vendor defaultStoneVendor = db.Vendors.Find(company.defaultStoneVendor);
+                db.Vendors.Remove(defaultStoneVendor);
+            }
+            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == id).ToList();
+            db.Vendors.RemoveRange(vendors);
+            db.Collections.RemoveRange(company.Collections);
+            db.Presenters.RemoveRange(company.Presenters); // Contacts?
+            db.Clients.RemoveRange(company.Clients);
+            db.Shapes.RemoveRange(company.Shapes);
+            db.Stones.RemoveRange(company.Stones);
+            db.Findings.RemoveRange(company.Findings);
+            db.MetalCodes.RemoveRange(db.MetalCodes.Where(mc => mc.CompanyId == id));
             db.RemoveCompany(company);
             db.SaveChanges();
             return RedirectToAction("Index");
