@@ -29,6 +29,7 @@ namespace OJewelry.Models
         [Required(ErrorMessage = "Vendor Name is required.")]
         public string Name { get; set; }
 
+        [PhoneOrEmail]
         [Display (Name="Vendor Phone")]
         [DataType(DataType.PhoneNumber)]
         [Phone]
@@ -36,6 +37,7 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Phone { get; set; }
 
+        [PhoneOrEmail]
         [Display(Name = "Vendor Email")]
         [DataType(DataType.EmailAddress)]
         [StringLength(50)]
@@ -48,10 +50,10 @@ namespace OJewelry.Models
         private Vendor Vendor { get; set; }
         public String CompanyName { get; set; }
 
-        [Display(Name = "Sells Findings")]
+        [Display(Name = "Findings")]
         public bool SellsFindings { get; set; }
 
-        [Display(Name = "Sells Stones")]
+        [Display(Name = "Stones")]
         public bool SellsStones { get; set; }
         public vendorTypeEnum VendorType { get; set; }
     }

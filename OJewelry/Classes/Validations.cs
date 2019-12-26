@@ -54,6 +54,26 @@ namespace OJewelry.Classes
     }
 
     [AttributeUsage(AttributeTargets.Property)]
+    public sealed class PhoneOrEmail : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            //var property = validationContext.ObjectType.GetProperty("State");
+            //var otherValue = property.GetValue(validationContext.ObjectInstance, null);
+            if (validationContext.MemberName == "Phone" || validationContext.MemberName == "Email")
+            {
+                VendorViewModel vvm = (VendorViewModel)validationContext.ObjectInstance;
+                if ((vvm.Phone == "" || vvm.Phone == null) && (vvm.Email == "" || vvm.Email == null))
+                {
+                    return new ValidationResult("Please enter a Phone number or an Email address");
+                }
+            }
+            return ValidationResult.Success;
+        }
+
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
     public sealed class GreaterThanZeroAttribute : ValidationAttribute
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)

@@ -535,3 +535,14 @@ html input[disabled], locked {
 .TableRowContainer {
     margin-bottom:0;
 }
+
+.form-group .radioBox {
+    border-style:solid;
+    border-color:#ccc;
+    border-width:1px;
+    border-radius:4px;
+    margin-bottom:1em;
+    padding-bottom:1em;
+    height:4em;
+    width:75%;
+}
