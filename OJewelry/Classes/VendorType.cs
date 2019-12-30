@@ -6,7 +6,7 @@ using System.Web;
 
 namespace OJewelry.Classes
 {
-    [Flags] public enum vendorTypeEnum { General = 0x0, Stone = 0x2, Finding = 0x4 };
+    [Flags] public enum vendorTypeEnum { General = 0x0, Stone = 0x2, Finding = 0x4, Casting = 0x8, Labor = 0x10 };
 
     public class VendorTypeEnumObj
     {
@@ -35,6 +35,20 @@ namespace OJewelry.Classes
             set { _type = (_type & (vendorTypeEnum.General)) | value; }
         }
         */
+        [NotMapped]
+        public vendorTypeEnum bCasting
+        {
+            get => _type & vendorTypeEnum.Casting;
+            set { _type = (_type & (~vendorTypeEnum.Casting)) | value; }
+        }
+
+        [NotMapped]
+        public vendorTypeEnum bLabor
+        {
+            get => _type & vendorTypeEnum.Labor;
+            set { _type = (_type & (~vendorTypeEnum.Labor)) | value; }
+        }
+
         [NotMapped]
         public vendorTypeEnum bStone
         {

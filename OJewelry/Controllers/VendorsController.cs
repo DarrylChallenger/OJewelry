@@ -150,10 +150,11 @@ namespace OJewelry.Controllers
             Vendor vendor = db.Vendors.Where(v => v.Id == id).FirstOrDefault();
 
             if (db.Castings.Where(c => c.VendorId == id).Count() != 0 ||
+                db.LaborTable.Where(li => li.VendorId == id).Count() != 0 ||
                 db.Stones.Where(s => s.VendorId == id).Count() != 0 ||
                 db.Findings.Where(s => s.VendorId == id).Count() != 0)
             {
-                ModelState.AddModelError("Vendor", vendor.Name + " is in use by at least one casting, stone, or finding.");
+                ModelState.AddModelError("Vendor", vendor.Name + " is in use by at least one labor, casting, stone, or finding.");
                 return View(vendor);
             }
             int companyId = vendor.CompanyId.Value;

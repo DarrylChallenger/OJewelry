@@ -46,6 +46,12 @@
         <div class="col-md-10">
             <div class="radioBox form-control">
                 <div class="form-group">
+                    @Html.LabelFor(model => model.SellsCastings, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-1">
+                        @Html.CheckBoxFor(model => model.SellsCastings, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SellsCastings, "", new { @class = "text-danger" })
+                    </div>
+
                     @Html.LabelFor(model => model.SellsFindings, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-1">
                         @Html.CheckBoxFor(model => model.SellsFindings, new { @class = "form-control" })
@@ -56,6 +62,12 @@
                     <div class="col-md-1">
                         @Html.CheckBoxFor(model => model.SellsStones, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.SellsStones, "", new { @class = "text-danger" })
+                    </div>
+
+                    @Html.LabelFor(model => model.SellsLabor, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-1">
+                        @Html.CheckBoxFor(model => model.SellsLabor, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SellsLabor, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>

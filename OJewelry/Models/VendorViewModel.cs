@@ -50,6 +50,12 @@ namespace OJewelry.Models
         private Vendor Vendor { get; set; }
         public String CompanyName { get; set; }
 
+        [Display(Name = "Castings")]
+        public bool SellsCastings { get; set; }
+
+        [Display(Name = "Labor")]
+        public bool SellsLabor { get; set; }
+
         [Display(Name = "Findings")]
         public bool SellsFindings { get; set; }
 
