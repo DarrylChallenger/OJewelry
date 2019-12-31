@@ -74,7 +74,7 @@ COST:
                         @if (Model.SVMOp != SVMOperation.Print)
                         {
                             @Html.EditorFor(model => model.Castings[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Metal Style Name field is required.", @placeholder = "Name" } })
-                            @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].VendorList, new { @class = "col-sm-1 col-xs-1" })
+                            @Html.DropDownListFor(model => model.Castings[i].VendorId, Model.Castings[i].CastingsVendorList, new { @class = "col-sm-1 col-xs-1" })
                             @Html.EditorFor(model => model.Castings[i].MetalWeight, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcMetalPrice(" + i + ")", @data_val = "true", @data_val_required = "The Weight field is required." } })
                             @Html.DropDownListFor(model => model.Castings[i].MetalWtUnitId, Model.Castings[i].MetalWeightUnits, new { @class = "col-sm-1 col-xs-1", onchange = "CalcMetalPrice(" + i + ")" })
                             @Html.DropDownListFor(model => model.Castings[i].MetalCodeId, Model.Castings[i].MetalCodes, new { @class = "col-sm-1 col-xs-1", onchange = "CalcMetalPrice(" + i + ")" })
@@ -880,7 +880,7 @@ COST:
             @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault()?.Id), new {@class = "col-sm-1 col-xs-1"})
         </div>
         <div id="jsVendors">
-            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsVendors, "Id", "Name", Model.jsVendors.FirstOrDefault()?.Id), new {@class = "col-sm-1 col-xs-1 "})
+            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsCastingsVendors, "Id", "Name", Model.jsCastingsVendors.FirstOrDefault()?.Id), new {@class = "col-sm-1 col-xs-1 "})
         </div>
         <div id="jsStones">
             @if (Model.jsStones.Count == 0)

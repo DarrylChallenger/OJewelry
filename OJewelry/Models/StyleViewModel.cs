@@ -126,16 +126,29 @@ namespace OJewelry.Models
             set { _casting.MetalWtUnitId = value; }
         }
 
-        public SelectList VendorList { get; set; }
+        public SelectList CastingsVendorList { get; set; }
+        public SelectList LaborsVendorList { get; set; }
         public SelectList MetalCodes { get; set; }
         public SelectList MetalWeightUnits { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
 
+        /*
         public void SetVendorsList(List<Vendor> vendors, int defaultVendorSelection)
         {
             VendorList = new SelectList(vendors, "Id", "Name", defaultVendorSelection);
+        }
+        */
+
+        public void SetCastingsVendorsList(List<Vendor> vendors, int defaultVendorSelection)
+        {
+            CastingsVendorList = new SelectList(vendors, "Id", "Name", defaultVendorSelection);
+        }
+
+        public void SetLaborsVendorsList(List<Vendor> vendors, int defaultVendorSelection)
+        {
+            LaborsVendorList = new SelectList(vendors, "Id", "Name", defaultVendorSelection);
         }
 
         public void SetMetalsList(List<MetalCode> metals, int defaultMetalSelection)
@@ -758,7 +771,9 @@ namespace OJewelry.Models
         public List<JewelryType> drpJewelryTypes { get; set; }
         public List<LaborItem> drpLaborItems { get; set; }
 
-        public List<Vendor> jsVendors { get; set; }
+        //public List<Vendor> jsVendors { get; set; }
+        public List<Vendor> jsCastingsVendors { get; set; }
+        public List<Vendor> jsLaborsVendors { get; set; }
         public List<MetalCode> jsMetals { get; set; }
         public List<MetalWeightUnit> jsMetalWeightUnits { get; set; }
         public List<StoneListItem> jsStones { get; set; }
@@ -830,7 +845,9 @@ namespace OJewelry.Models
             drpJewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == CompanyId).ToList();
             drpLaborItems = db.LaborTable.Where(li => li.CompanyId == CompanyId).ToList();
 
-            jsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId).OrderBy(v => v.Name).ToList();
+            //jsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId).OrderBy(v => v.Name).ToList();
+            jsCastingsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId && x.Type.Type == vendorTypeEnum.Casting).OrderBy(v => v.Name).ToList();
+            jsLaborsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId && x.Type.Type == vendorTypeEnum.Labor).OrderBy(v => v.Name).ToList();
             jsMetals = db.MetalCodes.Where(x => x.CompanyId == CompanyId).OrderByDescending(m => m.Code).ToList();
 
             jsStones = db.Stones.Where(x => x.CompanyId == CompanyId)
@@ -877,7 +894,9 @@ namespace OJewelry.Models
             // reusables
             foreach (CastingComponent cstc in Castings)
             {
-                cstc.SetVendorsList(jsVendors, cstc.VendorId);
+                //cstc.SetVendorsList(jsVendors, cstc.VendorId);
+                cstc.SetCastingsVendorsList(jsCastingsVendors, cstc.VendorId);
+                cstc.SetLaborsVendorsList(jsLaborsVendors, cstc.VendorId);
                 cstc.SetMetalsList(jsMetals, cstc.MetalCodeId);
                 cstc.SetMetalWeightUnitsList(jsMetalWeightUnits, cstc.MetalWtUnitId);
             }
@@ -1235,7 +1254,8 @@ namespace OJewelry.Models
                     cstc.MetalCodeId = casting.MetalCodeID.Value;
                     cstc.MetalWtUnitId = casting.MetalWtUnitId;
                     cstc.MetalWeight = casting.MetalWeight;
-                    cstc.SetVendorsList(jsVendors, casting.VendorId.Value);
+                    //cstc.SetVendorsList(jsVendors, casting.VendorId.Value);
+                    cstc.SetCastingsVendorsList(jsCastingsVendors, casting.VendorId.Value);
                     cstc.SetMetalsList(jsMetals, casting.MetalCodeID.Value);// 
                     //cstc.VendorName = db.Vendors.Find(casting.VendorId).Name; //  Vendor();
                     MetalCode mc = db.MetalCodes.Find(casting.MetalCodeID); 
