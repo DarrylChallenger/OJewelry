@@ -23,12 +23,15 @@ namespace OJewelry.Models
         private string shortname;
 
         [StringLength(10)]
-        public string ShortName { get
+        public string ShortName
+        {
+            get
             {
                 if (shortname == null || shortname.Trim() =="")
                 {
                     if (Name == null) return "";
-                    return Name.PadRight(10).Substring(0, 3);
+                    shortname = Name.PadRight(10).Substring(0, 3).ToUpper();
+                    return Name.PadRight(10).Substring(0, 3).ToUpper();
                 } else {
                     return shortname.Trim();
                 }
@@ -38,7 +41,8 @@ namespace OJewelry.Models
                 {
                     shortname = value.PadRight(10).Substring(0, 3);
                 }
-            } }
+            }
+        }
 
         [StringLength(10)]
         public string Phone { get; set; }
