@@ -21,7 +21,9 @@ namespace OJewelry.Models
         public string Name { get; set; }
 
         [StringLength(50)]
-        public string Vendor { get; set; }
+        public string VendorStr { get; set; }
+
+        public int? VendorId { get; set; }
 
         [StringLength(50)]
         public string Desc { get; set; }
@@ -33,6 +35,7 @@ namespace OJewelry.Models
         public decimal? Qty { get; set; }
 
         //public bool Auto { get; set; }
+        public virtual Vendor Vendor { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StyleLabor> StyleLabors { get; set; }

@@ -77,6 +77,8 @@ namespace OJewelry.Models
             Type = new VendorType();
             Type.bFinding = vvm.SellsFindings ? vendorTypeEnum.Finding : 0;
             Type.bStone = vvm.SellsStones ? vendorTypeEnum.Stone : 0;
+            Type.bCasting = vvm.SellsCastings ? vendorTypeEnum.Casting : 0;
+            Type.bFinding = vvm.SellsLabor ? vendorTypeEnum.Labor : 0;
         }
     }
 }

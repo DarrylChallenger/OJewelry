@@ -593,7 +593,7 @@ COST:
                                 {
                                     @Html.EditorFor(model => model.Labors[i].Name, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 requiredifnotremoved", @data_val = "true", @data_val_required = "The Labor Name field is required.", @placeholder = "Name" } })
                                 }
-                                @Html.EditorFor(model => model.Labors[i].Vendor, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
+                                @Html.DropDownListFor(model => model.Labors[i].VendorId, Model.Labors[i].LaborsVendorList, new { @class = "col-sm-2 col-xs-2" })
                                 @Html.EditorFor(model => model.Labors[i].Desc, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2" } })
                                 @Html.EditorFor(model => model.Labors[i].PPH, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                 if (bDisabled)
@@ -607,12 +607,12 @@ COST:
                                 {
                                     @Html.EditorFor(model => model.Labors[i].PPP, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" } })
                                     @Html.TextBoxFor(model => model.Labors[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "CalcRowTotal('" + Model.SVMCCType + "', '" + i + "')" })
-                                    }
                                 }
-                                else
-                                {
+                            }
+                            else
+                            {
                                 <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Labors[i].Name</div>
-                                <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Labors[i].Vendor</div>
+                                <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Labors[i].VendorStr</div>
                                 <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.Labors[i].Desc&nbsp;</div>
                                 <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPH.Value.ToString("F02")</div>
                                 <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Labors[i].PPP.Value.ToString("F02")</div>
@@ -864,104 +864,108 @@ COST:
 </div>
 @if (Model.SVMOp != SVMOperation.Print)
 {
-    <div class="hidden">
-        <div id="jsMetals">
-            @{
-                List<Stone> emptyStoneList = new List<Stone>();
-                Stone stoneItem = new Stone() {Id = 1, Name = ""};
-                emptyStoneList.Add(stoneItem);
-                List<Finding> emptyFindingList = new List<Finding>();
-                Finding findingItem = new Finding() {Id = 1, Name = ""};
-                emptyFindingList.Add(findingItem);
-                List<MetalWeightUnit> emptyMetalWeightUnitList = new List<MetalWeightUnit>();
-                MetalWeightUnit mwuItem = new MetalWeightUnit() { Id = 1, Unit = "" };
-                emptyMetalWeightUnitList.Add(mwuItem);
-            }
-            @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault()?.Id), new {@class = "col-sm-1 col-xs-1"})
-        </div>
-        <div id="jsVendors">
-            @Html.DropDownList("jsvINDEX", new SelectList(Model.jsCastingsVendors, "Id", "Name", Model.jsCastingsVendors.FirstOrDefault()?.Id), new {@class = "col-sm-1 col-xs-1 "})
-        </div>
-        <div id="jsStones">
-            @if (Model.jsStones.Count == 0)
-            {
-                @Html.DropDownList("jssINDEX", new SelectList(emptyStoneList, "Id", "Name", 1), new {@class = "col-sm-2 col-xs-2 requiredifnotremoved"})
-            }
-            else
-            {
-                @*Model.jsStones.Insert(0, Model.DefStone);*@
-                @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name"), "Please select a stone", new {@class = "col-sm-2 col-xs-2 requiredifnotremoved"})
-            }
-        </div>
-        <div id="jsShapes">
-            @if (Model.jsShapes.Count == 0)
-            {
-                @Html.DropDownList("jsshINDEX", new SelectList(emptyStoneList, "Id", "Name", 1), new {@class = "col-sm-1 col-xs-1 requiredifnotremoved"})
-            }
-            else
-            {
-                @*Model.jsShapes.Insert(0, Model.DefStone);*@
-                @Html.DropDownList("jsshINDEX", new SelectList(Model.jsShapes, "Id", "Name"), "Please select a shape", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved"})
-            }
-        </div>
-        <div id="jsSizes">
-            @if (Model.jsSizes.Count == 0)
-            {
-                @Html.DropDownList("jsszINDEX", new SelectList(emptyStoneList, "Id", "Name", 1), new {@class = "col-sm-1 col-xs-1 requiredifnotremoved"})
-            }
-            else
-            {
-                @*Model.jsSizs.Insert(0, Model.DefStone);*@
-                @Html.DropDownList("jsszINDEX", new SelectList(Model.jsSizes, "Id", "Name"), "Please select a size", new {@class = "col-sm-1 col-xs-1 requiredifnotremoved"})
-            }
-        </div>
-        <div id="jsFindings">
-            @if (Model.jsFindings.Count == 0)
-            {
-                @Html.DropDownList("jsfINDEX", new SelectList(emptyFindingList, "Id", "Name"), new {@class = "col-sm-2 col-xs-2 requiredifnotremoved"})
-            }
-            else
-            {
-                @*Model.jsFindings.Insert(0, Model.DefFinding);*@
-                @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name"), "Please select a finding", new {@class = "col-sm-2 col-xs-2 requiredifnotremoved"})
-            }
-        </div>
-        <div id="jsMetalUnits">
-            @if (Model.jsMetalWeightUnits.Count == 0)
-            {
-                @Html.DropDownList("jsuINDEX", new SelectList(emptyMetalWeightUnitList, "Id", "Unit"), new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
-            }
-            else
-            {
-                @*Model.jsFindings.Insert(0, Model.DefFinding);*@
-                @Html.DropDownList("jsuINDEX", new SelectList(Model.jsMetalWeightUnits, "Id", "Unit"), "Please select a Unit", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
-            }
-        </div>
-        <div id="StonesData">
-            @foreach (StoneListItem stone in Model.jsStones)
-            {
-                <div id="@stone.Id">
-                    @*
+<div class="hidden">
+    <div id="jsMetals">
+        @{
+            List<Stone> emptyStoneList = new List<Stone>();
+            Stone stoneItem = new Stone() { Id = 1, Name = "" };
+            emptyStoneList.Add(stoneItem);
+            List<Finding> emptyFindingList = new List<Finding>();
+            Finding findingItem = new Finding() { Id = 1, Name = "" };
+            emptyFindingList.Add(findingItem);
+            List<MetalWeightUnit> emptyMetalWeightUnitList = new List<MetalWeightUnit>();
+            MetalWeightUnit mwuItem = new MetalWeightUnit() { Id = 1, Unit = "" };
+            emptyMetalWeightUnitList.Add(mwuItem);
+        }
+        @Html.DropDownList("jsmINDEX", new SelectList(Model.jsMetals, "Id", "Code", Model.jsMetals.FirstOrDefault()?.Id), new { @class = "col-sm-1 col-xs-1" })
+    </div>
+    <div id="jsVendors">
+        @Html.DropDownList("jsvINDEX", new SelectList(Model.jsCastingsVendors, "Id", "Name", Model.jsCastingsVendors.FirstOrDefault()?.Id), new { @class = "col-sm-1 col-xs-1 " })
+    </div>
+    <div id="jsLaborsVendors">
+        @Html.DropDownList("jslvINDEX", new SelectList(Model.jsLaborsVendors, "Id", "Name", Model.jsLaborsVendors.FirstOrDefault()?.Id), new { @class = "col-sm-2 col-xs-2 " })
+    </div>
+
+    <div id="jsStones">
+        @if (Model.jsStones.Count == 0)
+        {
+            @Html.DropDownList("jssINDEX", new SelectList(emptyStoneList, "Id", "Name", 1), new { @class = "col-sm-2 col-xs-2 requiredifnotremoved" })
+        }
+        else
+        {
+            @*Model.jsStones.Insert(0, Model.DefStone);*@
+            @Html.DropDownList("jssINDEX", new SelectList(Model.jsStones, "Id", "Name"), "Please select a stone", new { @class = "col-sm-2 col-xs-2 requiredifnotremoved" })
+        }
+    </div>
+    <div id="jsShapes">
+        @if (Model.jsShapes.Count == 0)
+        {
+            @Html.DropDownList("jsshINDEX", new SelectList(emptyStoneList, "Id", "Name", 1), new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
+        }
+        else
+        {
+            @*Model.jsShapes.Insert(0, Model.DefStone);*@
+            @Html.DropDownList("jsshINDEX", new SelectList(Model.jsShapes, "Id", "Name"), "Please select a shape", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
+        }
+    </div>
+    <div id="jsSizes">
+        @if (Model.jsSizes.Count == 0)
+        {
+            @Html.DropDownList("jsszINDEX", new SelectList(emptyStoneList, "Id", "Name", 1), new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
+        }
+        else
+        {
+            @*Model.jsSizs.Insert(0, Model.DefStone);*@
+            @Html.DropDownList("jsszINDEX", new SelectList(Model.jsSizes, "Id", "Name"), "Please select a size", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
+        }
+    </div>
+    <div id="jsFindings">
+        @if (Model.jsFindings.Count == 0)
+        {
+            @Html.DropDownList("jsfINDEX", new SelectList(emptyFindingList, "Id", "Name"), new { @class = "col-sm-2 col-xs-2 requiredifnotremoved" })
+        }
+        else
+        {
+            @*Model.jsFindings.Insert(0, Model.DefFinding);*@
+            @Html.DropDownList("jsfINDEX", new SelectList(Model.jsFindings, "Id", "Name"), "Please select a finding", new { @class = "col-sm-2 col-xs-2 requiredifnotremoved" })
+        }
+    </div>
+    <div id="jsMetalUnits">
+        @if (Model.jsMetalWeightUnits.Count == 0)
+        {
+            @Html.DropDownList("jsuINDEX", new SelectList(emptyMetalWeightUnitList, "Id", "Unit"), new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
+        }
+        else
+        {
+            @*Model.jsFindings.Insert(0, Model.DefFinding);*@
+            @Html.DropDownList("jsuINDEX", new SelectList(Model.jsMetalWeightUnits, "Id", "Unit"), "Please select a Unit", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved" })
+        }
+    </div>
+    <div id="StonesData">
+        @foreach (StoneListItem stone in Model.jsStones)
+        {
+            <div id="@stone.Id">
+                @*
                     <span class="VendorName" value="@stone.Vendor.Name"></span>
                     <span class="PPC" value="@stone.Price.ToString("F02")"></span>
-                    *@
-                </div>
-            }
-        </div>
-        <div id="FindingsData">
-            @foreach (Finding finding in Model.jsFindings)
-            {
+                *@
+            </div>
+        }
+    </div>
+    <div id="FindingsData">
+        @foreach (Finding finding in Model.jsFindings)
+        {
 
             <div id="@finding.Id">
                 <span class="VendorName" value="@finding.Vendor.Name"></span>
                 <span class="Weight" value="@finding.Weight"></span>
                 <span class="Price" value="@finding.Price.ToString("F02")"></span>
             </div>
-            }
-        </div>
-        <div id="DelBtnPos" BtnPos=@Model.DelBtnPos>
-
-        </div>
+        }
     </div>
+    <div id="DelBtnPos" BtnPos=@Model.DelBtnPos>
+
+    </div>
+</div>
 }
 </div>

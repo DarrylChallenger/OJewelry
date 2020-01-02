@@ -110,8 +110,7 @@ namespace OJewelry.Models
         }
 
         public SVMStateEnum State { get; set; }
-
-        
+      
         [Display(Name="Vendor")]
         public String VendorName {
             get {
@@ -127,7 +126,6 @@ namespace OJewelry.Models
         }
 
         public SelectList CastingsVendorList { get; set; }
-        public SelectList LaborsVendorList { get; set; }
         public SelectList MetalCodes { get; set; }
         public SelectList MetalWeightUnits { get; set; }
 
@@ -144,11 +142,6 @@ namespace OJewelry.Models
         public void SetCastingsVendorsList(List<Vendor> vendors, int defaultVendorSelection)
         {
             CastingsVendorList = new SelectList(vendors, "Id", "Name", defaultVendorSelection);
-        }
-
-        public void SetLaborsVendorsList(List<Vendor> vendors, int defaultVendorSelection)
-        {
-            LaborsVendorList = new SelectList(vendors, "Id", "Name", defaultVendorSelection);
         }
 
         public void SetMetalsList(List<MetalCode> metals, int defaultMetalSelection)
@@ -489,17 +482,20 @@ namespace OJewelry.Models
         public LMState State { get; set; }
         public LaborComponent() { Init(); }
 
-        public LaborComponent(LaborComponent lc)
+        public LaborComponent(LaborComponent lc, Vendor v)
         {
             Init();
             PPH = lc.PPH;
             PPP = lc.PPP;
             Name = lc.Name;
-            Vendor = lc.Vendor;
+            VendorStr = lc.VendorStr;
+            VendorId = lc.VendorId;
             Desc = lc.Desc;
             Qty = lc.Qty;
             Total = (PPP.GetValueOrDefault() + PPH.GetValueOrDefault()) * Qty.GetValueOrDefault();
+            _labor.Vendor = v;
         }
+
         public LaborComponent(Labor l) { _labor = l; Init(); }
         void Init()
         {
@@ -524,7 +520,22 @@ namespace OJewelry.Models
         public string Desc { get { return _labor.Desc; } set { _labor.Desc = value; } }
 
         [StringLength(50)]
-        public String Vendor { get { return _labor.Vendor; } set { _labor.Vendor = value; } }
+        public String VendorStr { get { return _labor.VendorStr; } set { _labor.VendorStr = value; } }
+
+        public int VendorId
+        {
+            get { return _labor.VendorId ?? 0; }
+            set { _labor.VendorId = value; }
+        }
+
+        [Display(Name = "Vendor")]
+        public String VendorName
+        {
+            get
+            {
+                return _labor.Vendor.Name;
+            }
+        }
 
         [Display(Name = "Quantity")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
@@ -532,6 +543,15 @@ namespace OJewelry.Models
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
+
+        public SelectList LaborsVendorList { get; set; }
+
+        public void SetLaborsVendorsList(List<Vendor> vendors, int defaultVendorSelection)
+        {
+            LaborsVendorList = new SelectList(vendors, "Id", "Name", defaultVendorSelection);
+        }
+
+
     }
 
     public class LaborItemComponent
@@ -711,7 +731,8 @@ namespace OJewelry.Models
             })).ToList();
             Labors = oldModel.Labors.ConvertAll((x =>
             {
-                LaborComponent l = new LaborComponent(x)
+                Vendor v = db.Vendors.Find(x.VendorId);
+                LaborComponent l = new LaborComponent(x, v)
                 {
                     //State = x.State == SVMStateEnum.Fixed ? SVMStateEnum.Fixed : SVMStateEnum.Added
                     State = x.State == LMState.Fixed ? LMState.Fixed : ((bCreating) ? LMState.Added : x.State)
@@ -896,7 +917,6 @@ namespace OJewelry.Models
             {
                 //cstc.SetVendorsList(jsVendors, cstc.VendorId);
                 cstc.SetCastingsVendorsList(jsCastingsVendors, cstc.VendorId);
-                cstc.SetLaborsVendorsList(jsLaborsVendors, cstc.VendorId);
                 cstc.SetMetalsList(jsMetals, cstc.MetalCodeId);
                 cstc.SetMetalWeightUnitsList(jsMetalWeightUnits, cstc.MetalWtUnitId);
             }
@@ -910,6 +930,11 @@ namespace OJewelry.Models
             foreach (FindingsComponent fiscm in Findings)
             {
                 fiscm.SetFindingsList(jsFindings, fiscm.Id ?? 0); //fiscm.SetFindingsList(jsFindings, fiscm.Id.Value);
+            }
+            foreach (LaborComponent labc in Labors)
+            {
+                labc.SetLaborsVendorsList(jsLaborsVendors, labc.VendorId);
+
             }
         }
 
@@ -1291,6 +1316,7 @@ namespace OJewelry.Models
                 foreach (StyleLabor sl in Style.StyleLabors)
                 {
                     Labor lb = db.Labors.Find(sl.LaborId);
+                    lb.Vendor = db.Vendors.Find(lb.VendorId);
                     LaborComponent liscm = new LaborComponent(lb);
                     liscm.Qty = sl.Labor.Qty ?? 0;
                     //liscm.PPP = Style.JewelryType.FinishingCost;
@@ -1392,7 +1418,8 @@ namespace OJewelry.Models
             Desc = c.Desc;
             PricePerHour = c.PPH;
             PricePerPiece = c.PPP;
-            Vendor = c.Vendor;
+            VendorId = c.VendorId;
+            VendorStr = c.VendorStr;
             Qty = c.Qty;
         }
     }

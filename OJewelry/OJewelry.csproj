@@ -622,6 +622,10 @@
     <Compile Include="Migrations\201911010145387_v2.0AddVendorToLaborAndMisc.Designer.cs">
       <DependentUpon>201911010145387_v2.0AddVendorToLaborAndMisc.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001020418417_v2.0ChangeLaborVendorToType.cs" />
+    <Compile Include="Migrations\202001020418417_v2.0ChangeLaborVendorToType.Designer.cs">
+      <DependentUpon>202001020418417_v2.0ChangeLaborVendorToType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -1088,6 +1092,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911010145387_v2.0AddVendorToLaborAndMisc.resx">
       <DependentUpon>201911010145387_v2.0AddVendorToLaborAndMisc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001020418417_v2.0ChangeLaborVendorToType.resx">
+      <DependentUpon>202001020418417_v2.0ChangeLaborVendorToType.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
