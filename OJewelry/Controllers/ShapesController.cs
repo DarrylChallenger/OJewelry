@@ -74,7 +74,7 @@ namespace OJewelry.Controllers
             {
                 db.Shapes.Add(shape);
                 db.SaveChanges();
-                return RedirectToAction("Edit", new { id = shape.Id });
+                return RedirectToAction("Index", new { shape.CompanyId });
             }
             ViewBag.CompanyId = shape.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(shape.CompanyId)?.Name;
