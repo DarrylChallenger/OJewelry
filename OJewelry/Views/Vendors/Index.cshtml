@@ -34,7 +34,7 @@
         </th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (OJewelry.Models.Vendor item in Model)
     {
         if (item.Name != "")
         {
@@ -43,7 +43,10 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Phone)
+            @if (item.Phone != null)
+            {               
+            <span>@String.Format("({0}) {1}-{2}", item.Phone.Substring(0, 3), item.Phone.Substring(3, 3), item.Phone.Substring(6, 4))</span>
+            }
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Email)
