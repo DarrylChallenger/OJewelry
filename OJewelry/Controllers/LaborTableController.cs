@@ -36,7 +36,7 @@ namespace OJewelry.Controllers
                 CompanyId = CompanyId.Value,
                 CompanyName = company.Name,
             };
-            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == CompanyId && v.Type.bLabor == vendorTypeEnum.Labor).ToList();
+            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == CompanyId && (v.Type.Type & vendorTypeEnum.Labor) == vendorTypeEnum.Labor).ToList();
             foreach (LaborItem li in ltm.Labors)
             {
                 li.selectList = new SelectList(vendors, "Id", "Name", li.VendorId);
