@@ -27,33 +27,5 @@ left  join Vendors v on v.CompanyId = c.id
 select * from Vendors where Type_Type <> 0
 
 /* Check */
-select * from castings c
-join vendors v on v.CompanyId = c.CompanyId 
-where vendorId is null and v.Type_Type = 8
-select * from labors l
-join vendors v on v.CompanyId = l.CompanyId 
-where vendorId is null and v.Type_Type = 16
-
-/* Assign stone vendor to castings */
-begin tran
-update castings set vendorId = vid from
-(
-select v.id as vid, c.id as cid from castings c
-join vendors v on v.CompanyId = c.CompanyId 
-where vendorId is null and v.Type_Type = 16
-) t where id = cid
-select * from castings 
-commit tran
-
-/* Assign findings vendor to labors */
-begin tran
-update labors set vendorId = vid from
-(
-select v.id as vid, l.id as lid from labors l
-join vendors v on v.CompanyId = l.CompanyId 
-where vendorId is null and v.Type_Type = 16
-) t where id = lid
-select * from labors 
-commit tran
-
-
+select * from vendors where Name like 'cv%'
+select * from vendors where Name like 'lv%'

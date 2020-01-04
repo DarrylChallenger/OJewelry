@@ -12,6 +12,7 @@ namespace OJewelry.Models
         public Presenter()
         {
             Memos = new HashSet<Memo>();
+            Contacts = new HashSet<Contact>();
         }
 
         public int Id { get; set; }
@@ -56,5 +57,8 @@ namespace OJewelry.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Memo> Memos { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Contact> Contacts { get; set; }
     }
 }

@@ -867,8 +867,8 @@ namespace OJewelry.Models
             drpLaborItems = db.LaborTable.Where(li => li.CompanyId == CompanyId).ToList();
 
             //jsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId).OrderBy(v => v.Name).ToList();
-            jsCastingsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId && x.Type.Type == vendorTypeEnum.Casting).OrderBy(v => v.Name).ToList();
-            jsLaborsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId && x.Type.Type == vendorTypeEnum.Labor).OrderBy(v => v.Name).ToList();
+            jsCastingsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId && (x.Type.Type & vendorTypeEnum.Casting) == vendorTypeEnum.Casting).OrderBy(v => v.Name).ToList();
+            jsLaborsVendors = db.Vendors.Where(x => x.CompanyId == CompanyId && (x.Type.Type & vendorTypeEnum.Labor) == vendorTypeEnum.Labor).OrderBy(v => v.Name).ToList();
             jsMetals = db.MetalCodes.Where(x => x.CompanyId == CompanyId).OrderByDescending(m => m.Code).ToList();
 
             jsStones = db.Stones.Where(x => x.CompanyId == CompanyId)

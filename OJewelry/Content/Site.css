@@ -546,3 +546,7 @@ html input[disabled], locked {
     height:4em;
     width:75%;
 }
+
+.syserrImg {
+    width:100%;
+}

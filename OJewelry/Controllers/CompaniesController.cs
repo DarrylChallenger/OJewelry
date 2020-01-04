@@ -291,14 +291,18 @@ namespace OJewelry.Controllers
                 db.Vendors.Remove(defaultStoneVendor);
             }
             List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == id).ToList();
-            db.Vendors.RemoveRange(vendors);
-            db.Collections.RemoveRange(company.Collections);
-            db.Presenters.RemoveRange(company.Presenters);
-            db.Clients.RemoveRange(company.Clients);
-            db.Shapes.RemoveRange(company.Shapes);
+            db.Vendors.RemoveRange(vendors.ToList());
+            db.Collections.RemoveRange(company.Collections.ToList());
+            foreach (Presenter p in company.Presenters)
+            {
+                db.Contacts.RemoveRange(p.Contacts.ToList());
+            }
+            db.Presenters.RemoveRange(company.Presenters.ToList());
+            db.Clients.RemoveRange(company.Clients.ToList());
+            db.Shapes.RemoveRange(company.Shapes.ToList());
             //db.Components.RemoveRange(company.Components);
-            db.Stones.RemoveRange(company.Stones);
-            db.Findings.RemoveRange(company.Findings);
+            db.Stones.RemoveRange(company.Stones.ToList());
+            db.Findings.RemoveRange(company.Findings.ToList());
             db.RemoveCompany(company);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -325,12 +329,12 @@ namespace OJewelry.Controllers
                         db.LaborTable.RemoveRange(db.StyleLaborItems.Where(sli => sli.StyleId == sty.Id).Select(sli => sli.LaborItem).ToList());
                         db.Miscs.RemoveRange(db.StyleMiscs.Where(sm => sm.StyleId == sty.Id).Select(sm => sm.Misc).ToList());
                         // remove links
-                        db.StyleCastings.RemoveRange(sty.StyleCastings);                   
-                        db.StyleFindings.RemoveRange(sty.StyleFindings);
-                        db.StyleLaborItems.RemoveRange(sty.StyleLaborItems);
-                        db.StyleLabors.RemoveRange(sty.StyleLabors);
-                        db.StyleMiscs.RemoveRange(sty.StyleMiscs);
-                        db.StyleStones.RemoveRange(sty.StyleStones);
+                        db.StyleCastings.RemoveRange(sty.StyleCastings.ToList());                   
+                        db.StyleFindings.RemoveRange(sty.StyleFindings.ToList());
+                        db.StyleLaborItems.RemoveRange(sty.StyleLaborItems.ToList());
+                        db.StyleLabors.RemoveRange(sty.StyleLabors.ToList());
+                        db.StyleMiscs.RemoveRange(sty.StyleMiscs.ToList());
+                        db.StyleStones.RemoveRange(sty.StyleStones.ToList());
                         db.Styles.Remove(sty);
                     }
                 }
@@ -346,13 +350,17 @@ namespace OJewelry.Controllers
             }
             List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == id).ToList();
             db.Vendors.RemoveRange(vendors);
-            db.Collections.RemoveRange(company.Collections);
-            db.Presenters.RemoveRange(company.Presenters); // Contacts?
-            db.Clients.RemoveRange(company.Clients);
-            db.Shapes.RemoveRange(company.Shapes);
-            db.Stones.RemoveRange(company.Stones);
-            db.Findings.RemoveRange(company.Findings);
-            db.MetalCodes.RemoveRange(db.MetalCodes.Where(mc => mc.CompanyId == id));
+            db.Collections.RemoveRange(company.Collections.ToList());
+            foreach (Presenter p in company.Presenters)
+            {
+                db.Contacts.RemoveRange(p.Contacts.ToList());
+            }
+            db.Presenters.RemoveRange(company.Presenters.ToList());
+            db.Clients.RemoveRange(company.Clients.ToList());
+            db.Shapes.RemoveRange(company.Shapes.ToList());
+            db.Stones.RemoveRange(company.Stones.ToList());
+            db.Findings.RemoveRange(company.Findings.ToList());
+            db.MetalCodes.RemoveRange(db.MetalCodes.Where(mc => mc.CompanyId == id).ToList());
             db.RemoveCompany(company);
             db.SaveChanges();
             return RedirectToAction("Index");
