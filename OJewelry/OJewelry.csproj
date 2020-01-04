@@ -699,6 +699,7 @@
     <Content Include="DBScripts\Locations.sql" />
     <Content Include="DBScripts\Memo.sql" />
     <Content Include="DBScripts\OJewelryDBTablesV0.2.sql" />
+    <Content Include="DBScripts\RemoveDanglingComponents.sql" />
     <Content Include="DBScripts\Roles.sql" />
     <Content Include="DBScripts\v_652.sql" />
     <Content Include="favicon.ico" />
