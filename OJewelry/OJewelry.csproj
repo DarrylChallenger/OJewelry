@@ -693,6 +693,7 @@
     <Content Include="DBScripts\bad-ring.sql" />
     <Content Include="DBScripts\CreateOJDB.sql" />
     <Content Include="DBScripts\CreateOJSecAspNet.sql" />
+    <Content Include="DBScripts\DanglingComponents.sql" />
     <Content Include="DBScripts\DropCreateOJDatabase.sql" />
     <Content Include="DBScripts\InvReport.sql" />
     <Content Include="DBScripts\LaborTable.sql" />
