@@ -10,7 +10,7 @@
     @Html.ActionLink("Create New Location", "Create", new { @companyId = ViewBag.CompanyId })
 </p>
 <p class="MainMenu">
-    @Html.ActionLink("Companies List", "Index", "Companies") |
+    @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Export Locations to Excel", "ExportLocationReport", new { CompanyId = ViewBag.CompanyId })
 </p>
