@@ -52,6 +52,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />
+                @Html.ActionLink("Cancel", "Index", "JewelryTypes", new { companyId = (int)ViewBag.CompanyId }, new { @class = "btn btn-default" })
             </div>
         </div>
     </div>
