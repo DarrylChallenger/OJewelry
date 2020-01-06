@@ -23,7 +23,7 @@ namespace OJewelry.Controllers
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "OJewelry contact page.";
+            ViewBag.Message = "Contact BOSS";
 
             return View();
         }

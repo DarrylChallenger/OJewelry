@@ -89,33 +89,24 @@ textarea {
 }
 
 .container .banner {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: unset;
-    margin-right: unset;
-    background-image: url("../Images//OpsMgtSampleNo Hand.png");
-    background-repeat: no-repeat;
-    background-position:center;
-    background-size: 70%;
-    height: 600px;
-    opacity: 1;
-    margin-bottom: 2em;
-    max-width: 100%;
 }
 
-.title {
-    padding-top: 5%;
-    padding-left: 7%;
-    font-size: 64px;
-    color: blue;
-    display: none;
+.Welcome {
+    margin-top:5em;
+}
+
+.Welcome .title {
+    text-align:center;
+    color: darkorange;
+    font-size:18em;
+    font-family: 'Bodoni MT Black', serif;
 }
 
 .lead {
-    font-size: 24px;
-    padding-left: 5%;
-    color: red;
-    display:none;
+    text-align: center;
+    color: black;
+    font-size:2em;
+    font-family: 'Bahnschrift', sans-serif;
 }
 
 .formborder {
