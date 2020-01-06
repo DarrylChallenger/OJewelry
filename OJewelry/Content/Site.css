@@ -93,20 +93,21 @@ textarea {
 
 .Welcome {
     margin-top:5em;
+    margin-bottom:5em;
 }
 
-.Welcome .title {
-    text-align:center;
-    color: darkorange;
-    font-size:18em;
-    font-family: 'Bodoni MT Black', serif;
-}
+    .Welcome .title {
+        text-align: center;
+        color: rgb(227,107,10);
+        font-size: 18em;
+        font-family: 'Bodoni MT Black', 'Bodoni MT', serif;
+    }
 
 .lead {
     text-align: center;
     color: black;
-    font-size:2em;
-    font-family: 'Bahnschrift', sans-serif;
+    font-size: 3em;
+    font-family: 'Bahnschrift Light Condensed', 'Bahnschrift Light', sans-serif;
 }
 
 .formborder {
