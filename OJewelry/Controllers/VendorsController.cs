@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using DocumentFormat.OpenXml;
@@ -30,8 +31,9 @@ namespace OJewelry.Controllers
             companyId = companyId.Value;
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
-
-            return View(db.Vendors.Where(v => v.CompanyId == companyId).OrderBy(v => v.Name).ToList());
+            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId).OrderBy(v => v.Name).ToList();
+            vendors.ForEach(v => v.Phone = SetFormattedPhone(v.Phone));
+            return View(vendors);
         }
 
         // GET: Vendors/Details/5
@@ -101,6 +103,7 @@ namespace OJewelry.Controllers
             }
             VendorViewModel vvm = new VendorViewModel(vendor);
             Company company = db.FindCompany(vendor.CompanyId);
+            vvm.Phone = SetFormattedPhone(vendor.Phone);
             if (company == null)
             {
                 return RedirectToAction("Index", "Home");
@@ -121,6 +124,7 @@ namespace OJewelry.Controllers
             {
                 Vendor vendor = new Vendor(vvm);
                 db.Entry(vendor).State = EntityState.Modified;
+                vendor.Phone = GetNormalizedPhone(vvm.Phone);
                 db.SaveChanges();
                 return RedirectToAction("Index", new { companyId = vendor.CompanyId });
             }
@@ -176,6 +180,25 @@ namespace OJewelry.Controllers
                 s = new SelectList(VendorTypes, "Id", "Name", 0);//, "-- Choose a Type --");
             }
             return s;
+        }
+
+        private string GetNormalizedPhone(string phone)
+        {
+            if (phone == "" || phone == null) { return phone; }
+            string[] newPhone = Regex.Split(phone, "[.()-]");
+            string finPhone = "";
+            for (int i = 0; i < newPhone.Length; i++)
+            {
+                finPhone += newPhone[i];
+            }
+            return finPhone;
+        }
+
+        private string SetFormattedPhone(string phone)
+        {
+            if (phone == "" || phone == null) return "";
+            string newPhone = Regex.Replace(phone, @"^([0-9]{3})([0-9]{3})([0-9]{4})$", @"$1-$2-$3");
+            return newPhone;
         }
 
         protected override void Dispose(bool disposing)
@@ -261,6 +284,5 @@ namespace OJewelry.Controllers
                 }
             }
         }
-
     }
 }

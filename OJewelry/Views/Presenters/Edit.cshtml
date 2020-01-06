@@ -6,6 +6,10 @@
 
 <h2>Edit the <i>@Model.Location.Name</i> Location</h2>
 
+<p class="MainMenu">
+    @Html.ActionLink("Companies", "Index", "Companies", null) |
+    @Html.Partial("_CompanyNavPartial", Model.Location.CompanyId)
+</p>
 
 @using (Html.BeginForm("Edit", "Presenters", FormMethod.Post, new { id = "LocationsForm" }))
 {
