@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using OJewelry.Classes;
 using OJewelry.Models;
 
 namespace OJewelry.Controllers
@@ -21,7 +22,7 @@ namespace OJewelry.Controllers
             SelectList list = null;
             // LaborTableVendors
             if (dropdown == "LaborTableVendors") {
-            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId && v.Name !="").ToList();
+            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == companyId && v.Name !="" && (v.Type.Type & vendorTypeEnum.Labor) == vendorTypeEnum.Labor).ToList();
                 vendors.Insert(0, new Vendor() {
                     Name = "Choose a Vendor"
                 });
