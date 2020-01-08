@@ -40,7 +40,7 @@ namespace OJewelry.Models
             set {
                 if (value != null)
                 {
-                    shortname = value.PadRight(10).Substring(0, 3);
+                    shortname = value.PadRight(10).Substring(0, 3).ToUpper();
                 }
             }
         }

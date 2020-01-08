@@ -1,4 +1,5 @@
 ﻿
+const badStoneComboMsg = "Complete Stone Selection;"
 async function AddComponentRow(type, index)
 {
     //console.log(`type: ${type}`);
@@ -486,7 +487,7 @@ function SetStonesWarning(i, stoneCtl, shapeCtl, sizeCtl) {
     stoneCtl.addClass("badStone");
     shapeCtl.addClass("badStone");
     sizeCtl.addClass("badStone");
-    stName = "Invalid stone combination";//"Setting for stone " + (parseInt(i) + 1);
+    stName = badStoneComboMsg;//"Setting for stone " + (parseInt(i) + 1);
     $("#StoneSettingName_" + i).val(stName);
     $(`#Stones_${i}__CtWt`).val('');
     $(`#Stones_${i}__VendorName`).val('');
@@ -569,7 +570,7 @@ function UpdateStoneSettingRow(stoneRow, settingCost, bValidCombo) {
     var stName = $("#StoneSettingName_" + stoneRow).val();
     // Ignore null bValidCombo
     if (bValidCombo === false) {
-        stName = "Invalid stone combination";// + (parseInt(stoneRow) + 1); // change to message indicating invalid combo
+        stName = badStoneComboMsg;// + (parseInt(stoneRow) + 1); // change to message indicating invalid combo
         $("div[name='StoneSettingRowTotalValue_" + stoneRow + "']").addClass("badTotal");
     }
     if (bValidCombo === true) {

@@ -275,37 +275,66 @@ namespace OJewelry.Controllers
             if (db.Collections.Where(col => col.CompanyId == id && col.Styles.Count() != 0).Count() != 0)
             {
                 ModelState.AddModelError("Company", company.Name + " has at least one Collection that is not empty.");
-                return View(company);
+            }
+            if (company.Clients.Count > 0)
+            {
+                ModelState.AddModelError("Company", company.Name + " has at least one Client.");
+            }
+            if (company.Vendors.Count > 0)
+            {
+                ModelState.AddModelError("Company", company.Name + " has at least one Vendor.");
+            }
+            if (company.Stones.Count > 0)
+            {
+                ModelState.AddModelError("Company", company.Name + " has at least one Stone.");
+            }
+            if (company.Findings.Count > 0)
+            {
+                ModelState.AddModelError("Company", company.Name + " has at least one Finding.");
+            }
+            if (company.Shapes.Count > 0)
+            {
+                ModelState.AddModelError("Company", company.Name + " has at least one Shape.");
+            }
+            if (company.Presenters.Count > 0)
+            {
+                ModelState.AddModelError("Company", company.Name + " has at least one Location.");
             }
             if (db.JewelryTypes.Where(jt => jt.CompanyId == id).Count() != 0)
             {
                 ModelState.AddModelError("Company", company.Name + " has at least one Jewelry Type that is not empty.");
-                return View(company);
             }
             // Remove collections, locations, clients, components, shapes
             //            List<Collection> collections = db.Collections.Where(col => col.CompanyId == id).ToList();
             //          db.Collections.RemoveRange(collections);
-            if (company.defaultStoneVendor.HasValue && company.defaultStoneVendor != 0)
+            if (ModelState.IsValid)
             {
-                Vendor defaultStoneVendor = db.Vendors.Find(company.defaultStoneVendor);
-                db.Vendors.Remove(defaultStoneVendor);
-            }
-            List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == id).ToList();
-            db.Vendors.RemoveRange(vendors.ToList());
-            db.Collections.RemoveRange(company.Collections.ToList());
-            foreach (Presenter p in company.Presenters)
+                if (company.defaultStoneVendor.HasValue && company.defaultStoneVendor != 0)
+                {
+                    Vendor defaultStoneVendor = db.Vendors.Find(company.defaultStoneVendor);
+                    db.Vendors.Remove(defaultStoneVendor);
+                }
+                List<Vendor> vendors = db.Vendors.Where(v => v.CompanyId == id).ToList();
+                db.Vendors.RemoveRange(vendors.ToList());
+                db.Collections.RemoveRange(company.Collections.ToList());
+                foreach (Presenter p in company.Presenters)
+                {
+                    db.Contacts.RemoveRange(p.Contacts.ToList());
+                }
+                db.Presenters.RemoveRange(company.Presenters.ToList());
+                db.Clients.RemoveRange(company.Clients.ToList());
+                db.Shapes.RemoveRange(company.Shapes.ToList());
+                //db.Components.RemoveRange(company.Components);
+                db.Stones.RemoveRange(company.Stones.ToList());
+                db.Findings.RemoveRange(company.Findings.ToList());
+                db.RemoveCompany(company);
+                db.SaveChanges();
+
+                return RedirectToAction("Index");
+            } else
             {
-                db.Contacts.RemoveRange(p.Contacts.ToList());
+                return View("ForcedDelete", company);
             }
-            db.Presenters.RemoveRange(company.Presenters.ToList());
-            db.Clients.RemoveRange(company.Clients.ToList());
-            db.Shapes.RemoveRange(company.Shapes.ToList());
-            //db.Components.RemoveRange(company.Components);
-            db.Stones.RemoveRange(company.Stones.ToList());
-            db.Findings.RemoveRange(company.Findings.ToList());
-            db.RemoveCompany(company);
-            db.SaveChanges();
-            return RedirectToAction("Index");
         }
 
         // POST: Companies/Delete/5

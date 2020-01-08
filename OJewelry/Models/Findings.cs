@@ -32,6 +32,7 @@ namespace OJewelry.Models
         [StringLength(50)]
         public string Desc { get; set; }
 
+        [Range(typeof(decimal), "0.01", "9999999999999999999999999999", ErrorMessage = "Price cannot be $0") ]
         public decimal Price { get; set; }
 
         public decimal? Weight { get; set; }

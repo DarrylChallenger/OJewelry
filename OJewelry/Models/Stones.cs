@@ -43,9 +43,11 @@
 
         public int? ShapeId { get; set; }
 
+        [Range(typeof(decimal), "0.01", "9999999999999999999999999999", ErrorMessage = "Price cannot be $0")]
         [Column(TypeName = "money")]
         public decimal Price { get; set; }
 
+        [Range(typeof(decimal), "0.01", "9999999999999999999999999999", ErrorMessage = "Setting Cost cannot be $0")]
         [Column(TypeName = "money")]
         public decimal SettingCost { get; set; }
 
