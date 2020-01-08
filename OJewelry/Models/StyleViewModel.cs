@@ -679,6 +679,7 @@ namespace OJewelry.Models
             SVMState = SVMStateEnum.Dirty; // For now, update all records
             DelBtnPos = SVMDelButtonPos.Right;
             SVMOp = SVMOperation.Edit;
+            markups = new List<Markup>();
         }
 
         public StyleViewModel(StyleViewModel oldModel, OJewelryDB db)
@@ -691,12 +692,6 @@ namespace OJewelry.Models
             Style.Collection = oldModel.Style.Collection;
             PostedImageFile = oldModel.PostedImageFile;
             bool bCreating = oldModel.SVMOp == SVMOperation.Create;
-            /*
-            if (PostedImageFile != null)
-            {
-                Style.Image = PostedImageFile.FileName;
-            }
-            */
 
             // Lists
             //Castings = new List<CastingComponent>();
@@ -758,6 +753,7 @@ namespace OJewelry.Models
                 return m;
             })).ToList();
             //assemblyCost = new AssemblyCost();
+            markups = oldModel.markups;
         }
 
         public Style Style { get; set; }
@@ -811,7 +807,8 @@ namespace OJewelry.Models
         public static string FinishingLaborName = "FINISHING LABOR";
         public static string SettingLaborName = "SETTING LABOR";
         public static string PackagingName = "PACKAGING";
-        //public AssemblyCostX assemblyCost { get; set; } 
+
+        public List<Markup> markups;
 
         public void MarkDefaultEntriesAsFixed()
         {
@@ -842,25 +839,7 @@ namespace OJewelry.Models
             }
             return sum;
         }
-        /*
-        public void ComputePackaging(CostData cd)
-        {
 
-            if (Miscs.Count > 0 && Miscs[0].State == SVMStateEnum.Fixed && Miscs[0].Name == PackagingName) // is there a packaging entry?
-            {
-                Miscs[0].PPP = cd.packagingCosts[Style.JewelryType.Name];
-            }
-            return;
-        }
-
-        public void ComputeFinishing(CostData cd)
-        {
-            if (Labors.Count > 0 && Labors[0].State == SVMStateEnum.Fixed && Labors[0].Name == FinishingLaborName)
-            {
-                Labors[0].PPP = cd.finishingCosts[Style.JewelryType.Name];
-            }
-        }
-        */
         public void PopulateDropDownData(OJewelryDB db)
         {
             drpJewelryTypes = db.JewelryTypes.Where(jt => jt.CompanyId == CompanyId).ToList();

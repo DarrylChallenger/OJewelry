@@ -1,5 +1,5 @@
 ﻿
-const badStoneComboMsg = "Complete Stone Selection;"
+const badStoneComboMsg = "Complete Stone Selection"
 async function AddComponentRow(type, index)
 {
     //console.log(`type: ${type}`);

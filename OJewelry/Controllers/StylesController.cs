@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OJewelry.Classes;
 using OJewelry.Models;
@@ -205,6 +206,7 @@ namespace OJewelry.Controllers
                 Unit = "DWT"
             };
             svm.Populate(id, db);
+            svm.markups = JsonConvert.DeserializeObject<List<Markup>>(db.FindCompany(svm.CompanyId).markup);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
             //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
@@ -593,6 +595,7 @@ namespace OJewelry.Controllers
             svm.Style.JewelryType = db.JewelryTypes.Find(svm.Style.JewelryTypeId);
 
             //svm.Style.
+            svm.markups = JsonConvert.DeserializeObject<List<Markup>>(db.FindCompany(svm.CompanyId).markup);
             svm.PopulateDropDownData(db);
             svm.PopulateDropDowns(db);
             if (svm.SVMOp == SVMOperation.Create)

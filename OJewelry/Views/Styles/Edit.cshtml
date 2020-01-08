@@ -1,5 +1,5 @@
 ﻿@model OJewelry.Models.StyleViewModel
-
+@using OJewelry.Models
 @{
     ViewBag.Title = $"{Model.Style.StyleName} - Edit";
 }
@@ -31,7 +31,7 @@
                 <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn btn-default" />
                 @Html.ActionLink("Delete", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default" })
                 <input type="button" value="Pricing" class="btn btn-default trigger_ojPopup" />
-                @Html.ActionLink("Mechanical", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default disabled" })
+                @Html.ActionLink("Mechanical", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide" })
                 @Html.ActionLink("Worksheet", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide" })
                 @*<a class="">Pricing</a>*@
             </div>
@@ -82,28 +82,25 @@
         const cn = $("#Style_StyleNum").val();
         $(ojPopUpTContent).html(`
             <h3>Cost for <i>${cn}</i>: <b>$${gt.html()}</b></h3>
+@if (Model.markups.Count == 0)
+{
+            <br/>
+            <p>No markups defined</p>
+} else {
+    foreach (Markup m in Model.markups)
+    {
             <div class="row">
-                <div class="col-xs-6 col-sm-6">Cost x 1.6</div>
-                <div class="col-xs-6 col-sm-6">: $${toQuarter(gt.html() * 1.6)}</div>
+                <div class="col-xs-6 col-sm-3">@m.title</div>
+                <div class="col-xs-6 col-sm-3">: $${ComputeMarkupValue(@m.multiplier, @m.ratio, gt.html())}</div>
             </div>
-            <div class="row">
-                <div class="col-xs-6 col-sm-6">Cost x 2</div>
-                <div class="col-xs-6 col-sm-6">: $${toQuarter(gt.html() * 2)}</div>
-            </div>
-            <div class="row">
-                <div class="col-xs-6 col-sm-6">Cost x 2.2</div>
-                <div class="col-xs-6 col-sm-6">: $${toQuarter(gt.html() * 2.2)}</div>
-            </div>
-            <div class="row">
-                <div class="col-xs-6 col-sm-6">Cost x 2.4</div>
-                <div class="col-xs-6 col-sm-6">: $${toQuarter(gt.html() * 2.4)}</div>
-            </div>
+    }
+}
         </div>
         <br/>
         `);
     }
-    function toQuarter(amt) { // show amt * 2 *  multiplier in cost popup
-        return (Math.trunc(amt*2*4)/4).toFixed(2);
+    function ComputeMarkupValue(multiplier, markup, amt) { // show amt * 2 *  multiplier in cost popup
+        return (Math.trunc(amt * multiplier * markup * 4) / 4).toFixed(2);
     }
 </script>
 
