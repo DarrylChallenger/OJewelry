@@ -96,18 +96,11 @@ textarea {
     margin-bottom:5em;
 }
 
-    .Welcome .title {
-        text-align: center;
-        color: rgb(227,107,10);
-        font-size: 18em;
-        font-family: 'Bodoni MT Black', 'Bodoni MT', serif;
-    }
-
-.lead {
-    text-align: center;
-    color: black;
-    font-size: 3em;
-    font-family: 'Bahnschrift Light Condensed', 'Bahnschrift Light', sans-serif;
+.WelcomeImg {
+    display:block;
+    width: 75%;
+    margin-right:auto;
+    margin-left:auto;
 }
 
 .formborder {
