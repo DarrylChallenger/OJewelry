@@ -45,6 +45,8 @@ namespace OJewelry.Models
 
         public int? defaultStoneVendor { get; set; }
 
+        public string markup { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ACL> ACLs { get; set; }
 

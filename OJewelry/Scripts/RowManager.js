@@ -43,8 +43,8 @@ async function AddRow(index) {
     // Search for "<getoptions>" id; call backend with value. Replace element with the set of returned options
     var getops = $(nr).find("#getoptions");
     // console.log(`getops : ${JSON.stringify(getops)}, ${getops.val()}`);
-    console.log(`***: ${JSON.stringify($("#getoptions"))} `);
-    $(".ltbordered").last().css("border-color", "yellow");
+    // console.log(`***: ${JSON.stringify($("#getoptions"))} `);
+    // $(".ltbordered").last().css("border-color", "yellow");
     if (getops.val()) {
         try {
             $("#getoptions").last().html(`Retrieving options for ${getops.val()}`);

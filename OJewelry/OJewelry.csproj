@@ -348,6 +348,7 @@
     <Compile Include="Controllers\LaborItemsApiController.cs" />
     <Compile Include="Controllers\LaborTableController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MarkupsController.cs" />
     <Compile Include="Controllers\MetalCodesController.cs" />
     <Compile Include="Controllers\PresentersController.cs" />
     <Compile Include="Controllers\ShapesController.cs" />
@@ -626,6 +627,10 @@
     <Compile Include="Migrations\202001020418417_v2.0ChangeLaborVendorToType.Designer.cs">
       <DependentUpon>202001020418417_v2.0ChangeLaborVendorToType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001080546169_v2.0AddMarkupToCompany.cs" />
+    <Compile Include="Migrations\202001080546169_v2.0AddMarkupToCompany.Designer.cs">
+      <DependentUpon>202001080546169_v2.0AddMarkupToCompany.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -654,6 +659,8 @@
     <Compile Include="Models\LaborTable.cs" />
     <Compile Include="Models\LaborTableModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Markup.cs" />
+    <Compile Include="Models\MarkupModel.cs" />
     <Compile Include="Models\Memo.cs" />
     <Compile Include="Models\MemoViewModel.cs" />
     <Compile Include="Models\MetalCode.cs" />
@@ -756,6 +763,7 @@
     <Content Include="Scripts\SetupContacts-Companies.js" />
     <Content Include="Scripts\SetupContacts-Presenters.js" />
     <Content Include="Scripts\SetupLaborTable.js" />
+    <Content Include="Scripts\SetupMarkupTable.js" />
     <Content Include="Scripts\shadowpopup.js" />
     <Content Include="Scripts\Style_ComponentMgt.js" />
     <Content Include="Views\Shared\_ojPopup.cshtml" />
@@ -886,6 +894,7 @@
     <Content Include="Views\Stones\Copy.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Companies\ForcedDelete.cshtml" />
+    <Content Include="Views\Markups\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1097,6 +1106,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001020418417_v2.0ChangeLaborVendorToType.resx">
       <DependentUpon>202001020418417_v2.0ChangeLaborVendorToType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001080546169_v2.0AddMarkupToCompany.resx">
+      <DependentUpon>202001080546169_v2.0AddMarkupToCompany.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

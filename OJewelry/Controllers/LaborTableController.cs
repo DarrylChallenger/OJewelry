@@ -92,8 +92,10 @@ namespace OJewelry.Controllers
             if (ModelState.IsValid)
             {
                 db.SaveChanges();
+                
                 int CompanyId = ltm.CompanyId;
                 string CompanyName = ltm.CompanyName;
+
                 ModelState.Clear();
                 ltm = new LaborTableModel()
                 {
@@ -107,7 +109,7 @@ namespace OJewelry.Controllers
 
                 }
                 ltm.bHasVendors = vendors.Count != 0;
-                return View(ltm);
+                return RedirectToAction("Index", "Companies");
             }
             foreach (LaborItem li in ltm.Labors)
             {
