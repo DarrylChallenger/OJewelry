@@ -206,7 +206,9 @@ namespace OJewelry.Controllers
                 Unit = "DWT"
             };
             svm.Populate(id, db);
-            svm.markups = JsonConvert.DeserializeObject<List<Markup>>(db.FindCompany(svm.CompanyId).markup);
+            string markup = db.FindCompany(svm.CompanyId).markup;
+            if (markup == null) markup = "[]";
+            svm.markups = JsonConvert.DeserializeObject<List<Markup>>(markup);
             ViewBag.CollectionId = new SelectList(db.Collections.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.CollectionId);
             //ViewBag.JewelryTypeId = new SelectList(db.JewelryTypes.Where(x => x.CompanyId == co.CompanyId), "Id", "Name", svm.Style.JewelryTypeId);
             ViewBag.MetalWtUnitId = new SelectList(db.MetalWeightUnits.OrderBy(mwu => mwu.Unit), "Id", "Unit", svm.Style.MetalWtUnitId);
