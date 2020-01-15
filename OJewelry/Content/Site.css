@@ -142,7 +142,7 @@ textarea {
     font-weight: 700;
 }
 
-html input[disabled], locked {
+html input[disabled], .locked {
     background-color: #e0e0ff;
     cursor: not-allowed;
 }

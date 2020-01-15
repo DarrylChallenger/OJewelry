@@ -31,7 +31,7 @@ namespace OJewelry
                 // make json string of results
                 string CtWt = stn.CtWt.GetValueOrDefault().ToString();
                 string VendorName = stn.Vendor == null ? "" : stn.Vendor.Name ?? "";
-                result = JsonConvert.SerializeObject(new { CtWt = CtWt, VendorName = VendorName, Price = stn.Price, SettingCost = stn.SettingCost });
+                result = JsonConvert.SerializeObject(new { Id = stn.Id, CtWt = CtWt, VendorName = VendorName, Price = stn.Price, SettingCost = stn.SettingCost });
             }
             return result;
         }

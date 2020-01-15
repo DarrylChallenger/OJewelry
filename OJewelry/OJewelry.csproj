@@ -351,7 +351,9 @@
     <Compile Include="Controllers\MarkupsController.cs" />
     <Compile Include="Controllers\MetalCodesController.cs" />
     <Compile Include="Controllers\PresentersController.cs" />
+    <Compile Include="Controllers\ShapeDataApiController.cs" />
     <Compile Include="Controllers\ShapesController.cs" />
+    <Compile Include="Controllers\SizeDataApiController.cs" />
     <Compile Include="Controllers\StonesController.cs" />
     <Compile Include="Controllers\StylesController.cs" />
     <Compile Include="Controllers\VendorsController.cs" />

@@ -1,5 +1,5 @@
 ﻿
-const badStoneComboMsg = "Complete Stone Selection"
+const badStoneComboMsg = "Complete Stone Selection";
 async function AddComponentRow(type, index)
 {
     //console.log(`type: ${type}`);
@@ -98,7 +98,9 @@ async function AddComponentRow(type, index)
             .attr("id", 'Stones_' + len + '__ShId')
             .attr("data-val", "true")
             .attr("data-val-required", "Please select a stone shape. ")
-            .attr("onchange", "StoneChanged('" + len + "')")
+            .attr("onchange", "StoneShapeChanged('" + len + "')")
+            .attr("disabled", "disabled")
+            .addClass("locked")
             ;
 
         // Size
@@ -108,7 +110,10 @@ async function AddComponentRow(type, index)
             .attr("id", 'Stones_' + len + '__SzId')
             .attr("data-val", "true")
             .attr("data-val-required", "Please select a stone size. ")
-            .attr("onchange", "StoneSizeChanged('" + len + "')");
+            .attr("onchange", "StoneSizeChanged('" + len + "')")
+            .attr("disabled", "disabled")
+            .addClass("locked")
+            ;
         
         ltbordered = stonesltbordered.replace("JSSTONES", jsStones.html()+jsShapes.html()+jsSizes.html());
     }
@@ -162,7 +167,7 @@ async function AddComponentRow(type, index)
     $(idBreak).before(str);
 
     if (type === "Stones") {
-        StoneChanged(len);
+        await StoneChanged(len);
         AddStoneSettingRowHTML(len);
     }
     if (type === "Findings") {
@@ -228,7 +233,7 @@ async function PopulateDropdowns(nr) {
     if (getops.val()) {
         await fetch('/api/DropdownApi?companyId=' + companyId.val() + '&dropdown=' + getops.val())
         .then(function (response) {
-            if (response.ok) {
+            if (response && response.ok) {
                 return response.json();
             } else {
                 // Replace choose with msg indicating there are no vendors
@@ -236,9 +241,11 @@ async function PopulateDropdowns(nr) {
                 return null;
             }
         }).then(function (options_string) {
+            console.log(`options_string: [${options_string}]`);
+
             // unpack options
             let options = JSON.parse(options_string);
-            //console.log(`options: ${JSON.stringify(options)}`);
+            //console.log(`pd/options: ${JSON.stringify(options)}`);
             if (options) {
                 for (var opt of options) {
                     drp+=`<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`;
@@ -497,37 +504,143 @@ function SetStonesWarning(i, stoneCtl, shapeCtl, sizeCtl) {
     var qty = $("#Stones_" + i + "__Qty").val();
 }
 
-function StoneChanged(i) {
-    // pass the stone, shape, and size to StoneMatchingController. Process the result or handle not found 
+async function StoneChanged(i) {
+    // pass the selected stone to ShapeApiDataController. Process the result or handle not found 
+    console.log("*** STONE CHANGED ***");
+    var zero = 0;
     var stoneCtl = $("#Stones_" + i + "__Name");
     var shapeCtl = $("#Stones_" + i + "__ShId");
     var sizeCtl = $("#Stones_" + i + "__SzId");
     
     var stone = stoneCtl.val();
     var shape = shapeCtl.val();
-    var size =  sizeCtl.val();
-    var companyid = $("#CompanyId").val();
-    //console.log('fetching /api/StoneMatchingApi: companyId=[' + companyid + '] stone=[' + stone + '] shape=[' + shape + '] size=[' + size + ']');
-    fetch('/api/StoneMatchingApi?companyId=' + companyid + '&stone=' + stone + '&shape=' + shape + '&size=' + size)
+
+    var drp = '';
+    var companyId = $("#CompanyId").val();
+
+    // if the "Select a Stone" option is chosen, don't bother pulling data
+    if (stone === "") return;
+    $("#Stones_" + i + "__Id").val("0");
+    // disable the size, enable the shape
+    $(sizeCtl).attr("disabled", "disabled").addClass("locked");
+    $(shapeCtl).attr("disabled", null).removeClass("locked");
+    $("#Stones_" + i + "__CtWt").val("");
+    $("#Stones_" + i + "__VendorName").val("");
+    $("#Stones_" + i + "__Price").val(zero.toFixed(2));
+
+    // Reset the setting... 
+    UpdateStoneSettingRow(i, 0, false);
+
+    // populate the shape data based on the company and stone
+    //console.log('fetching /api/ShapeDataApi: companyId=[' + companyId + '] stone=[' + stone + ']!');
+    await fetch(`/api/ShapeDataApi?companyId=${companyId}&stone=${stone}`)
         .then(function (response) {
-            //console.log(`response: ${JSON.stringify(response)}`);
             if (response && response.ok) {
                 return response.json();
             } else {
-                // Put the controls in warning mode
-                //console.log("Put the controls in warning mode");
-                SetStonesWarning(i, stoneCtl, shapeCtl, sizeCtl);
-                UpdateStoneSettingRow(i, 0, false);
                 return null;
             }
-        }).then(function (stonedata) {
-            //console.log('stonedata', stonedata);
+        })
+        .then(async function (stylelist) {
+            //console.log(`stylelist: [${stylelist}]`);
+            // replace the options in the list
+            let options = JSON.parse(stylelist);
+            //console.log(`sc/options: ${JSON.stringify(options)}`);
+            if (options) {
+                for (var opt of options) {
+                    drp += `<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`;
+                    //console.log(`added id[${opt.Value !== 0 ? opt.Value : ""}], val[${opt.Text}], getops:${JSON.stringify(getops)}`);
+                }
+                //console.log(`final drp: ${JSON.stringify(drp)}`);
+                $(shapeCtl).empty().append(drp);
+                // if there's only one shape, select it
+                if (drp.length === 1) {
+                    await StoneShapeChanged(i);
+                }
+            }
+        });        
+}
+
+async function StoneShapeChanged(i) {
+    // pass the selected stone and shape to SizeApiDataController. Process the result or handle not found 
+    var zero = 0;
+    var stoneCtl = $("#Stones_" + i + "__Name");
+    var shapeCtl = $("#Stones_" + i + "__ShId");
+    var sizeCtl = $("#Stones_" + i + "__SzId");
+    $("#Stones_" + i + "__CtWt").val("");
+    $("#Stones_" + i + "__VendorName").val("");
+    $("#Stones_" + i + "__Price").val(zero.toFixed(2));
+    var stone = stoneCtl.val();
+    var shape = $("#Stones_" + i + "__ShId option:selected").text();
+    var drp = '';
+    var companyId = $("#CompanyId").val();
+
+    //console.log(`shape=${shape}`);
+    // if the "Select a Stone" option is chosen, don't bother pulling data
+    if (shape === "") return;
+    $("#Stones_" + i + "__Id").val("0");
+
+    // enable the size, enable the shape
+    $(sizeCtl).attr("disabled", null).removeClass("locked");
+    //console.log('fetching /api/SizeDataApi: companyId=[' + companyId + '] stone=[' + stone + '] shape=['+ shape +']');
+    await fetch(`/api/SizeDataApi?companyId=${companyId}&stone=${stone}&shape=${shape}`)
+        .then(function (response) {
+            if (response && response.ok) {
+                return response.json();
+            } else {
+                return null;
+            }
+        })
+        .then(async function (stylelist) {
+            //console.log(`stylelist: [${stylelist}]`);
+            // replace the options in the list
+            let options = JSON.parse(stylelist);
+            //console.log(`sz/options: ${JSON.stringify(options)}`);
+            if (options) {
+                for (var opt of options) {
+                    drp += `<option value='${opt.Value !== "0" ? opt.Value : ""}'>${opt.Text}</option>`;
+                }
+                //console.log(`final drp: ${JSON.stringify(drp)}`);
+                $(sizeCtl).empty().append(drp);
+                // if there's only one size, select it
+                if (drp.length === 1) {
+                    await StoneSizeChanged(i);
+                }
+            }
+        });        
+
+}
+
+async function StoneSizeChanged(i) { 
+    var stoneCtl = $("#Stones_" + i + "__Name");
+    var shapeCtl = $("#Stones_" + i + "__ShId");
+    var sizeCtl = $("#Stones_" + i + "__SzId");
+
+    var stone = stoneCtl.val();
+    var shape = $("#Stones_" + i + "__ShId option:selected").text();
+    var size = sizeCtl.val();
+    var drp = '';
+    var companyId = $("#CompanyId").val();
+
+    if (size === "") return;
+    //console.log('fetching /api/SizeDataApi: companyId=[' + companyId + '] stone=[' + stone + '] shape=[' + shape + ']');
+    await fetch('/api/StoneMatchingApi?companyId=' + companyId + '&stone=' + stone + '&shape=' + shape + '&size=' + size)
+        .then(function (response) {
+            if (response && response.ok) {
+                return response.json();
+            } else {
+                return null;
+            }
+        })
+        .then(function (stonedata) {
+            console.log('stonedata', stonedata);
             // unpack stonedata
             if (stonedata) {
                 //console.log("Valid Combo result", stonedata);
                 // pack the ctwt, vwndor, and price fields
                 var stn = JSON.parse(stonedata);
                 //console.log(stn);
+                $("#Stones_" + i + "__Id").val(stn.Id);
                 $("#Stones_" + i + "__CtWt").val(stn.CtWt);
                 $("#Stones_" + i + "__VendorName").val(stn.VendorName);
                 $("#Stones_" + i + "__Price").val(stn.Price.toFixed(2));
@@ -542,10 +655,6 @@ function StoneChanged(i) {
             console.log("Error retrieving stone matching data", e);
             UpdateStoneSettingRow(i, 0, false);
         });
-}
-
-function StoneSizeChanged(stoneRow) { 
-    StoneChanged(stoneRow);  
 }
 
 function StoneQtyChanged(i) {
@@ -564,7 +673,7 @@ function UpdateStoneSettingRow(stoneRow, settingCost, bValidCombo) {
     // updates
     // Name - some function of stone name, shape, size
     name = $("#Stones_" + stoneRow + "__Name").val();
-    shape = $("#Stones_" + stoneRow + "__ShId").val();
+    shape = $("#Stones_" + stoneRow + "__ShId option:selected").text();
     size = $("#Stones_" + stoneRow + "__SzId").val();
 
     var stName = $("#StoneSettingName_" + stoneRow).val();
@@ -877,9 +986,10 @@ $(window).load(function () {
 
 function ValidateStones() {
     $(".StonesState").each((i) => {
-        StoneChanged(i);
+        //StoneChanged(i);
     });
 }
+
 $(function () { // 
     setAddBtn("Castings");
     setAddBtn("Stones");

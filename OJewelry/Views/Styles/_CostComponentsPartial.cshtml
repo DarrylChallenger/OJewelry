@@ -202,11 +202,11 @@ COST:
                     {
                         if (Model.Stones[i].ShapeId == 0)
                         {
-                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone shape. ", onchange = "StoneChanged('" + i + "')" })
+                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone shape. ", onchange = "StoneShapeChanged('" + i + "')", @disabled="disabled" })
                         }
                         else
                         {
-                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone shape.", onchange = "StoneChanged('" + i + "')" })
+                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone shape.", onchange = "StoneShapeChanged('" + i + "')", @disabled = "disabled" }) 
                         }
                     }
                     else
@@ -218,11 +218,11 @@ COST:
                     {
                         if (Model.Stones[i].Size == "")
                         {
-                            @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, "You must select a size", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneChanged('" + i + "')" })
+                            @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, "You must select a size", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneChanged('" + i + "')", @disabled = "disabled" })
                         }
                         else
                         {
-                            @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneSizeChanged('" + i + "')" })
+                            @Html.DropDownListFor(model => model.Stones[i].SzId, Model.Stones[i].SizeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone size. ", onchange = "StoneSizeChanged('" + i + "')", @disabled = "disabled" })
                         }
                     }
                     else

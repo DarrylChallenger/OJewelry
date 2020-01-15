@@ -306,7 +306,7 @@ namespace OJewelry.Controllers
                         {
                             ModelState.AddModelError("Stones[" + i + "].Name", e.Message);
                             continue;
-                        }
+                        }                        
                         catch (OjMissingStoneException)
                         {
                             if (sc.Name == null) ModelState.AddModelError("Stones[" + i + "].Name", "You must enter a stone!! ");
@@ -314,7 +314,7 @@ namespace OJewelry.Controllers
                             if (sc.SzId == null) ModelState.AddModelError("Stones[" + i + "].SzId", "You must enter a size!! ");
                             continue;
                         }
-
+                        
                         switch (sc.State)
                         {
                             case SVMStateEnum.Added:
@@ -330,7 +330,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 ss = db.StyleStones.Where(x => x.Id == sc.linkId).SingleOrDefault();
-                                db.Stones.Remove(ss.Stone);
+                                //db.Stones.Remove(ss.Stone);
                                 db.StyleStones.Remove(ss);
                                 break;
                             case SVMStateEnum.Dirty:
@@ -383,7 +383,7 @@ namespace OJewelry.Controllers
                                 break;
                             case SVMStateEnum.Deleted:
                                 fc = db.StyleFindings.Where(x => x.Id == c.linkId).SingleOrDefault();
-                                db.Findings.Remove(fc.Finding);
+                                //db.Findings.Remove(fc.Finding);
                                 db.StyleFindings.Remove(fc);
                                 break;
                             case SVMStateEnum.Dirty:
@@ -595,7 +595,9 @@ namespace OJewelry.Controllers
             svm.Style.JewelryType = db.JewelryTypes.Find(svm.Style.JewelryTypeId);
 
             //svm.Style.
-            svm.markups = JsonConvert.DeserializeObject<List<Markup>>(db.FindCompany(svm.CompanyId).markup);
+            string markup = db.FindCompany(svm.CompanyId).markup;
+            if (markup == null) markup = "[]";
+            svm.markups = JsonConvert.DeserializeObject<List<Markup>>(markup);
             svm.PopulateDropDownData(db);
             svm.PopulateDropDowns(db);
             if (svm.SVMOp == SVMOperation.Create)
@@ -710,7 +712,7 @@ namespace OJewelry.Controllers
 
         public bool ValidCasting(CastingComponent cc)
         {
-            if (cc.State == SVMStateEnum.Unadded) return true;
+            if (cc.State == SVMStateEnum.Unadded || cc.State == SVMStateEnum.Deleted) return true;
             if (string.IsNullOrEmpty(cc.Name))
             {
                 throw new OjMissingCastingException("You must enter a Name!");
@@ -721,24 +723,15 @@ namespace OJewelry.Controllers
 
         public int ValidStone(int companyId, StoneComponent sc)
         {
-            if (sc.State != SVMStateEnum.Unadded)
+            if (sc.State != SVMStateEnum.Unadded && sc.State != SVMStateEnum.Deleted)
             {
                 // Make sure a stone was selected in the dropdown
-                if (sc.Name == null || sc.ShId == null || sc.SzId == null)
+                if (sc.Id == 0)
                 {
                     throw new OjMissingStoneException("You must select a stone!");
                 }
 
-                // Ensure combo of stone, shape, size is valid (db.stone.where...)
-                Stone stone = db.Stones
-                    .Where(st => st.Name == sc.Name && st.Shape.Name == sc.ShId && st.StoneSize == sc.SzId && st.CompanyId == companyId)
-                    .FirstOrDefault();
-                if (stone == null)
-                {
-                    throw new OjInvalidStoneComboException("Invalid Stone combination!");
-                }
-
-                return stone.Id;
+                return sc.Id.Value;
             }
             return 0;
         }
@@ -746,7 +739,7 @@ namespace OJewelry.Controllers
         public bool ValidFinding(FindingsComponent fc, int i)
         {
             // Make sure a stone was selected in the dropdown
-            if (fc.State == SVMStateEnum.Unadded) return true;
+            if (fc.State == SVMStateEnum.Unadded || fc.State == SVMStateEnum.Deleted) return true;
             if (fc.Id == 0)
             {
                 throw new OjMissingFindingException("You must enter a Name!");
@@ -756,7 +749,7 @@ namespace OJewelry.Controllers
 
         public bool ValidLabor(LaborComponent lc)
         {
-            if (lc.State == LMState.Unadded) return true;
+            if (lc.State == LMState.Unadded || lc.State == LMState.Deleted) return true;
             if (string.IsNullOrEmpty(lc.Name))
             {
                 throw new OjMissingLaborException("You must enter a Name!");
@@ -767,7 +760,7 @@ namespace OJewelry.Controllers
 
         public bool ValidLaborItem(LaborItemComponent lic)
         {
-            if (lic.State == LMState.Unadded) return true;
+            if (lic.State == LMState.Unadded || lic.State == LMState.Deleted) return true;
             if (string.IsNullOrEmpty(lic.Name))
             {
                 throw new OjMissingLaborException("You must enter a Name!");
@@ -778,7 +771,7 @@ namespace OJewelry.Controllers
 
         public bool ValidMisc(MiscComponent mc)
         {
-            if (mc.State == SVMStateEnum.Unadded) return true;
+            if (mc.State == SVMStateEnum.Unadded || mc.State == SVMStateEnum.Deleted) return true;
             if (string.IsNullOrEmpty(mc.Name))
             {
                 throw new OjMissingMiscException("You must enter a Name!");
@@ -1038,7 +1031,7 @@ namespace OJewelry.Controllers
 
         void RemoveLaborItem(StyleLaborTableItem sl)
         {
-            db.LaborTable.Remove(sl.LaborItem);
+            //db.LaborTable.Remove(sl.LaborItem);
             db.StyleLaborItems.Remove(sl);
         }
 
