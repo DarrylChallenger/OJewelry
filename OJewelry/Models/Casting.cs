@@ -27,7 +27,7 @@ namespace OJewelry.Models
 
         public decimal? Labor { get; set; }
 
-        public int? Qty { get; set; }
+        public decimal? Qty { get; set; }
 
         [Required]
         [Range(0.0,99999.0,ErrorMessage ="Weight must be positive")]

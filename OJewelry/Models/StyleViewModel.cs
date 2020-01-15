@@ -56,8 +56,8 @@ namespace OJewelry.Models
         [Display(Name = "Quantity")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N0}")]
         [DataType(DataType.Currency)]
-        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
-        public int Qty { get; set; }
+        [Range(typeof(decimal), "0", "999999999", ErrorMessage = "Quantity must not be negative.")]
+        public decimal Qty { get; set; }
 
         [Display(Name = "Price")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
@@ -378,8 +378,8 @@ namespace OJewelry.Models
         public SVMStateEnum State { get; set; }
 
         [Display(Name = "Quantity")]
-        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
-        public int Qty { get; set; }
+        [Range(typeof(decimal), "0", "999999999", ErrorMessage = "Quantity must not be negative.")]
+        public decimal Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
@@ -1520,7 +1520,7 @@ namespace OJewelry.Models
                     sb.Clear();
                     sb.AppendFormat("Castings[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
-                    Int32.TryParse(s, out int q);
+                    decimal.TryParse(s, out decimal q);
                     m.Castings[i].Qty = q;
                     m.Castings[i].Total = q * price + labor;
                     subtotal += m.Castings[i].Total;
@@ -1678,7 +1678,7 @@ namespace OJewelry.Models
                     sb.Clear();
                     sb.AppendFormat("Findings[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
-                    Int32.TryParse(s, out int q);
+                    decimal.TryParse(s, out decimal q);
                     m.Findings[i].Qty = q;
                     //m.Findings[i].Total = q * price;
                     subtotal += m.Findings[i].Total;

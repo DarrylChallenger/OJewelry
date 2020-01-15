@@ -633,6 +633,10 @@
     <Compile Include="Migrations\202001080546169_v2.0AddMarkupToCompany.Designer.cs">
       <DependentUpon>202001080546169_v2.0AddMarkupToCompany.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001152058018_v2.0_MakeCastingsAndFindingsQtyDecimal.cs" />
+    <Compile Include="Migrations\202001152058018_v2.0_MakeCastingsAndFindingsQtyDecimal.Designer.cs">
+      <DependentUpon>202001152058018_v2.0_MakeCastingsAndFindingsQtyDecimal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ACL.cs" />
@@ -1111,6 +1115,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001080546169_v2.0AddMarkupToCompany.resx">
       <DependentUpon>202001080546169_v2.0AddMarkupToCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001152058018_v2.0_MakeCastingsAndFindingsQtyDecimal.resx">
+      <DependentUpon>202001152058018_v2.0_MakeCastingsAndFindingsQtyDecimal.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

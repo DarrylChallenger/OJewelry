@@ -15,7 +15,7 @@ namespace OJewelry.Models
 
         public int FindingId { get; set; }
 
-        public int? Qty { get; set; }
+        public decimal? Qty { get; set; }
 
         public virtual Finding Finding { get; set; }
 
