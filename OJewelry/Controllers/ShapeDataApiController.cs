@@ -28,7 +28,7 @@ namespace OJewelry.Controllers
                 {
                     Id = sh.Id.ToString(),
                     Name = sh.Name
-                }).ToList();
+                }).Distinct().ToList();
             // make json string of results
             shapes.Insert(0, new LocalShape() { Id = "", Name = "Please Select a Shape" });
             SelectList list = new SelectList(shapes, "Id", "Name");
