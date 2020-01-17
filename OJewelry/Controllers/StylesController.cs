@@ -581,10 +581,15 @@ namespace OJewelry.Controllers
                     await SaveImageInStorage(db, svm);
                     db.Entry(svm.Style);
                     db.SaveChanges();
-                    if (svm.SVMOp != SVMOperation.Print)
+                    if (svm.SVMOp == SVMOperation.Create)
                     {
                         // Redurect to Edit
                         return RedirectToAction("Edit", new { id = svm.Style.Id });
+                    }
+                    if (svm.SVMOp != SVMOperation.Print)
+                    {
+                        // Redurect to Edit
+                        return RedirectToAction("Index", new { CollectionId = svm.Style.CollectionId });
                     }
                     else
                     {

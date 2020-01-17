@@ -1780,7 +1780,7 @@ namespace OJewelry.Models
                     sb.Clear();
                     sb.AppendFormat("LaborItems[{0}].VendorName", i);
                     s = request.Form.Get(sb.ToString());
-                    m.LaborItems[i].Name = s;
+                    m.LaborItems[i].VendorName = s;
 
                     sb.Clear();
                     sb.AppendFormat("LaborItems[{0}].Qty", i);
