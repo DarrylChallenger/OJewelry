@@ -698,10 +698,10 @@ namespace OJewelry.Controllers
             {
                 // remove components
                 db.Castings.RemoveRange(db.StyleCastings.Where(sc => sc.StyleId == id).Select(sc => sc.Casting).ToList());
-                db.Stones.RemoveRange(db.StyleStones.Where(ss => ss.StyleId == id).Select(sc => sc.Stone).ToList());
-                db.Findings.RemoveRange(db.StyleFindings.Where(sf => sf.StyleId == id).Select(sf => sf.Finding).ToList());
+                //db.Stones.RemoveRange(db.StyleStones.Where(ss => ss.StyleId == id).Select(sc => sc.Stone).ToList());
+                //db.Findings.RemoveRange(db.StyleFindings.Where(sf => sf.StyleId == id).Select(sf => sf.Finding).ToList());
                 db.Labors.RemoveRange(db.StyleLabors.Where(sl => sl.StyleId == id).Select(sl => sl.Labor).ToList());
-                db.LaborTable.RemoveRange(db.StyleLaborItems.Where(sli => sli.StyleId == id).Select(sli => sli.LaborItem).ToList());
+                //db.LaborTable.RemoveRange(db.StyleLaborItems.Where(sli => sli.StyleId == id).Select(sli => sli.LaborItem).ToList());
                 db.Miscs.RemoveRange(db.StyleMiscs.Where(sm => sm.StyleId == id).Select(sm => sm.Misc).ToList());
                 // remove links
                 db.StyleCastings.RemoveRange(style.StyleCastings.ToList());
