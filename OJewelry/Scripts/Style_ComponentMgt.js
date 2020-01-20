@@ -444,6 +444,13 @@ async function LaborItemsDropdownChanged(rowId) {
 // Rework this: Always call jtApi. If !bUseLT, get assembly costs.
 function JewelryTypeChanged() { 
     var jtid = $("#Style_JewelryTypeId :selected").val();
+    console.log(`jtid: [${jtid}]`);
+    if (jtid === "") {
+        $(`.StyleLaborItemsSection`).hide();
+        $(`.StyleLaborsSection`).hide();
+        console.log(`jt not selected`);
+        return;
+    }
     fetch('/api/JewelryTypesApi?id=' + jtid)
     .then(function (response) {
         return response.json();

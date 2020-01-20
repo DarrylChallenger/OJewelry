@@ -1178,7 +1178,7 @@ namespace OJewelry.Models
             }
             Total += FindingsTotal;
 
-            if (Style.JewelryType.bUseLaborTable) {
+            if (Style.JewelryType != null && Style.JewelryType.bUseLaborTable) {
                 foreach (LaborItemComponent li in LaborItems)
                 {
                     t = (li.ppp.GetValueOrDefault() + li.pph.GetValueOrDefault()) * li.Qty.Value;
@@ -1191,7 +1191,7 @@ namespace OJewelry.Models
                 {
                     if (l.Name == "FINISHING LABOR") // FINISHING LABOR (default entry)
                     {
-                        l.PPP = jt.FinishingCost;
+                        l.PPP = (jt != null) ? jt.FinishingCost : 0;
                     }
                     t = l.PPH.Value;
                     t2 = l.PPP.Value;
@@ -1205,7 +1205,7 @@ namespace OJewelry.Models
             {
                 if (m.Name == "PACKAGING") // PACKAGING (default entry)
                 {
-                    m.PPP = jt.PackagingCost;
+                    m.PPP = (jt != null) ? jt.PackagingCost : 0;
                 }
                 t = m.PPP;
                 m.Total = m.Qty.Value * t;
