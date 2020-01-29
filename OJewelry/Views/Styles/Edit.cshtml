@@ -26,13 +26,25 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-                <input type="submit" value="Print" formaction="../Print/@Model.Style.Id" class="btn btn-default" formtarget="_blank" />
-                <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn btn-default" />
-                @Html.ActionLink("Delete", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default" })
-                <input type="button" value="Pricing" class="btn btn-default trigger_ojPopup" />
-                @Html.ActionLink("Mechanical", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide" })
-                @Html.ActionLink("Worksheet", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide" })
+                <input type="submit" value="Save" class="btn btn-default saveBtn" />
+                <input type="submit" value="Print" formaction="../Print/@Model.Style.Id" class="btn btn-defaul saveBtn" formtarget="_blank" />
+                <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn btn-default saveBtn" />
+                <input type="submit" value="Delete" formaction="../Delete/@Model.Style.Id" formmethod="get" class="btn btn-default saveBtn" />
+                <input type="button" value="Pricing" class="btn btn-default saveBtn trigger_ojPopup" />
+
+                @Html.ActionLink("Mechanical", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide saveBtn" })
+                @Html.ActionLink("Worksheet", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide saveBtn" })
+                @*<a class="">Pricing</a>*@
+            </div>
+            <div class="fauxBtnGroup col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default fauxBtn hide" disabled="disabled" />
+                <input type="submit" value="Print" class="btn btn-default fauxBtn hide" disabled="disabled" />
+                <input type="submit" value="Copy" class="btn btn-default fauxBtn hide" disabled="disabled" />
+                <input type="submit" value="Delete" class="btn btn-default fauxBtn hide" disabled="disabled" />
+                <input type="button" value="Pricing" class="btn btn-default trigger_ojPopup fauxBtn hide" disabled="disabled" />
+
+                @Html.ActionLink("Mechanical", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide saveBtn" })
+                @Html.ActionLink("Worksheet", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide saveBtn" })
                 @*<a class="">Pricing</a>*@
             </div>
         </div>
@@ -78,6 +90,7 @@
 
 <script>
     function ojPopupDraw() {
+        $('.saveBtn').prop('disabled', false);
         const gt = $("#GrandTotal");
         const cn = $("#Style_StyleNum").val();
         $(ojPopUpTContent).html(`

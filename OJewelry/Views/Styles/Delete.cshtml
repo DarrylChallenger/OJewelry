@@ -60,12 +60,25 @@
             </div>
         </div>
     </div>
-    @using (Html.BeginForm()) {
+
+    @using (Html.BeginForm("Delete", "Styles", FormMethod.Post, new { id = "StylesDeleteForm", enctype = "multipart/form-data" }))
+    {
         @Html.AntiForgeryToken()
 
     <div class="form-actions no-color">
         <input type="submit" value="Delete" class="btn btn-default" />
-        @Html.ActionLink("Cancel", "Index", "Styles", new { companyId = Model.Collection.CompanyId }, new { @class = "btn btn-default" })
+        @Html.ActionLink("Cancel", "Index", "Styles", new { CollectionId = Model.CollectionId }, new { @class = "btn btn-default" })
+
+
     </div>
+        <br />
+        <div>
+            <p class="MainMenu">
+                @Html.ActionLink("Companies", "Index", "Companies") |
+                @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Collection.Id }) |
+                @Html.Partial("_CompanyNavPartial", Model.Collection.CompanyId)
+            </p>
+        </div>
+
     }
 </div>

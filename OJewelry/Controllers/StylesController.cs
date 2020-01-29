@@ -25,7 +25,7 @@ namespace OJewelry.Controllers
         private OJewelryDB db = new OJewelryDB();
 
         // GET: Styles
-        public ActionResult Index(int CollectionId)
+        public ActionResult Index(int? CollectionId)
         {
             var styles = db.Styles.Include(s => s.Collection).Where(i => i.CollectionId == CollectionId).OrderBy(s => s.StyleName).Include(s => s.JewelryType);
             ViewBag.CollectionName = db.Collections.Find(CollectionId).Name;
@@ -222,9 +222,10 @@ namespace OJewelry.Controllers
         {
             CheckForNameAndNumberUniqueness(svm);
             int i;
-            // check Model State for errors
-
-            CheckModelState(svm.Style.StyleNum);
+            // Check special cases in Model
+            CheckModelState(svm);
+            // 
+            TraceModelStateErrors(svm.Style.StyleNum);
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             if (ModelState.IsValid)
             {
@@ -982,34 +983,6 @@ namespace OJewelry.Controllers
             return View(m);
         }
 
-        /*
-        void xPopulateStyleViewModelDropDowns(StyleViewModel svm)
-        {
-            // reusables
-            svm.jsVendors = db.Vendors.ToList();
-            svm.jsMetals = db.MetalCodes.ToList();
-            svm.jsStones = db.Stones.Where(x => x.CompanyId == svm.CompanyId).ToList();
-            svm.jsShapes = svm.jsStones.Select(x=> x.).ToList();
-            svm.jsSizes = db.Sizes.Where(x => x.CompanyId == svm.CompanyId).ToList();
-            svm.jsFindings = db.Findings.Where(x => x.CompanyId == svm.CompanyId).ToList();
-            // populate each cost component dropdown in model
-        }
-
-        void xGetPresenters(OJewelryDB dc, MemoViewModel m, int CompanyId)
-        {
-            m.Presenters = new List<SelectListItem>();
-            foreach (Presenter i in dc.Presenters.Where(w => w.CompanyId == CompanyId))
-            {
-                SelectListItem sli = new SelectListItem()
-                {
-                    Text = i.Name,
-                    Value = i.Id.ToString(),
-                };
-                m.Presenters.Add(sli);
-            }
-        }
-        */
-
         void AddLabor(LaborComponent c, StyleViewModel svm, int keyVal)
         {
             Labor labor = new Labor(c);
@@ -1024,7 +997,7 @@ namespace OJewelry.Controllers
             int laborItemId = c.Id == 0 ? keyVal : c.Id;
             StyleLaborTableItem sl = new StyleLaborTableItem() {
                 StyleId = svm.Style.Id,
-                LaborTableId = c.laborItemId,
+                LaborTableId = c.laborItemId.Value,
                 Qty = c.Qty.Value
             };
             db.StyleLaborItems.Add(sl);
@@ -1056,6 +1029,7 @@ namespace OJewelry.Controllers
             db.Miscs.Remove(sm.Misc);
             db.StyleMiscs.Remove(sm);
         }
+
         private async Task<bool> SaveImageInStorage(OJewelryDB db, StyleViewModel svm, bool bCopy = false)
         {
             if (svm.Style.Image == null && svm.PostedImageFile == null)
@@ -1109,7 +1083,6 @@ namespace OJewelry.Controllers
             return true;
         }
 
-
         private void RemoveImageFromStorage(string imageName)
         {
             if (imageName == null) return;
@@ -1119,7 +1092,30 @@ namespace OJewelry.Controllers
             return;
         }
 
-        public void CheckModelState(string stylenum)
+        void CheckModelState(StyleViewModel svm)
+        {
+            if (svm.Style.JewelryType != null && svm.Style.JewelryType.Name == "")
+            {
+                ModelState.AddModelError("Style.JewelryTypeId", "You must enter a Jewelry Type");
+            }
+            // Check Jewelry Type/Labor Table match issues
+            if (svm.Style.JewelryType != null && svm.Style.JewelryType.bUseLaborTable)
+            {
+                // Check for JT that uses labor table but no labor table items are defined for this company
+                int numLTIs = db.LaborTable.Where(lti => lti.CompanyId == svm.CompanyId).Count();
+                if (numLTIs == 0)
+                {
+                    ModelState.AddModelError("Style.JewelryTypeId", "You must define a Labor Table Entry for this company before you can save this Style. ");
+                }
+                // Check for JT that uses labor table but no labor table items are used in this style
+                if (svm.LaborItems.Where(lti => lti.State != LMState.Deleted && lti.State != LMState.Unadded).Count() == 0 && numLTIs != 0)
+                {
+                    ModelState.AddModelError("Style.JewelryTypeId", "You must add a Labor for this Style. ");
+                }
+            }
+        }
+
+        void TraceModelStateErrors(string stylenum)
         {
             foreach (string k in ModelState.Keys)
             {

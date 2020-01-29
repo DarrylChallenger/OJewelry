@@ -30,7 +30,6 @@ textarea {
     width:unset;
 }
 
-
 .form-horizontal .contorl-label-left {
     text-align: left;
 }
@@ -505,8 +504,8 @@ html input[disabled], .locked {
 }
 
 .AssemblyCostsForm label {
-    text-align:right;
-    display:block;
+    text-align: right;
+    display: block;
 }
 
 .AssemblyCostFormMetalHeader label {

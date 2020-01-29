@@ -444,11 +444,11 @@ async function LaborItemsDropdownChanged(rowId) {
 // Rework this: Always call jtApi. If !bUseLT, get assembly costs.
 function JewelryTypeChanged() { 
     var jtid = $("#Style_JewelryTypeId :selected").val();
-    console.log(`jtid: [${jtid}]`);
+    //console.log(`jtid: [${jtid}]`);
     if (jtid === "") {
         $(`.StyleLaborItemsSection`).hide();
         $(`.StyleLaborsSection`).hide();
-        console.log(`jt not selected`);
+        //console.log(`jt not selected`);
         return;
     }
     fetch('/api/JewelryTypesApi?id=' + jtid)
@@ -1017,7 +1017,7 @@ $(function () { //
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
         var elementId = $(element).attr("id");
-        //console.log(`validating ${elementId}`);
+        console.log(`validating ${elementId}`);
         if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX") {
             return true;
         }
@@ -1036,5 +1036,17 @@ $(function () { //
     }, $("#vMsg").attr("data-msg"));
 }); // Set button, subtotals
 
-
-
+$(document).ready(function () {
+    $('.saveBtn').click(function (e) {
+        $('.saveBtn').hide();
+        $('.fauxBtn').show();
+    });
+    $('#StylesForm').bind('invalid-form.validate', function () {
+        console.log('invalid-form.validate');
+        $('.fauxBtn').hide();
+        $('.saveBtn').show();
+    });
+    $(".StylesForm").data("validator").settings.submitHandler = function (form) {
+        alert('submit'); form.submit();
+    };
+});

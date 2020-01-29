@@ -54,6 +54,7 @@ namespace OJewelry.Controllers
         {
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+            ViewBag.CompanyHasLTIs = db.LaborTable.Where(lti => lti.CompanyId == companyId).Count() == 0;
             return View();
         }
 
@@ -72,6 +73,7 @@ namespace OJewelry.Controllers
             }
             ViewBag.CompanyId = jewelryType.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(jewelryType.CompanyId)?.Name;
+            ViewBag.CompanyHasLTIs = db.LaborTable.Where(lti => lti.CompanyId == jewelryType.CompanyId).Count() == 0;
 
             return View(jewelryType);
         }
@@ -82,6 +84,7 @@ namespace OJewelry.Controllers
         {
             ViewBag.CompanyId = companyId;
             ViewBag.CompanyName = db._Companies.Find(companyId)?.Name;
+            ViewBag.CompanyHasLTIs = db.LaborTable.Where(lti => lti.CompanyId == companyId).Count() == 0;
             return RedirectToAction("Create", new { companyId});
         }
 
@@ -100,6 +103,7 @@ namespace OJewelry.Controllers
             }
             ViewBag.CompanyId = jewelryType.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(jewelryType.CompanyId)?.Name;
+            ViewBag.CompanyHasLTIs = db.LaborTable.Where(lti => lti.CompanyId == jewelryType.CompanyId).Count() == 0;
 
             return View(jewelryType);
         }
@@ -119,6 +123,7 @@ namespace OJewelry.Controllers
             }
             ViewBag.CompanyId = jewelryType.CompanyId;
             ViewBag.CompanyName = db._Companies.Find(jewelryType.CompanyId)?.Name;
+            ViewBag.CompanyHasLTIs = db.LaborTable.Where(lti => lti.CompanyId == jewelryType.CompanyId).Count() == 0;
             return View(jewelryType);
         }
 

@@ -26,6 +26,10 @@
         <div class="col-md-10">
             @Html.CheckBoxFor(model => model.bUseLaborTable, new { htmlAttributes = new { @class = "form-control" }, onclick = "bUseLaborTableClicked()" })
         </div>
+        @if (ViewBag.CompanyHasLTIs)
+        {
+            <p id="noLTIWarning" class="text-warning hidden">You must add an entry to the Labor Table in order to create a Style</p>
+        }
     </div>
     @{
         string nocursor = Model.bUseLaborTable == true ? "nocursor" : "";

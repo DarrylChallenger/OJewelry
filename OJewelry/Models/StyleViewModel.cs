@@ -581,7 +581,7 @@ namespace OJewelry.Models
 
         public int linkId { get; set; }
 
-        public int laborItemId { get; set; }
+        public int? laborItemId { get; set; }
 
         [Display(Name = "$/Hour")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
