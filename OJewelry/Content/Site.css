@@ -287,6 +287,11 @@ html input[disabled], .locked {
     //color: lightseagreen;
 }
 */
+
+.btn.fauxHide {
+    display:none;
+}
+
 .ssdata {
     font-weight: bold;
 }

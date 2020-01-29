@@ -1,5 +1,6 @@
 ﻿
 const badStoneComboMsg = "Complete Stone Selection";
+
 async function AddComponentRow(type, index)
 {
     //console.log(`type: ${type}`);
@@ -241,7 +242,7 @@ async function PopulateDropdowns(nr) {
                 return null;
             }
         }).then(function (options_string) {
-            console.log(`options_string: [${options_string}]`);
+            //console.log(`options_string: [${options_string}]`);
 
             // unpack options
             let options = JSON.parse(options_string);
@@ -1038,15 +1039,19 @@ $(function () { //
 
 $(document).ready(function () {
     $('.saveBtn').click(function (e) {
+        console.log('sub pressed');
         $('.saveBtn').hide();
-        $('.fauxBtn').show();
+        $('.fauxBtn').removeClass('fauxHide');
     });
     $('#StylesForm').bind('invalid-form.validate', function () {
         console.log('invalid-form.validate');
-        $('.fauxBtn').hide();
+        $('.fauxBtn').addClass('fauxHide');
         $('.saveBtn').show();
     });
-    $(".StylesForm").data("validator").settings.submitHandler = function (form) {
-        alert('submit'); form.submit();
+    $("#StylesForm").data("validator").settings.submitHandler = function (form) {
+        console.log('submitting');
+        $('.saveBtn').hide();
+        $('.fauxBtn').removeClass('fauxHide');
+        form.submit();
     };
 });

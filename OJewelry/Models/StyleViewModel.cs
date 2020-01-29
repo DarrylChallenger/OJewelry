@@ -119,10 +119,10 @@ namespace OJewelry.Models
         }
         
         [Display(Name ="UNIT")]
-        public int MetalWtUnitId
+        public int? MetalWtUnitId
         {
             get { return _casting.MetalWtUnitId; }
-            set { _casting.MetalWtUnitId = value; }
+            set { _casting.MetalWtUnitId = value.GetValueOrDefault(); }
         }
 
         public SelectList CastingsVendorList { get; set; }
@@ -897,7 +897,7 @@ namespace OJewelry.Models
                 //cstc.SetVendorsList(jsVendors, cstc.VendorId);
                 cstc.SetCastingsVendorsList(jsCastingsVendors, cstc.VendorId);
                 cstc.SetMetalsList(jsMetals, cstc.MetalCodeId);
-                cstc.SetMetalWeightUnitsList(jsMetalWeightUnits, cstc.MetalWtUnitId);
+                cstc.SetMetalWeightUnitsList(jsMetalWeightUnits, cstc.MetalWtUnitId.Value);
             }
             foreach (StoneComponent stscm in Stones)
             {
@@ -1342,7 +1342,7 @@ namespace OJewelry.Models
             VendorId = c.VendorId;
             MetalCodeID = c.MetalCodeId;
             MetalWeight = c.MetalWeight;
-            MetalWtUnitId = c.MetalWtUnitId;
+            MetalWtUnitId = c.MetalWtUnitId.GetValueOrDefault();
             Price = c.Price;
             Labor = c.Labor;
             Qty = c.Qty;
