@@ -1,10 +1,10 @@
-﻿@model OJewelry.Models.Style
+﻿@model OJewelry.Models.StyleViewModel
 
 @{
-    ViewBag.Title = $"{Model.StyleNum} - Delete";
+    ViewBag.Title = $"{Model.Style.StyleNum} - Delete";
 }
 
-<h2>Delete the <i>@Model.StyleNum</i> style</h2>
+<h2>Delete the <i>@Model.Style.StyleNum</i> style</h2>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
@@ -13,27 +13,27 @@
         <div class="col-sm-7">
             <dl class="dl-horizontal ">
                 <dt>
-                    @Html.DisplayNameFor(model => model.StyleNum)
+                    @Html.DisplayNameFor(model => model.Style.StyleNum)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.StyleNum)
+                    @Html.DisplayFor(model => model.Style.StyleNum)
                 </dd>
 
                 <dt>
-                    @Html.DisplayNameFor(model => model.StyleName)
+                    @Html.DisplayNameFor(model => model.Style.StyleName)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.StyleName)
+                    @Html.DisplayFor(model => model.Style.StyleName)
                 </dd>
 
                 <dt>
-                    @Html.DisplayNameFor(model => model.Desc)
+                    @Html.DisplayNameFor(model => model.Style.Desc)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.Desc)
+                    @Html.DisplayFor(model => model.Style.Desc)
                 </dd>
 
                 <dt>
@@ -41,7 +41,7 @@
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.Collection.Name)
+                    @Html.DisplayFor(model => model.Style.Collection.Name)
                 </dd>
 
                 <dt>
@@ -49,34 +49,37 @@
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.JewelryType.Name)
+                    @Html.DisplayFor(model => model.Style.JewelryType.Name)
                 </dd>
             </dl>
         </div>
         <div class="col-sm-5">
             <div class="StyleDeleteRightHeader">
-                @{var imgurl = (Model.Image != null) ? Model.Image : "/Images/logo.png"; }
+                @{var imgurl = (Model.Style.Image != null) ? Model.Style.Image : "/Images/logo.png"; }
                 <img src="@imgurl" class="StyleImage centerImage" />
             </div>
         </div>
     </div>
 
-    @using (Html.BeginForm("Delete", "Styles", FormMethod.Post, new { id = "StylesDeleteForm", enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("DeleteConfirmed", "Styles", FormMethod.Post, new { id = "StylesDeleteForm", enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Style.Id)
+        @Html.HiddenFor(m => m.Style.JewelryTypeId)
+        @Html.HiddenFor(m => m.Style.JewelryType.bUseLaborTable)
 
-    <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn btn-default" />
-        @Html.ActionLink("Cancel", "Index", "Styles", new { CollectionId = Model.CollectionId }, new { @class = "btn btn-default" })
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" />
+            @Html.ActionLink("Cancel", "Index", "Styles", new { CollectionId = Model.Style.CollectionId }, new { @class = "btn btn-default" })
 
 
-    </div>
+        </div>
         <br />
         <div>
             <p class="MainMenu">
                 @Html.ActionLink("Companies", "Index", "Companies") |
-                @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Collection.Id }) |
-                @Html.Partial("_CompanyNavPartial", Model.Collection.CompanyId)
+                @Html.ActionLink("Style List", "Index", new { CollectionId = @Model.Style.CollectionId }) |
+                @Html.Partial("_CompanyNavPartial", Model.Style.Collection.CompanyId)
             </p>
         </div>
 

@@ -177,6 +177,10 @@ namespace OJewelry.Controllers
         {
             svm.SVMOp = SVMOperation.Create;
             bool b = CheckForNameAndNumberUniqueness(svm);
+            // Check special cases in Model
+            CheckModelState(svm);
+            TraceModelStateErrors(svm.Style.StyleNum);
+            
             if (b) // is there a style with the same number for this company?
             {
                 // No, add it
@@ -671,25 +675,20 @@ namespace OJewelry.Controllers
         }
 
         // GET: Styles/Delete/5
-        public ActionResult Delete(int? id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(StyleViewModel sm)
         {
-            if (id == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            Style style = db.Styles.Find(id);
-            if (style == null)
-            {
-                return HttpNotFound();
-            }
-            return View(style);
+            sm.Style.Collection = db.Collections.Find(sm.Style.CollectionId);
+            return View(sm);
         }
 
         // POST: Styles/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(StyleViewModel svm)
         {
+            int id = svm.Style.Id;
             Style style = db.Styles.Find(id);
             string imageName = style.Image;
             int collectionId = style.CollectionId;

@@ -36,7 +36,7 @@ namespace OJewelry.Controllers
             SelectList list = new SelectList(stones, "Id", "Name");
 
             string json = JsonConvert.SerializeObject(list);
-            Trace.TraceInformation($"SizeDataApiController: returns {json}");
+            Trace.TraceInformation($"SizeDataApiController({companyId},{stone},{shape}): returns {json}");
             return json;
         }
     }

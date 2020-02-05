@@ -20,7 +20,9 @@ namespace OJewelry.ErrorHandler
                 } 
             }
             //Trace.TraceError("Fatal Error: [" + filterContext.Exception.ToString() + "]"); //filtercontext|requestContext|RouteData|Values
-            Trace.TraceError($"Fatal Error: Route:[{filterContext.RequestContext.RouteData.Values["controller"]}/{filterContext.RequestContext.RouteData.Values["action"]}]{System.Environment.NewLine}[{filterContext.Exception.ToString()}]");
+            Trace.TraceError($"Fatal Error: Route:[{filterContext.RequestContext.RouteData.Values["controller"]}/{filterContext.RequestContext.RouteData.Values["action"]}]{System.Environment.NewLine}" +
+                $"[{filterContext.Exception.ToString()}]{System.Environment.NewLine}" +
+                $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}");
             base.OnException(filterContext);
         }
     }

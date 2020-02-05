@@ -110,7 +110,7 @@ public sealed class ExcelAttachmentAttribute : ValidationAttribute
             return new ValidationResult("This file is too big!");
         }
 
-        // Only PDF can be uploaded.
+        // Only XLSX can be uploaded.
         string ext = Path.GetExtension(file.FileName);
         if (String.IsNullOrEmpty(ext) || 
             (!ext.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) &&

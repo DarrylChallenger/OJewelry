@@ -17,7 +17,9 @@
             <br />
             <br />
         }
-    } else {
+    }
+    else
+    {
         using (Html.BeginForm("Create", "Styles", FormMethod.Post, new { id = "StylesForm", enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
@@ -37,10 +39,10 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Create" class="btn btn-default saveBtn" />
+                        <input type="button" value="Create" class="btn btn-default saveBtn" formaction="Create" />
                     </div>
                     <div class="fauxBtnGroup col-md-offset-2 col-md-10">
-                        <input type="submit" value="Create" class="btn btn-default fauxBtn hide" disabled="disabled" />
+                        <input type="submit" value="Create" class="btn btn-default fauxBtn fauxHide" disabled="disabled" />
                     </div>
                 </div>
             </div>

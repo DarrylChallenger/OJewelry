@@ -26,11 +26,11 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default saveBtn" />
-                <input type="submit" value="Print" formaction="../Print/@Model.Style.Id" class="btn btn-default saveBtn" formtarget="_blank" />
-                <input type="submit" value="Copy" formaction="../Copy/@Model.Style.Id" class="btn btn-default saveBtn" />
-                <input type="submit" value="Delete" formaction="../Delete/@Model.Style.Id" formmethod="get" class="btn btn-default saveBtn" />
-                <input type="button" value="Pricing" class="btn btn-default saveBtn trigger_ojPopup" />
+                <input type="button" value="Save" formaction="~/Styles/Edit" class="btn btn-default saveBtn" />
+                <input type="button" value="Print" formaction="~/Styles/Print/@Model.Style.Id" class="btn btn-default saveBtn" formtarget="_blank" />
+                <input type="button" value="Copy" formaction="~/Styles/Copy/@Model.Style.Id" class="btn btn-default saveBtn" />
+                <input type="button" value="Delete" formaction="~/Styles/Delete" class="btn btn-default saveBtn" />
+                <input type="button" value="Pricing" class="btn btn-default pricingBtn trigger_ojPopup" />
 
                 @Html.ActionLink("Mechanical", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide saveBtn" })
                 @Html.ActionLink("Worksheet", "Delete", new { id = Model.Style.Id }, new { @class = "btn btn-default hide saveBtn" })

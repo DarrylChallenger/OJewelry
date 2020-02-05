@@ -1039,19 +1039,59 @@ $(function () { //
 
 $(document).ready(function () {
     $('.saveBtn').click(function (e) {
-        console.log('sub pressed');
         $('.saveBtn').hide();
+        $('.pricingBtn').hide();
         $('.fauxBtn').removeClass('fauxHide');
+
+        console.log('sub pressed');
+        const form = $("#StylesForm");
+        // do validation
+        // if ok, set form * attrs and submit
+        var formaction = $(this).attr("formaction");
+        var formmethod = $(this).attr("formmethod");
+        var formtarget = $(this).attr("formtarget");
+        console.log(`form action:`, formaction); 
+        console.log(`form method:`, formmethod);
+        console.log(`form target:`, formtarget);
+        if (formtarget === "_blank" || !formaction) {
+            $('.fauxBtn').addClass('fauxHide');
+            $('.saveBtn').show();
+            $('.pricingBtn').show();
+        }
+        if (!formaction) {
+            formaction = "";
+        }
+        if (formmethod === "get") {
+            console.log("get method");
+        }
+        if (!formtarget) {
+            formtarget = "";
+        }
+        $("#StylesForm").attr("action", formaction);
+        $("#StylesForm").attr("method", formmethod);
+        $("#StylesForm").attr("target", formtarget);
+        console.log(`form:`, $("#StylesForm"));
+        form.submit();
     });
     $('#StylesForm').bind('invalid-form.validate', function () {
         console.log('invalid-form.validate');
         $('.fauxBtn').addClass('fauxHide');
         $('.saveBtn').show();
+        $('.pricingBtn').show();
     });
-    $("#StylesForm").data("validator").settings.submitHandler = function (form) {
+    /*
+    $("#StylesForm").data("validator").settings.submitHandler = function (form, event) {
         console.log('submitting');
+        const evt = event.target.nodeName;
+        console.log(`evt:`, evt);
+        console.log(`this:'`, this);
+        console.log(`form action:`, form.action);
+        console.log(`form method:`, form.method);
+        console.log(`form target:`, form.target);
+
         $('.saveBtn').hide();
         $('.fauxBtn').removeClass('fauxHide');
         form.submit();
     };
+    */
 });
