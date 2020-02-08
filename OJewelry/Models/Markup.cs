@@ -25,5 +25,8 @@ namespace OJewelry.Models
 
         [Display(Name = "Markup")]
         public double ratio { get; set; }
+
+        [Display(Name ="Addend")]
+        public double Addend { get; set; }
     }
 }

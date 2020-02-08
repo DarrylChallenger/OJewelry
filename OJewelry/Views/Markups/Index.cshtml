@@ -24,6 +24,7 @@
         @Html.LabelFor(model => model.markups[0].title, htmlAttributes: new { @class = "control-label contorl-label-left col-md-3" })
         @Html.LabelFor(model => model.markups[0].multiplier, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
         @Html.LabelFor(model => model.markups[0].ratio, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
+        @Html.LabelFor(model => model.markups[0].Addend, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
     </div>
     <div id="MarkupsTableData">
         @for (int i = 0; i < Model.markups.Count; i++)
@@ -43,6 +44,9 @@
                         <div>
                             @Html.EditorFor(model => model.markups[i].ratio, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
                         </div>
+                        <div>
+                            @Html.EditorFor(model => model.markups[i].Addend, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
+                        </div>
 
                     </div>
                 </div>
@@ -50,6 +54,7 @@
                     @Html.ValidationMessageFor(model => model.markups[i].title, "", new { @class = "text-danger" })
                     @Html.ValidationMessageFor(model => model.markups[i].multiplier, "", new { @class = "text-danger" })
                     @Html.ValidationMessageFor(model => model.markups[i].ratio, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.markups[i].Addend, "", new { @class = "text-danger" })
                 </div>
             </div>
         }

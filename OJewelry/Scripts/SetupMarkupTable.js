@@ -20,6 +20,9 @@ $(function () {
             '<div>' +
             '   <input name="ratio" class="requiredifnotremoved col-md-2 text-box single-line" id="ratio" type="text" value="1" data-val-required="The Markup field is required." data-val-number="The field Markup must be a number." data-val="true">' +
             '</div>' +
+            '<div>' +
+            '   <input name="Addend" class="requiredifnotremoved col-md-2 text-box single-line" id="Addend" type="text" value="0" data-val-required="The Multiplier field is required." data-val-number="The field Multiplier must be a number." data-val="true">' +
+            '</div>' +
             '</div>' +
             '</div>' +
             '</div>',
