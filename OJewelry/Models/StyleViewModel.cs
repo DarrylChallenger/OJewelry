@@ -1150,14 +1150,21 @@ namespace OJewelry.Models
 
             foreach (StoneComponent s in Stones)
             {
-                Stone matchingStone = stoneSet.FirstOrDefault(sc => sc.Name == s.Name && sc.Shape.Name == s.ShId && sc.StoneSize == s.SzId);
+                Stone matchingStone = stoneSet.Find(x => x.Id == s.Id);
                 if (matchingStone != null)
                 {
                     s.CtWt = matchingStone.CtWt;
-                    s.VendorName = matchingStone.Vendor?.Name;
+                    s.ShapeId = matchingStone.ShapeId.Value;
+                    s.ShId = matchingStone.Shape.Name;
+                    s.SzId = matchingStone.StoneSize;
+                    s.Size = matchingStone.StoneSize;
+                    s.VendorName = matchingStone.Vendor?.Name;            
                     s.Price = matchingStone.Price;
                     s.Total = s.Price * s.Qty;
                     s.SettingCost = matchingStone.SettingCost;
+                    s.SetShapesList(jsShapes, s.ShId);
+                    s.SetSizesList(jsSizes, s.SzId);
+
                     StonesTotal += s.Total;
                 }
             }

@@ -202,16 +202,16 @@ COST:
                     {
                         if (Model.Stones[i].ShapeId == 0)
                         {
-                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone shape. ", onchange = "StoneShapeChanged('" + i + "')", @disabled="disabled" })
+                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, "You must select a shape", new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone shape. ", onchange = "StoneShapeChanged('" + i + "')" })
                         }
                         else
                         {
-                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone shape.", onchange = "StoneShapeChanged('" + i + "')", @disabled = "disabled" }) 
+                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone shape. ", onchange = "StoneShapeChanged('" + i + "')" }) 
                         }
                     }
                     else
                     {
-                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].ShId</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].ShId&nbsp;</div>
                     }
 
                     @if (Model.SVMOp != SVMOperation.Print)
@@ -227,7 +227,7 @@ COST:
                     }
                     else
                     {
-                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].SzId</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].SzId&nbsp;</div>
                     }
 
                     @if (Model.SVMOp != SVMOperation.Print)
