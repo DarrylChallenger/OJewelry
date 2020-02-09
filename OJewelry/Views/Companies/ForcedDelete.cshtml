@@ -20,14 +20,14 @@
 
     </dl>
 
-    @using (Html.BeginForm("ForcedDelete"))
+    @using (Html.BeginForm("ForcedDeleteConfirmed"))
     {
         @Html.AntiForgeryToken()
         <div>
             @Html.ValidationSummary(null, new { @class = "text-danger" })
         </div>
         
-        <h4 class="text-danger">The entire company and all it's items will be deleted!</h4>
+        <h4 class="text-danger">The whole entire company and all it's items will be deleted!</h4>
 
         <div class="form-actions no-color">
             <input type="submit" value="Forced Delete" class="btn btn-default" />
