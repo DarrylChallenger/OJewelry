@@ -20,6 +20,8 @@ namespace OJewelry.Models
             Notes = v.Notes;
             SellsFindings = v.Type?.bFinding == vendorTypeEnum.Finding;
             SellsStones = v.Type?.bStone == vendorTypeEnum.Stone;
+            SellsLabor = v.Type?.bLabor == vendorTypeEnum.Labor;
+            SellsCastings = v.Type?.bCasting == vendorTypeEnum.Casting;
         }
         // Members
         public int Id { get; set; }
