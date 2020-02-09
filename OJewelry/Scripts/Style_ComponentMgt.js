@@ -1,4 +1,5 @@
 ﻿
+const MAX_IMAGE_SIZE = 2.5*1000*1000;
 const badStoneComboMsg = "Complete Stone Selection";
 
 async function AddComponentRow(type, index)
@@ -1014,9 +1015,18 @@ $(function () { //
     CalcSubtotals("Miscs");
     CalcTotals();
     */
-    
+    $.validator.addMethod("validateImageSize", function (value, element) {
+        if ($(element)[0].files.length > 0) {
+            const size = $(element)[0].files[0].size;
+            console.log("check image size:", size);
+            if (size > MAX_IMAGE_SIZE) {
+                return false;
+            }
+        }
+        return true;
+    }, `The image is too large. Use an image under ${MAX_IMAGE_SIZE/1000} KB. `);
 
-    $.validator.addMethod("requiredifnotremoved", function (value, element) { //--- does this get called?
+    $.validator.addMethod("requiredifnotremoved", function (value, element) { 
         var elementId = $(element).attr("id");
         console.log(`validating ${elementId}`);
         if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX") {
@@ -1043,16 +1053,14 @@ $(document).ready(function () {
         $('.pricingBtn').hide();
         $('.fauxBtn').removeClass('fauxHide');
 
-        console.log('sub pressed');
+        //console.log('sub pressed');
         const form = $("#StylesForm");
         // do validation
         // if ok, set form * attrs and submit
         var formaction = $(this).attr("formaction");
         var formmethod = $(this).attr("formmethod");
         var formtarget = $(this).attr("formtarget");
-        console.log(`form action:`, formaction); 
-        console.log(`form method:`, formmethod);
-        console.log(`form target:`, formtarget);
+
         if (formtarget === "_blank" || !formaction) {
             $('.fauxBtn').addClass('fauxHide');
             $('.saveBtn').show();
@@ -1070,7 +1078,7 @@ $(document).ready(function () {
         $("#StylesForm").attr("action", formaction);
         $("#StylesForm").attr("method", formmethod);
         $("#StylesForm").attr("target", formtarget);
-        console.log(`form:`, $("#StylesForm"));
+        //console.log(`form:`, $("#StylesForm"));
         form.submit();
     });
     $('#StylesForm').bind('invalid-form.validate', function () {
@@ -1079,19 +1087,4 @@ $(document).ready(function () {
         $('.saveBtn').show();
         $('.pricingBtn').show();
     });
-    /*
-    $("#StylesForm").data("validator").settings.submitHandler = function (form, event) {
-        console.log('submitting');
-        const evt = event.target.nodeName;
-        console.log(`evt:`, evt);
-        console.log(`this:'`, this);
-        console.log(`form action:`, form.action);
-        console.log(`form method:`, form.method);
-        console.log(`form target:`, form.target);
-
-        $('.saveBtn').hide();
-        $('.fauxBtn').removeClass('fauxHide');
-        form.submit();
-    };
-    */
 });
