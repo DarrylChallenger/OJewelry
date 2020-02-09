@@ -7,7 +7,7 @@ namespace OJewelry.Migrations
     {
         public override void Up()
         {
-            Sql("UPDATE dbo.Vendors SET TypeId =  1 WHERE TypeId IS NULL");
+            Sql("EXEC('UPDATE dbo.Vendors SET TypeId =  1 WHERE TypeId IS NULL')");
             DropForeignKey("dbo.Vendors", "TypeId", "dbo.VendorType");
             DropIndex("dbo.Vendors", new[] { "TypeId" });
             AlterColumn("dbo.Vendors", "TypeId", c => c.Int(nullable: false));

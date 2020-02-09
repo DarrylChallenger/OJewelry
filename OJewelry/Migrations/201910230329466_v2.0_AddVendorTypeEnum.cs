@@ -6,6 +6,7 @@ namespace OJewelry.Migrations
     using System;
     using System.Data.Entity.Migrations;
     using System.Collections.Generic;
+    using System.Diagnostics;
 
     public partial class v20_AddVendorTypeEnum : DbMigration
     {
@@ -29,10 +30,11 @@ namespace OJewelry.Migrations
             AddColumn("dbo.Vendors", "Type_Type", c => c.Int(nullable: false));
             foreach(var mapping in VendorTypeMap)
             {
-                Sql($"update Vendors set Type_Type = {mapping.Key} where TypeId = {mapping.Value}");
+                Trace.TraceInformation($"About to execute: update Vendors set Type_Type = '{(int)mapping.Value}' where TypeId = '{mapping.Key}'");
+                Sql($"update Vendors set Type_Type = '{(int)mapping.Value}' where TypeId = '{mapping.Key}'");
             }
             //DropColumn("dbo.Vendors", "TypeId");
-            DropTable("dbo.VendorType");
+            //DropTable("dbo.VendorType");
         }
         
         public override void Down()
