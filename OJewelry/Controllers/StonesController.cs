@@ -247,6 +247,7 @@ namespace OJewelry.Controllers
                     // Headers
                     row = new Row();
                     UInt32 cn = 1;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Id"); row.Append(cell); cn++;
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Name"); row.Append(cell); cn++;
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Title"); row.Append(cell); cn++;
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Stone"); row.Append(cell); cn++;
@@ -270,6 +271,7 @@ namespace OJewelry.Controllers
                         cn = 1;
                         row = new Row();
                         rr = 2 + i;
+                        cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Id); row.Append(cell); cn++;
                         cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Label); row.Append(cell); cn++;
                         cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Title); row.Append(cell); cn++;
                         cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Name); row.Append(cell); cn++;

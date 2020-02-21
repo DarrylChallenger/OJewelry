@@ -234,11 +234,12 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Headers
                     row = new Row();
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Weight (dwt)"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Price"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Vendor"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "Inventory"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Id"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Weight (dwt)"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Price"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "Vendor"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 6, Max = 6, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F1", "Inventory"); row.Append(cell);
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<Finding> Findings = db.Findings.Where(v => v.CompanyId == companyId).OrderBy(f => f.Name).Include("Vendor").ToList();
@@ -247,8 +248,9 @@ namespace OJewelry.Controllers
                     {
                         row = new Row();
                         rr = 2 + i;
-                        loc = "A" + rr; cell = oxl.SetCellVal(loc, Findings[i].Name); row.Append(cell);
-                        loc = "B" + rr; 
+                        loc = "A" + rr; cell = oxl.SetCellVal(loc, Findings[i].Id); row.Append(cell);
+                        loc = "B" + rr; cell = oxl.SetCellVal(loc, Findings[i].Name); row.Append(cell);
+                        loc = "C" + rr; 
                         if (Findings[i].Weight == null)
                         {
                             cell = oxl.SetCellVal(loc, "");
@@ -258,9 +260,9 @@ namespace OJewelry.Controllers
                             cell = oxl.SetCellVal(loc, Findings[i].Weight.Value);
                         }
                         row.Append(cell);
-                        loc = "C" + rr; cell = oxl.SetCellVal(loc, Findings[i].Price); row.Append(cell);
-                        loc = "D" + rr; cell = oxl.SetCellVal(loc, Findings[i].Vendor.Name); row.Append(cell);
-                        loc = "E" + rr; cell = oxl.SetCellVal(loc, Findings[i].Qty); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, Findings[i].Price); row.Append(cell);
+                        loc = "E" + rr; cell = oxl.SetCellVal(loc, Findings[i].Vendor.Name); row.Append(cell);
+                        loc = "F" + rr; cell = oxl.SetCellVal(loc, Findings[i].Qty); row.Append(cell);
                         sd.Append(row);
                     }
                     worksheet.Append(sd);
