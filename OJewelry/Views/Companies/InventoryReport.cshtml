@@ -4,15 +4,17 @@
     ViewBag.Title = "Inventory Report";
 }
 
-<h2>Inventory Report for the <i>@Model.CompanyName</i> Company</h2>
+<h2>Inventory Report for <i>@Model.CompanyName</i></h2>
 
 <br />
 
-@Html.ActionLink("Export Inventory Report", "ExportInventoryReport",
-    new { CompanyId = Model.CompanyId, currDate = DateTime.Now.ToLocalTime().ToString("d") }, new { id = "ExportLink", onclick = "GetDate(" + @Model.CompanyId + ")" }) |
 
-@Html.ActionLink("Inventory", "Inventory", new { CompanyId = Model.CompanyId }) |
-@Html.ActionLink("Companies", "Index")
+<p class="MainMenu">
+    @Html.ActionLink("Export Inventory Report", "ExportInventoryReport",
+        new { CompanyId = Model.CompanyId, currDate = DateTime.Now.ToLocalTime().ToString("d") }, new { id = "ExportLink", onclick = "GetDate(" + @Model.CompanyId + ")" }) |
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId) 
+</p>
 
 <br /><br />
 
@@ -33,37 +35,36 @@
 
     @foreach (OJewelry.Models.irmStyle s in Model.styles)
     {
-    <tr>
-        <td>@s.StyleNum</td>
-        <td>@s.StyleName</td>
-        <td>@s.StyleDesc</td>
-        <td>@s.JewelryTypeName</td>
-        <td>@s.StyleCollectionName</td>
-        <td>@s.StylePrice</td>
-        @foreach (OJewelry.Models.irmLocation l in Model.locations)
-        {
-
-            OJewelry.Models.irmLS cell = Model.locationQuantsbystyle.Where(x => x.StyleId == s.StyleId && x.PresenterId == l.PresenterId).SingleOrDefault();
-            string qty = "-";
-            if (cell != null)
+        <tr>
+            <td>@s.StyleNum</td>
+            <td>@s.StyleName</td>
+            <td>@s.StyleDesc</td>
+            <td>@s.JewelryTypeName</td>
+            <td>@s.StyleCollectionName</td>
+            <td>@s.StylePrice</td>
+            @foreach (OJewelry.Models.irmLocation l in Model.locations)
             {
-                qty = cell.MemoQty.ToString();
+
+                OJewelry.Models.irmLS cell = Model.locationQuantsbystyle.Where(x => x.StyleId == s.StyleId && x.PresenterId == l.PresenterId).SingleOrDefault();
+                string qty = "-";
+                if (cell != null)
+                {
+                    qty = cell.MemoQty.ToString();
+                }
+                <td>@qty</td>
             }
-        <td>@qty</td>
-        }
-    </tr>
+        </tr>
         <tr></tr>
     }
 
 </table>
 
-@Html.ActionLink("Export Inventory Report", "ExportInventoryReport",
-    new { CompanyId = Model.CompanyId, currDate = DateTime.Now.ToLocalTime().ToString("d") }, new { id = "ExportLink", onclick = "GetDate(" + @Model.CompanyId + ")" }) |
-
-@Html.ActionLink("Inventory", "Inventory", new { CompanyId = Model.CompanyId }) |
-@Html.ActionLink("Companies", "Index")
-
-
+<p class="MainMenu">
+    @Html.ActionLink("Export Inventory Report", "ExportInventoryReport",
+        new { CompanyId = Model.CompanyId, currDate = DateTime.Now.ToLocalTime().ToString("d") }, new { id = "ExportLink", onclick = "GetDate(" + @Model.CompanyId + ")" }) |
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+</p>
 @section Scripts {
     <script>
         function GetDate(compId) {

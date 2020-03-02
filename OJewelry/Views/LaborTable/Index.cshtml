@@ -4,6 +4,13 @@
     ViewBag.Title = $"{Model.CompanyName} - Labor Table";
 }
 <h2>Labor Table for <i>@Model.CompanyName</i></h2>
+
+<p class="MainMenu">
+    @Html.ActionLink("Companies", "Index", "Companies") |
+    @Html.Partial("_CompanyNavPartial", (int)Model.CompanyId) |
+    @Html.ActionLink("Export Labor Table to Excel", "ExportLaborTable", new { companyId = Model.CompanyId })
+</p>
+
 @if (!Model.bHasVendors)
 {
     using (Html.BeginForm("Create", "Vendors", routeValues: new { companyId = Model.CompanyId }, method: FormMethod.Get))

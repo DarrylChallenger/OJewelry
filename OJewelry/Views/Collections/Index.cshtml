@@ -4,7 +4,7 @@
     ViewBag.Title = $"{Model.CompanyName} - Collections";
 }
 
-<h2><i>@Model.CompanyName</i> Collection</h2>
+<h2>Collections for <i>@Model.CompanyName</i></h2>
 
 <p>
     @Html.ActionLink("Create New Collection", "Create", new { id = Model.CompanyId })
