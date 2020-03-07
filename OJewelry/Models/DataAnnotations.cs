@@ -212,6 +212,12 @@ namespace OJewelry.Models
 
         [Display(Name ="Vendor")]
         public int? VendorId { get; set; }
+
+        [Display(Name ="Notes")]
+        [StringLength(2048)]
+        public string Note { get; set; }
+
+
     }
 
     [MetadataType(typeof(JewelryTypeMetaData))]   //Jewelry Type
