@@ -197,6 +197,41 @@ namespace OJewelry.Controllers
             return View(finding);
         }
 
+        [Authorize(Roles = "Admin")]
+        public ActionResult ConfirmRemoveInventory(int companyId)
+        {
+            Company co = db.FindCompany(companyId);
+            if (co == null)
+            {
+                RedirectToAction("Index", "Home");
+            }
+            List<Finding> findings = db.Findings.Where(f => f.CompanyId == companyId).ToList(); 
+            ViewBag.companyId = companyId;
+            ViewBag.CompanyName = co.Name;
+            return View(findings);
+
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RemoveInventory(int companyId)
+        {
+            Company co = db.FindCompany(companyId);
+            if (co == null)
+            {
+                RedirectToAction("Index", "Home");
+            }
+
+            List<Finding> findings = db.Findings.Where(f => f.CompanyId == companyId).ToList();
+            foreach (Finding f in findings)
+            {
+                f.Qty = 0;
+            }
+            db.SaveChanges();
+            return RedirectToAction("Index", "Findings", new { companyId });
+        }
+
         public FileResult ExportFindingsReport(int companyId)
         {
             byte[] b;

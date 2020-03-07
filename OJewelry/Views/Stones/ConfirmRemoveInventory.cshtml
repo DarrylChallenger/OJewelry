@@ -1,0 +1,19 @@
+﻿@model IEnumerable<OJewelry.Models.Stone>
+
+@{
+    ViewBag.Title = "Remove Inventory";
+}
+
+<h2>Remove Inventory</h2>
+
+<h3>Are you sure you want to clear the Stone inventory for <i>@ViewBag.companyName</i>?</h3>
+
+@using (Html.BeginForm("RemoveInventory", "Stones"))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("companyId", (int)ViewBag.companyId)
+    <div class="form-group">
+        <input class="btn btn-default" type="submit" value="Comfirm" />
+        <input class="btn btn-default" type="submit" value="Cancel" formaction="~/Stones/Index" formmethod="get" />
+    </div>
+}

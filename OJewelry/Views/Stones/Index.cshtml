@@ -17,8 +17,13 @@
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
-    @Html.ActionLink("Stone Inventory","ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
+    @Html.ActionLink("Stone Inventory", "ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
     @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
+    @if (System.Web.HttpContext.Current.User.IsInRole("Admin"))
+    {
+        <span>|</span> @Html.ActionLink("Remove Inventory", "ConfirmRemoveInventory", new { companyId = ViewBag.companyId })
+    }
+
 </p>
 <table class="table">
     <tr>
@@ -93,4 +98,8 @@
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Stone Inventory", "ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
     @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
+    @if (System.Web.HttpContext.Current.User.IsInRole("Admin"))
+    {
+        <span>|</span> @Html.ActionLink("Remove Inventory", "ConfirmRemoveInventory", new { companyId = ViewBag.companyId })
+    }
 </p>
