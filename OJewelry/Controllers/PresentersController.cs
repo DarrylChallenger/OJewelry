@@ -244,6 +244,8 @@ namespace OJewelry.Controllers
         public FileResult ExportLocationReport(int CompanyId)
         {
             byte[] b;
+            DateTime now = DateTime.Now;
+
             DCTSOpenXML oxl = new DCTSOpenXML();
             using (MemoryStream memStream = new MemoryStream())
             {
@@ -264,7 +266,7 @@ namespace OJewelry.Controllers
                     Cell cell;
                     string loc;
                     int rr;
-
+                    // Build sheet
                     Sheet sheet = new Sheet()
                     {
                         Id = workbookPart.GetIdOfPart(worksheetPart),
@@ -275,13 +277,22 @@ namespace OJewelry.Controllers
 
                     Worksheet worksheet = new Worksheet();
                     SheetData sd = new SheetData();
-                    // Build sheet
+                    // Title
+                    row = new Row();
+                    cell = oxl.SetCellVal("A1", $"Export - Location {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    row.Append(cell);
+                    sd.Append(row);
+                    row = new Row();
+                    cell = oxl.SetCellVal("A2", "");
+                    row.Append(cell);
+                    sd.Append(row);
+
                     // Headers
                     row = new Row();
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Short Name"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Phone"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Email"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A3", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B3", "Short Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C3", "Phone"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D3", "Email"); row.Append(cell);
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<Presenter> locations = db.Presenters.Where(x => x.CompanyId == CompanyId).ToList();
@@ -289,7 +300,7 @@ namespace OJewelry.Controllers
                     for (int i = 0; i < locations.Count(); i++)
                     {
                         row = new Row();
-                        rr = 2 + i;
+                        rr = 4 + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, locations[i].Name); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, locations[i].ShortName); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, locations[i].Phone); row.Append(cell);
@@ -305,7 +316,7 @@ namespace OJewelry.Controllers
                     b = memStream.ToArray();
                     Company company = db.FindCompany(CompanyId);
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        company.Name + " Locations as of " + DateTime.Now.ToString() + ".xlsx");
+                        company.Name + $" Locations as of {now.ToLocalTime().ToShortDateString()} { now.ToLocalTime().ToShortTimeString()}.xlsx");
                 }
             }
         }

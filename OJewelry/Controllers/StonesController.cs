@@ -247,6 +247,8 @@ namespace OJewelry.Controllers
         public FileResult ExportStonesReport(int companyId)
         {
             byte[] b;
+            DateTime now = DateTime.Now;
+
             DCTSOpenXML oxl = new DCTSOpenXML();
             StoneSorter stoneSorter = new StoneSorter();
             using (MemoryStream memStream = new MemoryStream())
@@ -279,22 +281,31 @@ namespace OJewelry.Controllers
                     Worksheet worksheet = new Worksheet();
                     SheetData sd = new SheetData();
                     // Build sheet
+                    // Title
+                    row = new Row();
+                    cell = oxl.SetCellVal("A1", $"Export - Stones {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    row.Append(cell);
+                    sd.Append(row);
+                    row = new Row();
+                    cell = oxl.SetCellVal("A2", "");
+                    row.Append(cell);
+                    sd.Append(row);
                     // Headers
                     row = new Row();
                     UInt32 cn = 1;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Id"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Name"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Title"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Stone"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Shape"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Vendor"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Carat"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Size"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Price"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Setting Cost"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Qty"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Parent Handle"); row.Append(cell); cn++;
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 1), "Tags"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Id"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Name"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Title"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Stone"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Shape"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Vendor"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Carat"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Size"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Price"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Setting Cost"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Qty"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Parent Handle"); row.Append(cell); cn++;
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = cn, Max = cn, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal(oxl.GetCellName(cn, 3), "Tags"); row.Append(cell); cn++;
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     var stones = db.Stones.Where(v => v.CompanyId == companyId).Include("Vendor").Include("Shape");
@@ -305,7 +316,7 @@ namespace OJewelry.Controllers
                     {
                         cn = 1;
                         row = new Row();
-                        rr = 2 + i;
+                        rr = 4 + i;
                         cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Id); row.Append(cell); cn++;
                         cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Label); row.Append(cell); cn++;
                         cell = oxl.SetCellVal(oxl.GetCellName(cn, rr), Stones[i].Title); row.Append(cell); cn++;
@@ -338,7 +349,7 @@ namespace OJewelry.Controllers
 
                     b = memStream.ToArray();
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Stones as of " + DateTime.Now.ToString() + ".xlsx");
+                        "Stones as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
                 }
             }
         }

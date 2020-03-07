@@ -1091,26 +1091,30 @@ namespace OJewelry.Controllers
 
                     // Date row
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", "Inventory Report");
-                    row.Append(cell);
-                    cell = oxl.SetCellVal("B1", "Date: " + docDate); 
+                    cell = oxl.SetCellVal("A1", $"Export- Inventory {docDate}");
                     row.Append(cell);
                     sd.Append(row);
+
+                    row = new Row();
+                    cell = oxl.SetCellVal("A2", "");
+                    row.Append(cell);
+                    sd.Append(row);
+
                     // Header row
                     // Save Col A for image
                     row = new Row();
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A2", "Style"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B2", "Name"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C2", "Description"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D2", "Jewelry Type"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E2", "Collection"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 6, Max = 6, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F2", "Retail"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A3", "Style"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B3", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C3", "Description"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D3", "Jewelry Type"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E3", "Collection"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 6, Max = 6, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F3", "Retail"); row.Append(cell);
                     //cell = oxl.SetCellVal("G2", irm.CompanyName); row.Append(cell);
                     //cell = oxl.SetCellVal("G2", "QOH"); row.Append(cell);
                     for (int i = 0; i < irm.locations.Count(); i++)
                     {
                         ch = (char)(((int)'G') + i);
-                        loc = ch + "2";
+                        loc = ch + "3";
                         oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = (uint)i + 7, Max = (uint)i + 7, BestFit = true, CustomWidth = true });
                         cell = oxl.SetCellVal(loc, irm.locations[i].ShortName);
                         row.Append(cell);
@@ -1128,7 +1132,7 @@ namespace OJewelry.Controllers
                     for (int i = 0; i < irm.styles.Count; i++)
                     {
                         row = new Row();
-                        rr = 3 + i;
+                        rr = 4 + i;
                         loc = "A" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].StyleNum); row.Append(cell);
                         loc = "B" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].StyleName); row.Append(cell);
                         loc = "C" + rr.ToString(); cell = oxl.SetCellVal(loc, irm.styles[i].StyleDesc); row.Append(cell);

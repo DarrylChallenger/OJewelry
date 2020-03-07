@@ -123,6 +123,8 @@ namespace OJewelry.Controllers
         public FileResult ExportLaborTable(int companyId)
         {
             byte[] b;
+            DateTime now = DateTime.Now;
+
             DCTSOpenXML oxl = new DCTSOpenXML();
             using (MemoryStream memStream = new MemoryStream())
             {
@@ -155,12 +157,23 @@ namespace OJewelry.Controllers
                     Worksheet worksheet = new Worksheet();
                     SheetData sd = new SheetData();
                     // Build sheet
+
+                    // Title
+                    row = new Row();
+                    cell = oxl.SetCellVal("A1", $"Export - Labor Table {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    row.Append(cell);
+                    sd.Append(row);
+                    row = new Row();
+                    cell = oxl.SetCellVal("A2", "");
+                    row.Append(cell);
+                    sd.Append(row);
+
                     // Headers
                     row = new Row();
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "$/Hour"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "$/Piece"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Vendor"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A3", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B3", "$/Hour"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C3", "$/Piece"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D3", "Vendor"); row.Append(cell);
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<LaborItem> LaborTableItems = db.LaborTable.Where(lt => lt.CompanyId == companyId).OrderBy(lt => lt.Name).ToList();
@@ -168,7 +181,7 @@ namespace OJewelry.Controllers
                     for (int i = 0; i < LaborTableItems.Count(); i++)
                     {
                         row = new Row();
-                        rr = 2 + i;
+                        rr = 4 + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, LaborTableItems[i].Name); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, LaborTableItems[i].pph.GetValueOrDefault()); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, LaborTableItems[i].ppp.GetValueOrDefault()); row.Append(cell);
@@ -181,7 +194,7 @@ namespace OJewelry.Controllers
                     document.Close();
                     b = memStream.ToArray();
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Labor Table as of " + DateTime.Now.ToString() + ".xlsx");
+                        "Labor Table as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
                 }
             }
         }

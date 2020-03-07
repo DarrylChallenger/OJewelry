@@ -210,6 +210,8 @@ namespace OJewelry.Controllers
         public async Task<FileResult> ExportCollectionsByList(int companyId)
         {
             byte[] b;
+            DateTime now = DateTime.Now;
+
             DCTSOpenXML oxl = new DCTSOpenXML();
             Company company = db.FindCompany(companyId);
 
@@ -247,14 +249,23 @@ namespace OJewelry.Controllers
                     List<Bitmap> images = new List<Bitmap>();
                     string imageName = "";
                     // Build sheet
+                    // Title
+                    row = new Row();
+                    cell = oxl.SetCellVal("A1", $"Export - Collections {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    row.Append(cell);
+                    sd.Append(row);
+                    row = new Row();
+                    cell = oxl.SetCellVal("A2", "");
+                    row.Append(cell);
+                    sd.Append(row);
                     // Headers
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", ""); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true });
-                    cell = oxl.SetCellVal("B1", "Name"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true });
-                    cell = oxl.SetCellVal("C1", "Desc"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true });
-                    cell = oxl.SetCellVal("D1", "Style No."); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true });
-                    cell = oxl.SetCellVal("E1", "Type"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true });
-                    cell = oxl.SetCellVal("F1", "Inventory"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 6, Max = 6, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("A3", ""); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("B3", "Name"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("C3", "Desc"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("D3", "Style No."); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("E3", "Type"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true });
+                    cell = oxl.SetCellVal("F3", "Inventory"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 6, Max = 6, BestFit = true, CustomWidth = true });
                     sd.Append(row);
                     worksheet.Append(columns);
                     oxl.columns = columns;
@@ -270,7 +281,7 @@ namespace OJewelry.Controllers
                     for (int i = 0; i < Styles.Count(); i++)
                     {
                         row = new Row();
-                        rr = 2 + i;
+                        rr = 4 + i;
                         Bitmap image;
                         if (Styles[i].Image == null)
                         {
@@ -314,7 +325,7 @@ namespace OJewelry.Controllers
                             //imageName = Server.MapPath("/Images") + "/logo.png";
 
                         }
-                        rr = 2 + i;
+                        rr = 4 + i;
                         // place images in column A
                         string contentType = MimeMapping.GetMimeMapping(imageName);
                         PlaceImageOnCell(worksheet, images[i], 0, rr - 1, col0Width, pixelRowHeight, contentType, Styles[i].StyleName, Styles[i].Desc);
@@ -327,7 +338,7 @@ namespace OJewelry.Controllers
                     b = memStream.ToArray();
                     string compName = db.FindCompany(companyId).Name;
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        compName + " as of " + DateTime.Now.ToString() + ".xlsx");
+                        compName + " as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
                 }
             }
         }
@@ -335,6 +346,8 @@ namespace OJewelry.Controllers
         public async Task<FileResult> ExportCollectionReport(int companyId)
         {
             byte[] b;
+            DateTime now = DateTime.Now;
+
             DCTSOpenXML oxl = new DCTSOpenXML();
             
             using (MemoryStream memStream = new MemoryStream())
@@ -378,13 +391,23 @@ namespace OJewelry.Controllers
                         List<Bitmap> images = new List<Bitmap>();
                         string imageName = "";
                         // Build sheet
+                        // Title
+                        row = new Row();
+                        cell = oxl.SetCellVal("A1", $"Export - Collection {collection.Name} {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                        row.Append(cell);
+                        sd.Append(row);
+                        row = new Row();
+                        cell = oxl.SetCellVal("A2", "");
+                        row.Append(cell);
+                        sd.Append(row);
+
                         // Headers
                         row = new Row();
-                        cell = oxl.SetCellVal("A1", ""); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true });
-                        cell = oxl.SetCellVal("B1", "Name"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true });
-                        cell = oxl.SetCellVal("C1", "Desc"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true });
-                        cell = oxl.SetCellVal("D1", "Style No."); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true });
-                        cell = oxl.SetCellVal("E1", "Inventory"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true });
+                        cell = oxl.SetCellVal("A3", ""); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true });
+                        cell = oxl.SetCellVal("B3", "Name"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true });
+                        cell = oxl.SetCellVal("C3", "Desc"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true });
+                        cell = oxl.SetCellVal("D3", "Style No."); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true });
+                        cell = oxl.SetCellVal("E3", "Inventory"); row.Append(cell); columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 5, Max = 5, BestFit = true, CustomWidth = true });
                         sd.Append(row);
                         worksheet.Append(columns);
                         oxl.columns = columns;
@@ -393,7 +416,7 @@ namespace OJewelry.Controllers
                         for (int i = 0; i < Styles.Count(); i++)
                         {
                             row = new Row();
-                            rr = 2 + i;
+                            rr = 4 + i;
                             Bitmap image;
                             if (Styles[i].Image == null)
                             {
@@ -433,7 +456,7 @@ namespace OJewelry.Controllers
                                 //imageName = Server.MapPath("/Images") + "/logo.png";
 
                             }
-                            rr = 2 + i;
+                            rr = 4 + i;
                             // place images in column A
                             string contentType = MimeMapping.GetMimeMapping(imageName);
                             PlaceImageOnCell(worksheet, images[i], 0, rr-1, col0Width, pixelRowHeight, contentType, Styles[i].StyleName, Styles[i].Desc);
@@ -447,7 +470,7 @@ namespace OJewelry.Controllers
                     b = memStream.ToArray();
                     string compName = db.FindCompany(companyId).Name;
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        compName + " Collection as of " + DateTime.Now.ToString() + ".xlsx");
+                        compName + " Collection as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
                 }
             }
         }

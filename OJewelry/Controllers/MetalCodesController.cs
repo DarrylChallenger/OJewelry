@@ -147,6 +147,8 @@ namespace OJewelry.Controllers
         public FileResult ExportMetalsReport(int companyId)
         {
             byte[] b;
+            DateTime now = DateTime.Now;
+
             DCTSOpenXML oxl = new DCTSOpenXML();
             using (MemoryStream memStream = new MemoryStream())
             {
@@ -167,7 +169,7 @@ namespace OJewelry.Controllers
                     Cell cell;
                     string loc;
                     int rr;
-
+                    // Build sheet
                     Sheet sheet = new Sheet()
                     {
                         Id = workbookPart.GetIdOfPart(worksheetPart),
@@ -178,13 +180,22 @@ namespace OJewelry.Controllers
 
                     Worksheet worksheet = new Worksheet();
                     SheetData sd = new SheetData();
-                    // Build sheet
+                    // Title
+                    row = new Row();
+                    cell = oxl.SetCellVal("A1", $"Export - Metal Codes {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    row.Append(cell);
+                    sd.Append(row);
+                    row = new Row();
+                    cell = oxl.SetCellVal("A2", "");
+                    row.Append(cell);
+                    sd.Append(row);
+
                     // Headers
                     row = new Row();
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Code"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Desc"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Market"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Multiplier"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A3", "Code"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B3", "Desc"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C3", "Market"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D3", "Multiplier"); row.Append(cell);
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     List<MetalCode> Metals = db.MetalCodes.Where(m => m.CompanyId == companyId).OrderBy(m => m.Code).ToList();
@@ -192,7 +203,7 @@ namespace OJewelry.Controllers
                     for (int i = 0; i < Metals.Count(); i++)
                     {
                         row = new Row();
-                        rr = 2 + i;
+                        rr = 4 + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, Metals[i].Code); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, Metals[i].Desc); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, Metals[i].Market); row.Append(cell);
@@ -207,7 +218,7 @@ namespace OJewelry.Controllers
 
                     b = memStream.ToArray();
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Metals as of " + DateTime.Now.ToString() + ".xlsx");
+                        "Metals as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
                 }
             }
         }
