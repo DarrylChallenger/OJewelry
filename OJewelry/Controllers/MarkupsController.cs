@@ -159,7 +159,9 @@ namespace OJewelry.Controllers
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, m.title); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, m.multiplier); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, m.ratio); row.Append(cell);
-                        loc = "D" + rr; cell = oxl.SetCellVal(loc, m.Addend); row.Append(cell);                    }
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, m.Addend); row.Append(cell);
+                        sd.Append(row);
+                    }
                     worksheet.Append(sd);
                     // Autofit columns - ss:AutoFitWidth="1"
                     worksheetPart.Worksheet = worksheet;

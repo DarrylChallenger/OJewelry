@@ -16,7 +16,7 @@
     @Html.ActionLink("Export Findings to Excel", "ExportFindingsReport", new { companyId = ViewBag.companyId })
     @if (System.Web.HttpContext.Current.User.IsInRole("Admin"))
     {
-        <span>|</span> @Html.ActionLink("Remove Inventory", "ConfirmRemoveInventory", new { companyId = ViewBag.companyId })
+        <span>|</span> @Html.ActionLink("Remove Findings Inventory", "ConfirmRemoveInventory", new { companyId = ViewBag.companyId })
     }
 
 </p>

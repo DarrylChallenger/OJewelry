@@ -4,16 +4,17 @@
     ViewBag.Title = "Remove Inventory";
 }
 
-<h2>Remove Inventory</h2>
+<h2>Remove Findings Inventory</h2>
 
 <h3>Are you sure you want to clear the Findings inventory for <i>@ViewBag.companyName</i>?</h3>
+<p>Findings Inventory will be cleared to 0.  You will not be able to retrieve it once you confirm.</p>
 
 @using (Html.BeginForm("RemoveInventory", "Findings"))
 {
     @Html.AntiForgeryToken()
     @Html.Hidden("companyId", (int)ViewBag.companyId)
-<div class="form-group">
-    <input class="btn btn-default" type="submit" value="Comfirm" />
-    <input class="btn btn-default" type="submit" value="Cancel" formaction="~/Findings/Index" formmethod="get" />
-</div>
+    <div class="form-group">
+        <input class="btn btn-default" type="submit" value="Confirm" />
+        <input class="btn btn-default" type="submit" value="Cancel" formaction="~/Findings/Index" formmethod="get" />
+    </div>
 }

@@ -8,7 +8,8 @@
 <br />
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.Partial("_CompanyNavPartial", (int)Model.CompanyId) 
+    @Html.Partial("_CompanyNavPartial", (int)Model.CompanyId)  |
+    @Html.ActionLink("Export Markups To Excel", "ExportMarkups", "Markups", new { companyId = Model.CompanyId }, null)
 </p>
 
 
@@ -73,7 +74,8 @@
 <br />
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.Partial("_CompanyNavPartial", (int)Model.CompanyId) 
+    @Html.Partial("_CompanyNavPartial", (int)Model.CompanyId) |
+    @Html.ActionLink("Export Markups To Excel", "ExportMarkups", "Markups", new { companyId = Model.CompanyId }, null)
 </p>
 
 

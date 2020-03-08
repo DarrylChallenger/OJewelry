@@ -9,6 +9,7 @@ using System.IO.Packaging;
 using System.IO;
 using System.Drawing;
 using System.Diagnostics;
+using Color = DocumentFormat.OpenXml.Spreadsheet.Color;
 
 namespace OJewelry.Classes
 {
@@ -29,6 +30,27 @@ namespace OJewelry.Classes
         private string cellBuf;
 
         private System.Drawing.Font font;
+
+        public Stylesheet CreateStyleSheet()
+        {
+            //
+            Fonts fonts = new Fonts(
+                new DocumentFormat.OpenXml.Spreadsheet.Font(                                            // Index 0 - The default font.
+                    new FontSize() { Val = 11 },
+                    new Color() { Rgb = new HexBinaryValue() { Value = "000000" } },
+                    new FontName() { Val = "Calibri" }),
+                new DocumentFormat.OpenXml.Spreadsheet.Font(                                            // Index 1 - The bold font.
+                    new FontSize() { Val = 14 },
+                    new Color() { Rgb = new HexBinaryValue() { Value = "000000" } },
+                    new FontName() { Val = "Calibri" })
+                );
+            CellFormats cf = new CellFormats(
+                new CellFormat() { FontId = 0 },
+                new CellFormat() { FontId = 1, ApplyFont = true }
+                );
+            Stylesheet ss = new Stylesheet(fonts);
+            return ss;
+        }
 
         public bool CellMatches(string cellref, Worksheet w, SharedStringTablePart strings, string value)
         {
