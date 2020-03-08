@@ -232,6 +232,10 @@ namespace OJewelry.Controllers
                     WorkbookPart workbookPart = document.AddWorkbookPart();
                     workbookPart.Workbook = new Workbook();
 
+                    workbookPart.AddNewPart<WorkbookStylesPart>();
+                    workbookPart.WorkbookStylesPart.Stylesheet = oxl.CreateStyleSheet();
+                    workbookPart.WorkbookStylesPart.Stylesheet.Save();
+
                     WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
                     worksheetPart.Worksheet = new Worksheet(new SheetData());
 

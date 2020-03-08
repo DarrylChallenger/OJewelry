@@ -20,8 +20,7 @@ namespace OJewelry.Classes
             columns = new Columns();
             graphics = Graphics.FromImage(new Bitmap(100, 100));
             font = new System.Drawing.Font("Calabri", 11);
-            minWidth = ComputeExcelCellWidth(graphics.MeasureString("0000", font).Width);
-            minWidth = ComputeExcelCellWidth(graphics.MeasureString("WWWWW", font).Width);
+            minWidth = ComputeExcelCellWidth(graphics.MeasureString("WW", font).Width);
             cellBuf = "WW";
         }
         public double minWidth { get; set; }
@@ -44,11 +43,14 @@ namespace OJewelry.Classes
                     new Color() { Rgb = new HexBinaryValue() { Value = "000000" } },
                     new FontName() { Val = "Calibri" })
                 );
+            Fills fills = new Fills(new Fill());
+            Borders borders = new Borders(new Border());
             CellFormats cf = new CellFormats(
-                new CellFormat() { FontId = 0 },
-                new CellFormat() { FontId = 1, ApplyFont = true }
+                new CellFormat() { FontId = 0, FillId = 0, BorderId = 0 },
+                new CellFormat() { FontId = 1, FillId = 0, BorderId = 0, ApplyFont = true },
+                new CellFormat(new Alignment() { WrapText = true })
                 );
-            Stylesheet ss = new Stylesheet(fonts);
+            Stylesheet ss = new Stylesheet(fonts, fills, borders, cf);
             return ss;
         }
 
@@ -207,10 +209,10 @@ namespace OJewelry.Classes
             return d;
         }
 
-        public Cell SetCellVal(string loc, int val, bool bSetCellWidth = true)
+        public Cell SetCellVal(string loc, int val, bool bSetCellWidth = true, uint style = 0)
         {
 
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
+            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             if (bSetCellWidth)
             {
                 SetColumnWidth(loc, val.ToString());
@@ -219,10 +221,10 @@ namespace OJewelry.Classes
             return cell;
         }
 
-        public Cell SetCellVal(string loc, bool val, bool bSetCellWidth = true)
+        public Cell SetCellVal(string loc, bool val, bool bSetCellWidth = true, uint style = 0)
         {
 
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.String, CellValue = new CellValue(val.ToString()) };
+            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.String, CellValue = new CellValue(val.ToString()) };
             if (bSetCellWidth)
             {
                 SetColumnWidth(loc, val.ToString());
@@ -231,10 +233,10 @@ namespace OJewelry.Classes
             return cell;
         }
 
-        public Cell SetCellVal(string loc, decimal val, bool bSetCellWidth = true)
+        public Cell SetCellVal(string loc, decimal val, bool bSetCellWidth = true, uint style = 0)
         {
 
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
+            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             if (bSetCellWidth)
             {
                 SetColumnWidth(loc, val.ToString());
@@ -243,9 +245,9 @@ namespace OJewelry.Classes
             return cell;
         }
 
-        public Cell SetCellVal(string loc, string val, bool bSetCellWidth = true)
+        public Cell SetCellVal(string loc, string val, bool bSetCellWidth = true, uint style = 0)
         {
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.String, CellValue = new CellValue(val) };
+            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.String, CellValue = new CellValue(val) };
             if (bSetCellWidth)
             {
                 SetColumnWidth(loc, val);
@@ -254,9 +256,9 @@ namespace OJewelry.Classes
             return cell;
         }
 
-        public Cell SetCellVal(string loc, float val, bool bSetCellWidth = true)
+        public Cell SetCellVal(string loc, float val, bool bSetCellWidth = true, uint style = 0)
         {
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
+            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             if (bSetCellWidth)
             {
                 SetColumnWidth(loc, val.ToString());
@@ -265,9 +267,9 @@ namespace OJewelry.Classes
             return cell;
         }
 
-        public Cell SetCellVal(string loc, double val, bool bSetCellWidth = true)
+        public Cell SetCellVal(string loc, double val, bool bSetCellWidth = true, uint style = 0)
         {
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
+            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.Number, CellValue = new CellValue(val.ToString()) };
             if (bSetCellWidth)
             {
                 SetColumnWidth(loc, val.ToString());
@@ -276,9 +278,9 @@ namespace OJewelry.Classes
             return cell;
         }
 
-        public Cell SetCellVal(string loc, Image img, double cellHeight, bool bSetCellWidth = true)
+        public Cell SetCellVal(string loc, Image img, double cellHeight, bool bSetCellWidth = true, uint style = 0)
         {
-            Cell cell = new Cell() { CellReference = loc, DataType = CellValues.Number, CellValue = new CellValue("") };
+            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.Number, CellValue = new CellValue("") };
             if (bSetCellWidth)
             {
                 SetColumnWidth(loc, (double)ComputeExcelCellWidthForImage(img.Width*cellHeight/img.Height));

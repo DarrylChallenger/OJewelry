@@ -1044,7 +1044,7 @@ namespace OJewelry.Controllers
             return File("~/Excel/FindingInv.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
-        public FileResult ExportInventoryReport(int? CompanyId, string currDate)
+        public FileResult ExportInventoryReport(int? CompanyId, string sCurrDate)
         {
             if (CompanyId == null)
             {
@@ -1056,6 +1056,15 @@ namespace OJewelry.Controllers
             }
             InventoryReportModel irm = SetIRM(CompanyId.Value);
             byte[] b;
+
+            DateTime curr;
+            sCurrDate = sCurrDate.Replace("'", "");
+            if (!DateTime.TryParse(sCurrDate, out curr))
+            {
+                curr = DateTime.Now.ToLocalTime();
+            }
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
+
             DCTSOpenXML oxl = new DCTSOpenXML();
             using (MemoryStream memStream = new MemoryStream())
             {
@@ -1087,11 +1096,10 @@ namespace OJewelry.Controllers
                     char ch;
                     string loc;
                     int rr;
-                    string docDate = currDate.Replace("_", ":");
 
                     // Date row
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", $"Export- Inventory  {docDate}");
+                    cell = oxl.SetCellVal("A1", $"Export - Inventory  {currDate}");
                     row.Append(cell);
                     sd.Append(row);
 

@@ -149,9 +149,18 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", new { companyId });
         }
 
-        public FileResult ExportStoneShapesReport(int companyId)
+        public FileResult ExportStoneShapesReport(int companyId, string sCurrDate)
         {
             byte[] b;
+
+            DateTime curr;
+            sCurrDate = sCurrDate.Replace("'", "");
+            if (!DateTime.TryParse(sCurrDate, out curr))
+            {
+                curr = DateTime.Now.ToLocalTime();
+            }
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
+
             DCTSOpenXML oxl = new DCTSOpenXML();
             using (MemoryStream memStream = new MemoryStream())
             {
@@ -184,9 +193,19 @@ namespace OJewelry.Controllers
                     Worksheet worksheet = new Worksheet();
                     SheetData sd = new SheetData();
                     // Build sheet
+                    // Title
+                    row = new Row();
+                    cell = oxl.SetCellVal("A1", $"Export - Stone Shapes  {currDate}");
+                    row.Append(cell);
+                    sd.Append(row);
+                    row = new Row();
+                    cell = oxl.SetCellVal("A2", "");
+                    row.Append(cell);
+                    sd.Append(row);
+
                     // Headers
                     row = new Row();
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Name"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A3", "Name"); row.Append(cell);
                     worksheet.Append(oxl.columns);
 
                     sd.Append(row);
@@ -195,7 +214,7 @@ namespace OJewelry.Controllers
                     for (int i = 0; i < Shapes.Count(); i++)
                     {
                         row = new Row();
-                        rr = 2 + i;
+                        rr = 4 + i;
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, Shapes[i].Name); row.Append(cell);
 
                         sd.Append(row);
@@ -208,7 +227,7 @@ namespace OJewelry.Controllers
 
                     b = memStream.ToArray();
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Stone Shapes as of " + DateTime.Now.ToString() + ".xlsx");
+                        "Stone Shapes as of " + currDate + ".xlsx");
                 }
             }
         }

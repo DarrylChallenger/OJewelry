@@ -8,10 +8,15 @@
 <p>
     @Html.ActionLink("Create New Shape", "Create", new { @companyId = ViewBag.companyId })
 </p>
+</p>
+@{
+    string jsCall = $"GetLocalTime({ViewBag.companyId}, '{Url.Action("ExportStoneShapesReport")}')";
+}
+
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
-    @Html.ActionLink("Export Stone Shapes to Excel", "ExportStoneShapesReport", new { companyId = ViewBag.companyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Stone Shapes to Excel</a>
 </p>
 <table class="table">
     <tr>
@@ -38,5 +43,9 @@
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
-    @Html.ActionLink("Export Stone Shapes to Excel", "ExportStoneShapesReport", new { companyId = ViewBag.companyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Stone Shapes to Excel</a>
 </p>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/GetLocalTime.js")
+}
