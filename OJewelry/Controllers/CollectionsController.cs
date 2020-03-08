@@ -207,10 +207,16 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", new { CompanyId = collection.CompanyId });
         }
 
-        public async Task<FileResult> ExportCollectionsByList(int companyId)
+        public async Task<FileResult> ExportCollectionsByList(int companyId, string sCurrDate)
         {
             byte[] b;
-            DateTime now = DateTime.Now;
+            DateTime curr;
+            sCurrDate = sCurrDate.Replace("'", "");
+            if (!DateTime.TryParse(sCurrDate, out curr))
+            {
+                curr = DateTime.Now.ToLocalTime();
+            }
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
 
             DCTSOpenXML oxl = new DCTSOpenXML();
             Company company = db.FindCompany(companyId);
@@ -251,7 +257,7 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Title
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", $"Export - Collections {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    cell = oxl.SetCellVal("A1", $"Export - Collections  {currDate}");
                     row.Append(cell);
                     sd.Append(row);
                     row = new Row();
@@ -338,15 +344,21 @@ namespace OJewelry.Controllers
                     b = memStream.ToArray();
                     string compName = db.FindCompany(companyId).Name;
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        compName + " as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
+                        compName + " as of " + $"{currDate}" + ".xlsx");
                 }
             }
         }
 
-        public async Task<FileResult> ExportCollectionReport(int companyId)
+        public async Task<FileResult> ExportCollectionReport(int companyId, string sCurrDate)
         {
             byte[] b;
-            DateTime now = DateTime.Now;
+            DateTime curr;
+            sCurrDate = sCurrDate.Replace("'", "");
+            if (!DateTime.TryParse(sCurrDate, out curr))
+            {
+                curr = DateTime.Now.ToLocalTime();
+            }
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
 
             DCTSOpenXML oxl = new DCTSOpenXML();
             
@@ -393,7 +405,7 @@ namespace OJewelry.Controllers
                         // Build sheet
                         // Title
                         row = new Row();
-                        cell = oxl.SetCellVal("A1", $"Export - Collection {collection.Name} {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                        cell = oxl.SetCellVal("A1", $"Export - Collection {collection.Name}  {currDate}");
                         row.Append(cell);
                         sd.Append(row);
                         row = new Row();
@@ -470,7 +482,7 @@ namespace OJewelry.Controllers
                     b = memStream.ToArray();
                     string compName = db.FindCompany(companyId).Name;
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        compName + " Collection as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
+                        compName + " Collection as of " + $"{currDate}" + ".xlsx");
                 }
             }
         }

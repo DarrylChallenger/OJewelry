@@ -757,6 +757,7 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\CreateEditComponents.js" />
     <Content Include="Scripts\FormatPhone.js" />
+    <Content Include="Scripts\GetLocalTime.js" />
     <Content Include="Scripts\JewelryType.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

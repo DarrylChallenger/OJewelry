@@ -244,10 +244,17 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", "Stones", new { companyId });
         }
 
-        public FileResult ExportStonesReport(int companyId)
+        public FileResult ExportStonesReport(int companyId, string sCurrDate)
         {
             byte[] b;
-            DateTime now = DateTime.Now;
+
+            DateTime curr;
+            sCurrDate = sCurrDate.Replace("'", "");
+            if (!DateTime.TryParse(sCurrDate, out curr))
+            {
+                curr = DateTime.Now.ToLocalTime();
+            }
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
 
             DCTSOpenXML oxl = new DCTSOpenXML();
             StoneSorter stoneSorter = new StoneSorter();
@@ -283,7 +290,7 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Title
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", $"Export - Stones {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    cell = oxl.SetCellVal("A1", $"Export - Stones  {currDate}");
                     row.Append(cell);
                     sd.Append(row);
                     row = new Row();
@@ -349,7 +356,7 @@ namespace OJewelry.Controllers
 
                     b = memStream.ToArray();
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Stones as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
+                        "Stones as of " + $"{currDate}" + ".xlsx");
                 }
             }
         }

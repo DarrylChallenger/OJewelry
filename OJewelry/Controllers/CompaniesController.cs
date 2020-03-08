@@ -1091,7 +1091,7 @@ namespace OJewelry.Controllers
 
                     // Date row
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", $"Export- Inventory {docDate}");
+                    cell = oxl.SetCellVal("A1", $"Export- Inventory  {docDate}");
                     row.Append(cell);
                     sd.Append(row);
 

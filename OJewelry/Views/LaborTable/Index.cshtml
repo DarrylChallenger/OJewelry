@@ -5,10 +5,14 @@
 }
 <h2>Labor Table for <i>@Model.CompanyName</i></h2>
 
+@{
+    string jsCall = $"GetLocalTime({Model.CompanyId}, '{Url.Action("ExportLaborTable")}')";
+}
+
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)Model.CompanyId) |
-    @Html.ActionLink("Export Labor Table to Excel", "ExportLaborTable", new { companyId = Model.CompanyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Labor Table to Excel</a>
 </p>
 
 @if (!Model.bHasVendors)
@@ -95,11 +99,12 @@ else
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)Model.CompanyId) |
-    @Html.ActionLink("Export Labor Table to Excel", "ExportLaborTable", new { companyId = Model.CompanyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Labor Table to Excel</a>
 </p>
 
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/SetupLaborTable.js")
+    @Scripts.Render("~/Scripts/GetLocalTime.js")
 }

@@ -144,10 +144,17 @@ namespace OJewelry.Controllers
             return RedirectToAction("Index", new { companyId });
         }
 
-        public FileResult ExportMetalsReport(int companyId)
+        public FileResult ExportMetalsReport(int companyId, string sCurrDate)
         {
             byte[] b;
-            DateTime now = DateTime.Now;
+
+            DateTime curr;
+            sCurrDate = sCurrDate.Replace("'", "");
+            if (!DateTime.TryParse(sCurrDate, out curr))
+            {
+                curr = DateTime.Now.ToLocalTime();
+            }
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
 
             DCTSOpenXML oxl = new DCTSOpenXML();
             using (MemoryStream memStream = new MemoryStream())
@@ -182,7 +189,7 @@ namespace OJewelry.Controllers
                     SheetData sd = new SheetData();
                     // Title
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", $"Export - Metal Codes {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    cell = oxl.SetCellVal("A1", $"Export - Metal Codes  {currDate}");
                     row.Append(cell);
                     sd.Append(row);
                     row = new Row();
@@ -218,7 +225,7 @@ namespace OJewelry.Controllers
 
                     b = memStream.ToArray();
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Metals as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
+                        "Metals as of " + $"{currDate}" + ".xlsx");
                 }
             }
         }

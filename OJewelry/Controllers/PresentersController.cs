@@ -241,12 +241,21 @@ namespace OJewelry.Controllers
             base.Dispose(disposing);
         }
 
-        public FileResult ExportLocationReport(int CompanyId)
+        public FileResult ExportLocationReport(int CompanyId, string sCurrDate)
         {
             byte[] b;
-            DateTime now = DateTime.Now;
+
+            DateTime curr;
+            sCurrDate = sCurrDate.Replace("'", "");
+            if (!DateTime.TryParse(sCurrDate, out curr))
+            {
+                curr = DateTime.Now.ToLocalTime();
+            }
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
+
 
             DCTSOpenXML oxl = new DCTSOpenXML();
+            
             using (MemoryStream memStream = new MemoryStream())
             {
                 using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
@@ -279,7 +288,7 @@ namespace OJewelry.Controllers
                     SheetData sd = new SheetData();
                     // Title
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", $"Export - Location {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    cell = oxl.SetCellVal("A1", $"Export - Location {currDate}");
                     row.Append(cell);
                     sd.Append(row);
                     row = new Row();
@@ -316,7 +325,7 @@ namespace OJewelry.Controllers
                     b = memStream.ToArray();
                     Company company = db.FindCompany(CompanyId);
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        company.Name + $" Locations as of {now.ToLocalTime().ToShortDateString()} { now.ToLocalTime().ToShortTimeString()}.xlsx");
+                        company.Name + $" Locations as of {currDate}.xlsx");
                 }
             }
         }

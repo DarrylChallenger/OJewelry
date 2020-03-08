@@ -12,10 +12,14 @@
         <text>@Html.ActionLink("Create New Jewelry Type", "Create", new { @companyId = ViewBag.companyId })</text>
     }
 </p>
+@{
+    string jsCall = $"GetLocalTime({ViewBag.companyId}, '{Url.Action("ExportJewelryTypesReport")}')";
+}
+
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
-    @Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Jewelry Types to Excel</a>
 </p>
 
 <table class="table">
@@ -36,23 +40,23 @@
 
     @foreach (var item in Model)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PackagingCost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FinishingCost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.bUseLaborTable)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-        </td>
-    </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PackagingCost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FinishingCost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.bUseLaborTable)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
     }
 
 </table>
@@ -60,5 +64,9 @@
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
-    @Html.ActionLink("Export Jewelry Types to Excel", "ExportJewelryTypesReport", new { companyId = ViewBag.companyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Jewelry Types to Excel</a>
 </p>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/GetLocalTime.js")
+}

@@ -89,10 +89,18 @@ namespace OJewelry.Controllers
             }
         }
 
-        public FileResult ExportMarkups(int companyId)
+        public FileResult ExportMarkups(int companyId, string sCurrDate)
         {
             byte[] b;
-            DateTime now = DateTime.Now;
+
+            DateTime curr;
+            sCurrDate = sCurrDate.Replace("'", "");
+            if (!DateTime.TryParse(sCurrDate, out curr))
+            {
+                curr = DateTime.Now.ToLocalTime();
+            }
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
+
             Company company = db.FindCompany(companyId);
             MarkupModel mm = new MarkupModel();
             if (company.markup != null)
@@ -135,7 +143,7 @@ namespace OJewelry.Controllers
                     // Build sheet
                     // Title
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", $"Export - Markups {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    cell = oxl.SetCellVal("A1", $"Export - Markups  {currDate}");
                     row.Append(cell);
                     sd.Append(row);
                     row = new Row();
@@ -170,7 +178,7 @@ namespace OJewelry.Controllers
 
                     b = memStream.ToArray();
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        $"Markups as of {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}.xlsx");
+                        $"Markups as of {currDate}.xlsx");
                 }
             }
         }

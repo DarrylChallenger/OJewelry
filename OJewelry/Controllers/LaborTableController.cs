@@ -120,10 +120,18 @@ namespace OJewelry.Controllers
             return View(ltm);
         }
 
-        public FileResult ExportLaborTable(int companyId)
+        public FileResult ExportLaborTable(int companyId, string sCurrDate)
         {
             byte[] b;
-            DateTime now = DateTime.Now;
+
+            DateTime curr;
+            sCurrDate = sCurrDate.Replace("'", "");
+            if (!DateTime.TryParse(sCurrDate, out curr))
+            {
+                curr = DateTime.Now.ToLocalTime();
+            }
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
+
 
             DCTSOpenXML oxl = new DCTSOpenXML();
             using (MemoryStream memStream = new MemoryStream())
@@ -160,7 +168,7 @@ namespace OJewelry.Controllers
 
                     // Title
                     row = new Row();
-                    cell = oxl.SetCellVal("A1", $"Export - Labor Table {now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}");
+                    cell = oxl.SetCellVal("A1", $"Export - Labor Table  {currDate}");
                     row.Append(cell);
                     sd.Append(row);
                     row = new Row();
@@ -194,7 +202,7 @@ namespace OJewelry.Controllers
                     document.Close();
                     b = memStream.ToArray();
                     return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Labor Table as of " + $"{now.ToLocalTime().ToShortDateString()} {now.ToLocalTime().ToShortTimeString()}" + ".xlsx");
+                        "Labor Table as of " + $"{currDate}" + ".xlsx");
                 }
             }
         }

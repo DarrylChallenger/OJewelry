@@ -9,11 +9,16 @@
 <p>
     @Html.ActionLink("Create New Collection", "Create", new { id = Model.CompanyId })
 </p>
+@{
+    string jsCall = $"GetLocalTime({Model.CompanyId}, '{Url.Action("ExportCollectionReport")}')";
+    string jsCallByList = $"GetLocalTime({Model.CompanyId}, '{Url.Action("ExportCollectionsByList")}', 'ListExportLink')";
+}
+
 <div class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
-    @Html.ActionLink("Export by Collection", "ExportCollectionReport", new { companyId = Model.CompanyId }) |
-    @Html.ActionLink("Export by List", "ExportCollectionsByList", new { companyId = Model.CompanyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Collections to Excel</a>
+    <a class="ListExportLink" href="#" onclick="@jsCallByList">Export Collections to Excel By List</a>
 </div>
 <table class="table">
     <tr>
@@ -85,6 +90,11 @@
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |
-    @Html.ActionLink("Export by Collection", "ExportCollectionReport", new { companyId = Model.CompanyId }) |
-    @Html.ActionLink("Export by List", "ExportCollectionsByList", new { companyId = Model.CompanyId }) 
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Collections to Excel</a>
+    <a class="ListExportLink" href="#" onclick="@jsCallByList">Export Collections to Excel By List</a>
 </p>
+
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/GetLocalTime.js")
+}

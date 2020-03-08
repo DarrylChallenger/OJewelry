@@ -14,11 +14,15 @@
         @Html.ActionLink("Stone Shapes", "Index", "Shapes", new { companyId = ViewBag.CompanyId }, null)
     </div>
 </div>
+@{
+    string jsCall = $"GetLocalTime({ViewBag.companyId}, '{Url.Action("ExportStonesReport")}')";
+}
+
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Stone Inventory", "ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
-    @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Stones to Excel</a>
     @if (System.Web.HttpContext.Current.User.IsInRole("Admin"))
     {
         <span>|</span> @Html.ActionLink("Remove Stones Inventory", "ConfirmRemoveInventory", new { companyId = ViewBag.companyId })
@@ -58,37 +62,37 @@
 
     @foreach (OJewelry.Models.Stone item in Model)
     {
-    <tr>
-        <td>@Html.DisplayFor(modelItem => item.Label) </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Shape.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Vendor.Name)
-        </td>
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Label) </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Shape.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vendor.Name)
+            </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.CtWt)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StoneSize)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SettingCost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Qty)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-        </td>
-    </tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CtWt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StoneSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SettingCost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Qty)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+            </td>
+        </tr>
     }
 
 </table>
@@ -97,9 +101,13 @@
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
     @Html.ActionLink("Stone Inventory", "ManageStoneInventory", "Companies", new { companyId = ViewBag.CompanyId }, null) |
-    @Html.ActionLink("Export Stones to Excel", "ExportStonesReport", new { companyId = ViewBag.companyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Stones to Excel</a>
     @if (System.Web.HttpContext.Current.User.IsInRole("Admin"))
     {
         <span>|</span> @Html.ActionLink("Remove Inventory", "ConfirmRemoveInventory", new { companyId = ViewBag.companyId })
     }
 </p>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/GetLocalTime.js")
+}

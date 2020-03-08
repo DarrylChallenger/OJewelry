@@ -9,10 +9,14 @@
 <p>
     @Html.ActionLink("Create New Metal Code", "Create", new { @companyId = ViewBag.companyId })
 </p>
+@{
+    string jsCall = $"GetLocalTime({ViewBag.companyId}, '{Url.Action("ExportMetalsReport")}')";
+}
+
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
-    @Html.ActionLink("Export Metals to Excel", "ExportMetalsReport", new { companyId = ViewBag.companyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Metal Codes to Excel</a>
 </p>
 <table class="table">
     <tr>
@@ -56,5 +60,9 @@
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)ViewBag.companyId) |
-    @Html.ActionLink("Export Metals to Excel", "ExportMetalsReport", new { companyId = ViewBag.companyId })
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Metal Codes to Excel</a>
 </p>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/GetLocalTime.js")
+}

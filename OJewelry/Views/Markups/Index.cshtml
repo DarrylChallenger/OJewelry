@@ -6,10 +6,14 @@
 <h2>Markups for <i>@Model.CompanyName</i></h2>
 
 <br />
+@{
+    string jsCall = $"GetLocalTime({Model.CompanyId}, '{Url.Action("ExportMarkups")}')";
+}
+
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)Model.CompanyId)  |
-    @Html.ActionLink("Export Markups To Excel", "ExportMarkups", "Markups", new { companyId = Model.CompanyId }, null)
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Markups to Excel</a>
 </p>
 
 
@@ -17,57 +21,57 @@
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal RowManager">
-    <hr />
-    @Html.HiddenFor(model => model.CompanyId)
-    @Html.HiddenFor(model => model.CompanyName)
-    <div id="MarkupsTableHeader" class="form-group">
-        @Html.LabelFor(model => model.markups[0].title, htmlAttributes: new { @class = "control-label contorl-label-left col-md-3" })
-        @Html.LabelFor(model => model.markups[0].multiplier, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
-        @Html.LabelFor(model => model.markups[0].ratio, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
-        @Html.LabelFor(model => model.markups[0].Addend, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
-    </div>
-    <div id="MarkupsTableData">
-        @for (int i = 0; i < Model.markups.Count; i++)
-        {
-            var bHideRow = (Model.markups[i].State == MMState.Unadded || Model.markups[i].State == MMState.Deleted) ? "hidden" : "";
-            <div class="row MarkupsTableRowContainer @bHideRow">
-                <div class="TableRowContainer ltbordered">
-                    @Html.HiddenFor(model => model.markups[i].State, new { @class = "MarkupsState" })
-                    <div class="row MarkupsTableRowData">
-                        @Html.HiddenFor(model => model.CompanyId)
-                        <div>
-                            @Html.EditorFor(model => model.markups[i].title, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-3" } })
-                        </div>
-                        <div>
-                            @Html.EditorFor(model => model.markups[i].multiplier, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
-                        </div>
-                        <div>
-                            @Html.EditorFor(model => model.markups[i].ratio, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
-                        </div>
-                        <div>
-                            @Html.EditorFor(model => model.markups[i].Addend, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
-                        </div>
+    <div class="form-horizontal RowManager">
+        <hr />
+        @Html.HiddenFor(model => model.CompanyId)
+        @Html.HiddenFor(model => model.CompanyName)
+        <div id="MarkupsTableHeader" class="form-group">
+            @Html.LabelFor(model => model.markups[0].title, htmlAttributes: new { @class = "control-label contorl-label-left col-md-3" })
+            @Html.LabelFor(model => model.markups[0].multiplier, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
+            @Html.LabelFor(model => model.markups[0].ratio, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
+            @Html.LabelFor(model => model.markups[0].Addend, htmlAttributes: new { @class = "control-label contorl-label-left col-md-2" })
+        </div>
+        <div id="MarkupsTableData">
+            @for (int i = 0; i < Model.markups.Count; i++)
+            {
+                var bHideRow = (Model.markups[i].State == MMState.Unadded || Model.markups[i].State == MMState.Deleted) ? "hidden" : "";
+                <div class="row MarkupsTableRowContainer @bHideRow">
+                    <div class="TableRowContainer ltbordered">
+                        @Html.HiddenFor(model => model.markups[i].State, new { @class = "MarkupsState" })
+                        <div class="row MarkupsTableRowData">
+                            @Html.HiddenFor(model => model.CompanyId)
+                            <div>
+                                @Html.EditorFor(model => model.markups[i].title, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-3" } })
+                            </div>
+                            <div>
+                                @Html.EditorFor(model => model.markups[i].multiplier, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
+                            </div>
+                            <div>
+                                @Html.EditorFor(model => model.markups[i].ratio, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
+                            </div>
+                            <div>
+                                @Html.EditorFor(model => model.markups[i].Addend, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
+                            </div>
 
+                        </div>
+                    </div>
+                    <div class="row MarkupsTableRowValidation">
+                        @Html.ValidationMessageFor(model => model.markups[i].title, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.markups[i].multiplier, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.markups[i].ratio, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.markups[i].Addend, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="row MarkupsTableRowValidation">
-                    @Html.ValidationMessageFor(model => model.markups[i].title, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.markups[i].multiplier, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.markups[i].ratio, "", new { @class = "text-danger" })
-                    @Html.ValidationMessageFor(model => model.markups[i].Addend, "", new { @class = "text-danger" })
-                </div>
+            }
+        </div>
+        <div class="form-group">
+            <br />
+            <div class="col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Cancel" formnovalidate="formnovalidate" class="btn btn-default" formaction="/Companies/Index" />
             </div>
-        }
-    </div>
-    <div class="form-group">
-        <br />
-        <div class="col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
-            <input type="submit" value="Cancel" formnovalidate="formnovalidate" class="btn btn-default" formaction="/Companies/Index" />
         </div>
     </div>
-</div>
 }
 
 
@@ -75,14 +79,13 @@
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
     @Html.Partial("_CompanyNavPartial", (int)Model.CompanyId) |
-    @Html.ActionLink("Export Markups To Excel", "ExportMarkups", "Markups", new { companyId = Model.CompanyId }, null)
+    <a class="ExportLink" href="#" onclick="@jsCall">Export Markups to Excel</a>
 </p>
 
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/SetupMarkupTable.js")
+    @Scripts.Render("~/Scripts/GetLocalTime.js")
 }
-
-
 
