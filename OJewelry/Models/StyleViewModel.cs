@@ -56,7 +56,7 @@ namespace OJewelry.Models
         [Display(Name = "Quantity")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N0}")]
         [DataType(DataType.Currency)]
-        [Range(typeof(decimal), "0", "999999999", ErrorMessage = "Quantity must not be negative.")]
+        [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "Check qty's - cannot be 0.")]
         public decimal Qty { get; set; }
 
         [Display(Name = "Price")]
@@ -315,7 +315,7 @@ namespace OJewelry.Models
         }
 
         [Display(Name = "Quantity")]
-        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
+        [Range(1, 999999999, ErrorMessage = "Check qty's - cannot be 0.")]
         public int Qty { get; set; }
 
         /*[Display(Name = "$/Piece")]
@@ -378,7 +378,7 @@ namespace OJewelry.Models
         public SVMStateEnum State { get; set; }
 
         [Display(Name = "Quantity")]
-        [Range(typeof(decimal), "0", "999999999", ErrorMessage = "Quantity must not be negative.")]
+        [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "Check qty's - cannot be 0.")]
         public decimal Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
@@ -538,7 +538,7 @@ namespace OJewelry.Models
         }
 
         [Display(Name = "Quantity")]
-        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
+        [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "Check qty's - cannot be 0.")]
         public decimal? Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
@@ -553,7 +553,6 @@ namespace OJewelry.Models
 
 
     }
-
     public class LaborItemComponent
     {
         public LaborItem _laborItem = new LaborItem();
@@ -600,13 +599,12 @@ namespace OJewelry.Models
         public String VendorName { get { return _laborItem.Vendor.Name; } set { _laborItem.Vendor.Name = value; }  }
 
         [Display(Name = "Quantity")]
-        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
+        [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "Check qty's - cannot be 0.")]
         public decimal? Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Total { get; set; }
     }
-
     public class MiscComponent
     {
         private Misc _misc = new Misc();
@@ -643,7 +641,7 @@ namespace OJewelry.Models
         public string Desc { get { return _misc.Desc; } set { _misc.Desc = value; } }
 
         [Display(Name = "Quantity")]
-        [Range(0, int.MaxValue, ErrorMessage = "Quantity must not be negative.")]
+        [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "Check qty's - cannot be 0.")]
         public decimal? Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
