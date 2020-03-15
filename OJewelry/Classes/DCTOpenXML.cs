@@ -46,9 +46,10 @@ namespace OJewelry.Classes
             Fills fills = new Fills(new Fill());
             Borders borders = new Borders(new Border());
             CellFormats cf = new CellFormats(
-                new CellFormat() { FontId = 0, FillId = 0, BorderId = 0 },
-                new CellFormat() { FontId = 1, FillId = 0, BorderId = 0, ApplyFont = true },
-                new CellFormat(new Alignment() { WrapText = true })
+                new CellFormat() { FontId = 0, FillId = 0, BorderId = 0 },                                                                      // 0
+                new CellFormat() { FontId = 1, FillId = 0, BorderId = 0, ApplyFont = true },                                                    // 1
+                new CellFormat() { FontId = 1, FillId = 0, BorderId = 0, ApplyFont = true, Alignment = new Alignment() { WrapText = true } },   // 2
+                new CellFormat(new Alignment() { WrapText = true })                                                                             // 3    
                 );
             Stylesheet ss = new Stylesheet(fonts, fills, borders, cf);
             return ss;
