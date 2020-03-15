@@ -1220,7 +1220,10 @@ namespace OJewelry.Models
             }
             Total += MiscsTotal;
             // Add stone setting costs to total
-            Total += AddStoneSettingCosts();
+            if (Style.JewelryType == null || (Style.JewelryType != null && !Style.JewelryType.bUseLaborTable))
+            {
+                Total += AddStoneSettingCosts();
+            }
         }
 
         public void Populate(int? id, OJewelryDB db)

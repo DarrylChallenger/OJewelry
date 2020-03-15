@@ -658,8 +658,9 @@ COST:
         @foreach (StoneComponent sc in Model.Stones)
         {
             @*<div class="LaborsState"></div>*@
-            var bHideSettingRow = (Model.Stones[j].State == SVMStateEnum.Unadded || Model.Stones[j].State == SVMStateEnum.Deleted) ? "hidden" : "";
-            <div class="row ltbordered @bHideSettingRow">
+        var bHideSettingRow = (Model.Stones[j].State == SVMStateEnum.Unadded || Model.Stones[j].State == SVMStateEnum.Deleted) ? "hidden" : "";
+        var bUsesLT = Model.Style.JewelryType.bUseLaborTable ? "hidden" : "";
+            <div class="row ltbordered @bHideSettingRow @bUsesLT">
                 @{Model.CCLastRow = false;
                     Model.CCHeaderRow = false;
                     Model.CCRowIndex = j;

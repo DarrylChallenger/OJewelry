@@ -467,6 +467,7 @@ function JewelryTypeChanged() {
         if (jewelryType.bUseLaborTable === false) {
             // toggle .HideLabors
             $(`.StyleLaborItemsSection`).hide();
+            $(`.StyleLaborStoneSettingsSection`).show();
             $(`.StyleLaborsSection`).show();
             //$(`.StyleLaborItemsSection`).css("opacity", ".4");
             //$(`.StyleLaborsSection`).css("opacity", "1");
@@ -483,6 +484,7 @@ function JewelryTypeChanged() {
         } else {
             // toggle .HideLaborItems
             $(`.StyleLaborsSection`).hide();
+            $(`.StyleLaborStoneSettingsSection`).hide();
             $(`.StyleLaborItemsSection`).show();
             //$(`.StyleLaborsSection`).css("opacity", ".4");
             //$(`.StyleLaborItemsSection`).css("opacity", "1");
@@ -709,8 +711,12 @@ function UpdateStoneSettingRow(stoneRow, settingCost, bValidCombo) {
 }
 
 function AddStoneSettingRowHTML(stoneRow) {
-    ltbordered = getStoneSettingsHTML("Stones", len);
-    $("#LaborsTotal").before(ltbordered);
+    ltbordered = getStoneSettingsHTML("Stones", len); //$('table td:last').append('<td>Text 1</td>');
+    if ($("#Style_JewelryType_bUseLaborTable").val() === "true") {
+        $(ltbordered).addClass("hidden");
+    }
+    // add at the end of the StyleLaborStoneSettingsSection div
+    $(".StyleLaborStoneSettingsSection").append(ltbordered); 
     // Don't need this -new rows will always have PPP = 0
     settingVal = 0;
     $("#StoneSettingPrice_" + stoneRow).val(settingVal.toFixed(2));
