@@ -161,7 +161,6 @@ html input[disabled], .locked {
     box-shadow: 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(255,0,0,0.6);
 }
 
-
 .StyleSheetPartial input {
     font-weight: 700;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -170,6 +169,10 @@ html input[disabled], .locked {
 .StyleCostSheet {
     font-family: 'Calibri','sans-serif';
     font-weight: 700;
+}
+
+.StyleCostSheet .text-danger {
+    font-size: larger;
 }
 
 .StyleHeader 
