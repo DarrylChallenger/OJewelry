@@ -275,8 +275,8 @@ namespace OJewelry.Controllers
                     // Headers
                     row = new Row();
                     cell = oxl.SetCellVal("A3", "", false, 3); row.Append(cell); columns.Append(new Column() { Width = 15.3D, Min = 1, Max = 1, BestFit = false, CustomWidth = false });
-                    cell = oxl.SetCellVal("B3", "Name", false, 3); row.Append(cell); columns.Append(new Column() { Width = 20.9D, Min = 2, Max = 2, BestFit = false, CustomWidth = false });
-                    cell = oxl.SetCellVal("C3", "Desc", false, 3); row.Append(cell); columns.Append(new Column() { Width = 20.9D, Min = 3, Max = 3, BestFit = false, CustomWidth = false });
+                    cell = oxl.SetCellVal("B3", "Name", false, 3); row.Append(cell); columns.Append(new Column() { Width = 12.8, Min = 2, Max = 2, BestFit = false, CustomWidth = false });
+                    cell = oxl.SetCellVal("C3", "Desc", false, 3); row.Append(cell); columns.Append(new Column() { Width = 12.8D, Min = 3, Max = 3, BestFit = false, CustomWidth = false });
                     cell = oxl.SetCellVal("D3", "Style No.", false, 3); row.Append(cell); columns.Append(new Column() { Width = 17.2D, Min = 4, Max = 4, BestFit = false, CustomWidth = false });
                     cell = oxl.SetCellVal("E3", "Type", false, 3); row.Append(cell); columns.Append(new Column() { Width = 12.8, Min = 5, Max = 5, BestFit = false, CustomWidth = false });
                     cell = oxl.SetCellVal("F3", "Inventory", false, 3); row.Append(cell); columns.Append(new Column() { Width = 7.67, Min = 6, Max = 6, BestFit = false, CustomWidth = false });

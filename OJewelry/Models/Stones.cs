@@ -47,7 +47,7 @@
         [Column(TypeName = "money")]
         public decimal Price { get; set; }
 
-        [Range(typeof(decimal), "0.01", "9999999999999999999999999999", ErrorMessage = "Setting Cost cannot be $0")]
+        [Range(typeof(decimal), "0.00", "9999999999999999999999999999", ErrorMessage = "Setting Cost must be $0 or more")]
         [Column(TypeName = "money")]
         public decimal SettingCost { get; set; }
 
