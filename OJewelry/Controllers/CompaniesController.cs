@@ -1410,7 +1410,13 @@ namespace OJewelry.Controllers
                                                     delta = oxl.GetIntVal(cell);
                                                     bEmptyRow = false;
                                                 }
-
+                                                if (delta == 0)
+                                                {
+                                                    // error
+                                                    error = "The Quantity in sheet [" + sheet.Name + "] cell [E" + j + "] is 0";
+                                                    ModelState.AddModelError("Qty-" + j, error);
+                                                    sim.Warnings.Add(error);
+                                                }
 
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
                                                 if (bEmptyRow)
@@ -1607,6 +1613,13 @@ namespace OJewelry.Controllers
                                                 {
                                                     delta = oxl.GetIntVal(cell);
                                                     bEmptyRow = false;
+                                                }
+                                                if (delta == 0)
+                                                {
+                                                    // error
+                                                    error = "The Quantity in sheet [" + sheet.Name + "] cell [E" + j + "] is 0";
+                                                    ModelState.AddModelError("Qty-" + j, error);
+                                                    fim.Warnings.Add(error);
                                                 }
 
 
