@@ -1395,7 +1395,7 @@ namespace OJewelry.Controllers
                                                     // error
                                                     error = "The Vendor in sheet [" + sheet.Name + "] cell [D" + j + "] is blank.";
                                                     ModelState.AddModelError("Vendor-" + j, error);
-                                                    sim.Warnings.Add(error); 
+                                                    sim.Errors.Add(error); 
                                                 }
                                                 else
                                                 {
@@ -1599,7 +1599,7 @@ namespace OJewelry.Controllers
                                                     // error
                                                     error = "The Vendor in sheet [" + sheet.Name + "] cell [B" + j + "] is blank.";
                                                     ModelState.AddModelError("Vendor-" + j, error);
-                                                    fim.Warnings.Add(error);
+                                                    fim.Errors.Add(error);
                                                 }
                                                 else
                                                 {
