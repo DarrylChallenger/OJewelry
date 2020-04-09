@@ -431,7 +431,6 @@ namespace OJewelry.Controllers
                     }
                 }
             }
-
         }
 
         public ActionResult Inventory(int? CompanyId)
@@ -1185,7 +1184,6 @@ namespace OJewelry.Controllers
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
                     irm.CompanyName + " Inventory as of " + currDate + ".xlsx");
             }
-
         }
 
         InventoryReportModel SetIRM(int CompanyId)
@@ -1350,7 +1348,7 @@ namespace OJewelry.Controllers
                                                 if (stone == "")
                                                 {
                                                     // error
-                                                    error = "The stone in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    error = "The stone in sheet [" + sheet.Name + "] cell [A" + j + "] is blank.";
                                                     ModelState.AddModelError("Stone-" + j, error);
                                                     sim.Errors.Add(error);
                                                 }
@@ -1365,7 +1363,7 @@ namespace OJewelry.Controllers
                                                 if (shape == "")
                                                 {
                                                     // error
-                                                    error = "The shape in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    error = "The shape in sheet [" + sheet.Name + "] cell [B" + j + "] is blank.";
                                                     ModelState.AddModelError("Shape-" + j, error);
                                                     sim.Errors.Add(error);
                                                 }
@@ -1380,7 +1378,7 @@ namespace OJewelry.Controllers
                                                 if (size == "")
                                                 {
                                                     // error
-                                                    error = "The size in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    error = "The size in sheet [" + sheet.Name + "] cell [C" + j + "] is blank.";
                                                     ModelState.AddModelError("Size-" + j, error);
                                                     sim.Errors.Add(error); 
                                                 }
@@ -1395,7 +1393,7 @@ namespace OJewelry.Controllers
                                                 if (vendor == "")
                                                 {
                                                     // error
-                                                    error = "The Vendor in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    error = "The Vendor in sheet [" + sheet.Name + "] cell [D" + j + "] is blank.";
                                                     ModelState.AddModelError("Vendor-" + j, error);
                                                     sim.Warnings.Add(error); 
                                                 }
@@ -1418,7 +1416,7 @@ namespace OJewelry.Controllers
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    error = "Row [" + j + "] will be ignored - it contains blank cells";
+                                                    error = $"Cells [A{j}:E{j}] will be ignored - they contain blank cells";
                                                     sim.Warnings.Add(error);
                                                     string s = sim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 4);
@@ -1475,7 +1473,7 @@ namespace OJewelry.Controllers
 
                                 if (theStone == null)
                                 {
-                                    error = "The stone in row [" + s.lineNum + "] is not on record.";
+                                    error = $"The stone in cells [A{s.lineNum}:C{s.lineNum}] is not on record.";
                                     sim.Errors.Add(error);
                                     continue;
                                 }
@@ -1484,7 +1482,7 @@ namespace OJewelry.Controllers
                                 {
                                     theStone.Qty += s.delta;
                                 } else {
-                                    error = $"Insufficient inventory ({theStone.Qty}) to remove ({s.delta}) stones in row {s.lineNum}";
+                                    error = $"Insufficient inventory ({theStone.Qty}) to remove ({s.delta}) stones in cell [E{s.lineNum}]";
                                     sim.Errors.Add(error);
                                 }
                             }
@@ -1577,7 +1575,7 @@ namespace OJewelry.Controllers
                                                 if (finding == "")
                                                 {
                                                     // error
-                                                    error = "The finding in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    error = "The finding in sheet [" + sheet.Name + "] cell [A" + j + "] is blank.";
                                                     ModelState.AddModelError("Finding-" + j, error);
                                                     fim.Errors.Add(error);
                                                 }
@@ -1593,7 +1591,7 @@ namespace OJewelry.Controllers
                                                 if (vendor == "")
                                                 {
                                                     // error
-                                                    error = "The Vendor in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    error = "The Vendor in sheet [" + sheet.Name + "] cell [B" + j + "] is blank.";
                                                     ModelState.AddModelError("Vendor-" + j, error);
                                                     fim.Warnings.Add(error);
                                                 }
@@ -1616,7 +1614,7 @@ namespace OJewelry.Controllers
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    error = "Row [" + j + "] will be ignored - it contains blank cells";
+                                                    error = $"Cells [A{j}:E{j}] will be ignored - they contain blank cells";
                                                     fim.Warnings.Add(error);
                                                     string s = fim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Finding-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 2);
@@ -1671,7 +1669,7 @@ namespace OJewelry.Controllers
 
                                 if (theFinding == null)
                                 {
-                                    error = "The finding in row [" + f.lineNum + "] is not on record.";
+                                    error = $"The finding in cells [A{f.lineNum}:C{f.lineNum}] is not on record.";
                                     fim.Errors.Add(error);
                                     continue;
                                 }
@@ -1682,7 +1680,7 @@ namespace OJewelry.Controllers
                                 }
                                 else
                                 {
-                                    error = $"Insufficient inventory ({theFinding.Qty}) to remove ({f.delta}) finding in row {f.lineNum}";
+                                    error = $"Insufficient inventory ({theFinding.Qty}) to remove ({f.delta}) finding in cell [C{f.lineNum}]";
                                     fim.Errors.Add(error);
                                 }
                             }
