@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel;
 using System.Text;
-using static OJewelry.Classes.Validations;
+using OJewelry.Classes;
 
 namespace OJewelry.Models
 {
@@ -351,11 +351,13 @@ namespace OJewelry.Models
     {
 
         [Display(Name = "STYLE #")]
-        [Required(ErrorMessage = "Style Number is required.")]
+        //[Required(ErrorMessage = "Style Number is required.")]
+        //[StyleNameOrNumber]
         public string StyleNum { get; set; }
 
         [Display(Name = "STYLE NAME")]
-        [Required(ErrorMessage = "Style Name is required.")]
+        //[Required(ErrorMessage = "Style Name is required.")]
+        //[StyleNameOrNumber]
         public string StyleName { get; set; }
 
         [Display(Name = "DESC")]
@@ -364,7 +366,7 @@ namespace OJewelry.Models
         [Display(Name = "METAL WT")]
         public Nullable<decimal> MetalWeight { get; set; }
 
-        [Display(Name ="NOTE")]
+        [Display(Name ="NOTES")]
         public string MetalWtNote { get; set; }
 
         [Display(Name = "INTRO DATE")]

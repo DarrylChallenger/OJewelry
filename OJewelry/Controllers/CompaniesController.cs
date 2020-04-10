@@ -1415,7 +1415,7 @@ namespace OJewelry.Controllers
                                                     // error
                                                     error = "The Quantity in sheet [" + sheet.Name + "] cell [E" + j + "] is 0";
                                                     ModelState.AddModelError("Qty-" + j, error);
-                                                    sim.Warnings.Add(error);
+                                                    sim.Errors.Add(error);
                                                 }
 
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
@@ -1617,11 +1617,10 @@ namespace OJewelry.Controllers
                                                 if (delta == 0)
                                                 {
                                                     // error
-                                                    error = "The Quantity in sheet [" + sheet.Name + "] cell [E" + j + "] is 0";
+                                                    error = "The Quantity in sheet [" + sheet.Name + "] cell [C" + j + "] is 0";
                                                     ModelState.AddModelError("Qty-" + j, error);
-                                                    fim.Warnings.Add(error);
+                                                    fim.Errors.Add(error);
                                                 }
-
 
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
                                                 if (bEmptyRow)
