@@ -27,6 +27,7 @@ namespace OJewelry.Classes
                 return ValidationResult.Success;
             }
         }
+
     }
 
     [AttributeUsage(AttributeTargets.Property)]
@@ -72,6 +73,27 @@ namespace OJewelry.Classes
         }
 
     }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public sealed class StyleNameOrNumber : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            //var property = validationContext.ObjectType.GetProperty("State");
+            //var otherValue = property.GetValue(validationContext.ObjectInstance, null);
+            if (validationContext.MemberName == "StyleNum" || validationContext.MemberName == "StyleName")
+            {
+                StyleViewModel svm = (StyleViewModel)validationContext.ObjectInstance;
+                if ((svm.Style.StyleNum == "" || svm.Style.StyleNum == null) && (svm.Style.StyleName == "" || svm.Style.StyleName == null))
+                {
+                    return new ValidationResult("Please enter a Style Name or Style Number");
+                }
+            }
+            return ValidationResult.Success;
+        }
+
+    }
+
 
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class GreaterThanZeroAttribute : ValidationAttribute
