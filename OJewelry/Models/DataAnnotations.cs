@@ -355,7 +355,7 @@ namespace OJewelry.Models
         //[StyleNameOrNumber]
         public string StyleNum { get; set; }
 
-        [Display(Name = "STYLE NAME")]
+        [Display(Name = "STYLE #/NAME")]
         //[Required(ErrorMessage = "Style Name is required.")]
         //[StyleNameOrNumber]
         public string StyleName { get; set; }

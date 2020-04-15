@@ -247,10 +247,9 @@ namespace OJewelry.Controllers
         public FileResult ExportStonesReport(int companyId, string sCurrDate)
         {
             byte[] b;
-
-            DateTime curr;
             sCurrDate = sCurrDate.Replace("'", "");
-            if (!DateTime.TryParse(sCurrDate, out curr))
+
+            if (!DateTime.TryParse(sCurrDate, out DateTime curr))
             {
                 curr = DateTime.Now.ToLocalTime();
             }

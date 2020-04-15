@@ -81,7 +81,7 @@ namespace OJewelry.Controllers
                         Id = sty.Id,
                         Image = sty.Image,
                         Name = sty.StyleName,
-                        Num = sty.StyleNum,
+                        //Num = sty.StyleNum,
                         Qty = sty.Quantity,
                         Memod = sty.Memos.Sum(s => s.Quantity)
                         // Cost is the sum of the component prices
@@ -111,7 +111,7 @@ namespace OJewelry.Controllers
                 Id = style.Id,
                 Image = style.Image,
                 Name = style.StyleName,
-                Num = style.StyleNum,
+                //Num = style.StyleNum,
                 Qty = style.Quantity,
                 Memod = style.Memos.Sum(s => s.Quantity)
             };
@@ -222,7 +222,7 @@ namespace OJewelry.Controllers
             // populate style data
             Style sdb = dc.Styles.Find(m.style.Id);
             m.style.Name = sdb.StyleName;
-            m.style.Num = sdb.StyleNum;
+            //m.style.Num = sdb.StyleNum;
             m.style.Qty = sdb.Quantity;
 
             if (m.SendReturnMemoRadio == 1)

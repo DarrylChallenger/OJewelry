@@ -480,14 +480,14 @@ namespace OJewelry.Controllers
                                 int rc = worksheet.Descendants<Row>().Count();
                                 if (rc != 0)
                                 {
-                                    if (oxl.CellMatches("A1", worksheet, stringtable, "Style") &&
-                                    (oxl.CellMatches("B1", worksheet, stringtable, "Name")) &&
-                                    (oxl.CellMatches("C1", worksheet, stringtable, "JewelryType")) &&
-                                    (oxl.CellMatches("D1", worksheet, stringtable, "Collection")) &&
-                                    (oxl.CellMatches("E1", worksheet, stringtable, "Description")) &&
-                                    (oxl.CellMatches("F1", worksheet, stringtable, "Retail")) &&
-                                    (oxl.CellMatches("G1", worksheet, stringtable, "Qty")) &&
-                                    (oxl.CellMatches("H1", worksheet, stringtable, "Location")))
+                                    if (
+                                    (oxl.CellMatches("A1", worksheet, stringtable, "Name")) &&
+                                    (oxl.CellMatches("B1", worksheet, stringtable, "JewelryType")) &&
+                                    (oxl.CellMatches("C1", worksheet, stringtable, "Collection")) &&
+                                    (oxl.CellMatches("D1", worksheet, stringtable, "Description")) &&
+                                    (oxl.CellMatches("E1", worksheet, stringtable, "Retail")) &&
+                                    (oxl.CellMatches("F1", worksheet, stringtable, "Qty")) &&
+                                    (oxl.CellMatches("G1", worksheet, stringtable, "Location")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
@@ -497,9 +497,10 @@ namespace OJewelry.Controllers
                                                 Style style = new Style();
                                                 Collection collection = new Collection();
                                                 bool bEmptyRow = true;
+                                                Cell cell;// = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
+                                                /*
                                                 //StyleNum
                                                 style.StyleNum = "";
-                                                Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     style.StyleNum = oxl.GetStringVal(cell, stringtable);
@@ -507,22 +508,26 @@ namespace OJewelry.Controllers
                                                 if (style.StyleNum == "")
                                                 {
                                                     error = "The style number in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
-                                                    ModelState.AddModelError("StyleNum-"+j, error);
+                                                    ModelState.AddModelError("StyleNum-" + j, error);
                                                     ivm.Errors.Add(error);
-                                                } else
+                                                }
+                                                else
                                                 {
                                                     bEmptyRow = false;
                                                 }
-                                                // Style Name
+
+                                                */                                                // Style Name
                                                 style.StyleName = "";
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     style.StyleName = oxl.GetStringVal(cell, stringtable);
                                                 }
                                                 if (style.StyleName == "")
                                                 {
-                                                    style.StyleName = style.StyleNum;
+                                                    error = "The style NAME in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    ModelState.AddModelError("StyleName-" + j, error);
+                                                    ivm.Errors.Add(error);
                                                 } else
                                                 {
                                                     bEmptyRow = false;
@@ -531,7 +536,7 @@ namespace OJewelry.Controllers
 
                                                 // Jewelry Type - find a jewelry type with the same name or reject
                                                 string JewelryTypeName = "";
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     JewelryTypeName = oxl.GetStringVal(cell, stringtable);
@@ -553,7 +558,7 @@ namespace OJewelry.Controllers
                                                 }
                                                 // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
                                                 string CollectionName = "";
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
                                                 CollectionName = oxl.GetStringVal(cell, stringtable);
                                                 int CollectionId = GetCollectionId(CollectionName, company.Id);
                                                 if (CollectionName != "")
@@ -574,7 +579,7 @@ namespace OJewelry.Controllers
                                                 }
                                                 // Descrription
                                                 style.Desc = "";
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
                                                 if (cell != null) style.Desc = oxl.GetStringVal(cell, stringtable);
                                                 if (style.Desc != "")
                                                 {
@@ -582,7 +587,7 @@ namespace OJewelry.Controllers
                                                 }
 
                                                 // Retail 
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     if (Decimal.TryParse(oxl.GetStringVal(cell, stringtable), out decimal rp))
@@ -604,7 +609,7 @@ namespace OJewelry.Controllers
 
                                                 // Quantity 
                                                 double quantity = 0;
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     quantity = oxl.GetDoubleVal(cell);
@@ -626,7 +631,7 @@ namespace OJewelry.Controllers
                                                 }
 
                                                 // Location
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "H" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     string presenter = oxl.GetStringVal(cell, stringtable);
@@ -674,7 +679,7 @@ namespace OJewelry.Controllers
                                                 {
                                                     error = "Row [" + j + "] will be ignored - All fields are blank";
                                                     ivm.Warnings.Add(error);
-                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 5);
+                                                    if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 5);
                                                     if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
                                                     if (ModelState.Remove("RetailPrice-" + j) || ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
@@ -731,10 +736,10 @@ namespace OJewelry.Controllers
                                         s.CollectionId = NewCollectionId;
                                     }
                                     c = db.Collections.Find(s.CollectionId);
-                                    int count = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Count();
+                                    int count = db.Styles.Where(x => x.StyleName == s.StyleName && x.CollectionId == c.Id).Count();
                                     if (count == 1)
                                     {
-                                        Style sty = db.Styles.Where(x => x.StyleNum == s.StyleNum && x.CollectionId == c.Id).Single();
+                                        Style sty = db.Styles.Where(x => x.StyleName == s.StyleName && x.CollectionId == c.Id).Single();
                                         sty.Quantity += s.Quantity;
                                         foreach (Memo m in s.Memos)
                                         {
@@ -755,7 +760,7 @@ namespace OJewelry.Controllers
                                     }
                                     if (count > 1)
                                     {
-                                        error = "Multiple styles [" + s.StyleNum + "]. Count = [" + count + "] in collection [" + s.CollectionId + "].";
+                                        error = "Multiple styles [" + s.StyleName + "]. Count = [" + count + "] in collection [" + s.CollectionId + "].";
                                         ivm.Errors.Add(error);
                                     }
                                 }
@@ -821,7 +826,7 @@ namespace OJewelry.Controllers
                                 {
                                     int q = worksheet.Descendants<Column>().Count();
                                     if ((true) && //worksheet.Descendants<Column>().Count() >= 4) &&
-                                        (oxl.CellMatches("A1", worksheet, stringtable, "Style") &&
+                                        (oxl.CellMatches("A1", worksheet, stringtable, "Name") &&
                                         oxl.CellMatches("B1", worksheet, stringtable, "Qty") &&
                                         oxl.CellMatches("C1", worksheet, stringtable, "Retail")))
                                     {
@@ -832,14 +837,14 @@ namespace OJewelry.Controllers
                                                 //process each cell in cols 1-4
                                                 Style style = new Style();
                                                 bool bEmptyRow = true;
-                                                //StyleNum
-                                                style.StyleNum = "";
+                                                //StyleName
+                                                style.StyleName = "";
                                                 Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
-                                                if (cell != null) style.StyleNum = oxl.GetStringVal(cell, stringtable);
-                                                if (style.StyleNum == "")
+                                                if (cell != null) style.StyleName = oxl.GetStringVal(cell, stringtable);
+                                                if (style.StyleName == "")
                                                 {
                                                     // error
-                                                    error = "The style number in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
+                                                    error = "The style name in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
                                                     ModelState.AddModelError("StyleNum-"+j, error);
                                                     ivm.Errors.Add(error);
                                                 } else
@@ -876,7 +881,7 @@ namespace OJewelry.Controllers
                                                     // Remove last two Model Errors, add warning
                                                     error = "Row [" + j + "] will be ignored - Style Number and Quantity are blank";
                                                     ivm.Warnings.Add(error);
-                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
+                                                    if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
                                                 }
                                                 else {
@@ -911,11 +916,11 @@ namespace OJewelry.Controllers
                             foreach (Style s in styles)
                             {
                                 //List<Collection> colist = db.Collections.Where(x => x.CompanyId == ivm.CompanyId).Include("Styles").ToList();
-                                Style theStyle = db.Styles.Include("Collection").Include("JewelryType").Where(x => x.StyleNum == s.StyleNum).Where(y => y.Collection.CompanyId == ivm.CompanyId).SingleOrDefault();
+                                Style theStyle = db.Styles.Include("Collection").Include("JewelryType").Where(x => x.StyleName == s.StyleName).Where(y => y.Collection.CompanyId == ivm.CompanyId).SingleOrDefault();
 
                                 if (theStyle == null)
                                 {
-                                    error = "The style [" + s.StyleNum + "] is not on record.";
+                                    error = "The style [" + s.StyleName + "] is not on record.";
                                     ivm.Errors.Add(error);
                                     continue;
                                 }
@@ -944,7 +949,7 @@ namespace OJewelry.Controllers
                                 else
                                 {
                                     Presenter f = db.Presenters.Find(ivm.FromLocationId);
-                                    error = "Too few items (" + (fromMemo == null ? 0 : fromMemo.Quantity) + ") in style '" + s.StyleNum + "' at " + f.Name + " - cannot move " + moveQty + ".";
+                                    error = "Too few items (" + (fromMemo == null ? 0 : fromMemo.Quantity) + ") in style '" + s.StyleName + "' at " + f.Name + " - cannot move " + moveQty + ".";
                                     ivm.Errors.Add(error);
                                     continue;
                                 }
@@ -1196,7 +1201,7 @@ namespace OJewelry.Controllers
                 (x, cl) => new
                 {
                     StyleId = x.Id,
-                    StyleNum = x.StyleNum,
+                    //StyleNum = x.StyleNum,
                     StyleQuantity = x.Quantity,
                     StyleName = x.StyleName,
                     StyleDesc = x.Desc,
@@ -1214,7 +1219,7 @@ namespace OJewelry.Controllers
                 (x, cp) => new irmStyle()
                 {
                     StyleId = x.StyleId,
-                    StyleNum = x.StyleNum,
+                    //StyleNum = x.StyleNum,
                     StyleQuantity = x.StyleQuantity,
                     StyleName = x.StyleName,
                     StyleDesc = x.StyleDesc,
@@ -1247,7 +1252,7 @@ namespace OJewelry.Controllers
                 db.Memos,
                 s => s.Id,
                 m => m.StyleID,
-                (s, m) => new { m.PresenterID, m.Quantity, s.Id, s.StyleNum, sQty = s.Quantity }).Join(
+                (s, m) => new { m.PresenterID, m.Quantity, s.Id, s.StyleName, sQty = s.Quantity }).Join(
                 db.Presenters,
                 x => x.PresenterID,
                 p => p.Id,
@@ -1255,7 +1260,7 @@ namespace OJewelry.Controllers
                 {
                     StyleId = x.Id,
                     PresenterId = p.Id,
-                    StyleNum = x.StyleNum,
+                    StyleName = x.StyleName,
                     LocationName = p.Name,
                     MemoQty = x.Quantity,
                     StyleQuantity = x.sQty,
@@ -1268,12 +1273,12 @@ namespace OJewelry.Controllers
                 {
                     StyleId = x.StyleId,
                     PresenterId = x.PresenterId,
-                    StyleNum = x.StyleNum,
+                    StyleName = x.StyleName,
                     LocationName = x.LocationName,
                     MemoQty = x.MemoQty,
                     StyleQuantity = x.StyleQuantity
                 }).
-                Distinct().OrderBy(x => x.LocationName).OrderBy(x => x.StyleNum).ToList();
+                Distinct().OrderBy(x => x.LocationName).OrderBy(x => x.StyleName).ToList();
             irm.CompanyId = CompanyId;
             irm.CompanyName = db.FindCompany(CompanyId).Name;
 

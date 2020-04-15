@@ -82,7 +82,7 @@ namespace OJewelry.Models
     {
         public int StyleId { get; set; }
         public int PresenterId { get; set; }
-        public string StyleNum { get; set; }
+        public string StyleName { get; set; }
         public double StyleQuantity { get; set; }
         public string LocationName { get; set; }
         public double MemoQty { get; set; }

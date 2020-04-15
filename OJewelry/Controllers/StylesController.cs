@@ -145,22 +145,22 @@ namespace OJewelry.Controllers
             {
                 svm.Style.Collection = db.Collections.Find(svm.Style.CollectionId);
             }
-            int iStyleNums = db.Styles.
+            int iStyleNames = db.Styles.
                 Join(db.Collections, s => s.CollectionId, col => col.Id, (s, c) => new
                 {
                     StyleId = s.Id,
-                    StyleNum = s.StyleNum,
+                    //StyleNum = s.StyleNum,
                     StyleName = s.StyleName,
                     CompanyId = c.CompanyId,
                 }).Where(x => x.CompanyId == svm.CompanyId
                     && x.StyleId != svm.Style.Id
-                    && (x.StyleNum == svm.Style.StyleNum)).Count();
-            if (iStyleNums != 0)
+                    && (x.StyleName == svm.Style.StyleName)).Count();
+            if (iStyleNames != 0)
             {
-                ModelState.AddModelError("Style.StyleNum", "Style with this number already exists for " + db.FindCompany(svm.CompanyId).Name + ".");
+                ModelState.AddModelError("Style.StyleName", "Style with this name already exists for " + db.FindCompany(svm.CompanyId).Name + ".");
             }
 
-            if (iStyleNums != 0)
+            if (iStyleNames != 0)
             {
                 return false;
             }
@@ -179,7 +179,7 @@ namespace OJewelry.Controllers
             bool b = CheckForNameAndNumberUniqueness(svm);
             // Check special cases in Model
             CheckModelState(svm);
-            TraceModelStateErrors(svm.Style.StyleNum);
+            TraceModelStateErrors(svm.Style.StyleName);
             
             if (b) // is there a style with the same number for this company?
             {
@@ -229,7 +229,7 @@ namespace OJewelry.Controllers
             // Check special cases in Model
             CheckModelState(svm);
             // 
-            TraceModelStateErrors(svm.Style.StyleNum);
+            TraceModelStateErrors(svm.Style.StyleName);
             // Save the Style and all edited components; add the new ones and remove the deleted ones
             if (ModelState.IsValid)
             {
@@ -580,7 +580,7 @@ namespace OJewelry.Controllers
                     }
                     catch (Exception e)
                     {
-                        Trace.TraceError($"Error saving style {svm.Style.StyleNum}, msg: {e.Message}");
+                        Trace.TraceError($"Error saving style {svm.Style.StyleName}, msg: {e.Message}");
                     }
                     Trace.TraceInformation("Operation: {0}, svmId:{1}", svm.SVMOp.ToString(), svm.Style.Id);
                     await SaveImageInStorage(db, svm);
@@ -660,7 +660,7 @@ namespace OJewelry.Controllers
             //newsvm.assemblyCost.Load(db, svm.CompanyId);
             // Save image in svm as tmp file, assign newsvm.Style.Image to saved image in svm
             newsvm.SVMOp = SVMOperation.Print;
-            newsvm.Style.StyleNum = svm.Style.StyleNum;
+            //newsvm.Style.StyleNum = svm.Style.StyleNum;
             newsvm.Style.Collection = db.Collections.Find(newsvm.Style.CollectionId);
             newsvm.CompanyId = newsvm.Style.Collection.CompanyId;
             newsvm.CopiedStyleName = svm.Style.StyleName;
@@ -807,7 +807,7 @@ namespace OJewelry.Controllers
                 Id = style.Id,
                 Image = style.Image,
                 Name = style.StyleName,
-                Num = style.StyleNum,
+                //Num = style.StyleNum,
                 Qty = style.Quantity,
                 Memod = style.Memos.Sum(s => s.Quantity)
             };
@@ -860,7 +860,7 @@ namespace OJewelry.Controllers
             // populate style data
             Style sdb = dc.Styles.Find(m.style.Id);
             m.style.Name = sdb.StyleName;
-            m.style.Num = sdb.StyleNum;
+            //m.style.Num = sdb.StyleNum;
             m.style.Qty = sdb.Quantity;
 
             if (m.SendReturnMemoRadio == 1)
@@ -975,7 +975,7 @@ namespace OJewelry.Controllers
                 Id = style.Id,
                 Image = style.Image,
                 Name = style.StyleName,
-                Num = style.StyleNum,
+                //Num = style.StyleNum,
                 Qty = style.Quantity,
                 Memod = style.Memos.Sum(s => s.Quantity)
             };
@@ -1114,7 +1114,7 @@ namespace OJewelry.Controllers
             }
         }
 
-        void TraceModelStateErrors(string stylenum)
+        void TraceModelStateErrors(string stylename)
         {
             foreach (string k in ModelState.Keys)
             {
@@ -1123,7 +1123,7 @@ namespace OJewelry.Controllers
                 {
                     foreach (ModelError er in st.Errors)
                     {
-                        Trace.TraceInformation($"Edit Sytle {stylenum}, key: {k}, msg: {er.ErrorMessage}, exception: {er.Exception}");
+                        Trace.TraceInformation($"Edit Sytle {stylename}, key: {k}, msg: {er.ErrorMessage}, exception: {er.Exception}");
                     }
                 }
             }

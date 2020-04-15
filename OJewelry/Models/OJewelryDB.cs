@@ -287,9 +287,11 @@ namespace OJewelry.Models
                 .Property(e => e.Notes)
                 .IsFixedLength();
 
+            
             modelBuilder.Entity<Style>()
                 .Property(e => e.StyleNum)
                 .IsUnicode(false);
+            
 
             modelBuilder.Entity<Style>()
                 .Property(e => e.StyleName)

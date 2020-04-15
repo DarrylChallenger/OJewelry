@@ -539,6 +539,7 @@ namespace OJewelry.Models
 
         [Display(Name = "Quantity")]
         [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "QTY CANNOT BE 0.")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         public decimal? Qty { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
@@ -1852,7 +1853,7 @@ namespace OJewelry.Models
         public void CreateNewFrom(Style oldStyle)
         {
             // clear out key values
-            StyleNum = "";
+            //StyleNum = "";
             StyleName = oldStyle.StyleName;
             Desc = oldStyle.Desc;
             Id = 0;

@@ -70,7 +70,7 @@ namespace OJewelry.Controllers
                         Image = sty.Image,
                         Desc = sty.Desc,
                         Name = sty.StyleName,
-                        Num = sty.StyleNum,
+                        //Num = sty.StyleNum,
                         Memod = sty.Memos.Sum(s => s.Quantity),
                         Qty = sty.Quantity,
                         RetialPrice = sty.RetailPrice ?? 0,
@@ -277,9 +277,9 @@ namespace OJewelry.Controllers
                     cell = oxl.SetCellVal("A3", "", false, 3); row.Append(cell); columns.Append(new Column() { Width = 15.3D, Min = 1, Max = 1, BestFit = false, CustomWidth = false });
                     cell = oxl.SetCellVal("B3", "Name", false, 3); row.Append(cell); columns.Append(new Column() { Width = 12.8, Min = 2, Max = 2, BestFit = false, CustomWidth = false });
                     cell = oxl.SetCellVal("C3", "Desc", false, 3); row.Append(cell); columns.Append(new Column() { Width = 12.8D, Min = 3, Max = 3, BestFit = false, CustomWidth = false });
-                    cell = oxl.SetCellVal("D3", "Style No.", false, 3); row.Append(cell); columns.Append(new Column() { Width = 17.2D, Min = 4, Max = 4, BestFit = false, CustomWidth = false });
-                    cell = oxl.SetCellVal("E3", "Type", false, 3); row.Append(cell); columns.Append(new Column() { Width = 12.8, Min = 5, Max = 5, BestFit = false, CustomWidth = false });
-                    cell = oxl.SetCellVal("F3", "Inv", false, 3); row.Append(cell); columns.Append(new Column() { Width = 7.67, Min = 6, Max = 6, BestFit = false, CustomWidth = false });
+                    //cell = oxl.SetCellVal("D3", "Style No.", false, 3); row.Append(cell); columns.Append(new Column() { Width = 17.2D, Min = 4, Max = 4, BestFit = false, CustomWidth = false });
+                    cell = oxl.SetCellVal("D3", "Type", false, 3); row.Append(cell); columns.Append(new Column() { Width = 12.8, Min = 4, Max = 4, BestFit = false, CustomWidth = false });
+                    cell = oxl.SetCellVal("E3", "Inv", false, 3); row.Append(cell); columns.Append(new Column() { Width = 7.67, Min = 5, Max = 5, BestFit = false, CustomWidth = false });
                     sd.Append(row);
                     worksheet.Append(columns);
                     oxl.columns = columns;
@@ -313,9 +313,9 @@ namespace OJewelry.Controllers
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, image, pixelRowHeight, false, 3); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleName, false, 3); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, Styles[i].Desc, false, 3); row.Append(cell);
-                        loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleNum, false, 3); row.Append(cell);
-                        loc = "E" + rr; cell = oxl.SetCellVal(loc, Styles[i].JewelryType.Name, false, 3); row.Append(cell);
-                        loc = "F" + rr; cell = oxl.SetCellVal(loc, Styles[i].Quantity, false, 3); row.Append(cell);
+                        //loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleNum, false, 3); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].JewelryType.Name, false, 3); row.Append(cell);
+                        loc = "E" + rr; cell = oxl.SetCellVal(loc, Styles[i].Quantity, false, 3); row.Append(cell);
                         sd.Append(row);
                     }
 
@@ -431,8 +431,8 @@ namespace OJewelry.Controllers
                         cell = oxl.SetCellVal("A3", "", false, 3); row.Append(cell); columns.Append(new Column() { Width = 15.3D, Min = 1, Max = 1, BestFit = false, CustomWidth = false });
                         cell = oxl.SetCellVal("B3", "Name", false, 3); row.Append(cell); columns.Append(new Column() { Width = 20.9D, Min = 2, Max = 2, BestFit = false, CustomWidth = false });
                         cell = oxl.SetCellVal("C3", "Desc", false, 3); row.Append(cell); columns.Append(new Column() { Width = 20.9D, Min = 3, Max = 3, BestFit = false, CustomWidth = false });
-                        cell = oxl.SetCellVal("D3", "Style No.", false, 3); row.Append(cell); columns.Append(new Column() { Width = 17.2D, Min = 4, Max = 4, BestFit = false, CustomWidth = false });
-                        cell = oxl.SetCellVal("E3", "Inv", false, 3); row.Append(cell); columns.Append(new Column() { Width = 7.67, Min = 5, Max = 5, BestFit = false, CustomWidth = false });
+                        //cell = oxl.SetCellVal("D3", "Style No.", false, 3); row.Append(cell); columns.Append(new Column() { Width = 17.2D, Min = 4, Max = 4, BestFit = false, CustomWidth = false });
+                        cell = oxl.SetCellVal("D3", "Inv", false, 3); row.Append(cell); columns.Append(new Column() { Width = 7.67, Min = 4, Max = 4, BestFit = false, CustomWidth = false });
                         sd.Append(row);
                         worksheet.Append(columns);
                         oxl.columns = columns;
@@ -458,8 +458,8 @@ namespace OJewelry.Controllers
                             loc = "A" + rr; cell = oxl.SetCellVal(loc, image, pixelRowHeight, false, 3); row.Append(cell); 
                             loc = "B" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleName, false, 3); row.Append(cell);
                             loc = "C" + rr; cell = oxl.SetCellVal(loc, Styles[i].Desc, false, 3); row.Append(cell);
-                            loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleNum, false, 3); row.Append(cell);
-                            loc = "E" + rr; cell = oxl.SetCellVal(loc, Styles[i].Quantity, false, 3); row.Append(cell);
+                            //loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleNum, false, 3); row.Append(cell);
+                            loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].Quantity, false, 3); row.Append(cell);
                             sd.Append(row);
                         }
                         worksheet.Append(sd);

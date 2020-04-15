@@ -8,19 +8,21 @@
         @Html.HiddenFor(model => model.Style.RetailPrice)
         <div class="col-sm-7 col-xs-7 StyleLeftHeader">
             <!-- style left header-->
-            <div class="row">
-                @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
-                <div class="col-sm-6 col-xs-6">
-                    @if (Model.SVMOp == OJewelry.Models.SVMOperation.Create || Model.SVMOp == OJewelry.Models.SVMOperation.Edit)
-                    {
-                        @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "width100", placeholder = "Style Number" } })
-                    }
-                    @if (Model.SVMOp == OJewelry.Models.SVMOperation.Print)
-                    {
-                        @Html.DisplayFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "" } })
-                    }
+            @*
+                <div class="row">
+                    @Html.LabelFor(model => model.Style.StyleNum, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
+                    <div class="col-sm-6 col-xs-6">
+                        @if (Model.SVMOp == OJewelry.Models.SVMOperation.Create || Model.SVMOp == OJewelry.Models.SVMOperation.Edit)
+                        {
+                            @Html.EditorFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "width100", placeholder = "Style Number" } })
+                        }
+                        @if (Model.SVMOp == OJewelry.Models.SVMOperation.Print)
+                        {
+                            @Html.DisplayFor(model => model.Style.StyleNum, new { htmlAttributes = new { @class = "" } })
+                        }
+                    </div>
                 </div>
-            </div>
+            *@
             <div class="row">
                 @Html.LabelFor(model => model.Style.StyleName, htmlAttributes: new { @class = "control-label col-sm-4 col-xs-4" })
                 <div class="col-sm-6 col-xs-6">
@@ -89,7 +91,7 @@
         </div> <!-- style right header-->
 
     </div>
-    @Html.ValidationMessageFor(model => model.Style.StyleNum, "", new { @class = "text-danger" })
+    @*@Html.ValidationMessageFor(model => model.Style.StyleNum, "", new { @class = "text-danger" })*@
     @Html.ValidationMessageFor(model => model.Style.StyleName, "", new { @class = "text-danger" })
     @Html.ValidationMessageFor(model => model.Style.Desc, "", new { @class = "text-danger" })
     @Html.ValidationMessageFor(model => model.Style.JewelryTypeId, "", new { @class = "text-danger" })

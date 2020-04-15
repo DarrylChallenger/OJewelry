@@ -74,6 +74,7 @@ namespace OJewelry.Classes
 
     }
 
+    /*
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class StyleNameOrNumber : ValidationAttribute
     {
@@ -93,7 +94,7 @@ namespace OJewelry.Classes
         }
 
     }
-
+    */
 
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class GreaterThanZeroAttribute : ValidationAttribute
