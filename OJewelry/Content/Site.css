@@ -542,3 +542,7 @@ html input[disabled], .locked {
 .syserrImg {
     width:100%;
 }
+
+.largeError {
+    font-size:1.25em;
+}
