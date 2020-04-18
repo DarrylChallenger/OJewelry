@@ -1477,17 +1477,21 @@ namespace OJewelry.Controllers
                             foreach (StoneElement s in stoneElements)
                             {
                                 Stone theStone = db.Stones.Include("Shape").Include("Vendor")
-                                    .Where(x => x.Name.Trim() == s.stone.Trim() && x.Shape.Name.Trim() == s.shape.Trim() && x.StoneSize.Trim() == s.size.Trim() && 
+                                    .Where(x => x.Name.Trim() == s.stone.Trim() && x.Shape.Name.Trim() == s.shape.Trim() && x.StoneSize.Trim() == s.size.Trim() &&
                                         x.CompanyId == sim.CompanyId).Where(x => x.Vendor == null || x.Vendor.Name == null || x.Vendor.Name.Trim() == "" ||
                                         (x.Vendor != null && x.Vendor.Name.Trim() != "" && x.Vendor.Name.Trim() == s.vendorName.Trim()))
                                     .SingleOrDefault();
 
-                                if (theStone == null)
+                                if (theStone == null) 
                                 {
-                                    error = $"The stone in cells [A{s.lineNum}:C{s.lineNum}] is not on record.";
-                                    sim.Errors.Add(error);
+                                    if (!(string.IsNullOrEmpty(s.stone) || string.IsNullOrEmpty(s.size) || string.IsNullOrEmpty(s.shape) || string.IsNullOrEmpty(s.vendorName)))
+                                    {
+                                        error = $"The stone in cells [A{s.lineNum}:E{s.lineNum}] is not on record ([{s.stone}]/[{s.size}]/[{s.shape}]/[{s.vendorName}]).";
+                                        sim.Errors.Add(error);
+                                    }
                                     continue;
                                 }
+
                                 // update quantity
                                 if (theStone.Qty + s.delta >= 0)
                                 {
