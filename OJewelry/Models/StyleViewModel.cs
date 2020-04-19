@@ -54,7 +54,7 @@ namespace OJewelry.Models
         public String Name { get { return _casting.Name; } set { _casting.Name = value; } }
 
         [Display(Name = "Quantity")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N0}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         [DataType(DataType.Currency)]
         [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "QTY CANNOT BE 0.")]
         public decimal Qty { get; set; }
@@ -315,6 +315,7 @@ namespace OJewelry.Models
         }
 
         [Display(Name = "Quantity")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         [Range(1, 999999999, ErrorMessage = "QTY CANNOT BE 0.")]
         public int Qty { get; set; }
 
@@ -378,6 +379,7 @@ namespace OJewelry.Models
         public SVMStateEnum State { get; set; }
 
         [Display(Name = "Quantity")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "QTY CANNOT BE 0.")]
         public decimal Qty { get; set; }
 
@@ -600,6 +602,7 @@ namespace OJewelry.Models
         public String VendorName { get { return _laborItem.Vendor.Name; } set { _laborItem.Vendor.Name = value; }  }
 
         [Display(Name = "Quantity")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "QTY CANNOT BE 0.")]
         public decimal? Qty { get; set; }
 
@@ -642,6 +645,7 @@ namespace OJewelry.Models
         public string Desc { get { return _misc.Desc; } set { _misc.Desc = value; } }
 
         [Display(Name = "Quantity")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         [Range(typeof(decimal), "0.001", "999999999", ErrorMessage = "QTY CANNOT BE 0.")]
         public decimal? Qty { get; set; }
 
