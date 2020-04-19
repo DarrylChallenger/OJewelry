@@ -19,7 +19,7 @@ namespace OJewelry.Models
             StyleLabors = new HashSet<StyleLabor>();
             StyleLaborItems = new HashSet<StyleLaborTableItem>();
             StyleMiscs = new HashSet<StyleMisc>();
-            StyleNum = "";
+            StyleNum = "blank";
         }
 
         public int Id { get; set; }
