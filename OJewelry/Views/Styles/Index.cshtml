@@ -21,9 +21,6 @@
 
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StyleNum)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.StyleName)
         </th>
         <th>
@@ -46,9 +43,6 @@
                 <a href='@Url.Action("Edit", new { id=item.Id })'>
                     <img src="@imgName" class="StyleThumbImage" />
                 </a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StyleNum)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StyleName)
