@@ -174,7 +174,9 @@ COST:
                         if (Model.SVMOp == SVMOperation.Print && (cc == null || Model.Stones[i].Id == cc.Id))
                         {
                             boxbot = "boxbot";
-                        } else {
+                        }
+                        else
+                        {
                             boxbot = "";
                         }
                     }
@@ -206,7 +208,7 @@ COST:
                         }
                         else
                         {
-                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone shape. ", onchange = "StoneShapeChanged('" + i + "')" }) 
+                            @Html.DropDownListFor(model => model.Stones[i].ShId, Model.Stones[i].ShapeList, new { @class = "col-sm-1 col-xs-1 requiredifnotremoved locked", @data_val = "true", @data_val_required = "Please select a stone shape. ", onchange = "StoneShapeChanged('" + i + "')" })
                         }
                     }
                     else
@@ -235,7 +237,8 @@ COST:
                         @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
                         @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 locked", @disabled = "disabled" } })
                         @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
-                        @Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "StoneQtyChanged('" + i + "')" })
+                        @Html.EditorFor(model => model.Stones[i].Qty, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 ", onblur = "StoneQtyChanged('" + i + "')" } })
+                        @*@Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "StoneQtyChanged('" + i + "')" })*@
                     }
                     else
                     {
