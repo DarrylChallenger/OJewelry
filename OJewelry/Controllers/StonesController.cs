@@ -79,6 +79,7 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,SettingCost,Qty,Note,ParentHandle,Title,Label,Tags")] Stone stone)
         {
+            stone.Name = stone.Name.Trim();
             Stone existingStone = db.Stones.Where(s => s.CompanyId == stone.CompanyId && s.Name == stone.Name && s.StoneSize == stone.StoneSize && s.ShapeId == stone.ShapeId).FirstOrDefault();
             if (existingStone != null)
             {
@@ -124,6 +125,7 @@ namespace OJewelry.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,CompanyId,VendorId,Name,Desc,CtWt,StoneSize,ShapeId,Price,Qty,SettingCost,Note,ParentHandle,Title,Label,Tags")] Stone stone)
         {
+            stone.Name = stone.Name.Trim();
             // Don't allow an existing combo to be entered
             Stone extisingStone = db.Stones.Where(s => s.Id != stone.Id && s.CompanyId == stone.CompanyId && s.Name == stone.Name && s.StoneSize == stone.StoneSize && s.ShapeId == stone.ShapeId).FirstOrDefault();
             if (extisingStone != null)
@@ -189,6 +191,8 @@ namespace OJewelry.Controllers
         {
             Stone newStone = new Stone(stone);
             ModelState.Clear();
+            stone.Name = stone.Name.Trim();
+
             newStone.Name = "Copy of " + stone.Name;
             newStone.Label = "Copy of " + stone.Label;
             newStone.Qty = 0;
