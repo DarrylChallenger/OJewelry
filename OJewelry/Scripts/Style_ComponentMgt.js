@@ -703,7 +703,8 @@ function UpdateStoneSettingRow(stoneRow, settingCost, bValidCombo) {
     }
     // Qty = stone QTY
     qty = $("#Stones_" + stoneRow + "__Qty").val();
-    $("#StoneSettingQty_" + stoneRow).val(qty);
+    //$("#StoneSettingQty_" + stoneRow).val(qty);
+    $("#StoneSettingQty_" + stoneRow).val(Number(qty).toFixed(2));
 
     price = $("#StoneSettingPrice_" + stoneRow).val();
     CalcStonesSettingsRow(stoneRow, price, qty);
