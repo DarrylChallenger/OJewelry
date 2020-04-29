@@ -1,11 +1,27 @@
-﻿@model OJewelry.Models.Finding
+﻿@model OJewelry.Models.DeleteFindingModel
 
 @{
-    ViewBag.Title = $"{@Model.Name} - Delete Finding";
+    ViewBag.Title = $"{@Model.finding.Name} - Delete Finding";
 }
 
-<h2>Delete the <i>@Model.Name</i> Finding</h2>
+<h2>Delete the <i>@Model.finding.Name</i> Finding</h2>
 
+@if (Model.bError)
+{
+<div class="largeError">
+    <p>Error - The '@Model.finding.Name' Finding in use in the following style(s)</p>
+    <ul>
+        @foreach (OJewelry.Models.Style sty in Model.styles)
+        {
+        <li class="text-danger bold"><i>@sty.StyleName</i></li>
+        }
+    </ul>
+    <br />
+    @Html.ActionLink("Cancel", "Index", "Stones", new { companyId = Model.finding.CompanyId }, new { @class = "btn btn-default" })
+</div>
+}
+else
+{
 <h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>Finding</h4>
@@ -16,52 +32,54 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Company.Name)
+            @Html.DisplayFor(model => model.finding.Company.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Vendor)
+            @Html.DisplayNameFor(model => model.finding.Vendor)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Vendor.Name)
+            @Html.DisplayFor(model => model.finding.Vendor.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.finding.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.finding.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Desc)
+            @Html.DisplayNameFor(model => model.finding.Desc)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Desc)
+            @Html.DisplayFor(model => model.finding.Desc)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model => model.finding.Price)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Price)
+            @Html.DisplayFor(model => model.finding.Price)
         </dd>
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
-    <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn btn-default" />
-        @Html.ActionLink("Cancel", "Index", "Findings", new { companyId = Model.CompanyId }, new { @class = "btn btn-default" })
-    </div>
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" />
+            @Html.ActionLink("Cancel", "Index", "Findings", new { companyId = Model.finding.CompanyId }, new { @class = "btn btn-default" })
+        </div>
     }
 </div>
+}
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+    @Html.Partial("_CompanyNavPartial", Model.finding.CompanyId)
 </p>

@@ -1,11 +1,28 @@
-﻿@model OJewelry.Models.Stone
+﻿@model OJewelry.Models.DeleteStoneModel
 
 @{
-    ViewBag.Title = $"{Model.Name} - Delete";
+    ViewBag.Title = $"{Model.stone.Name} - Delete";
 }
 
-<h2>Delete the @Model.Name Stone</h2>
+<h2>Delete the @Model.stone.Name Stone</h2>
 
+@if (Model.bError)
+{
+<div class="largeError">
+    <p>Error - The '@Model.stone.Name' Stone in use in the following style(s)</p>
+    <ul>
+
+        @foreach (OJewelry.Models.Style sty in Model.styles)
+        {
+        <li class="text-danger bold"><i>@sty.StyleName</i></li>
+        }
+    </ul>
+    <br />
+        @Html.ActionLink("Cancel", "Index", "Stones", new { companyId = Model.stone.CompanyId }, new { @class = "btn btn-default" })
+</div>
+}
+else
+{
 <h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>Stone</h4>
@@ -16,76 +33,78 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Company.Name)
+            @Html.DisplayFor(model => model.stone.Company.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Shape)
+            @Html.DisplayNameFor(model => model.stone.Shape)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Shape.Name)
+            @Html.DisplayFor(model => model.stone.Shape.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Vendor)
+            @Html.DisplayNameFor(model => model.stone.Vendor)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Vendor.Name)
+            @Html.DisplayFor(model => model.stone.Vendor.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.stone.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.stone.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Desc)
+            @Html.DisplayNameFor(model => model.stone.Desc)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Desc)
+            @Html.DisplayFor(model => model.stone.Desc)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.CtWt)
+            @Html.DisplayNameFor(model => model.stone.CtWt)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.CtWt)
+            @Html.DisplayFor(model => model.stone.CtWt)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.StoneSize)
+            @Html.DisplayNameFor(model => model.stone.StoneSize)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.StoneSize)
+            @Html.DisplayFor(model => model.stone.StoneSize)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model => model.stone.Price)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Price)
+            @Html.DisplayFor(model => model.stone.Price)
         </dd>
     </dl>
 
-    @using (Html.BeginForm()) {
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
 
     <div class="form-actions no-color">
         <input type="submit" value="Delete" class="btn btn-default" />
-        @Html.ActionLink("Cancel", "Index", "Stones", new { companyId = Model.CompanyId }, new { @class = "btn btn-default" })
+        @Html.ActionLink("Cancel", "Index", "Stones", new { companyId = Model.stone.CompanyId }, new { @class = "btn btn-default" })
     </div>
     }
 </div>
+}
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+    @Html.Partial("_CompanyNavPartial", Model.stone.CompanyId)
 </p>

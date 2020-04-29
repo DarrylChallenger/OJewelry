@@ -659,6 +659,7 @@
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\AssemblyCost.cs" />
     <Compile Include="Models\DataAnnotations.cs" />
+    <Compile Include="Models\DeleteComponentModel.cs" />
     <Compile Include="Models\FindingInventoryModel.cs" />
     <Compile Include="Models\Findings.cs" />
     <Compile Include="Models\HelperFunctions.cs" />

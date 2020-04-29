@@ -143,12 +143,22 @@ namespace OJewelry.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Finding finding = db.Findings.Find(id);
-            if (finding == null)
+            DeleteFindingModel dfm = new DeleteFindingModel()
+            {
+                finding = db.Findings.Find(id)
+            };
+            if (dfm.finding == null)
             {
                 return HttpNotFound();
             }
-            return View(finding);
+            if (db.StyleFindings.Where(sf => sf.FindingId == id).Count() != 0)
+            {
+                // Stone is in use
+                dfm.styles = db.StyleFindings.Where(sf => sf.FindingId == id).Select(sf => sf.Style).ToList();
+                dfm.bError = true;
+            }
+
+            return View(dfm);
         }
 
         // POST: Findings/Delete/5

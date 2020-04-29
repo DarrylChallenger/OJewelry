@@ -152,12 +152,23 @@ namespace OJewelry.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Stone stone = db.Stones.Find(id);
-            if (stone == null)
+            DeleteStoneModel dsm = new DeleteStoneModel()
+            {
+                stone = db.Stones.Find(id)
+            };
+
+            if (dsm.stone == null)
             {
                 return HttpNotFound();
             }
-            return View(stone);
+            
+            if (db.StyleStones.Where(ss => ss.StoneId == id).Count() != 0)
+            {
+                // Stone is in use
+                dsm.styles = db.StyleStones.Where(ss => ss.StoneId == id).Select(ss => ss.Style).ToList();
+                dsm.bError = true;
+            }
+            return View(dsm);
         }
 
         // POST: Stones/Delete/5
