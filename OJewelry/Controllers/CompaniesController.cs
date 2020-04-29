@@ -222,7 +222,7 @@ namespace OJewelry.Controllers
         {
             if (phone == null) return phone;
             string [] newPhone = Regex.Split(phone, "[.()-]");
-            string finPhone = newPhone[0] + newPhone[1] + newPhone[2];
+            string finPhone = newPhone[0] + (newPhone.Count() > 1 ? newPhone[1] : "") + (newPhone.Count() > 2 ? newPhone[2] : "");
             return finPhone;
         }
 
@@ -369,35 +369,35 @@ namespace OJewelry.Controllers
             Company company = db.FindCompany(id);
             if (db.Collections.Where(col => col.CompanyId == id && col.Styles.Count() != 0).Count() != 0)
             {
-                ModelState.AddModelError("Company", company.Name + " has at least one Collection that is not empty.");
+                ModelState.AddModelError("Company", company.Name + $" has at least one Collection that is not empty ({db.Collections.Where(col => col.CompanyId == id && col.Styles.Count() != 0).Count()}).");
             }
             if (company.Clients.Count > 0)
             {
-                ModelState.AddModelError("Company", company.Name + " has at least one Client.");
+                ModelState.AddModelError("Company", company.Name + $" has at least one Client ({company.Clients.Count}).");
             }
             if (company.Vendors.Count > 0)
             {
-                ModelState.AddModelError("Company", company.Name + " has at least one Vendor.");
+                ModelState.AddModelError("Company", company.Name + $" has at least one Vendor ({company.Vendors.Count}).");
             }
             if (company.Stones.Count > 0)
             {
-                ModelState.AddModelError("Company", company.Name + " has at least one Stone.");
+                ModelState.AddModelError("Company", company.Name + $" has at least one Stone ({company.Stones.Count}).");
             }
             if (company.Findings.Count > 0)
             {
-                ModelState.AddModelError("Company", company.Name + " has at least one Finding.");
+                ModelState.AddModelError("Company", company.Name + $" has at least one Finding ({company.Findings.Count}).");
             }
             if (company.Shapes.Count > 0)
             {
-                ModelState.AddModelError("Company", company.Name + " has at least one Shape.");
+                ModelState.AddModelError("Company", company.Name + $" has at least one Shape ({company.Shapes.Count}).");
             }
             if (company.Presenters.Count > 0)
             {
-                ModelState.AddModelError("Company", company.Name + " has at least one Location.");
+                ModelState.AddModelError("Company", company.Name + $" has at least one Location ({company.Presenters.Count}).");
             }
             if (db.JewelryTypes.Where(jt => jt.CompanyId == id).Count() != 0)
             {
-                ModelState.AddModelError("Company", company.Name + " has at least one Jewelry Type that is not empty.");
+                ModelState.AddModelError("Company", company.Name + $" has at least one Jewelry Type that is not empty ({db.JewelryTypes.Where(jt => jt.CompanyId == id).Count()}).");
             }
             return company;
         }
