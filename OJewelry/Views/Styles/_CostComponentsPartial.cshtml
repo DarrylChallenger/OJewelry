@@ -245,7 +245,7 @@ COST:
                         <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].CtWt&nbsp;</div>
                         <div class="@boxme @boxbot ssdata ol-sm-2 col-xs-2">@Model.Stones[i].VendorName&nbsp;</div>
                         <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].Price.ToString("F02")</div>
-                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].Qty</div>
+                        <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[i].Qty.ToString("F02")</div>
                     }
 
                     @if (Model.SVMOp != SVMOperation.Print)
@@ -703,7 +703,7 @@ COST:
                     <div class="@boxme @boxbot ssdata col-sm-4 col-xs-4">@stName</div>
                     <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">&nbsp;</div>
                     <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].SettingCost.ToString("F02")</div>
-                    <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].Qty</div>
+                    <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].Qty.ToString("F02")</div>
                     StoneSettingTotal += (Model.Stones[j].SettingCost * Model.Stones[j].Qty);
                 }
                 <div id="LaborsRowTotalValue_@(j+lc)" name="StoneSettingRowTotalValue_@j" class="@boxme @boxbot ssdata @boxright col-sm-2 col-xs-2 StoneSettingRowTotal LaborsRowTotal"> @((Model.Stones[j].Qty * @Model.Stones[j].SettingCost).ToString("F02"))</div>

@@ -1620,8 +1620,8 @@ namespace OJewelry.Models
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].Qty", i);
                     s = request.Form.Get(sb.ToString());
-                    Int32.TryParse(s, out int q);
-                    m.Stones[i].Qty = q;
+                    decimal.TryParse(s, out decimal q);
+                    m.Stones[i].Qty = (int)q;
                     //m.Stones[i].Total = q * PPC;
                     subtotal += m.Stones[i].Total;
                 }
