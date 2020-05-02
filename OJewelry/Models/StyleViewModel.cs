@@ -317,7 +317,7 @@ namespace OJewelry.Models
         [Display(Name = "Quantity")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
         [Range(1, 999999999, ErrorMessage = "QTY CANNOT BE 0.")]
-        public int Qty { get; set; }
+        public decimal Qty { get; set; }
 
         /*[Display(Name = "$/Piece")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N2}")]
@@ -1566,17 +1566,17 @@ namespace OJewelry.Models
                     sb.AppendFormat("Stones[{0}].Name", i);
                     s = request.Form.Get(sb.ToString());
                     m.Stones[i].Name = s;
-
+                    
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].ShId", i);
                     s = request.Form.Get(sb.ToString());
                     m.Stones[i].ShId = s;
-
+                    */
                     sb.Clear();
                     sb.AppendFormat("Stones[{0}].SzId", i);
                     s = request.Form.Get(sb.ToString());
                     m.Stones[i].SzId = s;
-                    */
+                    
 
                     /*
                     m.Stones[i].CompanyId = coID;

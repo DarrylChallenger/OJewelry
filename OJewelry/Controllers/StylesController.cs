@@ -331,7 +331,7 @@ namespace OJewelry.Controllers
                                 {
                                     StyleId = svm.Style.Id,
                                     StoneId = stoneId,
-                                    Qty = sc.Qty
+                                    Qty = (int) sc.Qty
                                 };
                                 db.StyleStones.Add(ss);
                                 break;
@@ -346,7 +346,7 @@ namespace OJewelry.Controllers
                                 //stone.Set(sc);
                                 ss = db.StyleStones.Where(x => x.Id == sc.linkId).SingleOrDefault();
                                 //ss = db.StyleStones.Where(x => x.StyleId == svm.Style.Id && x.Id == sc.Id).SingleOrDefault();
-                                ss.Qty = sc.Qty;
+                                ss.Qty = (int) sc.Qty;
                                 ss.StoneId = stoneId;
                                 break;
                             case SVMStateEnum.Unadded:

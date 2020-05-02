@@ -299,6 +299,10 @@ html input[disabled], .locked {
     font-weight: bold;
 }
 
+.ssSmallFont {
+    font-size: 85%;
+}
+
 .floatleft {
     float: left;
 }
