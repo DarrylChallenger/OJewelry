@@ -140,7 +140,16 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            return View(jewelryType);
+            DeleteJewelryTypeModel djtm = new DeleteJewelryTypeModel()
+            {
+                item = jewelryType
+            };
+            if (db.Styles.Where(s => s.JewelryTypeId == id).Count() != 0)
+            {
+                djtm.styles = db.Styles.Where(s => s.JewelryTypeId == id).ToList();
+                djtm.bError = true;
+            }
+            return View(djtm);
         }
 
         // POST: JewelryTypes/Delete/5

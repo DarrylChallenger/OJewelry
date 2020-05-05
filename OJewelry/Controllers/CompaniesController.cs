@@ -482,12 +482,9 @@ namespace OJewelry.Controllers
                                 {
                                     if (
                                     (oxl.CellMatches("A1", worksheet, stringtable, "Name")) &&
-                                    (oxl.CellMatches("B1", worksheet, stringtable, "JewelryType")) &&
-                                    (oxl.CellMatches("C1", worksheet, stringtable, "Collection")) &&
-                                    (oxl.CellMatches("D1", worksheet, stringtable, "Description")) &&
-                                    (oxl.CellMatches("E1", worksheet, stringtable, "Retail")) &&
-                                    (oxl.CellMatches("F1", worksheet, stringtable, "Qty")) &&
-                                    (oxl.CellMatches("G1", worksheet, stringtable, "Location")))
+                                    (oxl.CellMatches("B1", worksheet, stringtable, "Collection")) &&
+                                    (oxl.CellMatches("C1", worksheet, stringtable, "Qty")) &&
+                                    (oxl.CellMatches("D1", worksheet, stringtable, "Location")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
@@ -497,26 +494,9 @@ namespace OJewelry.Controllers
                                                 Style style = new Style();
                                                 Collection collection = new Collection();
                                                 bool bEmptyRow = true;
-                                                Cell cell;// = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
-                                                /*
-                                                //StyleNum
-                                                style.StyleNum = "";
-                                                if (cell != null)
-                                                {
-                                                    style.StyleNum = oxl.GetStringVal(cell, stringtable);
-                                                }
-                                                if (style.StyleNum == "")
-                                                {
-                                                    error = "The style number in sheet [" + sheet.Name + "] row [" + j + "] is blank.";
-                                                    ModelState.AddModelError("StyleNum-" + j, error);
-                                                    ivm.Errors.Add(error);
-                                                }
-                                                else
-                                                {
-                                                    bEmptyRow = false;
-                                                }
+                                                Cell cell;
 
-                                                */                                                // Style Name
+                                                // Style Name
                                                 style.StyleName = "";
                                                 cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
@@ -534,31 +514,9 @@ namespace OJewelry.Controllers
 
                                                 }
 
-                                                // Jewelry Type - find a jewelry type with the same name or reject
-                                                string JewelryTypeName = "";
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
-                                                if (cell != null)
-                                                {
-                                                    JewelryTypeName = oxl.GetStringVal(cell, stringtable);
-                                                }
-                                                int JewelryTypeId = GetJewelryTypeId(ivm.CompanyId, JewelryTypeName);
-                                                if (JewelryTypeName != "")
-                                                {
-                                                    bEmptyRow = false;
-                                                }
-                                                if (JewelryTypeId == -1)
-                                                {
-                                                    error = "The Jewelry Type [" + JewelryTypeName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
-                                                    ModelState.AddModelError("JewelryType-"+j, error);
-                                                    ivm.Errors.Add(error);
-                                                }
-                                                else
-                                                {
-                                                    style.JewelryTypeId = JewelryTypeId;
-                                                }
                                                 // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
                                                 string CollectionName = "";
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
                                                 CollectionName = oxl.GetStringVal(cell, stringtable);
                                                 int CollectionId = GetCollectionId(CollectionName, company.Id);
                                                 if (CollectionName != "")
@@ -577,61 +535,25 @@ namespace OJewelry.Controllers
                                                 {
                                                     style.CollectionId = CollectionId;
                                                 }
-                                                // Descrription
-                                                style.Desc = "";
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
-                                                if (cell != null) style.Desc = oxl.GetStringVal(cell, stringtable);
-                                                if (style.Desc != "")
-                                                {
-                                                    bEmptyRow = false;
-                                                }
-
-                                                // Retail 
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).FirstOrDefault();
-                                                if (cell != null)
-                                                {
-                                                    if (Decimal.TryParse(oxl.GetStringVal(cell, stringtable), out decimal rp))
-                                                    {
-                                                        style.RetailPrice = rp;
-                                                        bEmptyRow = false;
-                                                    }
-                                                    else
-                                                    {
-                                                        error = "Invalid price [" + oxl.GetStringVal(cell, stringtable) + "] in row " + j + " of sheet [" + sheet.Name + "].";
-                                                        ModelState.AddModelError("RetailPrice-"+j, error); 
-                                                        ivm.Errors.Add(error);
-                                                    }
-                                                } else {
-                                                    error = "Invalid price in row " + j + " of sheet [" + sheet.Name + "].";
-                                                    ModelState.AddModelError("RetailPriceEmpty-"+j, error);
-                                                    ivm.Errors.Add(error);
-                                                }
 
                                                 // Quantity 
                                                 double quantity = 0;
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "F" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     quantity = oxl.GetDoubleVal(cell);
                                                     // Quality check for quantity
-                                                    if (isValidQuantity(JewelryTypeName, quantity)) // integral or integral + .5
-                                                    {
-                                                        bEmptyRow = false;
-                                                    } else {
-                                                        error = "Invalid Quantity/JewelryType[" + quantity + "/" + JewelryTypeName + "] in row " + j + " of sheet [" + sheet.Name + "]. Quantity must be whole number or half number for Earrrings";
-                                                        ModelState.AddModelError("Quantity-" + j, error);
-                                                        ivm.Errors.Add(error);
-                                                    }
+                                                    bEmptyRow = false;
                                                 }
                                                 else
                                                 {
                                                     error = "Invalid Quantity in row " + j + " of sheet [" + sheet.Name + "].";
-                                                    ModelState.AddModelError("Quantity-"+j, error);
+                                                    ModelState.AddModelError("Quantity-" + j, error);
                                                     ivm.Errors.Add(error);
                                                 }
 
                                                 // Location
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "G" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     string presenter = oxl.GetStringVal(cell, stringtable);
@@ -679,9 +601,7 @@ namespace OJewelry.Controllers
                                                 {
                                                     error = "Row [" + j + "] will be ignored - All fields are blank";
                                                     ivm.Warnings.Add(error);
-                                                    if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 5);
-                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
-                                                    if (ModelState.Remove("RetailPrice-" + j) || ModelState.Remove("RetailPriceEmpty-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
+                                                    if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
                                                 }
@@ -693,14 +613,14 @@ namespace OJewelry.Controllers
                                         }
                                         else
                                         { // row count < 2
-                                            error = "The spreadsheet [" + sheet.Name + "] is formatted correctly, but does not contain any data.\n";
+                                            error = "The spreadsheet [" + sheet.Name + $"] in file [{ivm.AddPostedFile.FileName}] is formatted correctly, but does not contain any data.\n";
                                             ModelState.AddModelError("AddPostedFile-No Rows", error);
                                             ivm.Errors.Add(error);
                                         }
                                     }
                                     else
                                     { // incorrect headers
-                                        error = "The sheet [" + sheet.Name + "] does not have the correct headers. Please use the New Style Template";
+                                        error = $"The sheet [{sheet.Name}] in file [{ivm.AddPostedFile.FileName}] does not have the correct headers. Please use the New Inventory Template";
                                         ModelState.AddModelError("AddPostedFile-No Headers", error);
                                         ivm.Errors.Add(error);
                                     }
@@ -708,7 +628,7 @@ namespace OJewelry.Controllers
                                 else
                                 {
                                     // empty sheet
-                                    error = "The sheet [" + sheet.Name + "] is empty. Please use the 'New Style' Template";
+                                    error = $"The sheet [{sheet.Name}] in file [{ivm.AddPostedFile}] is empty. Please use the 'New Inventory' Template";
                                     ModelState.AddModelError("AddPostedFile-Empty Sheet", error);
                                     ivm.Errors.Add(error);
                                 }
@@ -827,8 +747,7 @@ namespace OJewelry.Controllers
                                     int q = worksheet.Descendants<Column>().Count();
                                     if ((true) && //worksheet.Descendants<Column>().Count() >= 4) &&
                                         (oxl.CellMatches("A1", worksheet, stringtable, "Name") &&
-                                        oxl.CellMatches("B1", worksheet, stringtable, "Qty") &&
-                                        oxl.CellMatches("C1", worksheet, stringtable, "Retail")))
+                                        oxl.CellMatches("B1", worksheet, stringtable, "Qty")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
@@ -866,16 +785,6 @@ namespace OJewelry.Controllers
                                                     ModelState.AddModelError("Quantity-" + j, error);
                                                     ivm.Errors.Add(error);
                                                 }
-
-                                                // Retail Can be ignored
-                                                /*
-                                                string retail = "";
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
-                                                if (cell != null) retail = oxl.GetStringVal(cell, stringtable);
-                                                */
-
-
-                                                // if whole row is blank, remove errors and flag as warning, don't add the style.
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning

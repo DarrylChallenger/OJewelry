@@ -29,4 +29,40 @@ namespace OJewelry.Models
         public List<Style> styles { get; set; }
     }
 
+    public class DeleteCollectionModel
+    {
+        public DeleteCollectionModel()
+        {
+            styles = new List<Style>();
+            bError = false;
+        }
+        public bool bError { get; set; }
+        public Collection item { get; set; }
+        public List<Style> styles { get; set; }
+    }
+
+    public class DeleteJewelryTypeModel
+    {
+        public DeleteJewelryTypeModel()
+        {
+            styles = new List<Style>();
+            bError = false;
+        }
+        public bool bError { get; set; }
+        public JewelryType item { get; set; }
+        public List<Style> styles { get; set; }
+    }
+
+    public class DeleteLaborItemModel
+    {
+        public DeleteLaborItemModel()
+        {
+            styles = new List<Style>();
+            bError = false;
+        }
+        public bool bError { get; set; }
+        public LaborItem item { get; set; }
+        public List<Style> styles { get; set; }
+    }
+
 }

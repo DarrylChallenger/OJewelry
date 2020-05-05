@@ -71,7 +71,7 @@ namespace OJewelry.Controllers
                             {
                                 li.State = LMState.Dirty;
                                 ModelState.SetModelValue($"Labors[{i}].State", new ValueProviderResult("Dirty", "", System.Globalization.CultureInfo.InvariantCulture));
-                                ModelState.AddModelError($"Labors[{i}].Name", $"You cannot delete {li.Name}: it is used by styles.");
+                                ModelState.AddModelError($"Labors[{i}].Name", $"You cannot delete {li.Name}: it is used by the following style(s):{StylesInUse(li)}");
                                 break;
                             }
                             db.Entry(li).State = EntityState.Deleted;
@@ -118,6 +118,20 @@ namespace OJewelry.Controllers
             }
             ltm.bHasVendors = vendors.Count != 0;
             return View(ltm);
+        }
+
+        string StylesInUse(LaborItem li)
+        {
+            string s = null;
+            List<Style> styles = db.StyleLaborItems.Where(sli => sli.LaborTableId == li.Id).Select(sli => sli.Style).ToList();
+            foreach(Style sty in styles)
+            {
+                if (sty == styles.First()) { s = sty.StyleName; continue; }
+                if (sty == styles.Last()) { s += $" and {sty.StyleName}"; continuw; }
+                s += $", {sty.StyleName}";
+            }
+
+            return s;
         }
 
         public FileResult ExportLaborTable(int companyId, string sCurrDate)

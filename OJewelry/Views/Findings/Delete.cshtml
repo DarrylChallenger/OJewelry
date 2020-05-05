@@ -9,15 +9,15 @@
 @if (Model.bError)
 {
 <div class="largeError">
-    <p>Error - The '@Model.finding.Name' Finding in use in the following style(s)</p>
+    <p>Error - The '@Model.finding.Name' Finding is use in the following style(s)</p>
     <ul>
         @foreach (OJewelry.Models.Style sty in Model.styles)
         {
-        <li class="text-danger bold"><i>@sty.StyleName</i></li>
+            <li class="text-danger bold"><i>@sty.StyleName</i></li>
         }
     </ul>
     <br />
-    @Html.ActionLink("Cancel", "Index", "Stones", new { companyId = Model.finding.CompanyId }, new { @class = "btn btn-default" })
+    @Html.ActionLink("Cancel", "Index", "Findings", new { companyId = Model.finding.CompanyId }, new { @class = "btn btn-default" })
 </div>
 }
 else

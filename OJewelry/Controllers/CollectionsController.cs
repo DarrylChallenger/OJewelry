@@ -188,7 +188,16 @@ namespace OJewelry.Controllers
             {
                 return HttpNotFound();
             }
-            return View(collection);
+            DeleteCollectionModel dcm = new DeleteCollectionModel()
+            {
+                item = collection
+            };
+            if (db.Styles.Where(s => s.CollectionId == id).Count() != 0)
+            {
+                dcm.bError = true;
+                dcm.styles = db.Styles.Where(s => s.CollectionId == id).ToList();
+            }
+            return View(dcm);
         }
 
         // POST: Collections/Delete/5
