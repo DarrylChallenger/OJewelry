@@ -127,7 +127,7 @@ namespace OJewelry.Controllers
             foreach(Style sty in styles)
             {
                 if (sty == styles.First()) { s = sty.StyleName; continue; }
-                if (sty == styles.Last()) { s += $" and {sty.StyleName}"; continuw; }
+                if (sty == styles.Last()) { s += $" and {sty.StyleName}"; continue; }
                 s += $", {sty.StyleName}";
             }
 
