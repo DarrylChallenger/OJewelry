@@ -363,7 +363,7 @@ namespace OJewelry.Models
         [Display(Name = "DESC")]
         public string Desc { get; set; }
 
-        [Display(Name = "METAL WT")]
+        [Display(Name = "TOTAL WT")]
         public Nullable<decimal> MetalWeight { get; set; }
 
         [Display(Name ="NOTES")]
