@@ -492,7 +492,17 @@ COST:
                                 {
                                     <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">&nbsp;</div>
                                 }
-                                <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">&nbsp;</div>
+
+                                if (Model.LaborItems[i].ppp != null)
+                                {
+                                    <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.LaborItems[i].VendorName</div>
+                                }
+                                else
+                                {
+                                    <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">&nbsp;</div>
+                                }
+
+                                <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">&nbsp;</div>
                                 <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.LaborItems[i].Qty</div>
                             }
                             @if (Model.SVMOp != SVMOperation.Print)
@@ -728,7 +738,7 @@ COST:
         </div>
 
     </div> <!-- Labors -->
-    <!-- todo: totals, jt on dropdown, save -->
+   
     <div class="styleMiscs">
         <!-- Misc -->
         <div class="row StyleComponentsRowHeader">
