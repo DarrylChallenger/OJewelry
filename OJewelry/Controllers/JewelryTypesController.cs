@@ -146,7 +146,8 @@ namespace OJewelry.Controllers
             };
             if (db.Styles.Where(s => s.JewelryTypeId == id).Count() != 0)
             {
-                djtm.styles = db.Styles.Where(s => s.JewelryTypeId == id).ToList();
+                List<Style> styles = db.Styles.Where(s => s.JewelryTypeId == id).ToList();
+                djtm.styles = styles.Distinct(new StyleEqualityComparer()).ToList();
                 djtm.bError = true;
             }
             return View(djtm);

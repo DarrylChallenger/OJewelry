@@ -119,12 +119,23 @@ namespace OJewelry.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MetalCode metalCode = db.MetalCodes.Find(id);
-            if (metalCode == null)
+            DeleteMetalCodeModel dmcm = new DeleteMetalCodeModel()
+            {
+                item = db.MetalCodes.Find(id)
+            };
+            if (dmcm.item == null)
             {
                 return HttpNotFound();
             }
-            return View(metalCode);
+            if (db.Castings.Where(s => s.MetalCodeID == id).Count() != 0)
+            {
+                // List the styles
+                List<Style> styles = new List<Style>();
+                styles = db.StyleCastings.Where(sc => sc.Casting.MetalCodeID == id).Select(sc => sc.Style).ToList();
+                dmcm.styles = styles.Distinct(new StyleEqualityComparer()).ToList();
+                dmcm.bError = true;
+            }
+            return View(dmcm);
         }
 
         // POST: MetalCodes/Delete/5
@@ -133,11 +144,7 @@ namespace OJewelry.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             MetalCode metalCode = db.MetalCodes.Find(id);
-            if (db.Castings.Where(s => s.MetalCodeID == id).Count() != 0)
-            {
-                ModelState.AddModelError("MetalCode", metalCode.Desc + " is in use by at least one casting.");
-                return View(metalCode);
-            }
+
             int companyId = metalCode.CompanyId.Value;
             db.MetalCodes.Remove(metalCode);
             db.SaveChanges();

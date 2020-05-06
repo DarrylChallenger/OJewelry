@@ -138,12 +138,35 @@ namespace OJewelry.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            Vendor vendor = db.Vendors.Where(v => v.Id == id).FirstOrDefault();
-            if (vendor == null)
+            DeleteVendorModel dvm = new DeleteVendorModel()
+            {
+                item = db.Vendors.Where(v => v.Id == id).FirstOrDefault()
+            };
+            if (dvm == null)
             {
                 return HttpNotFound();
             }
-            return View(vendor);
+            if (db.Castings.Where(c => c.VendorId == id).Count() != 0 ||
+                    db.LaborTable.Where(li => li.VendorId == id).Count() != 0 ||
+                    db.Stones.Where(s => s.VendorId == id).Count() != 0 ||
+                    db.Findings.Where(s => s.VendorId == id).Count() != 0)
+            {
+                // List the labors, castings, stones, and findings
+                List<Style> styles = new List<Style>();
+                styles.AddRange(db.StyleCastings.Where(s => s.Casting.VendorId == id).Select(s => s.Style));
+                styles.AddRange(db.StyleStones.Where(s => s.Stone.VendorId == id).Select(s => s.Style));
+                styles.AddRange(db.StyleFindings.Where(s => s.Finding.VendorId == id).Select(s => s.Style));
+                styles.AddRange(db.StyleLabors.Where(s => s.Labor.VendorId == id).Select(s => s.Style));
+                styles.AddRange(db.StyleLaborItems.Where(s => s.LaborItem.VendorId == id).Select(s => s.Style));
+                //IEnumerable<Style> sty = styles.Distinct(new StyleEqualityComparer());
+                dvm.styles = styles.Distinct(new StyleEqualityComparer()).ToList();
+                /*foreach (Style s in sty)
+                {
+                    dvm.styles.Add(s);
+                }*/
+                dvm.bError = true;
+            }
+            return View(dvm);
         }
 
         // POST: Vendors/Delete/5
@@ -153,14 +176,6 @@ namespace OJewelry.Controllers
         {
             Vendor vendor = db.Vendors.Where(v => v.Id == id).FirstOrDefault();
 
-            if (db.Castings.Where(c => c.VendorId == id).Count() != 0 ||
-                db.LaborTable.Where(li => li.VendorId == id).Count() != 0 ||
-                db.Stones.Where(s => s.VendorId == id).Count() != 0 ||
-                db.Findings.Where(s => s.VendorId == id).Count() != 0)
-            {
-                ModelState.AddModelError("Vendor", vendor.Name + " is in use by at least one labor, casting, stone, or finding.");
-                return View(vendor);
-            }
             int companyId = vendor.CompanyId.Value;
             db.Vendors.Remove(vendor);
             db.SaveChanges();

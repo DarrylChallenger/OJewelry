@@ -65,4 +65,43 @@ namespace OJewelry.Models
         public List<Style> styles { get; set; }
     }
 
+    public class DeleteMetalCodeModel
+    {
+        public DeleteMetalCodeModel()
+        {
+            styles = new List<Style>();
+            bError = false;
+        }
+        public bool bError { get; set; }
+        public MetalCode item { get; set; }
+        public List<Style> styles { get; set; }
+    }
+
+    public class DeleteVendorModel
+    {
+        public DeleteVendorModel()
+        {
+            styles = new List<Style>();
+            bError = false;
+        }
+        public bool bError { get; set; }
+        public Vendor item { get; set; }
+        public List<Style> styles { get; set; }
+    }
+
+    public class StyleEqualityComparer : IEqualityComparer<Style>
+    {
+        public bool Equals(Style x, Style y)
+        {
+            if (Object.ReferenceEquals(x, null)) return false;
+            if (Object.ReferenceEquals(this, y)) return true;
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Style style)
+        {
+            return style.Id.GetHashCode();
+        }
+    }
+
 }

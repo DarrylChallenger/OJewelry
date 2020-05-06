@@ -1,30 +1,46 @@
-﻿@model OJewelry.Models.MetalCode
+﻿@model OJewelry.Models.DeleteMetalCodeModel
 
 @{
-    ViewBag.Title = $"{Model.Code} - Delete";
+    ViewBag.Title = $"{Model.item.Code} - Delete";
 }
 
-<h2>Delete the <i>@Model.Code</i> Metal Code?</h2>
+<h2>Delete the <i>@Model.item.Code</i> Metal Code?</h2>
 
+@if (Model.bError)
+{
+<div class="largeError">
+    <p>Error - The '@Model.item.Code' Metal Code is use in the following style(s)</p>
+    <ul>
+        @foreach (OJewelry.Models.Style sty in Model.styles)
+        {
+            <li class="text-danger bold"><i>@sty.StyleName</i></li>
+        }
+    </ul>
+    <br />
+    @Html.ActionLink("Cancel", "Index", "MetalCodes", new { companyId = Model.item.CompanyId }, new { @class = "btn btn-default" })
+</div>
+}
+else
+{
 <h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>Metal Code</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Code)
+            @Html.DisplayNameFor(model => model.item.Code)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Code)
+            @Html.DisplayFor(model => model.item.Code)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Desc)
+            @Html.DisplayNameFor(model => model.item.Desc)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Desc)
+            @Html.DisplayFor(model => model.item.Desc)
         </dd>
 
     </dl>
@@ -38,11 +54,12 @@
 
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" />
-            @Html.ActionLink("Cancel", "Index", "MetalCodes", new { companyId = Model.CompanyId }, new { @class = "btn btn-default" })
+            @Html.ActionLink("Cancel", "Index", "MetalCodes", new { companyId = Model.item.CompanyId }, new { @class = "btn btn-default" })
         </div>
     }
 </div>
+}
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+    @Html.Partial("_CompanyNavPartial", Model.item.CompanyId)
 </p>

@@ -1,54 +1,71 @@
-﻿@model OJewelry.Models.Vendor
+﻿@model OJewelry.Models.DeleteVendorModel
 
 @{
-    ViewBag.Title = $"{Model.Name} - Delete";
+    ViewBag.Title = $"{Model.item.Name} - Delete";
 }
 
-<h2>Delete the <i>@Model.Name</i> Vendor</h2>
+<h2>Delete the <i>@Model.item.Name</i> Vendor</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-    </dl>
-
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-        <div>
-            @Html.ValidationSummary(null, new { @class = "text-danger" })
-        </div>
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" />
-            @Html.ActionLink("Cancel", "Index", "Vendors", new { companyId = Model.CompanyId }, new { @class = "btn btn-default" })
-        </div>
-    }
+@if (Model.bError)
+{
+<div class="largeError">
+    <p>Error - The '@Model.item.Name' Vendor is use in the following style(s)</p>
+    <ul>
+        @foreach (OJewelry.Models.Style sty in Model.styles)
+        {
+            <li class="text-danger bold"><i>@sty.StyleName</i></li>
+        }
+    </ul>
+    <br />
+    @Html.ActionLink("Cancel", "Index", "Vendors", new { companyId = Model.item.CompanyId }, new { @class = "btn btn-default" })
 </div>
+}
+else
+{
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.item.Name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.item.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.item.Phone)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.item.Phone)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.item.Email)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.item.Email)
+            </dd>
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div>
+                @Html.ValidationSummary(null, new { @class = "text-danger" })
+            </div>
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" />
+                @Html.ActionLink("Cancel", "Index", "Vendors", new { companyId = Model.item.CompanyId }, new { @class = "btn btn-default" })
+            </div>
+        }
+    </div>
+}
 <p class="MainMenu">
     @Html.ActionLink("Companies", "Index", "Companies") |
-    @Html.Partial("_CompanyNavPartial", Model.CompanyId)
+    @Html.Partial("_CompanyNavPartial", Model.item.CompanyId)
 </p>

@@ -58,4 +58,7 @@ else
     </div>
 
 }
-
+    <p class="MainMenu">
+        @Html.ActionLink("Companies", "Index", "Companies") |
+        @Html.Partial("_CompanyNavPartial", Model.item.CompanyId)
+    </p>
