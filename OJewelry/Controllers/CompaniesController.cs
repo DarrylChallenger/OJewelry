@@ -482,9 +482,10 @@ namespace OJewelry.Controllers
                                 {
                                     if (
                                     (oxl.CellMatches("A1", worksheet, stringtable, "Name")) &&
-                                    (oxl.CellMatches("B1", worksheet, stringtable, "Collection")) &&
-                                    (oxl.CellMatches("C1", worksheet, stringtable, "Qty")) &&
-                                    (oxl.CellMatches("D1", worksheet, stringtable, "Location")))
+                                    (oxl.CellMatches("B1", worksheet, stringtable, "Jewelry Type")) &&
+                                    (oxl.CellMatches("C1", worksheet, stringtable, "Collection")) &&
+                                    (oxl.CellMatches("D1", worksheet, stringtable, "Qty")) &&
+                                    (oxl.CellMatches("E1", worksheet, stringtable, "Location Short Code")))
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
@@ -511,12 +512,34 @@ namespace OJewelry.Controllers
                                                 } else
                                                 {
                                                     bEmptyRow = false;
+                                                }
 
+                                                // Jewelry Type - find a jewelry type with the same name or reject
+                                                string JewelryTypeName = "";
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
+                                                if (cell != null)
+                                                {
+                                                    JewelryTypeName = oxl.GetStringVal(cell, stringtable);
+                                                }
+                                                int JewelryTypeId = GetJewelryTypeId(ivm.CompanyId, JewelryTypeName);
+                                                if (JewelryTypeName != "")
+                                                {
+                                                    bEmptyRow = false;
+                                                }
+                                                if (JewelryTypeId == -1)
+                                                {
+                                                    error = "The Jewelry Type [" + JewelryTypeName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
+                                                    ModelState.AddModelError("JewelryType-" + j, error);
+                                                    ivm.Errors.Add(error);
+                                                }
+                                                else
+                                                {
+                                                    style.JewelryTypeId = JewelryTypeId;
                                                 }
 
                                                 // Collection - find a collection with the same name in this company or reject (ie this is not a means for collection creation)
                                                 string CollectionName = "";
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "B" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
                                                 CollectionName = oxl.GetStringVal(cell, stringtable);
                                                 int CollectionId = GetCollectionId(CollectionName, company.Id);
                                                 if (CollectionName != "")
@@ -538,7 +561,7 @@ namespace OJewelry.Controllers
 
                                                 // Quantity 
                                                 double quantity = 0;
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "C" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     quantity = oxl.GetDoubleVal(cell);
@@ -553,7 +576,7 @@ namespace OJewelry.Controllers
                                                 }
 
                                                 // Location
-                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "D" + j.ToString()).FirstOrDefault();
+                                                cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "E" + j.ToString()).FirstOrDefault();
                                                 if (cell != null)
                                                 {
                                                     string presenter = oxl.GetStringVal(cell, stringtable);
