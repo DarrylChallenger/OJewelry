@@ -1371,7 +1371,8 @@ namespace OJewelry.Controllers
                                                 if (delta == 0)
                                                 {
                                                     // error
-                                                    error = "The Quantity in sheet [" + sheet.Name + "] cell [E" + j + "] is 0";
+                                                    bEmptyRow = true;
+                                                    error = "The Quantity in sheet [" + sheet.Name + "] cell [E" + j + "] is 0 or blank";
                                                     ModelState.AddModelError("Qty-" + j, error);
                                                     sim.Errors.Add(error);
                                                 }
@@ -1580,7 +1581,8 @@ namespace OJewelry.Controllers
                                                 if (delta == 0)
                                                 {
                                                     // error
-                                                    error = "The Quantity in sheet [" + sheet.Name + "] cell [C" + j + "] is 0";
+                                                    bEmptyRow = true;
+                                                    error = "The Quantity in sheet [" + sheet.Name + "] cell [C" + j + "] is 0 or blank";
                                                     ModelState.AddModelError("Qty-" + j, error);
                                                     fim.Errors.Add(error);
                                                 }
