@@ -64,7 +64,7 @@ namespace OJewelry.Classes
                 {
                     if (cell.DataType == CellValues.SharedString)
                     {
-                        if (strings.SharedStringTable.ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText == value)
+                        if (strings.SharedStringTable.ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText.Trim() == value.Trim())
                         {
                             return true;
                         }
@@ -152,7 +152,7 @@ namespace OJewelry.Classes
                 if (cell.DataType == null)
                 {
                     str = cell.CellValue.InnerText;
-                    return str;
+                    return str.Trim();
                 }
                 if (cell.DataType != null)
                 {
@@ -171,7 +171,7 @@ namespace OJewelry.Classes
                 Trace.TraceError($"OJException occurred {e.Message}");
                 str = "";
             }
-            return str;
+            return str.Trim();
         }
 
         public int GetIntVal(Cell cell)
@@ -248,10 +248,10 @@ namespace OJewelry.Classes
 
         public Cell SetCellVal(string loc, string val, bool bSetCellWidth = true, uint style = 0)
         {
-            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.String, CellValue = new CellValue(val) };
+            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.String, CellValue = new CellValue(val.Trim()) };
             if (bSetCellWidth)
             {
-                SetColumnWidth(loc, val);
+                SetColumnWidth(loc, val.Trim());
                 //columns.ElementAt(); // this is how to index the columns
             }
             return cell;
@@ -309,7 +309,7 @@ namespace OJewelry.Classes
             else
             {
                 Column c = columns.ChildElements[col.Value] as Column;
-                double width = graphics.MeasureString(val + cellBuf, font).Width;
+                double width = graphics.MeasureString(val.Trim() + cellBuf, font).Width;
                 // column widths are stored in points!
                 c.Width = Math.Max(ComputeExcelCellWidth(width), c.Width);
             }

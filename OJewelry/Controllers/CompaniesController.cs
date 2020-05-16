@@ -630,7 +630,11 @@ namespace OJewelry.Controllers
                                                 }
                                                 else
                                                 {
-                                                    styles.Add(style);
+                                                    if (ModelState.Where(e => e.Key.Contains($"-{j}")).Count() == 0)
+                                                    {
+                                                        styles.Add(style);
+                                                    }
+                                                    //Trace.TraceInformation($"Added row {j} [{style.StyleName}]");
                                                 }
                                             }
                                         }
@@ -672,6 +676,7 @@ namespace OJewelry.Controllers
                                     NewCollectionId = c.Id;
                                 }
                                 // existing style - if style already exists, just update the quant
+                                //Trace.TraceInformation($"Styles found in sheet {styles.Count}");
                                 foreach (Style s in styles)
                                 {
                                     Collection c;
@@ -679,32 +684,48 @@ namespace OJewelry.Controllers
                                         s.CollectionId = NewCollectionId;
                                     }
                                     c = db.Collections.Find(s.CollectionId);
-                                    int count = db.Styles.Where(x => x.StyleName == s.StyleName && x.CollectionId == c.Id).Count();
-                                    if (count == 1)
+                                    string cid = "null";
+                                    if (c != null) cid = (c.Id).ToString();
+                                    //Trace.TraceInformation($"StyleName/collection Id: {s.ToString()}{s.StyleName}/[{cid}]");
+
+                                    // nameMatchesInSameCompany
+                                    Style dbStyle = db.Styles.Include(dbs => dbs.JewelryType).
+                                        Include(dbs => dbs.Collection).
+                                        Where(dbs => dbs.StyleName == s.StyleName && dbs.Collection.CompanyId == c.CompanyId).FirstOrDefault();
+                                    if (dbStyle != null)
                                     {
-                                        Style sty = db.Styles.Where(x => x.StyleName == s.StyleName && x.CollectionId == c.Id).Single();
-                                        sty.Quantity += s.Quantity;
-                                        foreach (Memo m in s.Memos)
+                                        // do other relevant fields match
+                                        if (dbStyle.JewelryTypeId == s.JewelryTypeId && dbStyle.CollectionId == s.CollectionId)
                                         {
-                                            Memo oldMemo = db.Memos.Where(x => x.PresenterID == m.PresenterID && x.StyleID == sty.Id).SingleOrDefault();
-                                            if (oldMemo == null)
+                                            dbStyle.Quantity += s.Quantity;
+                                            foreach (Memo m in s.Memos)
                                             {
-                                                sty.Memos.Add(m);
-                                            } else
-                                            {
-                                                oldMemo.Quantity += m.Quantity;
+                                                Memo oldMemo = db.Memos.Where(x => x.PresenterID == m.PresenterID && x.StyleID == dbStyle.Id).SingleOrDefault();
+                                                if (oldMemo == null)
+                                                {
+                                                    dbStyle.Memos.Add(m);
+                                                }
+                                                else
+                                                {
+                                                    oldMemo.Quantity += m.Quantity;
+                                                }
                                             }
                                         }
+                                        else
+                                        {
+                                            // error
+                                            string JewelryTypeName = db.JewelryTypes.Find(s.JewelryTypeId).Name;
+                                            error = $"Style mismatch in sheet: " +
+                                                $"Style Name: {s.StyleName}, Jewelry Type: {JewelryTypeName}, Collection: {c.Name} " +
+                                                $"conflicts with saved style {dbStyle.StyleName}/{dbStyle.JewelryType.Name}/{dbStyle.Collection.Name}";
+                                            ModelState.AddModelError("", error);
+                                            ivm.Errors.Add(error);
+                                        }
                                     }
-                                    // new sytle
-                                    if (count == 0)
+                                    else
                                     {
+                                        // No style matching name for company, so add it
                                         db.Styles.Add(s);
-                                    }
-                                    if (count > 1)
-                                    {
-                                        error = "Multiple styles [" + s.StyleName + "]. Count = [" + count + "] in collection [" + s.CollectionId + "].";
-                                        ivm.Errors.Add(error);
                                     }
                                 }
                                 // Done processing, update db
@@ -1362,10 +1383,11 @@ namespace OJewelry.Controllers
                                                     error = $"Cells [A{j}:E{j}] will be ignored - they contain blank cells";
                                                     sim.Warnings.Add(error);
                                                     string s = sim.Errors.Find(x => x == "Stone-" + j);
-                                                    if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 4);
-                                                    if (ModelState.Remove("Shape-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 3);
-                                                    if (ModelState.Remove("Size-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
-                                                    if (ModelState.Remove("Vendor-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 1);
+                                                    if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 5);
+                                                    if (ModelState.Remove("Shape-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 4);
+                                                    if (ModelState.Remove("Size-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 3);
+                                                    if (ModelState.Remove("Vendor-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
+                                                    if (ModelState.Remove("Qty-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 1);
                                                 }
                                                 else
                                                 {
