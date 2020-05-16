@@ -201,6 +201,10 @@ html input[disabled], .locked {
     padding-bottom: 15px;
 }
 
+.PrintMetalWtNoteTxt {
+    display: block;
+    float: right;
+}
 .centerImage {
     display: block;
     margin-left: auto;

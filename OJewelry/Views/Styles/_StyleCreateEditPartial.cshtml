@@ -211,14 +211,12 @@
 
                     </span>
                 </div>
-                <div class="col-sm-1 col-xs-1">
 
-                </div>
-                <div class="col-sm-3 col-xs-3"></div>
-                <div class="col-sm-3 col-xs-3">
-                    <span class="">
+                @*<div class="col-sm-2 col-xs-2"></div>*@
+                <div class="col-sm-8 col-xs-8 PrintMetalWtNoteDiv">
+                    <span class="PrintMetalWtNoteTxt">
                         @Html.LabelFor(model => model.Style.MetalWtNote, null, htmlAttributes: new { @class = "" }):
-                        <span class="boxfull">
+                        <span class="boxfull ">
                             &nbsp;@Html.DisplayFor(model => model.Style.MetalWtNote, new { htmlAttributes = new { @class = "" } })&nbsp;
                         </span>
                     </span>
@@ -234,12 +232,12 @@
                     @Html.EditorFor(model => model.Style.MetalWeight, new { htmlAttributes = new { @class = "" } })
                 </div>
             }
-            <div class="col-sm-2 col-xs-2">
-                @if (@Model.SVMOp != SVMOperation.Print)
-                {
+            @if (@Model.SVMOp != SVMOperation.Print)
+            {
+                <div class="col-sm-2 col-xs-2">
                     @Html.DropDownList("MetalWtUnitId", null, htmlAttributes: new { @class = "" })
-                }
-            </div>
+                </div>
+            }
             <div>
                 @if (@Model.SVMOp != SVMOperation.Print)
                 {
