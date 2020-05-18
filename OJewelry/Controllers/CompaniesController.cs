@@ -568,8 +568,9 @@ namespace OJewelry.Controllers
                                                     // Quality check for quantity
                                                     bEmptyRow = false;
                                                 }
-                                                else
+                                                if (quantity == 0)
                                                 {
+                                                    bEmptyRow = true;
                                                     error = "Invalid Quantity in row " + j + " of sheet [" + sheet.Name + "].";
                                                     ModelState.AddModelError("Quantity-" + j, error);
                                                     ivm.Errors.Add(error);
@@ -624,7 +625,8 @@ namespace OJewelry.Controllers
                                                 {
                                                     error = "Row [" + j + "] will be ignored - All fields are blank";
                                                     ivm.Warnings.Add(error);
-                                                    if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
+                                                    if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
+                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
                                                 }
@@ -1466,7 +1468,8 @@ namespace OJewelry.Controllers
                     }
                 }
             } catch (Exception e) {
-                sim.Errors.Add($"Fatal exception:{e.InnerException}\n{e.StackTrace}");
+                sim.Errors.Add($"Fatal exception:{e.Message}\n{e.StackTrace}");
+                sim.Errors.Add($"Fatal exception:{e.InnerException}");
                 ModelState.AddModelError("Caught fatal exception", e);
                 Trace.TraceError($"OJException: ManageStoneInventory: {e.Message}");
             }
@@ -1594,8 +1597,9 @@ namespace OJewelry.Controllers
                                                     error = $"Cells [A{j}:E{j}] will be ignored - they contain blank cells";
                                                     fim.Warnings.Add(error);
                                                     string s = fim.Errors.Find(x => x == "Stone-" + j);
-                                                    if (ModelState.Remove("Finding-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 2);
-                                                    if (ModelState.Remove("Vendor-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 1);
+                                                    if (ModelState.Remove("Finding-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 3);
+                                                    if (ModelState.Remove("Vendor-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 2);
+                                                    if (ModelState.Remove("Qty-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 1);
                                                 }
                                                 else
                                                 {
@@ -1673,7 +1677,8 @@ namespace OJewelry.Controllers
             }
             catch (Exception e)
             {
-                fim.Errors.Add($"Fatal exception:{e.InnerException}\n{e.StackTrace}");
+                fim.Errors.Add($"Fatal exception:{e.Message}\n{e.StackTrace}");
+                fim.Errors.Add($"Fatal exception:{e.InnerException}");
                 ModelState.AddModelError("Caught fatal exception", e);
                 Trace.TraceError($"OJException: ManageFindingsInventory: {e.Message}");
             }
