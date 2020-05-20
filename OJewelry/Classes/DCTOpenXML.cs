@@ -246,12 +246,17 @@ namespace OJewelry.Classes
             return cell;
         }
 
-        public Cell SetCellVal(string loc, string val, bool bSetCellWidth = true, uint style = 0)
+        public Cell SetCellVal(string loc, string value, bool bSetCellWidth = true, uint style = 0)
         {
-            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.String, CellValue = new CellValue(val.Trim()) };
+            string val = value;
+            if (value != null)
+            {
+                val = value.Trim();
+            }
+            Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.String, CellValue = new CellValue(val) };
             if (bSetCellWidth)
             {
-                SetColumnWidth(loc, val.Trim());
+                SetColumnWidth(loc, val);
                 //columns.ElementAt(); // this is how to index the columns
             }
             return cell;
