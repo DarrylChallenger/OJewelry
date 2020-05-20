@@ -495,6 +495,7 @@ namespace OJewelry.Controllers
                                                 Style style = new Style();
                                                 Collection collection = new Collection();
                                                 bool bEmptyRow = true;
+                                                string blankCollectionWarning = "";
                                                 Cell cell;
 
                                                 // Style Name
@@ -549,7 +550,9 @@ namespace OJewelry.Controllers
                                                 if (CollectionId == -1)
                                                 {
                                                     // add this row of this sheet to warning list
-                                                    warning = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist; adding to default Collection";
+                                                    blankCollectionWarning = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist; adding to default Collection";
+
+                                                    warning = blankCollectionWarning;
                                                     ivm.Warnings.Add(warning);
                                                     ivm.CompanyName = db.FindCompany(ivm.CompanyId).Name;
                                                     style.CollectionId = CreateCompanyCollection(ivm, colls);
@@ -623,12 +626,14 @@ namespace OJewelry.Controllers
 
                                                 if (bEmptyRow)
                                                 {
-                                                    error = "Row [" + j + "] will be ignored - All fields are blank";
-                                                    ivm.Warnings.Add(error);
+                                                    warning = $"Row [{j}] and any remaining data after row {j} will be ignored";
+                                                    ivm.Warnings.Add(warning);
+                                                    ivm.Warnings.Remove(blankCollectionWarning);
                                                     if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
                                                     if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
+                                                    break; // don't any process more of the sheet
                                                 }
                                                 else
                                                 {
