@@ -839,8 +839,8 @@ namespace OJewelry.Controllers
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    error = "Row [" + j + "] will be ignored - Style Number and Quantity are blank";
-                                                    ivm.Warnings.Add(error);
+                                                    string warning = $"Row [{j}] and any remaining data after row {j} will be ignored";
+                                                    ivm.Warnings.Add(warning);
                                                     if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
                                                     break;
@@ -1390,8 +1390,8 @@ namespace OJewelry.Controllers
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    error = $"Cells [A{j}:E{j}] will be ignored - they contain blank cells";
-                                                    sim.Warnings.Add(error);
+                                                    string warning = $"Row [{j}] and any remaining data after row {j} will be ignored";
+                                                    sim.Warnings.Add(warning);
                                                     string s = sim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 5);
                                                     if (ModelState.Remove("Shape-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 4);
@@ -1601,8 +1601,8 @@ namespace OJewelry.Controllers
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    error = $"Cells [A{j}:E{j}] will be ignored - they contain blank cells";
-                                                    fim.Warnings.Add(error);
+                                                    string warning = $"Row [{j}] and any remaining data after row {j} will be ignored";
+                                                    fim.Warnings.Add(warning);
                                                     string s = fim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Finding-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 3);
                                                     if (ModelState.Remove("Vendor-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 2);
