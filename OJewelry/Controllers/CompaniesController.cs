@@ -843,6 +843,7 @@ namespace OJewelry.Controllers
                                                     ivm.Warnings.Add(error);
                                                     if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
+                                                    break;
                                                 }
                                                 else {
                                                     styles.Add(style);
@@ -1382,6 +1383,7 @@ namespace OJewelry.Controllers
                                                     error = "The Quantity in sheet [" + sheet.Name + "] cell [E" + j + "] is 0 or blank";
                                                     ModelState.AddModelError("Qty-" + j, error);
                                                     sim.Errors.Add(error);
+                                                    break;
                                                 }
 
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
@@ -1605,6 +1607,7 @@ namespace OJewelry.Controllers
                                                     if (ModelState.Remove("Finding-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 3);
                                                     if (ModelState.Remove("Vendor-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 2);
                                                     if (ModelState.Remove("Qty-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 1);
+                                                    break;
                                                 }
                                                 else
                                                 {
