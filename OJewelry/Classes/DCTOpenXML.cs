@@ -64,7 +64,7 @@ namespace OJewelry.Classes
                 {
                     if (cell.DataType == CellValues.SharedString)
                     {
-                        if (strings.SharedStringTable.ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText.Trim() == value.Trim())
+                        if (strings.SharedStringTable.ElementAt(int.Parse(cell.CellValue.InnerText)).InnerText?.Trim() == value?.Trim())
                         {
                             return true;
                         }
@@ -152,7 +152,7 @@ namespace OJewelry.Classes
                 if (cell.DataType == null)
                 {
                     str = cell.CellValue.InnerText;
-                    return str.Trim();
+                    return str?.Trim();
                 }
                 if (cell.DataType != null)
                 {
@@ -171,7 +171,7 @@ namespace OJewelry.Classes
                 Trace.TraceError($"OJException occurred {e.Message}");
                 str = "";
             }
-            return str.Trim();
+            return str?.Trim();
         }
 
         public int GetIntVal(Cell cell)
@@ -251,7 +251,7 @@ namespace OJewelry.Classes
             string val = value;
             if (value != null)
             {
-                val = value.Trim();
+                val = value?.Trim();
             }
             Cell cell = new Cell() { CellReference = loc, StyleIndex = style, DataType = CellValues.String, CellValue = new CellValue(val) };
             if (bSetCellWidth)
@@ -314,7 +314,7 @@ namespace OJewelry.Classes
             else
             {
                 Column c = columns.ChildElements[col.Value] as Column;
-                double width = graphics.MeasureString(val.Trim() + cellBuf, font).Width;
+                double width = graphics.MeasureString(val?.Trim() + cellBuf, font).Width;
                 // column widths are stored in points!
                 c.Width = Math.Max(ComputeExcelCellWidth(width), c.Width);
             }

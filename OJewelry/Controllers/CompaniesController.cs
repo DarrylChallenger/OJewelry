@@ -597,7 +597,7 @@ namespace OJewelry.Controllers
                                                     {
                                                         bEmptyRow = false;
                                                         // Is the Presenter in the sheet one of the companies presenters?
-                                                        Presenter companyPresenter = company.Presenters.Where(p => p.ShortName.Trim() == presenter).SingleOrDefault();
+                                                        Presenter companyPresenter = company.Presenters.Where(p => p.ShortName?.Trim() == presenter).SingleOrDefault();
                                                         if (companyPresenter != null)
                                                         {
                                                             Memo memo = new Memo()
