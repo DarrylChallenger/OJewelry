@@ -624,9 +624,9 @@ namespace OJewelry.Controllers
                                                     ivm.Errors.Add(error);
                                                 }
 
-                                                if (bEmptyRow)
+                                                if (bEmptyRow) //Row XX is blank - Any data below Row XX will NOT be updated
                                                 {
-                                                    warning = $"Row [{j}] and any remaining data after row {j} will be ignored";
+                                                    warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
                                                     ivm.Warnings.Add(warning);
                                                     ivm.Warnings.Remove(blankCollectionWarning);
                                                     if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
@@ -839,7 +839,7 @@ namespace OJewelry.Controllers
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    string warning = $"Row [{j}] and any remaining data after row {j} will be ignored";
+                                                    string warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
                                                     ivm.Warnings.Add(warning);
                                                     if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
@@ -1383,14 +1383,13 @@ namespace OJewelry.Controllers
                                                     error = "The Quantity in sheet [" + sheet.Name + "] cell [E" + j + "] is 0 or blank";
                                                     ModelState.AddModelError("Qty-" + j, error);
                                                     sim.Errors.Add(error);
-                                                    break;
                                                 }
 
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    string warning = $"Row [{j}] and any remaining data after row {j} will be ignored";
+                                                    warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
                                                     sim.Warnings.Add(warning);
                                                     string s = sim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 5);
@@ -1398,6 +1397,7 @@ namespace OJewelry.Controllers
                                                     if (ModelState.Remove("Size-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 3);
                                                     if (ModelState.Remove("Vendor-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
                                                     if (ModelState.Remove("Qty-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 1);
+                                                    break;
                                                 }
                                                 else
                                                 {
@@ -1601,7 +1601,7 @@ namespace OJewelry.Controllers
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    string warning = $"Row [{j}] and any remaining data after row {j} will be ignored";
+                                                    warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
                                                     fim.Warnings.Add(warning);
                                                     string s = fim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Finding-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 3);
