@@ -1389,7 +1389,7 @@ namespace OJewelry.Controllers
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
+                                                    string warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
                                                     sim.Warnings.Add(warning);
                                                     string s = sim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 5);
@@ -1601,7 +1601,7 @@ namespace OJewelry.Controllers
                                                 if (bEmptyRow)
                                                 {
                                                     // Remove last two Model Errors, add warning
-                                                    warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
+                                                    string warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
                                                     fim.Warnings.Add(warning);
                                                     string s = fim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Finding-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 3);
