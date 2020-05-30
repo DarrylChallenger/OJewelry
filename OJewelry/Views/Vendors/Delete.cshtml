@@ -26,7 +26,7 @@
         <ul>
             @foreach (OJewelry.Models.Stone s in Model.stones)
             {
-                <li class="text-danger bold"><i>@s.Name</i></li>
+                <li class="text-danger bold"><i>@s.Name/@s.Shape.Name/@s.StoneSize</i></li>
             }
         </ul>
     }
