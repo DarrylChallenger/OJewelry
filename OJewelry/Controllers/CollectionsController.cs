@@ -325,7 +325,7 @@ namespace OJewelry.Controllers
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, Styles[i].Desc, false, 3); row.Append(cell);
                         loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].Collection.Name, false, 3); row.Append(cell);
                         loc = "E" + rr; cell = oxl.SetCellVal(loc, Styles[i].JewelryType.Name, false, 3); row.Append(cell);
-                        loc = "F" + rr; cell = oxl.SetCellVal(loc, Styles[i].Quantity, false, 3); row.Append(cell);
+                        loc = "F" + rr; cell = oxl.SetCellVal(loc, Styles[i].Memos.Sum(s => s.Quantity), false, 3); row.Append(cell);
                         sd.Append(row);
                     }
 
@@ -469,7 +469,7 @@ namespace OJewelry.Controllers
                             loc = "B" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleName, false, 3); row.Append(cell);
                             loc = "C" + rr; cell = oxl.SetCellVal(loc, Styles[i].Desc, false, 3); row.Append(cell);
                             //loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleNum, false, 3); row.Append(cell);
-                            loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].Quantity, false, 3); row.Append(cell);
+                            loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].Memos.Sum(s => s.Quantity), false, 3); row.Append(cell);
                             sd.Append(row);
                         }
                         worksheet.Append(sd);
