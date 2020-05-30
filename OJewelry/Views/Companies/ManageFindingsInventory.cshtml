@@ -11,36 +11,6 @@
 </div>
 <br />
 
-@if (Model.Errors.Count != 0)
-{
-    <li>
-        <p>Errors loading @Model.failedFileName</p>
-        @foreach (string e in Model.Errors)
-        {
-            <ul class="text-danger">@e</ul>
-        }
-    </li>
-    <p class="text-danger largeError"><strong>Correct Error(s) and re-Upload template</strong></p>
-
-}
-
-@if (Model.Warnings.Count != 0)
-{
-    <li>
-        <p>
-            Warnings loading @Model.failedFileName
-        </p>
-        @foreach (string e in Model.Warnings)
-        {
-            <ul class="text-warning">@e</ul>
-        }
-    </li>
-}
-
-@if (Model.success)
-{
-    <p class="text-success">@ViewBag.Message</p>
-}
 
 @using (Html.BeginForm("ManageFindingsInventory", "Companies", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -60,9 +30,35 @@
     <br />
     <input type="submit" value="Upload" />
     <br />
+}
 
+@if (Model.Errors.Count != 0)
+{
+        <p>Errors loading @Model.failedFileName</p>
+        foreach (string e in Model.Errors)
+        {
+            <p class="text-danger">@e</p>
+        }
+    <p class="text-danger bold largeError">Correct Error(s) and re-Upload template</p>
 }
 <br />
+
+@if (Model.Warnings.Count != 0)
+{
+        <p>
+            Warnings loading @Model.failedFileName
+        </p>
+        foreach (string e in Model.Warnings)
+        {
+            <p class="text-warning">@e</p>
+        }
+}
+
+@if (Model.success)
+{
+    <p class="text-success bold largeError">@ViewBag.Message</p>
+}
+
 <div class="MainMenu">
     @Html.ActionLink("Companies", "Index") |
     @Html.Partial("_CompanyNavPartial", Model.CompanyId) |

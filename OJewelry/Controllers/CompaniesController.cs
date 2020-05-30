@@ -487,10 +487,11 @@ namespace OJewelry.Controllers
                                     (oxl.CellMatches("D1", worksheet, stringtable, "Qty")) &&
                                     (oxl.CellMatches("E1", worksheet, stringtable, "Location Short Code")))
                                     {
-                                        bool bFoundEmptyRow = false;
-                                        int nEmptyRow = -1;
+
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
+                                            bool bFoundEmptyRow = false;
+                                            int nEmptyRow = -1;
                                             for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
                                             {
                                                 //process each cell in cols 1-5
@@ -1275,7 +1276,11 @@ namespace OJewelry.Controllers
 
         public ActionResult ManageStoneInventory(int companyId)
         {
-            StoneInventoryModel sim = new StoneInventoryModel();
+            StoneInventoryModel sim = new StoneInventoryModel()
+            {
+                CompanyId = companyId
+            };
+            
             sim.CompanyName = db.FindCompany(companyId)?.Name;
             return View(sim);
         }
@@ -1328,6 +1333,8 @@ namespace OJewelry.Controllers
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
+                                            bool bFoundEmptyRow = false;
+                                            int nEmptyRow = -1;
                                             for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
                                             {
                                                 // Read Stone, Size, Shape
@@ -1415,19 +1422,28 @@ namespace OJewelry.Controllers
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
                                                 if (bEmptyRow)
                                                 {
+                                                    nEmptyRow = j;
+                                                    bFoundEmptyRow = true;
                                                     // Remove last two Model Errors, add warning
-                                                    string warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
-                                                    sim.Warnings.Add(warning);
+                                                    //string warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
+                                                    //sim.Warnings.Add(warning);
                                                     string s = sim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Stone-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 5);
                                                     if (ModelState.Remove("Shape-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 4);
                                                     if (ModelState.Remove("Size-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 3);
                                                     if (ModelState.Remove("Vendor-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 2);
                                                     if (ModelState.Remove("Qty-" + j)) sim.Errors.RemoveAt(sim.Errors.Count - 1);
-                                                    break;
+                                                    //break;
                                                 }
                                                 else
                                                 {
+                                                    // if there has been an empty row but now there is a row with data, raise the blank row error and stop processing
+                                                    if (bFoundEmptyRow)
+                                                    {
+                                                        error = $"Row {nEmptyRow} contains a blank";
+                                                        sim.Errors.Add(error);
+                                                        break;
+                                                    }
                                                     // add to list
                                                     stoneElements.Add(new StoneElement()
                                                     {
@@ -1496,7 +1512,7 @@ namespace OJewelry.Controllers
                             if (sim.Errors.Count() == 0)
                             {
                                 db.SaveChanges();
-                                ViewBag.Message += sim.PostedFile.FileName + " inventory updated";
+                                ViewBag.Message += sim.PostedFile.FileName + " updated";
                             }
                         }
                     }
@@ -1518,7 +1534,10 @@ namespace OJewelry.Controllers
 
         public ActionResult ManageFindingsInventory(int companyId)
         {
-            FindingInventoryModel fim = new FindingInventoryModel();
+            FindingInventoryModel fim = new FindingInventoryModel()
+            {
+                CompanyId = companyId
+            }; 
             fim.CompanyName = db.FindCompany(companyId)?.Name;
             return View(fim);
         }
@@ -1569,6 +1588,8 @@ namespace OJewelry.Controllers
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
+                                            bool bFoundEmptyRow = false;
+                                            int nEmptyRow = -1;
                                             for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
                                             {
                                                 // Read finding
@@ -1627,17 +1648,24 @@ namespace OJewelry.Controllers
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
                                                 if (bEmptyRow)
                                                 {
+                                                    nEmptyRow = j;
+                                                    bFoundEmptyRow = true;
                                                     // Remove last two Model Errors, add warning
-                                                    string warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
-                                                    fim.Warnings.Add(warning);
+
                                                     string s = fim.Errors.Find(x => x == "Stone-" + j);
                                                     if (ModelState.Remove("Finding-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 3);
                                                     if (ModelState.Remove("Vendor-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 2);
                                                     if (ModelState.Remove("Qty-" + j)) fim.Errors.RemoveAt(fim.Errors.Count - 1);
-                                                    break;
                                                 }
                                                 else
                                                 {
+                                                    // if there has been an empty row but now there is a row with data, raise the blank row error and stop processing
+                                                    if (bFoundEmptyRow)
+                                                    {
+                                                        error = $"Row {nEmptyRow} contains a blank";
+                                                        fim.Errors.Add(error);
+                                                        break;
+                                                    }
                                                     // add to list
                                                     findingElements.Add(new FindingElement()
                                                     {
@@ -1704,7 +1732,7 @@ namespace OJewelry.Controllers
                             if (fim.Errors.Count() == 0)
                             {
                                 db.SaveChanges();
-                                ViewBag.Message += fim.PostedFile.FileName + " inventory updated";
+                                ViewBag.Message += fim.PostedFile.FileName + " updated";
                             }
                         }
                     }
