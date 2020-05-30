@@ -802,6 +802,8 @@ namespace OJewelry.Controllers
                                     {
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
+                                            bool bFoundEmptyRow = false;
+                                            int nEmptyRow = -1;
                                             for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
                                             {
                                                 //process each cell in cols 1-4
@@ -828,6 +830,13 @@ namespace OJewelry.Controllers
                                                 {
                                                     style.Quantity = oxl.GetDoubleVal(cell);
                                                     bEmptyRow = false;
+                                                    if (style.Quantity == 0)
+                                                    {
+                                                        error = "The Quantity in sheet [" + sheet.Name + "] row [" + j + "] is blank or 0.";
+                                                        ModelState.AddModelError("Quantity-" + j, error);
+                                                        ivm.Errors.Add(error);
+                                                        bEmptyRow = true;
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -838,14 +847,22 @@ namespace OJewelry.Controllers
                                                 }
                                                 if (bEmptyRow)
                                                 {
-                                                    // Remove last two Model Errors, add warning
-                                                    string warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
-                                                    ivm.Warnings.Add(warning);
-                                                    if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
+                                                    // Remove last two Model Errors
+                                                    nEmptyRow = j;
+                                                    if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
-                                                    break;
+                                                    bFoundEmptyRow = true;
+                                                    //break;
                                                 }
                                                 else {
+                                                    // if there has been an empty row but now there is a row with data, raise the blank row error and stop processing
+                                                    if (bFoundEmptyRow)
+                                                    {
+                                                        error = $"Row {nEmptyRow} is blank - Re-Upload template with data below Row {nEmptyRow}";
+                                                        ivm.Errors.Add(error);
+                                                        break;
+
+                                                    }
                                                     styles.Add(style);
                                                 }
                                             }

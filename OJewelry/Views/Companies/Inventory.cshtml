@@ -71,7 +71,7 @@
 <div id="InventoryErrors">
     @if (Model.Errors.Count() != 0)
     {
-    <p>Errors loading @Model.AddPostedFile.FileName</p>
+    <p>Errors loading @Model.MovePostedFile.FileName</p>
         foreach (string s in Model.Errors)
         {
             <p class="text-danger">@s</p>
