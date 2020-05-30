@@ -9,13 +9,57 @@
 @if (Model.bError)
 {
 <div class="largeError">
-    <p>Error - The '@Model.item.Name' Vendor is use in the following style(s)</p>
-    <ul>
-        @foreach (OJewelry.Models.Style sty in Model.styles)
-        {
-            <li class="text-danger bold"><i>@sty.StyleName</i></li>
-        }
-    </ul>
+    <p>Error - The '@Model.item.Name' Vendor is use in the following:</p>
+    @if (Model.castings.Count != 0)
+    {
+        <p>Castings</p>
+        <ul>
+            @foreach (OJewelry.Models.Casting c in Model.castings)
+            {
+                <li class="text-danger bold"><i>@c.Name</i></li>
+            }
+        </ul>
+    }
+    @if (Model.stones.Count != 0)
+    {
+        <p>Stones</p>
+        <ul>
+            @foreach (OJewelry.Models.Stone s in Model.stones)
+            {
+                <li class="text-danger bold"><i>@s.Name</i></li>
+            }
+        </ul>
+    }
+    @if (Model.findings.Count != 0)
+    {
+        <p>Findings</p>
+        <ul>
+            @foreach (OJewelry.Models.Finding f in Model.findings)
+            {
+                <li class="text-danger bold"><i>@f.Name</i></li>
+            }
+        </ul>
+    }
+    @if (Model.labors.Count != 0)
+    {
+        <p>Labors</p>
+        <ul>
+            @foreach (OJewelry.Models.Labor l in Model.labors)
+            {
+                <li class="text-danger bold"><i>@l.Name</i></li>
+            }
+        </ul>
+    }
+    @if (Model.laborItems.Count != 0)
+    {
+        <p>Labor Table</p>
+        <ul>
+            @foreach (OJewelry.Models.LaborItem li in Model.laborItems)
+            {
+                <li class="text-danger bold"><i>@li.Name</i></li>
+            }
+        </ul>
+    }
     <br />
     @Html.ActionLink("Cancel", "Index", "Vendors", new { companyId = Model.item.CompanyId }, new { @class = "btn btn-default" })
 </div>

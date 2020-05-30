@@ -81,12 +81,20 @@ namespace OJewelry.Models
     {
         public DeleteVendorModel()
         {
-            styles = new List<Style>();
+            castings = new List<Casting>();
+            stones = new List<Stone>();
+            findings = new List<Finding>();
+            labors = new List<Labor>();
+            laborItems = new List<LaborItem>();
             bError = false;
         }
         public bool bError { get; set; }
         public Vendor item { get; set; }
-        public List<Style> styles { get; set; }
+        public List<Casting> castings { get; set; }
+        public List<Stone> stones { get; set; }
+        public List<Finding> findings { get; set; }
+        public List<Labor> labors { get; set; }
+        public List<LaborItem> laborItems { get; set; }
     }
 
     public class StyleEqualityComparer : IEqualityComparer<Style>
@@ -103,5 +111,82 @@ namespace OJewelry.Models
             return style.Id.GetHashCode();
         }
     }
+
+    public class CastingEqualityComparer : IEqualityComparer<Casting>
+    {
+        public bool Equals(Casting x, Casting y)
+        {
+            if (Object.ReferenceEquals(x, null)) return false;
+            if (Object.ReferenceEquals(this, y)) return true;
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Casting c)
+        {
+            return c.Id.GetHashCode();
+        }
+    }
+
+    public class StoneEqualityComparer : IEqualityComparer<Stone>
+    {
+        public bool Equals(Stone x, Stone y)
+        {
+            if (Object.ReferenceEquals(x, null)) return false;
+            if (Object.ReferenceEquals(this, y)) return true;
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Stone c)
+        {
+            return c.Id.GetHashCode();
+        }
+    }
+
+    public class FindingEqualityComparer : IEqualityComparer<Finding>
+    {
+        public bool Equals(Finding x, Finding y)
+        {
+            if (Object.ReferenceEquals(x, null)) return false;
+            if (Object.ReferenceEquals(this, y)) return true;
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Finding f)
+        {
+            return f.Id.GetHashCode();
+        }
+    }
+
+    public class LaborEqualityComparer : IEqualityComparer<Labor>
+    {
+        public bool Equals(Labor x, Labor y)
+        {
+            if (Object.ReferenceEquals(x, null)) return false;
+            if (Object.ReferenceEquals(this, y)) return true;
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Labor l)
+        {
+            return l.Id.GetHashCode();
+        }
+    }
+
+    public class LaborItemEqualityComparer : IEqualityComparer<LaborItem>
+    {
+        public bool Equals(LaborItem x, LaborItem y)
+        {
+            if (Object.ReferenceEquals(x, null)) return false;
+            if (Object.ReferenceEquals(this, y)) return true;
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(LaborItem li)
+        {
+            return li.Id.GetHashCode();
+        }
+    }
+
+
 
 }

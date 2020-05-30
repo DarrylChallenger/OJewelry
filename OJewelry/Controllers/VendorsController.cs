@@ -142,7 +142,7 @@ namespace OJewelry.Controllers
             {
                 item = db.Vendors.Where(v => v.Id == id).FirstOrDefault()
             };
-            if (dvm == null)
+            if (dvm.item == null)
             {
                 return HttpNotFound();
             }
@@ -152,14 +152,12 @@ namespace OJewelry.Controllers
                     db.Findings.Where(s => s.VendorId == id).Count() != 0)
             {
                 // List the labors, castings, stones, and findings
-                List<Style> styles = new List<Style>();
-                styles.AddRange(db.StyleCastings.Where(s => s.Casting.VendorId == id).Select(s => s.Style));
-                styles.AddRange(db.StyleStones.Where(s => s.Stone.VendorId == id).Select(s => s.Style));
-                styles.AddRange(db.StyleFindings.Where(s => s.Finding.VendorId == id).Select(s => s.Style));
-                styles.AddRange(db.StyleLabors.Where(s => s.Labor.VendorId == id).Select(s => s.Style));
-                styles.AddRange(db.StyleLaborItems.Where(s => s.LaborItem.VendorId == id).Select(s => s.Style));
+                dvm.castings.AddRange(db.StyleCastings.Where(s => s.Casting.VendorId == id).Select(s => s.Casting).ToList().Distinct(new CastingEqualityComparer()));
+                dvm.stones.AddRange(db.StyleStones.Where(s => s.Stone.VendorId == id).Select(s => s.Stone).ToList().Distinct(new StoneEqualityComparer()));
+                dvm.findings.AddRange(db.StyleFindings.Where(s => s.Finding.VendorId == id).Select(s => s.Finding).ToList().Distinct(new FindingEqualityComparer()));
+                dvm.labors.AddRange(db.StyleLabors.Where(s => s.Labor.VendorId == id).Select(s => s.Labor).ToList().Distinct(new LaborEqualityComparer()));
+                dvm.laborItems.AddRange(db.StyleLaborItems.Where(s => s.LaborItem.VendorId == id).Select(s => s.LaborItem).ToList().Distinct(new LaborItemEqualityComparer()));
                 //IEnumerable<Style> sty = styles.Distinct(new StyleEqualityComparer());
-                dvm.styles = styles.Distinct(new StyleEqualityComparer()).ToList();
                 /*foreach (Style s in sty)
                 {
                     dvm.styles.Add(s);
