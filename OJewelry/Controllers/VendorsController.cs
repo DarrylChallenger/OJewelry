@@ -152,11 +152,11 @@ namespace OJewelry.Controllers
                     db.Findings.Where(s => s.VendorId == id).Count() != 0)
             {
                 // List the labors, castings, stones, and findings
-                dvm.castings.AddRange(db.StyleCastings.Where(s => s.Casting.VendorId == id).Select(s => s.Casting).ToList().Distinct(new CastingEqualityComparer()));
-                dvm.stones.AddRange(db.StyleStones.Where(s => s.Stone.VendorId == id).Select(s => s.Stone).ToList().Distinct(new StoneEqualityComparer()));
-                dvm.findings.AddRange(db.StyleFindings.Where(s => s.Finding.VendorId == id).Select(s => s.Finding).ToList().Distinct(new FindingEqualityComparer()));
-                dvm.labors.AddRange(db.StyleLabors.Where(s => s.Labor.VendorId == id).Select(s => s.Labor).ToList().Distinct(new LaborEqualityComparer()));
-                dvm.laborItems.AddRange(db.StyleLaborItems.Where(s => s.LaborItem.VendorId == id).Select(s => s.LaborItem).ToList().Distinct(new LaborItemEqualityComparer()));
+                dvm.castings.AddRange(db.Castings.Where(c => c.VendorId == id).ToList().Distinct(new CastingEqualityComparer()));
+                dvm.stones.AddRange(db.Stones.Where(s => s.VendorId == id).ToList().Distinct(new StoneEqualityComparer()));
+                dvm.findings.AddRange(db.Findings.Where(f => f.VendorId == id).ToList().Distinct(new FindingEqualityComparer()));
+                dvm.labors.AddRange(db.Labors.Where(l => l.VendorId == id).ToList().Distinct(new LaborEqualityComparer()));
+                dvm.laborItems.AddRange(db.LaborTable.Where(li => li.VendorId == id).ToList().Distinct(new LaborItemEqualityComparer()));
                 //IEnumerable<Style> sty = styles.Distinct(new StyleEqualityComparer());
                 /*foreach (Style s in sty)
                 {
