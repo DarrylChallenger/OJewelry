@@ -487,6 +487,8 @@ namespace OJewelry.Controllers
                                     (oxl.CellMatches("D1", worksheet, stringtable, "Qty")) &&
                                     (oxl.CellMatches("E1", worksheet, stringtable, "Location Short Code")))
                                     {
+                                        bool bFoundEmptyRow = false;
+                                        int nEmptyRow = -1;
                                         if (worksheet.Descendants<Row>().Count() >= 2)
                                         {
                                             for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
@@ -626,17 +628,26 @@ namespace OJewelry.Controllers
 
                                                 if (bEmptyRow) //Row XX is blank - Any data below Row XX will NOT be updated
                                                 {
-                                                    warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
-                                                    ivm.Warnings.Add(warning);
+                                                    nEmptyRow = j;
+                                                    bFoundEmptyRow = true;
+                                                    //warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
+                                                    //ivm.Warnings.Add(warning);
                                                     ivm.Warnings.Remove(blankCollectionWarning);
                                                     if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
                                                     if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
-                                                    break; // don't any process more of the sheet
+                                                    // break; // don't any process more of the sheet
                                                 }
                                                 else
                                                 {
+                                                    // if there has been an empty row but now there is a row with data, raise the blank row error and stop processing
+                                                    if (bFoundEmptyRow)
+                                                    {
+                                                        error = $"Row {nEmptyRow} contains a blank";
+                                                        ivm.Errors.Add(error);
+                                                        break;
+                                                    }
                                                     if (ModelState.Where(e => e.Key.Contains($"-{j}")).Count() == 0)
                                                     {
                                                         styles.Add(style);
@@ -847,21 +858,20 @@ namespace OJewelry.Controllers
                                                 }
                                                 if (bEmptyRow)
                                                 {
-                                                    // Remove last two Model Errors
                                                     nEmptyRow = j;
+                                                    bFoundEmptyRow = true;
+                                                    // Remove last two Model Errors
                                                     if (ModelState.Remove("StyleNum-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
-                                                    bFoundEmptyRow = true;
                                                     //break;
                                                 }
                                                 else {
                                                     // if there has been an empty row but now there is a row with data, raise the blank row error and stop processing
                                                     if (bFoundEmptyRow)
                                                     {
-                                                        error = $"Row {nEmptyRow} is blank - Re-Upload template with data below Row {nEmptyRow}";
+                                                        error = $"Row {nEmptyRow} contains a blank";
                                                         ivm.Errors.Add(error);
                                                         break;
-
                                                     }
                                                     styles.Add(style);
                                                 }
