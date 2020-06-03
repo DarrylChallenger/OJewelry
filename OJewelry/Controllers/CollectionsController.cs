@@ -229,6 +229,7 @@ namespace OJewelry.Controllers
 
             DCTSOpenXML oxl = new DCTSOpenXML();
             Company company = db.FindCompany(companyId);
+            List<Memo> memos = db.Memos.ToList();
 
             using (MemoryStream memStream = new MemoryStream())
             {
@@ -325,7 +326,10 @@ namespace OJewelry.Controllers
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, Styles[i].Desc, false, 3); row.Append(cell);
                         loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].Collection.Name, false, 3); row.Append(cell);
                         loc = "E" + rr; cell = oxl.SetCellVal(loc, Styles[i].JewelryType.Name, false, 3); row.Append(cell);
-                        loc = "F" + rr; cell = oxl.SetCellVal(loc, Styles[i].Memos.Sum(s => s.Quantity), false, 3); row.Append(cell);
+                        //List<Memo> memos = db.Memos.Where(m => m.StyleID == Styles[i].Id).ToList();
+                        int styleId = Styles[i].Id;
+                        double quantity = memos.Where(m => m.StyleID == styleId).Sum(m => m.Quantity);
+                        loc = "F" + rr; cell = oxl.SetCellVal(loc, quantity, false, 3); row.Append(cell);
                         sd.Append(row);
                     }
 
@@ -379,7 +383,8 @@ namespace OJewelry.Controllers
             string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
 
             DCTSOpenXML oxl = new DCTSOpenXML();
-            
+            List<Memo> memos = db.Memos.ToList();
+
             using (MemoryStream memStream = new MemoryStream())
             {
                 using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
@@ -469,7 +474,10 @@ namespace OJewelry.Controllers
                             loc = "B" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleName, false, 3); row.Append(cell);
                             loc = "C" + rr; cell = oxl.SetCellVal(loc, Styles[i].Desc, false, 3); row.Append(cell);
                             //loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].StyleNum, false, 3); row.Append(cell);
-                            loc = "D" + rr; cell = oxl.SetCellVal(loc, Styles[i].Memos.Sum(s => s.Quantity), false, 3); row.Append(cell);
+                            //List<Memo> memos = db.Memos.Where(m => m.StyleID.Value == Styles[i].Id).ToList();
+                            int styleId = Styles[i].Id;
+                            double quantity = memos.Where(m => m.StyleID == styleId).Sum(m => m.Quantity);
+                            loc = "D" + rr; cell = oxl.SetCellVal(loc, quantity, false, 3); row.Append(cell);
                             sd.Append(row);
                         }
                         worksheet.Append(sd);
