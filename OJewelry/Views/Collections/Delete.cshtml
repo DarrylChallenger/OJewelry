@@ -50,11 +50,12 @@ else
             <div>
                 @Html.ValidationSummary(null, new { @class = "text-danger" })
             </div>
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" />
+                @Html.ActionLink("Cancel", "Index", "Collections", new { companyId = Model.item.CompanyId }, new { @class = "btn btn-default" })
+            </div>
+
         }
-    </div>
-    <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn btn-default" />
-        @Html.ActionLink("Cancel", "Index", "Collections", new { companyId = Model.item.CompanyId }, new { @class = "btn btn-default" })
     </div>
 
 }
