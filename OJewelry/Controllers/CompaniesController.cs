@@ -492,10 +492,11 @@ namespace OJewelry.Controllers
                                         {
                                             bool bFoundEmptyRow = false;
                                             int nEmptyRow = -1;
-                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
-                                            {
-                                                //process each cell in cols 1-5
-                                                Style style = new Style();
+                                            //for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Last().RowIndex; i++, j = i + 1) /* Add checks for empty values */
+                                                {
+                                                    //process each cell in cols 1-5
+                                                    Style style = new Style();
                                                 Collection collection = new Collection();
                                                 bool bEmptyRow = true;
                                                 string blankCollectionWarning = "";
@@ -571,15 +572,15 @@ namespace OJewelry.Controllers
                                                 if (cell != null)
                                                 {
                                                     quantity = oxl.GetDoubleVal(cell);
-                                                    // Quality check for quantity
-                                                    bEmptyRow = false;
                                                 }
                                                 if (quantity == 0)
                                                 {
-                                                    bEmptyRow = true;
                                                     error = "Invalid Quantity in row " + j + " of sheet [" + sheet.Name + "].";
                                                     ModelState.AddModelError("Quantity-" + j, error);
                                                     ivm.Errors.Add(error);
+                                                } else {                                                     
+                                                    // Quality check for quantity
+                                                    bEmptyRow = false;
                                                 }
 
                                                 // Location
@@ -695,9 +696,10 @@ namespace OJewelry.Controllers
                                     NewCollectionId = c.Id;
                                 }
                                 // existing style - if style already exists, just update the quant
-                                //Trace.TraceInformation($"Styles found in sheet {styles.Count}");
+                                Trace.TraceInformation($"Styles found in sheet {styles.Count}");
                                 foreach (Style s in styles)
                                 {
+                                    Trace.TraceInformation($"Starting...");
                                     Collection c;
                                     if (s.CollectionId == -1) {
                                         s.CollectionId = NewCollectionId;
@@ -705,20 +707,24 @@ namespace OJewelry.Controllers
                                     c = db.Collections.Find(s.CollectionId);
                                     string cid = "null";
                                     if (c != null) cid = (c.Id).ToString();
-                                    //Trace.TraceInformation($"StyleName/collection Id: {s.ToString()}{s.StyleName}/[{cid}]");
+                                    Trace.TraceInformation($"StyleName/collection Id: {s.ToString()}{s.StyleName}/[{cid}]");
 
                                     // nameMatchesInSameCompany
                                     Style dbStyle = db.Styles.Include(dbs => dbs.JewelryType).
                                         Include(dbs => dbs.Collection).
                                         Where(dbs => dbs.StyleName == s.StyleName && dbs.Collection.CompanyId == c.CompanyId).FirstOrDefault();
+                                    Trace.TraceInformation($"1");
                                     if (dbStyle != null)
                                     {
+                                        Trace.TraceInformation($"2");
                                         // do other relevant fields match
                                         if (dbStyle.JewelryTypeId == s.JewelryTypeId && dbStyle.CollectionId == s.CollectionId)
                                         {
+                                            Trace.TraceInformation($"3");
                                             dbStyle.Quantity += s.Quantity;
                                             foreach (Memo m in s.Memos)
                                             {
+                                                Trace.TraceInformation($"4");
                                                 Memo oldMemo = db.Memos.Where(x => x.PresenterID == m.PresenterID && x.StyleID == dbStyle.Id).SingleOrDefault();
                                                 if (oldMemo == null)
                                                 {
@@ -732,6 +738,7 @@ namespace OJewelry.Controllers
                                         }
                                         else
                                         {
+                                            Trace.TraceInformation($"5");
                                             // error
                                             string JewelryTypeName = db.JewelryTypes.Find(s.JewelryTypeId).Name;
                                             error = $"Style mismatch in sheet: " +
@@ -743,6 +750,7 @@ namespace OJewelry.Controllers
                                     }
                                     else
                                     {
+                                        Trace.TraceInformation($"6");
                                         // No style matching name for company, so add it
                                         db.Styles.Add(s);
                                     }
@@ -761,6 +769,12 @@ namespace OJewelry.Controllers
             } catch (Exception e) {
                 ViewBag.Message += ("Error processing [" + ivm.AddPostedFile.FileName + "].     ");
                 ViewBag.Message += ("Exception[" +e.ToString()+ "] processing [" + ivm.AddPostedFile + "]");
+                Trace.TraceError($"AddInv: exception: {e.Message}, [{e.StackTrace}]");
+                while (e.InnerException != null)
+                {
+                    e = e.InnerException;
+                    Trace.TraceError($"AddInv: Inner exception: {e.Message}, [{e.StackTrace}]");
+                }
             } finally {
                 ivm = SetPresentersLists(ivm);
             }
@@ -816,7 +830,8 @@ namespace OJewelry.Controllers
                                         {
                                             bool bFoundEmptyRow = false;
                                             int nEmptyRow = -1;
-                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                            //for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Last().RowIndex; i++, j = i + 1) /* Add checks for empty values */
                                             {
                                                 //process each cell in cols 1-4
                                                 Style style = new Style();
@@ -841,13 +856,15 @@ namespace OJewelry.Controllers
                                                 if (cell != null)
                                                 {
                                                     style.Quantity = oxl.GetDoubleVal(cell);
-                                                    bEmptyRow = false;
                                                     if (style.Quantity == 0)
                                                     {
                                                         error = "The Quantity in sheet [" + sheet.Name + "] row [" + j + "] is blank or 0.";
                                                         ModelState.AddModelError("Quantity-" + j, error);
                                                         ivm.Errors.Add(error);
                                                         bEmptyRow = true;
+                                                    } else
+                                                    {
+                                                        bEmptyRow = false;
                                                     }
                                                 }
                                                 else
@@ -1335,12 +1352,17 @@ namespace OJewelry.Controllers
                                         {
                                             bool bFoundEmptyRow = false;
                                             int nEmptyRow = -1;
-                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                            int count = worksheet.Descendants<Row>().Count();
+                                            Cell LastCell = worksheet.Descendants<Cell>().Last();
+                                            uint LastRow = worksheet.Descendants<Row>().Last().RowIndex;
+
+                                            //for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Last().RowIndex; i++, j = i + 1) /* Add checks for empty values */
                                             {
-                                                // Read Stone, Size, Shape
+                                                // Read Stone, Size, Shape                                                
                                                 string stone = "", shape="", size ="", vendor = "";
                                                 int delta = 0;
-                                                //process each cell in cols 1-4
+                                                //process each cell in cols 1-5
                                                 bool bEmptyRow = true;
                                                 // Stone
                                                 Cell cell = worksheet.Descendants<Cell>().Where(c => c.CellReference == "A" + j.ToString()).FirstOrDefault();
@@ -1408,15 +1430,16 @@ namespace OJewelry.Controllers
                                                 if (cell != null)
                                                 {
                                                     delta = oxl.GetIntVal(cell);
-                                                    bEmptyRow = false;
                                                 }
                                                 if (delta == 0)
                                                 {
                                                     // error
-                                                    bEmptyRow = true;
                                                     error = "The Quantity in sheet [" + sheet.Name + "] cell [E" + j + "] is 0 or blank";
                                                     ModelState.AddModelError("Qty-" + j, error);
                                                     sim.Errors.Add(error);
+                                                } else
+                                                {
+                                                    bEmptyRow = false;
                                                 }
 
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
@@ -1590,7 +1613,8 @@ namespace OJewelry.Controllers
                                         {
                                             bool bFoundEmptyRow = false;
                                             int nEmptyRow = -1;
-                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                            //for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Count(); i++, j = i + 1) /* Add checks for empty values */
+                                            for (int i = 1, j = 2; i < worksheet.Descendants<Row>().Last().RowIndex; i++, j = i + 1) /* Add checks for empty values */
                                             {
                                                 // Read finding
                                                 string finding = "", vendor = "";
@@ -1634,15 +1658,16 @@ namespace OJewelry.Controllers
                                                 if (cell != null)
                                                 {
                                                     delta = oxl.GetIntVal(cell);
-                                                    bEmptyRow = false;
                                                 }
                                                 if (delta == 0)
                                                 {
                                                     // error
-                                                    bEmptyRow = true;
                                                     error = "The Quantity in sheet [" + sheet.Name + "] cell [C" + j + "] is 0 or blank";
                                                     ModelState.AddModelError("Qty-" + j, error);
                                                     fim.Errors.Add(error);
+                                                } else
+                                                {
+                                                    bEmptyRow = false;
                                                 }
 
                                                 // if whole row is blank, remove errors and flag as warning, don't add the style.
@@ -1793,6 +1818,10 @@ namespace OJewelry.Controllers
         int CreateCompanyCollection(InventoryViewModel ivm, List<Collection> colls)
         {
             int CollectionId = GetCollectionId(ivm.CompanyName, ivm.CompanyId);
+            if (CollectionId == -1)
+            {
+                CollectionId = GetCollectionId("ASSORTMENT", ivm.CompanyId);
+            }
             if (CollectionId == -1 && ivm.bCC_CompCollCreated == false)
             {
                 // Make new collection
