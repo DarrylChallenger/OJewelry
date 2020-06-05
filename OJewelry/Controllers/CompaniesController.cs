@@ -554,7 +554,7 @@ namespace OJewelry.Controllers
                                                 if (CollectionId == -1)
                                                 {
                                                     // add this row of this sheet to error list
-                                                    invalidCollectionWarning = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
+                                                    invalidCollectionWarning = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] is blank or does not exist.";
                                                     error = invalidCollectionWarning;
                                                     ModelState.AddModelError("Collection-" + j, error);
                                                     ivm.Errors.Add(error);
