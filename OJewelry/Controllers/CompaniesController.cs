@@ -456,7 +456,7 @@ namespace OJewelry.Controllers
             {
                 DCTSOpenXML oxl = new DCTSOpenXML();
 
-                String error, warning;
+                String error;
                 if (isValidAddModel())//(ModelState.IsValid)
                 {
                     using (MemoryStream memstream = new MemoryStream())
@@ -499,7 +499,7 @@ namespace OJewelry.Controllers
                                                     Style style = new Style();
                                                 Collection collection = new Collection();
                                                 bool bEmptyRow = true;
-                                                string blankCollectionWarning = "";
+                                                string invalidCollectionWarning = "";
                                                 Cell cell;
 
                                                 // Style Name
@@ -553,13 +553,13 @@ namespace OJewelry.Controllers
                                                 }
                                                 if (CollectionId == -1)
                                                 {
-                                                    // add this row of this sheet to warning list
-                                                    blankCollectionWarning = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist; adding to default Collection";
-
-                                                    warning = blankCollectionWarning;
-                                                    ivm.Warnings.Add(warning);
-                                                    ivm.CompanyName = db.FindCompany(ivm.CompanyId).Name;
-                                                    style.CollectionId = CreateCompanyCollection(ivm, colls);
+                                                    // add this row of this sheet to error list
+                                                    invalidCollectionWarning = "The Collection [" + CollectionName + "] in sheet [" + sheet.Name + "] row [" + j + "] does not exist.";
+                                                    error = invalidCollectionWarning;
+                                                    ModelState.AddModelError("Collection-" + j, error);
+                                                    ivm.Errors.Add(error);
+                                                    //ivm.CompanyName = db.FindCompany(ivm.CompanyId).Name;
+                                                   // style.CollectionId = CreateCompanyCollection(ivm, colls);
                                                 }
                                                 else
                                                 {
@@ -634,9 +634,10 @@ namespace OJewelry.Controllers
                                                     bFoundEmptyRow = true;
                                                     //warning = $"Row {j} is blank - Any data below Row {j} will NOT be updated";
                                                     //ivm.Warnings.Add(warning);
-                                                    ivm.Warnings.Remove(blankCollectionWarning);
-                                                    if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
-                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 3);
+                                                    
+                                                    if (ModelState.Remove("StyleName-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 5);
+                                                    if (ModelState.Remove("JewelryType-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 4);
+                                                    if (ModelState.Remove("Collection-" + j)) ivm.Errors.Remove(invalidCollectionWarning);
                                                     if (ModelState.Remove("Quantity-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 2);
                                                     if (ModelState.Remove("Location-" + j)) ivm.Errors.RemoveAt(ivm.Errors.Count - 1);
                                                     // break; // don't any process more of the sheet
@@ -646,7 +647,7 @@ namespace OJewelry.Controllers
                                                     // if there has been an empty row but now there is a row with data, raise the blank row error and stop processing
                                                     if (bFoundEmptyRow)
                                                     {
-                                                        error = $"Row {nEmptyRow} contains a blank";
+                                                        error = $"Row {nEmptyRow} is blank";
                                                         ivm.Errors.Add(error);
                                                         break;
                                                     }
@@ -887,7 +888,7 @@ namespace OJewelry.Controllers
                                                     // if there has been an empty row but now there is a row with data, raise the blank row error and stop processing
                                                     if (bFoundEmptyRow)
                                                     {
-                                                        error = $"Row {nEmptyRow} contains a blank";
+                                                        error = $"Row {nEmptyRow} is blank";
                                                         ivm.Errors.Add(error);
                                                         break;
                                                     }
@@ -1463,7 +1464,7 @@ namespace OJewelry.Controllers
                                                     // if there has been an empty row but now there is a row with data, raise the blank row error and stop processing
                                                     if (bFoundEmptyRow)
                                                     {
-                                                        error = $"Row {nEmptyRow} contains a blank";
+                                                        error = $"Row {nEmptyRow} is blank";
                                                         sim.Errors.Add(error);
                                                         break;
                                                     }
@@ -1687,7 +1688,7 @@ namespace OJewelry.Controllers
                                                     // if there has been an empty row but now there is a row with data, raise the blank row error and stop processing
                                                     if (bFoundEmptyRow)
                                                     {
-                                                        error = $"Row {nEmptyRow} contains a blank";
+                                                        error = $"Row {nEmptyRow} is blank";
                                                         fim.Errors.Add(error);
                                                         break;
                                                     }
