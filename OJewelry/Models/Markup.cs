@@ -23,8 +23,11 @@ namespace OJewelry.Models
         [Display(Name = "Multiplier")]
         public double multiplier { get; set; }
 
-        [Display(Name = "Markup")]
+        [Display(Name = "Markup (%)")]
         public double ratio { get; set; }
+
+        [Display(Name = "Margin (%)")]
+        public double margin { get; set; }
 
         [Display(Name ="Addend")]
         public double Addend { get; set; }

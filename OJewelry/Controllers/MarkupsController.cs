@@ -51,13 +51,25 @@ namespace OJewelry.Controllers
             int i = 0;
             foreach(Markup m in mm.markups)
             {
-                if (m.ratio == 0)
+                if (m.ratio < 0)
                 {
-                    ModelState.AddModelError($"markups[{i}].ratio", "The Markup cannot be 0. ");
+                    ModelState.AddModelError($"markups[{i}].ratio", "The Markup (%) cannot be tess than 0. ");
+                }
+                if (m.margin < 0)
+                {
+                    ModelState.AddModelError($"markups[{i}].margin", "The Margin (%) cannot be less than 0. ");
+                }
+                if (m.margin > 100)
+                {
+                    ModelState.AddModelError($"markups[{i}].margin", "The Margin (%) cannot be more than 100. ");
                 }
                 if (m.multiplier == 0)
                 {
                     ModelState.AddModelError($"markups[{i}].multiplier", "The Multiplier cannot be 0. ");
+                }
+                if (m.ratio !=0 && m.margin !=0)
+                {
+                    ModelState.AddModelError($"markups[{i}].ratio", "You can only use one of Markup and Margin. ");
                 }
                 i++;
             }
@@ -155,7 +167,8 @@ namespace OJewelry.Controllers
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 1, Max = 1, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A3", "Title"); row.Append(cell);
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 2, Max = 2, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B3", "Multiplier"); row.Append(cell);
                     oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C3", "Markup"); row.Append(cell);
-                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D3", "Addend"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 3, Max = 3, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D3", "Margin"); row.Append(cell);
+                    oxl.columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = 4, Max = 4, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E3", "Addend"); row.Append(cell);
                     worksheet.Append(oxl.columns);
                     sd.Append(row);
                     // Content
@@ -167,7 +180,8 @@ namespace OJewelry.Controllers
                         loc = "A" + rr; cell = oxl.SetCellVal(loc, m.title); row.Append(cell);
                         loc = "B" + rr; cell = oxl.SetCellVal(loc, m.multiplier); row.Append(cell);
                         loc = "C" + rr; cell = oxl.SetCellVal(loc, m.ratio); row.Append(cell);
-                        loc = "D" + rr; cell = oxl.SetCellVal(loc, m.Addend); row.Append(cell);
+                        loc = "D" + rr; cell = oxl.SetCellVal(loc, m.margin); row.Append(cell);
+                        loc = "E" + rr; cell = oxl.SetCellVal(loc, m.Addend); row.Append(cell);
                         sd.Append(row);
                     }
                     worksheet.Append(sd);
