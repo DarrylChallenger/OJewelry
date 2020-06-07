@@ -63,9 +63,9 @@ namespace OJewelry.Controllers
                 {
                     ModelState.AddModelError($"markups[{i}].margin", "The Margin (%) cannot be more than 100. ");
                 }
-                if (m.multiplier == 0)
+                if (m.multiplier < 0)
                 {
-                    ModelState.AddModelError($"markups[{i}].multiplier", "The Multiplier cannot be 0. ");
+                    ModelState.AddModelError($"markups[{i}].multiplier", "The Multiplier (%) cannot be less than 0. ");
                 }
                 if (m.ratio !=0 && m.margin !=0)
                 {

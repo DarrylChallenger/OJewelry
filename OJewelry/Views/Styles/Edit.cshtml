@@ -115,9 +115,9 @@
     function ComputeMarkupValue(multiplier, markup, margin, amt) { // show amt * 2 *  multiplier in cost popup
         var cost;
         if (markup !== 0) {
-            cost = (Math.trunc(amt * multiplier * (1 + markup/100) * 4) / 4).toFixed(2);
+            cost = (Math.trunc(amt * (1 + multiplier/100) * (1 + markup/100) * 4) / 4).toFixed(2);
         } else {
-            cost = (Math.trunc(amt * multiplier * (1 - margin/100) * 4) / 4).toFixed(2);
+            cost = (Math.trunc(amt * (1 + multiplier/100) * (1 - margin/100) * 4) / 4).toFixed(2);
         }
         return cost;
     }

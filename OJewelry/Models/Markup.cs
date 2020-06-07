@@ -20,7 +20,7 @@ namespace OJewelry.Models
         [Display(Name ="Title")]
         public string title { get; set; }
 
-        [Display(Name = "Multiplier")]
+        [Display(Name = "Multiplier (%)")]
         public double multiplier { get; set; }
 
         [Display(Name = "Markup (%)")]
@@ -29,7 +29,7 @@ namespace OJewelry.Models
         [Display(Name = "Margin (%)")]
         public double margin { get; set; }
 
-        [Display(Name ="Addend")]
+        [Display(Name ="Addend ($)")]
         public double Addend { get; set; }
     }
 }
