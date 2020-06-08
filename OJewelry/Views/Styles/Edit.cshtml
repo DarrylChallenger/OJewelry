@@ -104,7 +104,7 @@
     {
             <div class="row">
                 <div class="col-xs-6 col-sm-3">@m.title</div>
-                <div class="col-xs-6 col-sm-3">: $${ComputeMarkupValue(@m.multiplier, @m.ratio, @m.margin, gt.html())}</div>
+                <div class="col-xs-6 col-sm-3">: $${ComputeMarkupValue(@m.multiplier, @m.ratio, @m.margin, @m.Addend, gt.html())}</div>
             </div>
     }
 }
@@ -112,12 +112,12 @@
         <br/>
         `);
     }
-    function ComputeMarkupValue(multiplier, markup, margin, amt) { // show amt * 2 *  multiplier in cost popup
+    function ComputeMarkupValue(multiplier, markup, margin, addend, amt) { // show amt * 2 *  multiplier in cost popup
         var cost;
         if (markup !== 0) {
-            cost = (Math.trunc(amt * (1 + multiplier/100) * (1 + markup/100) * 4) / 4).toFixed(2);
+            cost = (Math.trunc((amt * (1 + multiplier / 100) * (1 + markup / 100) + addend) * 4 )/ 4).toFixed(2);
         } else {
-            cost = (Math.trunc(amt * (1 + multiplier/100) * (1 - margin/100) * 4) / 4).toFixed(2);
+            cost = (Math.trunc((amt * (1 + multiplier / 100) / (1 - margin / 100) + addend) * 4) / 4).toFixed(2);
         }
         return cost;
     }

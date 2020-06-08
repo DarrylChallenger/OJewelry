@@ -30,6 +30,7 @@ namespace OJewelry.Models
         [Display(Name = "Margin (%)")]
         public double margin { get; set; }
 
+        [DisplayFormat(ApplyFormatInEditMode =true, DataFormatString = "{0:N2}")]
         [Display(Name ="Addend ($)")]
         public double Addend { get; set; }
     }
