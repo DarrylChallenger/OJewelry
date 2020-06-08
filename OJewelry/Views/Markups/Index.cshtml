@@ -36,37 +36,38 @@
             @for (int i = 0; i < Model.markups.Count; i++)
             {
                 var bHideRow = (Model.markups[i].State == MMState.Unadded || Model.markups[i].State == MMState.Deleted) ? "hidden" : "";
-                <div class="row MarkupsTableRowContainer @bHideRow">
-                    <div class="TableRowContainer ltbordered">
-                        @Html.HiddenFor(model => model.markups[i].State, new { @class = "MarkupsState" })
-                        <div class="row MarkupsTableRowData">
-                            @Html.HiddenFor(model => model.CompanyId)
-                            <div>
-                                @Html.EditorFor(model => model.markups[i].title, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-3" } })
-                            </div>
-                            <div>
-                                @Html.EditorFor(model => model.markups[i].multiplier, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
-                            </div>
-                            <div>
-                                @Html.EditorFor(model => model.markups[i].ratio, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
-                            </div>
-                            <div>
-                                @Html.EditorFor(model => model.markups[i].margin, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
-                            </div>
-                            <div>
-                                @Html.EditorFor(model => model.markups[i].Addend, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
-                            </div>
-
+            <div class="MarkupsTableRowContainer  @bHideRow">
+                <div class="TableRowContainer ltbordered">
+                    @Html.HiddenFor(model => model.markups[i].State, new { @class = "MarkupsState" })
+                    <div class="row MarkupsTableRowData">
+                        @Html.HiddenFor(model => model.CompanyId)
+                        <div>
+                            @Html.EditorFor(model => model.markups[i].title, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-3" } })
                         </div>
-                    </div>
-                    <div class="row MarkupsTableRowValidation">
-                        @Html.ValidationMessageFor(model => model.markups[i].title, "", new { @class = "text-danger" })
-                        @Html.ValidationMessageFor(model => model.markups[i].multiplier, "", new { @class = "text-danger" })
-                        @Html.ValidationMessageFor(model => model.markups[i].ratio, "", new { @class = "text-danger" })
-                        @Html.ValidationMessageFor(model => model.markups[i].margin, "", new { @class = "text-danger" })
-                        @Html.ValidationMessageFor(model => model.markups[i].Addend, "", new { @class = "text-danger" })
+                        <div>
+                            @Html.EditorFor(model => model.markups[i].multiplier, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
+                        </div>
+                        <div>
+                            @Html.EditorFor(model => model.markups[i].ratio, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
+                        </div>
+                        <div>
+                            @Html.EditorFor(model => model.markups[i].margin, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
+                        </div>
+                        <div>
+                            @Html.EditorFor(model => model.markups[i].Addend, new { htmlAttributes = new { @class = "requiredifnotremoved col-md-2" } })
+                        </div>
+
                     </div>
                 </div>
+                <div class="row MarkupsTableRowValidation">
+                    @Html.ValidationMessageFor(model => model.markups[i].title, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.markups[i].multiplier, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.markups[i].ratio, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.markups[i].margin, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.markups[i].Addend, "", new { @class = "text-danger" })
+                </div>
+
+            </div>
             }
         </div>
         <div class="form-group">
