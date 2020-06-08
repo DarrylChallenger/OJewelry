@@ -21,7 +21,7 @@ $(function () {
                         '   <input name="ppp" class="col-md-2 text-box single-line" id="Labors_0__ppp" type="text" value="" data-val="true" data-val-number="The field $/HR must be a number. ">' +
                         '</div>' +
                         '<div>' +
-                        `   <select name="VendorId" id="Labors_0__VendorId" data-val-required="The Vendor field is required. "data-val-number="The Vendor field is required. " data-val="true" class="col-md-3">
+                        `   <select name="VendorId" class="requiredifnotremoved col-md-3" id="Labors_0__VendorId" data-val-required="The Vendor field is required. "data-val-number="The Vendor field is required. " data-val="true">
                                 <option id="getoptions" value="LaborTableVendors"></option>
                             </select>` +
                         '</div>' +
