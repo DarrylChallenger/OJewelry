@@ -26,7 +26,7 @@ async function AddRow(index) {
     var state = "." + px + "State";
 
     var companyId = $("#CompanyId");
-    console.log(`nr: ${nr}`);
+    //console.log(`nr: ${nr}`);
     // hide the '+' btn
     $("." + addBtnClass).addClass("hidden");
 
@@ -180,6 +180,8 @@ function WrapRow(px, rows, bltBordered= "") {
 function WrapRows(px) {
     //console.log("WrapRows");
     var rowClass = "." + px + "TableRowData";
+    var tableRowClass = "." + px + "TableRowContainer";
+
     var addBtnClass = px + "AddBtn";
     var delBtnClass = px + "DelBtn";
 
@@ -187,7 +189,9 @@ function WrapRows(px) {
 
     WrapRow(px, rowClass);
     //display '+' in last row
-    lastRow = $("." + addBtnClass).last().removeClass("hidden");
+    //lastRow = $("." + addBtnClass).last().removeClass("hidden");
+    visibleRowCount = $(tableRowClass).not(".hidden").length;
+
     //console.log($("." + addBtnClass).length);
     // set id and onclick for each "+" btn
     $.each($("." + addBtnClass), function (index, value) {
@@ -199,6 +203,14 @@ function WrapRows(px) {
         this.setAttribute("id", px + "DelBtn_" + index);
         this.setAttribute("onclick", "DelRow(" + index + ")");
     });
+
+    if (visibleRowCount !== 0) {
+        rem = $(tableRowClass).not(".hidden").last().find("." + addBtnClass).removeClass("hidden");
+    } else {
+        var bt = "#" + addBtnClass + "_-1";
+        rem = $(bt).removeClass("hidden");
+        //console.log(`bt: [${bt}], visibleRowCount`, visibleRowCount);
+    }
 
     //console.log("WrapRows Done");
 }
@@ -231,12 +243,16 @@ function WrapRows(px) {
 $(function () { 
     //console.log("Ready called.");
     var px = sessionStorage.getItem("DCTS.tablePrefix");
-    var tableRowClass = px + "TableRowContainer";
-    var stateClass = px + "State";
+    var tableRowClass = "." + px + "TableRowContainer";
+    var stateClass = "." + px + "State";
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) {
-        var state = $(element).parents("." + tableRowClass).children("." + stateClass).val();
+        var state = $(element).parents(tableRowClass).find(stateClass).val();
+        var e = $(element).parents(tableRowClass);
+        //console.log(`tableRowClass: ${tableRowClass}, stateClass: ${stateClass} validating element: [${e}], state:[${state}], value: [${value}]`); 
+        //console.log("element",e);
         if (state === "Deleted" || state === "Unadded") {
+            //console.log(`id ${e.attr("id")} ignored`);
             return true;
         }
         return rt = $.validator.methods.required.call(this, value, element);
