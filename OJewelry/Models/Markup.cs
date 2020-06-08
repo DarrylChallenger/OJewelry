@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using static OJewelry.Classes.Validations;
 
 namespace OJewelry.Models
 {
@@ -16,7 +17,7 @@ namespace OJewelry.Models
         }
         public MMState State { get; set; }
 
-        [Required(ErrorMessage ="Please enter a Title. ")]
+        [RequiredIfNotRemoved(ErrorMessage ="Please enter a Title. ")]
         [Display(Name ="Title")]
         public string title { get; set; }
 
