@@ -1,6 +1,11 @@
-﻿using OJewelry.Models;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using OJewelry.Classes;
+using OJewelry.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -9,6 +14,51 @@ namespace OJewelry.Controllers
 {
     public class HomeController : Controller
     {
+        class CastingReport {
+            /*
+            public int styleId { get; set; }
+            public string styleName { get; set; }
+            public int castingId { get; set; }
+            public string name { get; set; }
+            public decimal? metal { get; set; }
+            public decimal weight { get; set; }
+            public int weightUnit { get; set; }
+            public decimal? price { get; set; }
+            public decimal? labor { get; set; }
+            public decimal qty { get; set; }
+            public string vendorName { get; set; }
+            */
+            public Style style { get; set; }
+            public Casting casting { get; set; }
+        }
+
+        class StoneReport
+        {
+            public Stone stone { get; set; }
+            public Style style { get; set; }
+            public int? qty { get; set; }
+        }
+        class FindingReport
+        {
+            public Finding finding { get; set; }
+            public Style style { get; set; }
+            public decimal? qty { get; set; }
+        }
+        class LaborReport
+        {
+            public Labor labor { get; set; }
+            public Style style { get; set; }
+        }
+        class LaborTableReport
+        {
+            public LaborItem laborItem { get; set; }
+            public Style style { get; set; }
+            public decimal qty { get; set; }
+        }
+
+        private OJewelryDB db = new OJewelryDB();
+        public delegate Worksheet BuildSheet(OJewelryDB db, DCTSOpenXML oxl, Columns columns, int companyId);
+
         public ActionResult Index()
         {
             return View();
@@ -43,14 +93,14 @@ namespace OJewelry.Controllers
                     CompanyName = com.Name,
                     CompanyId = com.Id
                 }).ToList().Select(n => new ClientViewModel()
-                { 
+                {
                     Id = n.Id,
                     Name = n.ClientName,
                     Phone = n.ClientPhone,
                     Email = n.ClientEmail,
                     CompanyName = n.CompanyName,
                     CompanyId = n.CompanyId
-                 }
+                }
                 ).ToList();
             return View("ClientList", aClient);
         }
@@ -65,7 +115,7 @@ namespace OJewelry.Controllers
             m.CompanyId = co.Id;
             m.CompanyName = co.Name;
             m.Collections = new List<CollectionModel>();
-            foreach (Collection coll in  co.Collections)
+            foreach (Collection coll in co.Collections)
             {
                 CollectionModel collM = new CollectionModel()
                 {
@@ -120,7 +170,7 @@ namespace OJewelry.Controllers
 
             m.Memos = new List<MemoModel>();
             m.numPresentersWithStyle = 0;
-            foreach(Memo i in dc.Memos)
+            foreach (Memo i in dc.Memos)
             {
                 MemoModel mm = new MemoModel()
                 {
@@ -137,7 +187,7 @@ namespace OJewelry.Controllers
             }
             m.Presenters = new List<SelectListItem>();
             m.CompanyId = style.Collection.CompanyId;
-            foreach (Presenter i in dc.Presenters.Where(w=>w.CompanyId == m.CompanyId))
+            foreach (Presenter i in dc.Presenters.Where(w => w.CompanyId == m.CompanyId))
             {
                 SelectListItem sli = new SelectListItem()
                 {
@@ -149,69 +199,6 @@ namespace OJewelry.Controllers
             m.PresenterName = "initname";
             return View(m);
         }
-
-        /*
-        [HttpPost]
-        public ActionResult MemoStyle(FormCollection form)
-        {
-            OJewelryDBEntities dc = new OJewelryDBEntities();
-            if (form["SendReturnMemoRadio"] == "1")
-            {
-                if (form["NewExistingPresenterRadio"] == "2")
-                {
-                    //Memo a new presenter
-                    if (String.IsNullOrEmpty(form["PresenterName"]))
-                    {
-                        ModelState.AddModelError("Presenter Name", "Name is required for new Presenters.");
-                    }
-                    if (String.IsNullOrEmpty(form["PresenterEmail"]) && String.IsNullOrEmpty(form["PresenterPhone"]))
-                    {
-                        ModelState.AddModelError("Presenter Contact Info", "Phone or Email is required for new Presenters.");
-                    }
-                }
-                else
-                {
-                    // Memo an existing presenter - nothing to validate in this case as they just selected a Presenter from the list
-                }
-                int i;
-                if (Int32.TryParse(form["SendQty"], out i) == true)
-                {
-                    if (i == 0)
-                    {
-                        ModelState.AddModelError("Send Quantity", "The send quantity should be the number of items to memeo.");
-                    }
-                    int styleID;
-                    if (Int32.TryParse(form["style.Id"], out styleID))
-                    {
-                        int dbStyleQty = dc.Styles.Find(styleID).Quantity;
-                        if (i > dbStyleQty)
-                        {
-                            ModelState.AddModelError("Send Quantity", "You cannot memo more items than you have in inventory.");
-                        }
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("Serious Error", "Data was corrupted. (HSMSFormStyleId");
-                    }
-                }
-            }
-            else
-            {
-                //Return Items from Presenter
-                //numPresentersWithStyle
-
-            }
-            if (ModelState.IsValid)
-            {
-                // Save changes, go to clientlist
-                return ClientList();
-            }
-            // rebuild model
-            //GetPresenters(dc, m, CompanyId);
-            return View();
-        }
-        */
-
 
         [Authorize]
         [HttpPost]
@@ -259,7 +246,7 @@ namespace OJewelry.Controllers
                 {
                     Quantity = m.SendQty,
                     Date = DateTime.Now,
-                    Notes = note, 
+                    Notes = note,
                     PresenterID = m.PresenterId,
                     StyleID = m.style.Id,
                 };
@@ -277,7 +264,7 @@ namespace OJewelry.Controllers
             {
                 //Return Items from Presenter
                 // iterate thru the memos to take items back. Increase the inventory as appropriate. If all items are returned, delete the memo
-                foreach(MemoModel memo in m.Memos)
+                foreach (MemoModel memo in m.Memos)
                 {
                     if (memo.ReturnQty < 0)
                     {
@@ -295,10 +282,11 @@ namespace OJewelry.Controllers
                         {
                             // remove the row
                             dc.Memos.Remove(mdb);
-                        } else
+                        }
+                        else
                         {
                             // decrease the amount
-                            mdb.Quantity -= memo.ReturnQty; 
+                            mdb.Quantity -= memo.ReturnQty;
                         }
                         sdb.Quantity += memo.ReturnQty;
                     }
@@ -370,6 +358,476 @@ namespace OJewelry.Controllers
                 };
                 m.Presenters.Add(sli);
             }
+        }
+
+        [Authorize(Roles ="Admin")]
+        public ActionResult CompanyReport()
+        {
+            CompanyReport cr = new CompanyReport();
+
+            Company defComp = new Company()
+            {
+                Name = "Select a Company",
+                Id = 0
+            };
+            List<Company> companies = db.Companies.OrderBy(c=>c.Name).ToList();
+            companies.Insert(0, defComp);
+            cr.CompanyList = new SelectList(companies, "Id", "Name", 0);
+
+            return View(cr);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public FileResult CompanyReport(int companyId)
+        {
+
+            byte[] b;
+            DateTime curr = DateTime.Now.ToLocalTime();
+
+            string currDate = $"{curr.ToShortDateString()} {curr.ToShortTimeString()}";
+
+            DCTSOpenXML oxl = new DCTSOpenXML();
+            List<Memo> memos = db.Memos.ToList();
+            
+            using (MemoryStream memStream = new MemoryStream())
+            {
+                using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
+                {
+
+                    // Build Excel File
+                    WorkbookPart workbookPart = document.AddWorkbookPart();
+                    workbookPart.Workbook = new Workbook();
+
+                    // Stylesheet
+                    Stylesheet stylesheet = oxl.CreateStyleSheet();
+                    WorkbookStylesPart workbookStylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
+
+                    Sheets sheets = document.WorkbookPart.Workbook.AppendChild(new DocumentFormat.OpenXml.Spreadsheet.Sheets());
+                    workbookStylesPart.Stylesheet = stylesheet;
+                    workbookStylesPart.Stylesheet.Save();
+                    List<string> pagelist = new List<string>() { "Styles" , "Castings", "Stones", "Findings", "Labors", "Labor Items" };
+                    Dictionary<string, BuildSheet> funcList = new Dictionary<string, BuildSheet>();
+
+                    funcList.Add(pagelist[0], BuildStyleSheet);
+                    funcList.Add(pagelist[1], BuildCastingsSheet);
+                    funcList.Add(pagelist[2], BuildStonesSheet);
+                    funcList.Add(pagelist[3], BuildFindingsSheet);
+                    funcList.Add(pagelist[4], BuildLaborsSheet);
+                    funcList.Add(pagelist[5], BuildLaborItemsSheet);                   
+
+                    // declare locals
+                    uint shNo = 1;
+                    //for each part of the style
+                    foreach (string view in pagelist)
+                    {
+                        WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                        worksheetPart.Worksheet = new Worksheet(new SheetData());
+
+                        Sheet sheet = new Sheet()
+                        {
+                            Id = workbookPart.GetIdOfPart(worksheetPart),
+                            SheetId = shNo++,
+                            Name = view
+                        };
+                        sheets.Append(sheet);
+                        //columns = new Columns();
+                        Columns columns = new Columns();
+                        Worksheet worksheet;// = new Worksheet();
+                        worksheet = funcList[view](db, oxl, columns, companyId);
+                        worksheetPart.Worksheet = worksheet;
+                    }
+
+                    workbookPart.Workbook.Save();
+                    document.Close();
+
+                    b = memStream.ToArray();
+                    string compName = db.FindCompany(companyId).Name;
+                    return File(b, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        $"{compName} Data as of {currDate}.xlsx");
+                }
+            }
+        }
+
+        public Worksheet BuildStyleSheet(OJewelryDB db, DCTSOpenXML oxl, Columns columns, int companyId)
+        {
+            // do the query
+            List<Style> styles = db.Styles.Include("Collection").Where(sty => sty.Collection.CompanyId == companyId).OrderBy(s => s.StyleName).ThenBy(s => s.Desc).ToList();
+            // Build sheet
+            // Titles            
+
+            Worksheet worksheet = new Worksheet();
+            SheetData sd = new SheetData();
+
+            Row row;
+            Cell cell;
+            row = new Row();
+   
+            // Headers
+            uint c = 1;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "StyleNum", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Style", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Desc", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "JewelryTypeId", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F1", "CollectionId", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("G1", "MetalWeight", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("H1", "MetalWtUnit", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("I1", "IntroDate", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("J1", "Width", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("K1", "Length", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("L1", "ChainLength", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("M1", "RetailRatio", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("N1", "RedlineRatio", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("O1", "Quantity", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("P1", "RetailPrice", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("Q1", "UnitsSold", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("R1", "Image", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("S1", "MetalWtNote", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("T1", "Company Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("U1", "Collection Name", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("V1", "Notes", true, 1); row.Append(cell); c++;
+
+            worksheet.Append(columns);
+            oxl.columns = columns;
+            sd.Append(row);
+
+            // Content
+            int rr;
+            string loc;
+            for (int i = 0; i < styles.Count(); i++)
+            {
+                row = new Row();
+                rr = i + 2;
+                //cell = oxl.SetCellVal("A2", "ABCEDFGHIJKLMNOP"); row.Append(cell);
+                loc = "A" + rr; cell = oxl.SetCellVal(loc, styles[i].Id); row.Append(cell);
+                loc = "B" + rr; cell = oxl.SetCellVal(loc, styles[i].StyleNum); row.Append(cell);
+                loc = "C" + rr; cell = oxl.SetCellVal(loc, styles[i].StyleName); row.Append(cell);
+                loc = "D" + rr; cell = oxl.SetCellVal(loc, styles[i].Desc); row.Append(cell);
+                loc = "E" + rr; cell = oxl.SetCellVal(loc, styles[i].JewelryTypeId?.ToString()); row.Append(cell);
+                loc = "F" + rr; cell = oxl.SetCellVal(loc, styles[i].CollectionId); row.Append(cell);
+                loc = "G" + rr; cell = oxl.SetCellVal(loc, styles[i].MetalWeight?.ToString()); row.Append(cell);
+                loc = "H" + rr; cell = oxl.SetCellVal(loc, styles[i].MetalWeightUnit?.Unit); row.Append(cell);
+                loc = "I" + rr; cell = oxl.SetCellVal(loc, styles[i].IntroDate?.ToString() ); row.Append(cell);
+                loc = "J" + rr; cell = oxl.SetCellVal(loc, styles[i].Width); row.Append(cell);
+                loc = "K" + rr; cell = oxl.SetCellVal(loc, styles[i].Length); row.Append(cell);
+                loc = "L" + rr; cell = oxl.SetCellVal(loc, styles[i].ChainLength); row.Append(cell);
+                loc = "M" + rr; cell = oxl.SetCellVal(loc, styles[i].RetailRatio?.ToString()); row.Append(cell);
+                loc = "N" + rr; cell = oxl.SetCellVal(loc, styles[i].RedlineRatio?.ToString()); row.Append(cell);
+                loc = "O" + rr; cell = oxl.SetCellVal(loc, styles[i].Quantity); row.Append(cell);
+                loc = "P" + rr; cell = oxl.SetCellVal(loc, styles[i].RetailPrice?.ToString()); row.Append(cell);
+                loc = "Q" + rr; cell = oxl.SetCellVal(loc, styles[i].UnitsSold); row.Append(cell);
+                loc = "R" + rr; cell = oxl.SetCellVal(loc, styles[i].Image); row.Append(cell);
+                loc = "S" + rr; cell = oxl.SetCellVal(loc, styles[i].MetalWtNote); row.Append(cell);
+                loc = "T" + rr; cell = oxl.SetCellVal(loc, styles[i].Collection.CompanyId); row.Append(cell);
+                loc = "U" + rr; cell = oxl.SetCellVal(loc, styles[i].Collection.Name); row.Append(cell);
+                loc = "V" + rr; cell = oxl.SetCellVal(loc, styles[i].Collection.Notes); row.Append(cell);
+                sd.Append(row);
+            }           
+            worksheet.Append(sd);
+
+            return worksheet;
+        }
+
+        private Worksheet BuildCastingsSheet(OJewelryDB db, DCTSOpenXML oxl, Columns columns, int companyId)
+        {
+            // do the query
+            List<CastingReport> cr = db.StyleCastings
+                .Join(db.Castings, sc => sc.CastingId, cas => cas.Id, (sc, cas) => new CastingReport
+                {
+                    style = sc.Style,
+                    casting = cas
+                })
+                .Where(r => r.style.Collection.CompanyId == companyId)
+                .OrderBy(sc => sc.style.StyleName).ToList();
+            // Build sheet
+            // Titles            
+
+            Worksheet worksheet = new Worksheet();
+            SheetData sd = new SheetData();
+
+            Row row;
+            Cell cell;
+            row = new Row();
+
+            // Headers
+            uint c = 1;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Style Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Style Name", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Name", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "Metal", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F1", "Weight", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("G1", "Weight Unit", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("H1", "Price", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("I1", "Labor", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("J1", "Qty", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("K1", "Vendor", true, 1); row.Append(cell); c++;
+            worksheet.Append(columns);
+            oxl.columns = columns;
+            sd.Append(row);
+
+            // Content
+            int rr;
+            string loc;
+            for (int i = 0; i < cr.Count(); i++)
+            {
+                row = new Row();
+                rr = i + 2;
+                loc = "A" + rr; cell = oxl.SetCellVal(loc, cr[i].style.Id); row.Append(cell);
+                loc = "B" + rr; cell = oxl.SetCellVal(loc, cr[i].style.StyleName); row.Append(cell);
+                loc = "C" + rr; cell = oxl.SetCellVal(loc, cr[i].casting.Id); row.Append(cell);
+                loc = "D" + rr; cell = oxl.SetCellVal(loc, cr[i].casting.Name); row.Append(cell);
+                loc = "E" + rr; cell = oxl.SetCellVal(loc, cr[i].casting.MetalCodeID.GetValueOrDefault()); row.Append(cell);
+                loc = "F" + rr; cell = oxl.SetCellVal(loc, cr[i].casting.MetalWeight); row.Append(cell);
+                loc = "G" + rr; cell = oxl.SetCellVal(loc, cr[i].casting.MetalWtUnitId); row.Append(cell);
+                loc = "H" + rr; cell = oxl.SetCellVal(loc, cr[i].casting.Price.GetValueOrDefault()); row.Append(cell);
+                loc = "I" + rr; cell = oxl.SetCellVal(loc, cr[i].casting.Labor.GetValueOrDefault()); row.Append(cell);
+                loc = "J" + rr; cell = oxl.SetCellVal(loc, cr[i].casting.Qty.GetValueOrDefault()); row.Append(cell);
+                loc = "K" + rr; cell = oxl.SetCellVal(loc, cr[i].casting.Vendor.Name); row.Append(cell);
+                //loc = "" + rr; cell = oxl.SetCellVal(loc, [i].); row.Append(cell);
+                sd.Append(row);
+            }
+            worksheet.Append(sd);
+
+            return worksheet;
+        }
+
+        private Worksheet BuildStonesSheet(OJewelryDB db, DCTSOpenXML oxl, Columns columns, int companyId)
+        {
+            // do the query
+            List<StoneReport> sr = db.StyleStones
+                .Join(db.Stones, ss => ss.StoneId, sto => sto.Id, (ss, sto) => new StoneReport
+                {
+                    stone = sto,
+                    style = ss.Style,
+                    qty = ss.Qty
+                })
+                .Where(r => r.stone.CompanyId == companyId)
+                .OrderBy(ss => ss.style.StyleName).ToList();
+            // Build sheet
+            // Titles            
+
+            Worksheet worksheet = new Worksheet();
+            SheetData sd = new SheetData();
+
+            Row row;
+            Cell cell;
+            row = new Row();
+
+            // Headers
+            uint c = 1;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Style Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Style Name", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Name", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "Shape", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F1", "Size", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("G1", "Weight", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("H1", "Vendor", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("I1", "Price", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("J1", "Qty", true, 1); row.Append(cell); c++;
+            worksheet.Append(columns);
+            oxl.columns = columns;
+            sd.Append(row);
+
+            // Content
+            int rr;
+            string loc;
+            for (int i = 0; i < sr.Count(); i++)
+            {
+                row = new Row();
+                rr = i + 2;
+                loc = "A" + rr; cell = oxl.SetCellVal(loc, sr[i].style.Id); row.Append(cell);
+                loc = "B" + rr; cell = oxl.SetCellVal(loc, sr[i].style.StyleName); row.Append(cell);
+                loc = "C" + rr; cell = oxl.SetCellVal(loc, sr[i].stone.Id); row.Append(cell);
+                loc = "D" + rr; cell = oxl.SetCellVal(loc, sr[i].stone.Name); row.Append(cell);
+                loc = "E" + rr; cell = oxl.SetCellVal(loc, sr[i].stone.Shape.Name); row.Append(cell);
+                loc = "F" + rr; cell = oxl.SetCellVal(loc, sr[i].stone.StoneSize); row.Append(cell);
+                loc = "G" + rr; cell = oxl.SetCellVal(loc, sr[i].stone.CtWt.GetValueOrDefault()); row.Append(cell);
+                loc = "H" + rr; cell = oxl.SetCellVal(loc, sr[i].stone.Vendor.Name); row.Append(cell);
+                loc = "I" + rr; cell = oxl.SetCellVal(loc, sr[i].stone.Price); row.Append(cell);
+                loc = "J" + rr; cell = oxl.SetCellVal(loc, sr[i].qty.GetValueOrDefault()); row.Append(cell);
+                sd.Append(row);
+            }
+            worksheet.Append(sd);
+
+            return worksheet;
+        }
+
+        private Worksheet BuildFindingsSheet(OJewelryDB db, DCTSOpenXML oxl, Columns columns, int companyId)
+        {
+            // do the query
+            List<FindingReport> fr = db.StyleFindings
+                .Join(db.Findings, sf => sf.FindingId, fin => fin.Id, (sf, fin) => new FindingReport
+                {
+                    finding = fin,
+                    style = sf.Style,
+                    qty = sf.Qty
+                })
+                .Where(r => r.finding.CompanyId == companyId)
+                .OrderBy(sf => sf.style.StyleName).ToList();
+            // Build sheet
+            // Titles            
+
+            Worksheet worksheet = new Worksheet();
+            SheetData sd = new SheetData();
+
+            Row row;
+            Cell cell;
+            row = new Row();
+
+            // Headers
+            uint c = 1;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Style Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Style Name", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Name", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "Weight", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F1", "Price", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("G1", "Qty", true, 1); row.Append(cell); c++;
+            worksheet.Append(columns);
+            oxl.columns = columns;
+            sd.Append(row);
+
+            // Content
+            int rr;
+            string loc;
+            for (int i = 0; i < fr.Count(); i++)
+            {
+                row = new Row();
+                rr = i + 2;
+                loc = "A" + rr; cell = oxl.SetCellVal(loc, fr[i].style.Id); row.Append(cell);
+                loc = "B" + rr; cell = oxl.SetCellVal(loc, fr[i].style.StyleName); row.Append(cell);
+                loc = "C" + rr; cell = oxl.SetCellVal(loc, fr[i].finding.Id); row.Append(cell);
+                loc = "D" + rr; cell = oxl.SetCellVal(loc, fr[i].finding.Name); row.Append(cell);
+                loc = "E" + rr; cell = oxl.SetCellVal(loc, fr[i].finding.Weight.GetValueOrDefault()); row.Append(cell);
+                loc = "F" + rr; cell = oxl.SetCellVal(loc, fr[i].finding.Price); row.Append(cell);
+                loc = "G" + rr; cell = oxl.SetCellVal(loc, fr[i].qty.GetValueOrDefault()); row.Append(cell);
+                sd.Append(row);
+            }
+            worksheet.Append(sd);
+
+            return worksheet;
+        }
+
+        private Worksheet BuildLaborsSheet(OJewelryDB db, DCTSOpenXML oxl, Columns columns, int companyId)
+        {
+            {
+                // do the query
+                List<LaborReport> lr = db.StyleLabors.Join(db.Labors, sl => sl.LaborId, lab => lab.Id, (sl, lab) => new LaborReport 
+                {
+                    labor = lab, 
+                    style = sl.Style
+                })
+                .Where(r => r.style.Collection.CompanyId == companyId)
+                .OrderBy(sl => sl.style.StyleName).ToList();
+                // Build sheet
+                // Titles            
+
+                Worksheet worksheet = new Worksheet();
+                SheetData sd = new SheetData();
+
+                Row row;
+                Cell cell;
+                row = new Row();
+
+                // Headers
+                uint c = 1;
+                columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Style Id", true, 1); row.Append(cell); c++;
+                columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Style Name", true, 1); row.Append(cell); c++;
+                columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Id", true, 1); row.Append(cell); c++;
+                columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Name", true, 1); row.Append(cell); c++;
+                columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "Vendor", true, 1); row.Append(cell); c++;
+                columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F1", "Desc", true, 1); row.Append(cell); c++;
+                columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("G1", "PPH", true, 1); row.Append(cell); c++;
+                columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("H1", "PPP", true, 1); row.Append(cell); c++;
+                columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("I1", "Qty", true, 1); row.Append(cell); c++;
+                worksheet.Append(columns);
+                oxl.columns = columns;
+                sd.Append(row);
+
+                // Content
+                int rr;
+                string loc;
+                for (int i = 0; i < lr.Count(); i++)
+                {
+                    row = new Row();
+                    rr = i + 2;
+                    loc = "A" + rr; cell = oxl.SetCellVal(loc, lr[i].style.Id); row.Append(cell);
+                    loc = "B" + rr; cell = oxl.SetCellVal(loc, lr[i].style.StyleName); row.Append(cell);
+                    loc = "C" + rr; cell = oxl.SetCellVal(loc, lr[i].labor.Id); row.Append(cell);
+                    loc = "D" + rr; cell = oxl.SetCellVal(loc, lr[i].labor.Name); row.Append(cell);
+                    loc = "E" + rr; cell = oxl.SetCellVal(loc, lr[i].labor.Vendor?.Name); row.Append(cell);
+                    loc = "F" + rr; cell = oxl.SetCellVal(loc, lr[i].labor.Desc); row.Append(cell);
+                    loc = "G" + rr; cell = oxl.SetCellVal(loc, lr[i].labor.PricePerHour.GetValueOrDefault()); row.Append(cell);
+                    loc = "H" + rr; cell = oxl.SetCellVal(loc, lr[i].labor.PricePerPiece.GetValueOrDefault()); row.Append(cell);
+                    loc = "I" + rr; cell = oxl.SetCellVal(loc, lr[i].labor.Qty.GetValueOrDefault()); row.Append(cell);
+                    sd.Append(row);
+                }
+                worksheet.Append(sd);
+
+                return worksheet;
+            }
+        }
+
+        private Worksheet BuildLaborItemsSheet(OJewelryDB db, DCTSOpenXML oxl, Columns columns, int companyId)
+        {
+            // do the query
+            List<StyleLaborTableItem> lll = db.StyleLaborItems.ToList();
+            List<LaborTableReport> ltr = db.StyleLaborItems
+                .Join(db.LaborTable, sli => sli.LaborTableId, lab => lab.Id, (sli, lab) => new LaborTableReport
+                {
+                    laborItem = lab,
+                    style = sli.Style,
+                    qty = sli.Qty
+                })
+                .Where(r => r.laborItem.CompanyId == companyId)
+                .OrderBy(sli => sli.style.StyleName).ToList();// Build sheet
+            // Titles            
+
+            Worksheet worksheet = new Worksheet();
+            SheetData sd = new SheetData();
+
+            Row row;
+            Cell cell;
+            row = new Row();
+
+            // Headers
+            uint c = 1;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("A1", "Style Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("B1", "Style Name", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("C1", "Id", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("D1", "Name", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("E1", "PPP", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("F1", "PPH", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("G1", "Vendor", true, 1); row.Append(cell); c++;
+            columns.Append(new Column() { Width = oxl.ComputeExcelCellWidth(oxl.minWidth), Min = c, Max = c, BestFit = true, CustomWidth = true }); cell = oxl.SetCellVal("H1", "Qty", true, 1); row.Append(cell); c++;
+            worksheet.Append(columns);
+            oxl.columns = columns;
+            sd.Append(row);
+
+            // Content
+            int rr;
+            string loc;
+            for (int i = 0; i < ltr.Count(); i++)
+            {
+                row = new Row();
+                rr = i + 2;
+                loc = "A" + rr; cell = oxl.SetCellVal(loc, ltr[i].style.Id); row.Append(cell);
+                loc = "B" + rr; cell = oxl.SetCellVal(loc, ltr[i].style.StyleName); row.Append(cell);
+                loc = "C" + rr; cell = oxl.SetCellVal(loc, ltr[i].laborItem.Id); row.Append(cell);
+                loc = "D" + rr; cell = oxl.SetCellVal(loc, ltr[i].laborItem.Name); row.Append(cell);
+                loc = "E" + rr; cell = oxl.SetCellVal(loc, ltr[i].laborItem.ppp.GetValueOrDefault()); row.Append(cell);
+                loc = "F" + rr; cell = oxl.SetCellVal(loc, ltr[i].laborItem.pph.GetValueOrDefault()); row.Append(cell);
+                loc = "G" + rr; cell = oxl.SetCellVal(loc, ltr[i].laborItem.Vendor?.Name); row.Append(cell);
+                loc = "H" + rr; cell = oxl.SetCellVal(loc, ltr[i].qty); row.Append(cell);
+                //loc = "F" + rr; cell = oxl.SetCellVal(loc, laborItems[i]); row.Append(cell);
+                sd.Append(row);
+            }
+            worksheet.Append(sd);
+
+            return worksheet;
         }
     }
 }

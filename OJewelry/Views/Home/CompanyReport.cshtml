@@ -1,0 +1,27 @@
+﻿@model OJewelry.Models.CompanyReport
+
+@{
+    ViewBag.Title = "Company Report";
+}
+
+<h2>Company Report</h2>
+
+<h3>Select a Company</h3>
+@using (Html.BeginForm("CompanyReport", "Home", FormMethod.Post))
+{
+    <div class="row">
+        <div>@Html.LabelFor(m => m.companyId)</div>
+        @Html.DropDownListFor(model => model.companyId, Model.CompanyList, new { @class = "col-sm-4 col-xs-4" })
+    </div>
+    <br />
+    <div>
+        <input class="btn btn-primary" type="submit" value="Generate" />
+    </div>
+}
+<br />
+<br />
+<div class="row">
+    <div class="col-sm-4">
+        @Html.ActionLink("Your Companies", "Index", "Companies")
+    </div>
+</div>

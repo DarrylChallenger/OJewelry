@@ -652,6 +652,7 @@
     <Compile Include="Models\Collection.cs" />
     <Compile Include="Models\CollectionViewModel.cs" />
     <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\CompanyReport.cs" />
     <Compile Include="Models\CompanyUser.cs" />
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\Component.cs" />
@@ -909,6 +910,7 @@
     <Content Include="Views\Markups\Index.cshtml" />
     <Content Include="Views\Findings\ConfirmRemoveInventory.cshtml" />
     <Content Include="Views\Stones\ConfirmRemoveInventory.cshtml" />
+    <Content Include="Views\Home\CompanyReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
