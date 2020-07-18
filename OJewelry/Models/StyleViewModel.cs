@@ -1109,6 +1109,7 @@ namespace OJewelry.Models
                 Stones.Add(stscm);
                 Total += stscm.Total;
             }
+            Stones = Stones.OrderBy(s => s.Name).ThenBy(s => s.ShId).ThenBy(s => s.Size).ToList();
 
             // Findings
             foreach (StyleFinding sf in Style.StyleFindings)
