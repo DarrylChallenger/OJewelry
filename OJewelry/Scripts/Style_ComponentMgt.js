@@ -374,7 +374,7 @@ function CalcSubtotals(type) {
     });
     //console.log(`total: ${total}`);
     if (isNaN(total)) total = 0;
-    if (type === "LaborItems") {// || type === "Labors") {
+    if (type === "Labors") {
         // Add in the Stone settings costs
         var ssTotal = +0;
         $(".StoneSettingRowTotal").each(function () {
