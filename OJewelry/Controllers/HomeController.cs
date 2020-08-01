@@ -829,5 +829,51 @@ namespace OJewelry.Controllers
 
             return worksheet;
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public ActionResult FixFinishingCost()
+        {
+            List<Style> WithOutFC = GetStylesWithoutFinishingCost();
+            return View(WithOutFC);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult FixFinishingConfirm()
+        {
+            List<Style> WithOutFC = GetStylesWithoutFinishingCost();
+            int lid = -1;
+            foreach (Style s in WithOutFC)
+            {
+                // Create a Labor and a StyleLabor
+                Labor l = new Labor() {
+                    Id = lid,
+                    Name = "FINISHING LABOR",
+                    PricePerPiece = 0,
+                    PricePerHour = 0,
+                    Qty =1
+                };
+                StyleLabor sl = new StyleLabor()
+                {
+                    StyleId = s.Id,
+                    LaborId = lid                    
+                };
+                db.Labors.Add(l);
+                db.StyleLabors.Add(sl);
+                lid--;
+            }
+            db.SaveChanges();
+            return RedirectToAction("FixFinishingCost");
+        }
+
+        private List<Style> GetStylesWithoutFinishingCost()
+        {
+            List<Style> AllStyles = db.Styles.ToList();
+            List<Style> WithFC = db.StyleLabors.Where(sl => sl.Labor.Name == "FINISHING LABOR").Select(sl => sl.Style).ToList();
+            List<Style> WithOutFC = AllStyles.Except(WithFC).ToList();
+
+            return WithOutFC;
+        }
     }
 }

@@ -1,0 +1,93 @@
+﻿@model IEnumerable<OJewelry.Models.Style>
+
+@{
+    ViewBag.Title = "FixFinishingCost";
+}
+
+<h2>FixFinishingCost</h2>
+
+<p>
+    @Model.Count() items found
+</p>
+
+@using (Html.BeginForm("FixFinishingConfirm", "Home"))
+{
+    @Html.AntiForgeryToken()
+
+    if (Model.Count() >= 20)
+    {
+        <h4>Pressing "Correct" wil add a "FINISHING LABOR" attribute to each of the styles below</h4>
+        <br />
+        <input type="submit" class="btn btn-danger" value="Correct" formmethod="post" />
+        <input type="submit" class="btn btn-primary" value="Cancel" formaction="~/Home/Index" />
+    }
+
+}
+<br />
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            Company
+        </th>
+        <th>
+            Collection
+        </th>
+        <th>
+            Jewelry Type
+        </th>
+        <th>
+            Style Number
+        </th>
+    </tr>
+
+    @foreach (var item in Model.OrderBy(m => m.Collection.Company.Name).ThenBy(m => m.Collection.Name).ThenBy(m => m.JewelryType.Name))
+    {
+        <tr>
+            <th>
+                @Html.DisplayFor(modelItem => item.Id)
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => item.Collection.Company.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Collection.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JewelryType.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StyleName)
+            </td>
+        </tr>
+    }
+
+</table>
+
+@using (Html.BeginForm("FixFinishingConfirm", "Home"))
+{
+    @Html.AntiForgeryToken()
+
+    if (Model.Count() != 0)
+    {
+        <h4>Pressing "Correct" wil add a "FINISHING LABOR" attribute to each of the styles above</h4>
+        <br />
+        <input type="submit" class="btn btn-danger" value="Correct" formmethod="post" />
+        <input type="submit" class="btn btn-primary" value="Cancel" formaction="~/Home/Index" />
+    }
+    else
+    {
+        <p>All Styles have a "FINISHING LABOR"</p>
+        <input type="submit" class="btn btn-primary" value="Close" formaction="~/Home/Index" />
+    }
+}
+<br />
+<br />
+<div class="row">
+    <div class="col-sm-4">
+        @Html.ActionLink("Your Companies", "Index", "Companies")
+    </div>
+</div>

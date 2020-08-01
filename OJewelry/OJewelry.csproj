@@ -358,6 +358,7 @@
     <Compile Include="Controllers\StylesController.cs" />
     <Compile Include="Controllers\VendorsController.cs" />
     <Content Include="DBScripts\AddCastingsAndLaborsVendors.sql" />
+    <Content Include="DBScripts\AddDataToV1_2.sql" />
     <Content Include="DBScripts\AddStoneAndFindingsVendors.sql">
       <SubType>Designer</SubType>
     </Content>
@@ -710,17 +711,32 @@
     <Content Include="DBScripts\AddCascadingDeletes.sql" />
     <Content Include="DBScripts\AddStyleLinkTables.sql" />
     <Content Include="DBScripts\bad-ring.sql" />
+    <Content Include="DBScripts\ConsolidateStyleNameAndNumberMetalicious.sql" />
+    <Content Include="DBScripts\ConsolidateStyleNameAndNumberSilverSculptor.sql" />
+    <Content Include="DBScripts\Costs.sql" />
+    <Content Include="DBScripts\Create dbo.MetalCodes.sql" />
+    <Content Include="DBScripts\Create dbo.MetalWeightUnits.sql" />
     <Content Include="DBScripts\CreateOJDB.sql" />
     <Content Include="DBScripts\CreateOJSecAspNet.sql" />
+    <Content Include="DBScripts\danglers.sql" />
     <Content Include="DBScripts\DanglingComponents.sql" />
     <Content Include="DBScripts\DropCreateOJDatabase.sql" />
+    <Content Include="DBScripts\DropCreateOJDatabaseCopyFromLaptop.sql" />
+    <Content Include="DBScripts\ErrorEval5-14.sql" />
+    <Content Include="DBScripts\GetStyles.sql" />
+    <Content Include="DBScripts\InvData.sql" />
     <Content Include="DBScripts\InvReport.sql" />
     <Content Include="DBScripts\LaborTable.sql" />
     <Content Include="DBScripts\Locations.sql" />
     <Content Include="DBScripts\Memo.sql" />
+    <Content Include="DBScripts\MetaliciousBreakDown.sql" />
+    <Content Include="DBScripts\MetaliciousBreakDownFollowUp.sql" />
+    <Content Include="DBScripts\NewOJDatabase.sql" />
     <Content Include="DBScripts\OJewelryDBTablesV0.2.sql" />
     <Content Include="DBScripts\RemoveDanglingComponents.sql" />
     <Content Include="DBScripts\Roles.sql" />
+    <Content Include="DBScripts\StyleQueries.sql" />
+    <Content Include="DBScripts\StyleToLaborAndMisc.sql" />
     <Content Include="DBScripts\v_652.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -911,6 +927,7 @@
     <Content Include="Views\Findings\ConfirmRemoveInventory.cshtml" />
     <Content Include="Views\Stones\ConfirmRemoveInventory.cshtml" />
     <Content Include="Views\Home\CompanyReport.cshtml" />
+    <Content Include="Views\Home\FixFinishingCost.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
