@@ -222,7 +222,10 @@ function RemoveComponentRow(type, i)
     }
     if (type === "Stones") {
         RemoveStoneSettingRow(i);
+    } else {
+        CalcSubtotals(type);
     }
+
 }
 
 async function PopulateDropdowns(nr) {
@@ -369,17 +372,30 @@ function CalcSubtotals(type) {
     var total = +0;
     let rv;
     rows.each(function () {
-        rv = +$(this).html();
-        total = +total + rv;
+        //console.log(`this: ${JSON.stringify($(this))}`);
+        //console.log(`this:`, $(this));
+        //console.log(`rv grandparent `, $(this).parent().parent().hasClass("hidden")); 
+        if (!$(this).parent().parent().hasClass("hidden"))
+        {
+            rv = +$(this).html();
+            //console.log(`rv: ${rv}, total: ${total} `);
+            total = +total + rv;
+        }
     });
-    //console.log(`total: ${total}`);
+    //console.log(`${"." + type + "RowTotal"} total: ${total}`);
     if (isNaN(total)) total = 0;
     if (type === "Labors") {
         // Add in the Stone settings costs
         var ssTotal = +0;
         $(".StoneSettingRowTotal").each(function () {
-            ssTotal += +$(this).html();
-            //console.log(`[this: ${$(this).html()}, ssTotal: ${ssTotal}]`);
+            if (!$(this).parent().hasClass("hidden"))
+            {
+                ssTotal += +$(this).html();
+                //console.log(`[this ss: ${$(this).html()}, ssTotal: ${ssTotal}]`, $(this));
+                //console.log(`this parent`, $(this).parent().hasClass("hidden")); //.hasClass("hidden")
+                //console.log(`this grandparent`, $(this).parent().parent().hasClass("hidden")); //.hasClass("hidden")
+                //console.log(`this great grandparent`, $(this).parent().parent().parent()); //.hasClass("hidden")
+            }
         });
         total += ssTotal;
         if ($(Style_JewelryType_bUseLaborTable).val() !== "true") {
@@ -477,9 +493,11 @@ function JewelryTypeChanged() {
             //console.log(`jt: [${jt}]`);
             var finishingVal = jewelryType.costData.finishingCosts[jt];
             packagingVal = jewelryType.costData.packagingCosts[jt];
-
+            //console.log("b4 fin");
             SetFinishingCost(finishingVal);
+            //console.log("b4 pack");
             SetPackagingCost(packagingVal);
+            //console.log("b4 subs");
             CalcSubtotals("Labors");
         } else {
             // toggle .HideLaborItems
@@ -490,7 +508,7 @@ function JewelryTypeChanged() {
             //$(`.StyleLaborItemsSection`).css("opacity", "1");
 
             $("#Style_JewelryType_bUseLaborTable").val(true);
-            //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable}`);
+            //console.log(`jewelryType.bUseLaborTable: ${jewelryType.bUseLaborTable} #2`);
             packagingVal = jewelryType.costData.packagingCosts[jt];
             SetPackagingCost(packagingVal);
             CalcSubtotals("LaborItems");
@@ -731,6 +749,7 @@ function RemoveStoneSettingRow(stoneRow) {
     if (target.hasClass("ltbordered")) {
         target.addClass("hidden");
     }
+    CalcSubtotals("Labors");
 }
 
 function FindingChanged(i) {
@@ -943,7 +962,7 @@ function getStoneSettingsHTML(type, len) {
                 <input disabled="" class="col-sm-1 text-box single-line locked" id="StoneSettingPrice_' + len + '" type="text" value="0.00" />\
                 <input disabled="" class="col-sm-1 text-box single-line locked" data-val-number="The field Quantity must be a number." data-val="true" data-val-range-min="1" data-val-range-max="999999999" data-val-range="QTY CANNOT BE 0." id="StoneSettingQty_' + len + '" type="text" value="0" />\
             </div>\
-            <div id="LaborsRowTotalValue_' + len + '" class="col-sm-1 LaborsRowTotal" name="StoneSettingRowTotalValue_' + len + '">0.00</div>\
+            <div id="LaborsRowTotalValue_' + len + '" class="col-sm-1 StoneSettingRowTotal" name="StoneSettingRowTotalValue_' + len + '">0.00</div>\
         </div >\
 ';
 }
