@@ -836,7 +836,7 @@ namespace OJewelry.Models
         public decimal AddStoneSettingCosts() 
         {
             decimal sum = 0;
-            foreach (StoneComponent sc in Stones)
+            foreach (StoneComponent sc in Stones.Where(s => s.State == SVMStateEnum.Added || s.State == SVMStateEnum.Dirty))
             {
                 sum+=sc.SettingCost;
             }
@@ -1168,8 +1168,10 @@ namespace OJewelry.Models
                     s.SettingCost = matchingStone.SettingCost;
                     s.SetShapesList(jsShapes, s.ShId);
                     s.SetSizesList(jsSizes, s.SzId);
-
-                    StonesTotal += s.Total;
+                    if (s.State == SVMStateEnum.Added || s.State == SVMStateEnum.Dirty)
+                    {
+                        StonesTotal += s.Total;
+                    }
                 }
             }
             Total += StonesTotal;
@@ -1184,7 +1186,10 @@ namespace OJewelry.Models
                     f.Weight = matchingFinding.Weight;
                     f.Price = matchingFinding.Price;
                     f.Total = f.Price * f.Qty;
-                    FindingsTotal += f.Total;
+                    if (f.State == SVMStateEnum.Added || f.State == SVMStateEnum.Dirty)
+                    {
+                        FindingsTotal += f.Total;
+                    }
                 }
             }
             Total += FindingsTotal;
@@ -1192,9 +1197,20 @@ namespace OJewelry.Models
             if (Style.JewelryType != null && Style.JewelryType.bUseLaborTable) {
                 foreach (LaborItemComponent li in LaborItems)
                 {
+                    if (li.Id == 0)
+                    {
+                        LaborItem laborItem = db.LaborTable.Include(l => l.Vendor).Where(l => l.Id == li.laborItemId).FirstOrDefault();
+                        li.Name = laborItem.Name;
+                        li.ppp = laborItem.ppp.GetValueOrDefault();
+                        li.pph = laborItem.pph.GetValueOrDefault();
+                        li.VendorName = laborItem.Vendor.Name;
+                    }
                     t = (li.ppp.GetValueOrDefault() + li.pph.GetValueOrDefault()) * li.Qty.Value;
                     li.Total = t;
-                    LaborItemsTotal += li.Total;
+                    if (li.State == LMState.Added || li.State == LMState.Dirty)
+                    {
+                        LaborItemsTotal += li.Total;
+                    }
                 }
                 Total += LaborItemsTotal;
             } else {
@@ -1207,7 +1223,10 @@ namespace OJewelry.Models
                     t = l.PPH.Value;
                     t2 = l.PPP.Value;
                     l.Total = l.Qty.Value * (t + t2);
-                    LaborsTotal += l.Total;
+                    if (l.State == LMState.Added || l.State == LMState.Dirty || l.State == LMState.Fixed)
+                    {
+                        LaborsTotal += l.Total;
+                    }
                 }
                 Total += LaborsTotal;
             }
@@ -1220,7 +1239,10 @@ namespace OJewelry.Models
                 }
                 t = m.PPP;
                 m.Total = m.Qty.Value * t;
-                MiscsTotal += m.Total;
+                if (m.State == SVMStateEnum.Added || m.State == SVMStateEnum.Dirty || m.State == SVMStateEnum.Fixed)
+                {
+                    MiscsTotal += m.Total;
+                }
             }
             Total += MiscsTotal;
             // Add stone setting costs to total

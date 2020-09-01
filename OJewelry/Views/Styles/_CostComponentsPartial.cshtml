@@ -237,7 +237,7 @@ COST:
                         @Html.EditorFor(model => model.Stones[i].CtWt, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
                         @Html.EditorFor(model => model.Stones[i].VendorName, new { htmlAttributes = new { @class = "col-sm-2 col-xs-2 locked", @disabled = "disabled" } })
                         @Html.EditorFor(model => model.Stones[i].Price, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 locked", @disabled = "disabled" } })
-                        @Html.EditorFor(model => model.Stones[i].Qty, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 ", onblur = "StoneQtyChanged('" + i + "')" } })
+                        @Html.EditorFor(model => model.Stones[i].Qty, new { htmlAttributes = new { @class = "col-sm-1 col-xs-1 requiredifnotremoved", onblur = "StoneQtyChanged('" + i + "')" } })
                         @*@Html.TextBoxFor(model => model.Stones[i].Qty, new { @class = "col-sm-1 col-xs-1", onblur = "StoneQtyChanged('" + i + "')" })*@
                     }
                     else
@@ -475,7 +475,15 @@ COST:
                             }
                             else
                             {
-                                <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.LaborItems[i].Name</div>
+                                if (Model.LaborItems[i].Name != null)
+                                {
+                                    <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">@Model.LaborItems[i].Name</div>
+                                }
+                                else
+                                {
+                                    <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">&nbsp;</div>
+                                }
+
                                 if (Model.LaborItems[i].pph != null)
                                 {
                                     <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.LaborItems[i].pph.Value.ToString("F02")</div>
@@ -493,7 +501,7 @@ COST:
                                     <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">&nbsp;</div>
                                 }
 
-                                if (Model.LaborItems[i].ppp != null)
+                                if (Model.LaborItems[i].VendorName != null)
                                 {
                                     <div class="@boxme @boxbot ssdata col-sm-2 col-xs-2">@Model.LaborItems[i].VendorName</div>
                                 }
@@ -517,7 +525,10 @@ COST:
                             }
                             else
                             {
-                                <div id="LaborItemsRowTotalValue_@i" class="@boxme @boxbot ssdata  @boxright col-sm-2 col-xs-2 LaborItemsRowTotal">@Model.LaborItems[i].Total.ToString("F02")</div>
+                                if (bHideRow != "hidden")
+                                {
+                                    <div id="LaborItemsRowTotalValue_@i" class="@boxme @boxbot ssdata  @boxright col-sm-2 col-xs-2 LaborItemsRowTotal">@Model.LaborItems[i].Total.ToString("F02")</div>
+                                }
                             }
                         </div>
                         @if (Model.SVMOp != SVMOperation.Print)
@@ -530,7 +541,7 @@ COST:
                             </div>
                         }
                     </div>
-                                }
+                }
                 <div id="LaborItemsBreak"></div>
             </div>
         </div>
@@ -671,8 +682,8 @@ COST:
         @foreach (StoneComponent sc in Model.Stones)
         {
             @*<div class="LaborsState"></div>*@
-        var bHideSettingRow = (Model.Stones[j].State == SVMStateEnum.Unadded || Model.Stones[j].State == SVMStateEnum.Deleted) ? "hidden" : "";
-        @*var bUsesLT = Model.Style.JewelryType.bUseLaborTable ? "hidden" : "";*@
+            var bHideSettingRow = (Model.Stones[j].State == SVMStateEnum.Unadded || Model.Stones[j].State == SVMStateEnum.Deleted) ? "hidden" : "";
+            var bUsesLT = Model.Style.JewelryType.bUseLaborTable ? "hidden" : "";
             <div class="row ltbordered @bHideSettingRow xx bUsesLT xx">
                 @{Model.CCLastRow = false;
                     Model.CCHeaderRow = false;
@@ -698,28 +709,37 @@ COST:
                 @{
                     var stName = "Setting for " + @Model.Stones[j].Name + "-" + @Model.Stones[j].ShId + "-" + @Model.Stones[j].SzId;
                 }
-                @if (Model.SVMOp != SVMOperation.Print)
-                {
-                    <div id="StoneSetting_@j">
-                        <input class="col-sm-4 col-xs-4 text-box single-line locked" id="StoneSettingName_@j" type="text" disabled value="@stName" /> <!-- Name size "mm setting"-->
-                        <div class="col-sm-2 col-xs-2 "></div>
-                        <div class="col-sm-1 col-xs-1 "></div>
-                        <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingPrice_@j" type="text" disabled value="@Model.Stones[j].SettingCost.ToString("F02")" />
-                        <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingQty_@j" type="text" disabled value="@Model.Stones[j].Qty.ToString("F02")" />
-                    </div>
+
+                @*@if (!Model.Style.JewelryType.bUseLaborTable & bHideSettingRow != "hidden")*@
+                @{
+                    if (Model.SVMOp != SVMOperation.Print)
+                    {
+                        <div id="StoneSetting_@j">
+                            <input class="col-sm-4 col-xs-4 text-box single-line locked" id="StoneSettingName_@j" type="text" disabled value="@stName" /> <!-- Name size "mm setting"-->
+                            <div class="col-sm-2 col-xs-2 "></div>
+                            <div class="col-sm-1 col-xs-1 "></div>
+                            <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingPrice_@j" type="text" disabled value="@Model.Stones[j].SettingCost.ToString("F02")" />
+                            <input class="col-sm-1 col-xs-1 text-box single-line locked" id="StoneSettingQty_@j" type="text" disabled value="@Model.Stones[j].Qty.ToString("F02")" />
+                        </div>
+                        <div id="LaborsRowTotalValue_@(j + lc)" name="StoneSettingRowTotalValue_@j" class="@boxme @boxbot ssdata @boxright col-sm-2 col-xs-2 StoneSettingRowTotal"> @((Model.Stones[j].Qty * @Model.Stones[j].SettingCost).ToString("F02"))</div>
+                    }
+                    else
+                    {
+                        if (!Model.Style.JewelryType.bUseLaborTable)
+                        {
+                            <div class="@boxme @boxbot ssdata col-sm-4 col-xs-4">@stName</div>
+                            <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">&nbsp;</div>
+                            <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].SettingCost.ToString("F02")</div>
+                            <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].Qty.ToString("F02")</div>
+                            StoneSettingTotal += (Model.Stones[j].SettingCost * Model.Stones[j].Qty);
+                            <div id="LaborsRowTotalValue_@(j + lc)" name="StoneSettingRowTotalValue_@j" class="@boxme @boxbot ssdata @boxright col-sm-2 col-xs-2 StoneSettingRowTotal"> @((Model.Stones[j].Qty * @Model.Stones[j].SettingCost).ToString("F02"))</div>
+                        }
+                    }
                 }
-                else
-                {
-                    <div class="@boxme @boxbot ssdata col-sm-4 col-xs-4">@stName</div>
-                    <div class="@boxme @boxbot ssdata col-sm-3 col-xs-3">&nbsp;</div>
-                    <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].SettingCost.ToString("F02")</div>
-                    <div class="@boxme @boxbot ssdata col-sm-1 col-xs-1">@Model.Stones[j].Qty.ToString("F02")</div>
-                    StoneSettingTotal += (Model.Stones[j].SettingCost * Model.Stones[j].Qty);
-                }
-                <div id="LaborsRowTotalValue_@(j+lc)" name="StoneSettingRowTotalValue_@j" class="@boxme @boxbot ssdata @boxright col-sm-2 col-xs-2 StoneSettingRowTotal"> @((Model.Stones[j].Qty * @Model.Stones[j].SettingCost).ToString("F02"))</div>
             </div>
-            j++;
+                j++;
         }
+
         </div>
         <div id="LaborsTotal">
             <div class="row StyleComponentsRowFooter">

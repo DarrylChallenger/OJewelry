@@ -20,12 +20,14 @@ namespace OJewelry.Controllers
         public LaborItemApiType(LaborItem li)
         {
             id = li.Id;
+            Name = li.Name;
             pph = li.pph;
             ppp = li.ppp;
             Vendor = li.Vendor.Name;
         }
 
         [DataMember] int id { get; set; }
+        [DataMember] string Name { get; set; }
         [DataMember] decimal? pph { get; set; }
         [DataMember] decimal? ppp { get; set; }
         [DataMember] string Vendor { get; set; }
@@ -49,7 +51,7 @@ namespace OJewelry.Controllers
             LaborItemApiType lit = new LaborItemApiType(laborItem);
             string json = JsonConvert.SerializeObject(lit);
             return json;
-            }
+        }
 
         protected override void Dispose(bool disposing)
         {
