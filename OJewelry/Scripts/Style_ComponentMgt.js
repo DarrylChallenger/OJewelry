@@ -222,9 +222,9 @@ function RemoveComponentRow(type, i)
     }
     if (type === "Stones") {
         RemoveStoneSettingRow(i);
-    } else {
-        CalcSubtotals(type);
     }
+    CalcSubtotals(type);
+    
 
 }
 
@@ -363,6 +363,7 @@ function CalcStonesSettingsRow(stoneRow, price, qty) {
     var total = $("#StoneSetting_" + stoneRow).next();
     total.text((price * qty).toFixed(2));
     CalcSubtotals("Labors");
+    CalcSubtotals("Stones");
 }
 
 function CalcSubtotals(type) {
@@ -384,25 +385,19 @@ function CalcSubtotals(type) {
     });
     //console.log(`${"." + type + "RowTotal"} total: ${total}`);
     if (isNaN(total)) total = 0;
-    if (type === "Labors") {
-        // Add in the Stone settings costs
+    if (type === "Labors" || type === "LaborItems") {
+        // Add in the Stone settings costs for visible Labors rows
         var ssTotal = +0;
-        $(".StoneSettingRowTotal").each(function () {
-            if (!$(this).parent().hasClass("hidden"))
-            {
-                ssTotal += +$(this).html();
-                //console.log(`[this ss: ${$(this).html()}, ssTotal: ${ssTotal}]`, $(this));
-                //console.log(`this parent`, $(this).parent().hasClass("hidden")); //.hasClass("hidden")
-                //console.log(`this grandparent`, $(this).parent().parent().hasClass("hidden")); //.hasClass("hidden")
-                //console.log(`this great grandparent`, $(this).parent().parent().parent()); //.hasClass("hidden")
-            }
-        });
-        total += ssTotal;
         if ($(Style_JewelryType_bUseLaborTable).val() !== "true") {
-            $("#LaborsTotalValue").html(total.toFixed(2));
-        } else {
-            $("#LaborsTotalValue").html(total.toFixed(2));
+            $(".StoneSettingRowTotal").each(function () {
+                if (!$(this).parent().hasClass("hidden")) {
+                    ssTotal += +$(this).html();
+                }
+            });
+            total += ssTotal;
         }
+        // Labors and Labor Items both update the Labors Total row
+        $("#LaborsTotalValue").html(total.toFixed(2));
     } else {
         $("#" + type + "TotalValue").html(total.toFixed(2));
     }
@@ -452,6 +447,7 @@ async function LaborItemsDropdownChanged(rowId) {
         //console.log(`laborItemString: ${laborItemString}`);
         const laborItem = JSON.parse(laborItemString);
         //console.log(`laborItem: ${JSON.stringify(laborItem)}`);
+        $(`[name='LaborItems[${rowId}].Name']`).val(laborItem.Name);
         $(`[name='LaborItems[${rowId}].pph']`).val(laborItem.pph);
         $(`[name='LaborItems[${rowId}].ppp']`).val(laborItem.ppp);
         $(`[name='LaborItems[${rowId}].VendorName']`).val(laborItem.Vendor);
@@ -535,7 +531,7 @@ function SetStonesWarning(i, stoneCtl, shapeCtl, sizeCtl) {
 
 async function StoneChanged(i) {
     // pass the selected stone to ShapeApiDataController. Process the result or handle not found 
-    console.log("*** STONE CHANGED ***");
+    //console.log("*** STONE CHANGED ***");
     var zero = 0;
     var stoneCtl = $("#Stones_" + i + "__Name");
     var shapeCtl = $("#Stones_" + i + "__ShId");
@@ -662,7 +658,7 @@ async function StoneSizeChanged(i) {
             }
         })
         .then(function (stonedata) {
-            console.log('stonedata', stonedata);
+            //console.log('stonedata', stonedata);
             // unpack stonedata
             if (stonedata) {
                 //console.log("Valid Combo result", stonedata);
@@ -822,7 +818,7 @@ function getStonesHTML(type, len) {
             <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Karat Weight must be a number." id="Stones_' + len + '__CtWt" name="Stones[' + len + '].Ctwt" type="text" value="" \"/>\
             <input class="col-sm-2 text-box single-line locked" disabled = "disabled" data-val="true" data-val-required="The Vendor field is required." id="Stones_' + len + '__VendorName" name="Stones[' + len + '].VendorName" type="text" value="" />\
             <input class="col-sm-1 text-box single-line locked" disabled = "disabled" data-val="true" data-val-number="The Price field must be a number." id="Stones_' + len + '__Price" name="Stones[' + len + '].Price" type="text" value="0.00" <!--onblur="CalcRowTotal(\'' + type + '\', ' + len + ')-->\"/>\
-            <input class="col-sm-1 " data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." data-val-number="The field Quantity must be a number." data-val="true" data-val-range-min="1" data-val-range-max="999999999" data-val-range="QTY CANNOT BE 0." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="0" onblur="StoneQtyChanged(' + len + ')\"/>\
+            <input class="col-sm-1 requiredifnotremoved" data-val="true" data-val-number="The field Quantity must be a number." data-val-required="The Quantity field is required." data-val-number="The field Quantity must be a number." data-val="true" data-val-range-min="1" data-val-range-max="999999999" data-val-range="QTY CANNOT BE 0." id="Stones_' + len + '__Qty" name="Stones[' + len + '].Qty" type="text" value="0" onblur="StoneQtyChanged(' + len + ')\"/>\
             <div id="StonesRowTotalValue_' + len + '" class="col-sm-1 StonesRowTotal ">0.00</div>\
             ' + rightDelBtn + '\
            </div>\
@@ -1054,7 +1050,7 @@ $(function () { //
 
     $.validator.addMethod("requiredifnotremoved", function (value, element) { 
         var elementId = $(element).attr("id");
-        console.log(`validating ${elementId}`);
+        //console.log(`validating ${elementId}`);
         if (elementId === "jssINDEX" || elementId === "jsshINDEX" || elementId === "jsszINDEX" || elementId === "jsfINDEX") {
             return true;
         }
@@ -1107,8 +1103,10 @@ $(document).ready(function () {
         //console.log(`form:`, $("#StylesForm"));
         form.submit();
     });
-    $('#StylesForm').bind('invalid-form.validate', function () {
-        console.log('invalid-form.validate');
+
+    $('#StylesForm').bind('invalid-form.validate', function (event, validator) {
+        //console.log(`invalid-form.validate: ${validator.numberOfInvalids()}`, event);
+        //console.log(`invalid-form.validate: ${validator.numberOfInvalids()}`, validator);
         $('.fauxBtn').addClass('fauxHide');
         $('.saveBtn').show();
         $('.pricingBtn').show();
